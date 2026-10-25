@@ -115,14 +115,14 @@ object ModelCatalog {
                 .build()
             Http.client.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
-                    ModelTestResult(true, "SIAP DIPAKAI")
+                    ModelTestResult(testing = false, ok = true, message = "SIAP DIPAKAI")
                 } else {
                     val errBody = try { response.body?.string() } catch (_: Exception) { null }
-                    ModelTestResult(false, extractError(errBody, "HTTP ${response.code}"))
+                    ModelTestResult(testing = false, ok = false, message = extractError(errBody, "HTTP ${response.code}"))
                 }
             }
         } catch (e: Exception) {
-            ModelTestResult(false, "Koneksi gagal: ${e.message ?: "unknown"}")
+            ModelTestResult(testing = false, ok = false, message = "Koneksi gagal: ${e.message ?: "unknown"}")
         }
     }
     /** Suara bawaan yang tersedia di model TTS Google (stabil, sesuai dokumentasi) */

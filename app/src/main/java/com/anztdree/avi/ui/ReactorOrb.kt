@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -183,10 +185,11 @@ fun ReactorHalo(
         ringPath.reset()
         ringPath.addCircle(c.x, c.y, textRadius, android.graphics.Path.Direction.CW)
         drawIntoCanvas { canvas ->
-            canvas.save()
-            canvas.rotate(t * 360f, c.x, c.y)           // satu putaran penuh / 14 dtk
-            canvas.nativeCanvas.drawTextOnPath(ringText, ringPath, 0f, 0f, textPaint)
-            canvas.restore()
+            val nc = canvas.nativeCanvas
+            nc.save()
+            nc.rotate(t * 360f, c.x, c.y)                // satu putaran penuh / 14 dtk
+            nc.drawTextOnPath(ringText, ringPath, 0f, 0f, textPaint)
+            nc.restore()
         }
     }
 }
