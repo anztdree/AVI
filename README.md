@@ -6,7 +6,7 @@
 **AI 100% cloud** (Google Gemini) — HP spek rendah pun kuat, nol model di perangkat.
 **Model dinamis** — daftar model di-*fetch* langsung dari Google; pemilik pilih sendiri yang paling up-to-date.
 
-**Status: PERENCANAAN.** Kode dasar v1.0.0 sudah jalan (chat suara). Pengembangan berikutnya **menunggu persetujuan pemilik** — dokumen tunggal proyek adalah README ini.
+**Status: RENCANA FINAL — menunggu perintah eksekusi.** Kode dasar v1.0.0 sudah jalan (chat suara). README ini = dokumen tunggal proyek + log keputusan pemilik.
 
 ---
 
@@ -21,9 +21,9 @@
 
 ---
 
-## 2. Peta Fitur & Fungsi (curahan seluruh ide)
+## 2. Peta Fitur & Fungsi
 
-Keterangan status: **✅ sudah jalan (v1.0.0)** · **🔧 direncanakan, menunggu OK** · **💡 usulan baru — untuk didiskusikan**
+Status: **✅ sudah jalan (v1.0.0)** · **🔧 disetujui, masuk roadmap** · **💡 cadangan (belum diputuskan)** · **❌ ditolak/dihapus**
 
 ### A. Otak & Percakapan
 
@@ -31,14 +31,23 @@ Keterangan status: **✅ sudah jalan (v1.0.0)** · **🔧 direncanakan, menunggu
 |---|---|---|
 | Chat pintar, jawaban streaming | ✅ | Gemini SSE — teks muncul kata-per-kata |
 | Kepribadian pelayan Indonesia | ✅ | "Hay pak… Siap pak!" — rinci di §3 |
-| **Pilih model sendiri dari daftar terbaru Google** | 🔧 | Pengaturan →「Muat Daftar Model」→ `GET /v1beta/models` → pilih → dipakai semua fitur. Hardcode `gemini-2.0-flash` dihapus |
+| **Pilih model sendiri dari daftar terbaru Google** | 🔧 F1 | Pengaturan →「Muat Daftar Model」→ `GET /v1beta/models` → pilih → dipakai semua fitur. Hardcode `gemini-2.0-flash` dihapus |
 | Multi-provider | ✅ | Gemini (utama) atau API kompatibel OpenAI (OpenRouter/Groq) |
 | Info terkini (search) | ✅ | Grounding `google_search` — cuaca, berita, harga, jadwal |
-| Memori jangka panjang | 💡 | Bilang *"Ingat ini pak: …"* → tersimpan permanen, otomatis diingat di semua obrolan berikutnya; bisa dilihat/hapus di Pengaturan |
-| Perintah cepat (chips) | 💡 | Tombol pintas di atas kolom ketik: 「Cuaca」「Berita hari ini」「Buat gambar…」「Ingat…」 |
-| Multi-bahasa jawaban | 💡 | Default Indonesia; bisa diminta jawab Inggris/lainnya |
+| **Memori jangka panjang** | 🔧 F3 | *"Ingat ini pak: …"* → tersimpan permanen, otomatis diingat di semua obrolan; kelola (lihat/hapus) di Pengaturan |
+| **Perintah cepat (chips)** | 🔧 F4 | Tombol pintas di atas kolom ketik: 「Cuaca」「Berita hari ini」「Kondisi HP」「Buka aplikasi」「Ingat…」 |
+| Multi-bahasa jawaban | 💡 | Default Indonesia; bisa diminta bahasa lain |
 
-### B. Suara
+### B. Aksi Perangkat (baru — disetujui pemilik)
+
+Semua dibaca/dijalankan **lokal di HP** — instan, tanpa internet; AVI tinggal merangkai jawabannya dengan gayanya.
+
+| Fitur | Status | Catatan |
+|---|---|---|
+| **Buka aplikasi** | 🔧 F4 | *"Buka YouTube pak"* → AVI mencocokkan nama dengan daftar aplikasi terpasang (PackageManager, pencocokan pintar) → luncurkan. Ambigu → tampilkan pilihan; tidak ada → "Tidak ada aplikasi itu, pak." |
+| **Kondisi HP / info sistem** | 🔧 F4 | Baterai (% + status mengisi), penyimpanan (sisa/total), RAM, jaringan (WiFi/seluler/offline), model & versi Android. Contoh: *"AVI, baterai berapa?"* → "Baterai 68% pak, lagi diisi. Santai." |
+
+### C. Suara
 
 | Fitur | Status | Catatan |
 |---|---|---|
@@ -46,34 +55,31 @@ Keterangan status: **✅ sudah jalan (v1.0.0)** · **🔧 direncanakan, menunggu
 | Berbicara (TTS) id-ID | ✅ | TextToSpeech sistem |
 | Percakapan beruntun | ✅ | Setelah menjawab → langsung mendengar lagi; sentuh reaktor untuk berhenti |
 | Atur kecepatan & nada suara | ✅ | Slider di Pengaturan |
-| Pilih voice dari daftar perangkat | 💡 | Tes suara per voice sebelum dipilih |
-| Kata bangun "Hay AVI" | 💡 | ⚠️ Android membatasi mikrofon latar belakang — solusi realistis: widget/tile (di bawah), bukan mic 24 jam |
-
-### C. Kreatif
-
-| Fitur | Status | Catatan |
-|---|---|---|
-| Buat gambar dari suara/teks | ✅ | Tag `[GAMBAR:]` → Pollinations (gratis) |
-| Mesin gambar via Google | 🔧/💡 | **Perlu keputusan pemilik (K1)**: model gambar Google (konsisten 1 API, kualitas bagus) vs Pollinations (gratis tanpa kuat kuota) vs keduanya (pilihan di Pengaturan) |
-| Galeri gambar dalam aplikasi | 💡 | Riwayat hasil gambar, simpan ke galeri HP, share langsung |
+| Pilih voice dari daftar perangkat | 💡 | Cadangan |
+| Kata bangun "Hay AVI" | 💡 | Cadangan — Android membatasi mic latar belakang |
 
 ### D. Data & Riwayat
 
 | Fitur | Status | Catatan |
 |---|---|---|
-| Riwayat chat tersimpan lokal | ✅ | File JSON |
-| Migrasi ke database Room + sesi | 🔧/💡 | Pecah per sesi, ganti judul, cari chat lama (K3) |
-| Ekspor / backup | 💡 | Simpan riwayat + pengaturan ke file, impor di HP baru |
+| Riwayat chat tersimpan lokal | ✅ | File JSON — **tetap dipakai** (keputusan pemilik; migrasi Room tidak diminta) |
+| Ekspor / backup | 💡 | Cadangan |
 
 ### E. HUD & Tampilan
 
 | Fitur | Status | Catatan |
 |---|---|---|
-| Orb arc reactor 4 state | ✅ | Siaga / mendengar / berpikir / bicara — animasi berbeda per state |
+| Orb arc reactor 4 state | ✅ | Siaga / mendengar / berpikir / bicara |
 | Tema gelap Iron Man | ✅ | Hitam kebiruan + cyan + emas |
-| Widget homescreen | 💡 | Tombol reaktor langsung di layar utama — sentuh → AVI langsung mendengar |
-| Quick Settings Tile | 💡 | "AVI, dengar" di panel notifikasi — akses 1 usap |
-| Layar siaga ala Jarvis | 💡 | Layar penuh: jam besar + orb + status — dipakai saat HP di dock/meja |
+| Widget homescreen | 💡 | Cadangan |
+| Layar siaga ala Jarvis | 💡 | Cadangan |
+| Quick Settings Tile (panel notifikasi) | ❌ | **Ditolak pemilik — tidak perlu sama sekali** |
+
+### F. Dihapus
+
+| Fitur | Status | Catatan |
+|---|---|---|
+| Mesin gambar (Google / Pollinations) | ❌ | **Dihapus total sesuai keputusan pemilik.** Kode v1 (`image/ImageGen.kt`, tag `[GAMBAR:]` di prompt & UI) dibersihkan di F2 |
 
 ---
 
@@ -88,6 +94,7 @@ Keterangan status: **✅ sudah jalan (v1.0.0)** · **🔧 direncanakan, menunggu
 | Tidak paham / tidak terdengar | "Mohon maaf pak, bisa diulang?" |
 | Koneksi putus | "Koneksi ke markas terputus, pak." |
 | API key bermasalah | "Kunci markasnya belum terpasang, pak. Buka Pengaturan ya." |
+| Aplikasi tidak ditemukan | "Tidak ada aplikasi itu di HP, pak." |
 
 Aturan:
 1. **Mode suara**: 1–3 kalimat, langsung ke inti (akan diucapkan — hindari daftar panjang).
@@ -101,6 +108,12 @@ Contoh:
 User : "Avi, cuaca Jakarta gimana?"
 AVI  : "Sebentar pak, AVI cek dulu."
 AVI  : "Cuaca Jakarta siang ini cerah berawan, 28–33 derajat, pak. Aman buat berangkat."
+
+User : "Avi, baterai berapa?"
+AVI  : "Baterai 68% pak, lagi diisi. Santai."
+
+User : "Buka YouTube pak"
+AVI  : "Siap pak."  → (YouTube terbuka)
 ```
 
 ---
@@ -138,50 +151,56 @@ SIAGA ──(sentuh reaktor)──► MENYAPA ──► MENDENGAR ──► BERP
 
 ```
 ┌───────────────── PERANGKAT ANDROID (native Kotlin) ─────────────────┐
-│  UI Compose (HUD): Obrolan · Galeri · Pengaturan                    │
-│  Data lokal: DataStore (key, MODEL TERPILIH, preferensi) + riwayat  │
+│  UI Compose (HUD): Obrolan (+chips) · Pengaturan (+pilih model,     │
+│                    kelola memori)                                   │
+│  Data lokal: DataStore (key, MODEL TERPILIH, preferensi)            │
+│              Riwayat chat (JSON) · Memori jangka panjang            │
 │  Voice Engine (layanan sistem — ringan, BUKAN LLM):                 │
 │    STT android.speech.SpeechRecognizer (id-ID)                      │
 │    TTS android.speech.tts.TextToSpeech (id-ID)                      │
+│  Aksi Perangkat (lokal, instan):                                    │
+│    PackageManager (buka aplikasi) · BatteryManager · StatFs ·       │
+│    ActivityManager (RAM) · ConnectivityManager (jaringan)           │
 └──────────────┬──────────────────────────────────────────────────────┘
                │ HTTPS (OkHttp + kotlinx.serialization)
                ▼
    Google Generative Language API — SEMUA AI DI CLOUD
    ├─ GET  /v1beta/models                       → daftar model terbaru (pemilik pilih)
-   ├─ POST /v1beta/models/{terpilih}:streamGenerateContent
-   │     ├─ systemInstruction: kepribadian AVI
-   │     └─ tools: google_search                → info terkini
-   └─ model gambar (dari daftar, bila dipilih)  → gambar
+   └─ POST /v1beta/models/{terpilih}:streamGenerateContent
+         ├─ systemInstruction: kepribadian AVI + memori
+         └─ tools: google_search                → info terkini
 ```
 
 ---
 
 ## 6. Kondisi Kode Saat Ini (audit v1.0.0)
 
-**Sudah ada**: proyek Gradle (minSdk 26), HUD orb + chat + pengaturan (Compose), Gemini streaming + search grounding + fallback, OpenAI-compat client, STT/TTS id-ID + mode beruntun, gambar Pollinations, riwayat JSON, DataStore, CI build APK, Release v1.0.0.
+**Sudah ada**: proyek Gradle (minSdk 26), HUD orb + chat + pengaturan (Compose), Gemini streaming + search grounding + fallback, OpenAI-compat client, STT/TTS id-ID + mode beruntun, gambar Pollinations (→ dihapus di F2), riwayat JSON, DataStore, CI build APK, Release v1.0.0.
 
-**Masalah tercatat** (perbaikan menunggu perintah):
+**Masalah tercatat**:
 
-| # | Masalah | Lokasi |
-|---|---|---|
-| M1 | Model hardcode `"gemini-2.0-flash"` | `ai/GeminiClient.kt:47` |
-| M2 | Tidak ada `ListModels` / field model Gemini di pengaturan | `ai/`, `data/` |
-| M3 | Mesin gambar Pollinations — perlu keputusan (K1) | `image/ImageGen.kt` |
-| M4 | Riwayat file JSON, bukan Room | `data/ChatHistoryRepository.kt` |
-| M5 | Tidak ada Gradle Wrapper (`gradlew`) | root |
-| M6 | API key disimpan plaintext | `data/SettingsRepository.kt` |
+| # | Masalah | Lokasi | Penanganan |
+|---|---|---|---|
+| M1 | Model hardcode `"gemini-2.0-flash"` | `ai/GeminiClient.kt:47` | F1 |
+| M2 | Tidak ada `ListModels` / pilihan model | `ai/`, `data/` | F1 |
+| M3 | Fitur gambar harus dihapus (keputusan pemilik) | `image/`, prompt `[GAMBAR:]`, UI | F2 |
+| M4 | Riwayat file JSON | `data/ChatHistoryRepository.kt` | Tetap — keputusan pemilik |
+| M5 | Tidak ada Gradle Wrapper | root | F5 |
+| M6 | API key plaintext | `data/SettingsRepository.kt` | F5 |
 
 ---
 
-## 7. Roadmap
+## 7. Roadmap Final (hasil keputusan pemilik)
 
 | Fase | Isi | Status |
 |---|---|---|
-| **F1** | Fetch model dinamis dari Google + hapus hardcode (M1, M2) | **Menunggu OK** |
-| F2 | Gradle wrapper (M5) + key terenkripsi (M6) | Menunggu OK |
-| F3 | Riwayat Room + sesi (M4 — tergantung K3) | Menunggu OK |
-| F4 | Mesin gambar final (M3 — tergantung K1) | Menunggu OK |
-| F5 | Ide 💡 terpilih hasil diskusi (K2) + polish + rilis v1.1.0 | Menunggu diskusi |
+| **F1** | **Fetch model dinamis dari Google** + hapus hardcode (M1, M2) | **Siap eksekusi — menunggu "lanjut"** |
+| F2 | Hapus total fitur gambar: `ImageGen.kt`, tag `[GAMBAR:]` di prompt/UI (M3) | Disetujui |
+| F3 | Memori jangka panjang: simpan/lookup/hapus + injeksi ke prompt | Disetujui |
+| F4 | Aksi perangkat: buka aplikasi + info kondisi HP + chips perintah cepat | Disetujui |
+| F5 | Gradle wrapper (M5) + key terenkripsi (M6) + polish + rilis **v1.1.0** | Disetujui |
+
+Setiap fase = 1 milestone + 1 push ke GitHub.
 
 ---
 
@@ -191,7 +210,7 @@ SIAGA ──(sentuh reaktor)──► MENYAPA ──► MENDENGAR ──► BERP
 
 **Setup otak AVI**: https://aistudio.google.com/apikey → Create API key → aplikasi ⚙ Pengaturan → tempel key.
 
-**Struktur repo**:
+**Struktur repo** (saat ini):
 
 ```
 AVI/
@@ -200,7 +219,7 @@ AVI/
 │   ├── ai/      # Gemini SSE + OpenAI-compat + prompt kepribadian
 │   ├── data/    # DataStore + riwayat
 │   ├── speech/  # AviTts + AviStt
-│   ├── image/   # ImageGen
+│   ├── image/   # (akan dihapus di F2)
 │   └── ui/      # HUD orb, chat, pengaturan
 ├── .github/workflows/build-android.yml       # CI APK otomatis
 ├── build.gradle.kts · settings.gradle.kts · gradle.properties
@@ -212,16 +231,16 @@ AVI/
 ## 9. Keamanan
 
 - `.env` lama sudah keluar dari repo & riwayat `main`; tidak ada kredensial di repo/workflow.
-- API key Gemini hanya di perangkat pemilik (akan ditingkatkan ke terenkripsi di F2).
+- API key Gemini hanya di perangkat pemilik (ditingkatkan ke terenkripsi di F5).
 - ⚠️ **PAT GitHub pernah terekspos di chat — regenerate setelah proyek stabil.**
 
 ---
 
-## 10. Keputusan yang Menunggu Jawaban Pemilik
+## 10. Log Keputusan Pemilik
 
-| # | Keputusan | Opsi |
-|---|---|---|
-| **K1** | Mesin gambar | (a) Google saja · (b) Pollinations saja · (c) keduanya, pilihan di Pengaturan |
-| **K2** | Ide 💡 mana yang masuk roadmap | widget · tile · layar siaga · memori jangka panjang · chips · galeri · pilih voice · ekspor/backup — pilih yang diinginkan |
-| **K3** | Riwayat chat | (a) migrasi Room + sesi · (b) biarkan file JSON |
-| **K4** | Urutan fase | Setuju F1→F5 atau ubah? |
+| # | Keputusan | Jawaban pemilik | Akibat |
+|---|---|---|---|
+| K1 | Mesin gambar | **Tidak pakai sama sekali** | Fitur dihapus total (F2); galeri & tag `[GAMBAR:]` ikut dibersihkan |
+| K2 | Ide pengembangan | **Ya**: memori jangka panjang, perintah cepat, buka aplikasi, info sistem HP. **Tidak**: panel notifikasi (tile) | Masuk F3–F4; tile ditandai ❌ |
+| K3 | Riwayat chat | (tidak diminta diubah) | Tetap file JSON |
+| K4 | Urutan fase | F1 → F5 sesuai §7 | Eksekusi setelah perintah |
