@@ -21,7 +21,18 @@ data class GeminiModelInfo(
     val canLive: Boolean
 ) {
     val shortName: String get() = name.removePrefix("models/")
+    /** Model uji-coba / eksperimental — tampil di bawah dengan penanda */
+    val isPreview: Boolean get() =
+        name.contains("preview", true) || name.contains("exp", true) ||
+            name.contains("deprecated", true) || name.contains("image", true)
 }
+
+/** Hasil uji cepat satu model (1 permintaan kecil ke Google) */
+data class ModelTestResult(
+    val testing: Boolean,
+    val ok: Boolean,
+    val message: String
+)
 
 object ModelCatalog {
 
@@ -61,13 +72,59 @@ object ModelCatalog {
                 if (list.isEmpty()) {
                     return@withContext Result.failure(Exception("Daftar model kosong. Coba lagi ya pak."))
                 }
-                Result.success(list)
+                Result.success(list.sortedWith(modelOrder))
             }
         } catch (e: Exception) {
             Result.failure(Exception("Koneksi ke Google gagal: ${e.message ?: "unknown"}"))
         }
     }
 
+    /** Urutan tampil: model stabil & terbaru dulu, preview/eksperimental di bawah */
+    private val modelOrder = compareBy<GeminiModelInfo>(
+        { if (it.isPreview) 1 else 0 },
+        { when {
+            it.shortName.contains("flash-lite") -> 2
+            it.shortName.contains("flash") -> 0      // flash tercepat — pilihan utama
+            it.shortName.contains("pro") -> 1
+            else -> 3
+        } },
+        { it.shortName }   // abjad — versi terbaru biasanya di bawah
+    )
+
+    /**
+     * Uji satu model dengan 1 permintaan kecil (maks 8 token).
+     * Membuktikan model benar-benar bisa dipakai dengan API key pemilik —
+     * hasilnya ditampilkan langsung di Pusat Kendali.
+     */
+    suspend fun testModel(apiKey: String, model: String): ModelTestResult = withContext(Dispatchers.IO) {
+        val key = apiKey.trim()
+        if (key.isEmpty()) return@withContext ModelTestResult(false, "API key kosong")
+        try {
+            val body = jsonParser.encodeToString(
+                GeminiRequest(
+                    contents = listOf(
+                        GeminiContent(role = "user", parts = listOf(GeminiPart(text = "ping")))
+                    ),
+                    generationConfig = GeminiGenerationConfig(temperature = 0.0, maxOutputTokens = 8)
+                )
+            )
+            val request = Request.Builder()
+                .url("https://generativelanguage.googleapis.com/v1beta/$model:generateContent?key=$key")
+                .header("Content-Type", "application/json")
+                .post(body.toRequestBody(Http.jsonMedia))
+                .build()
+            Http.client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    ModelTestResult(true, "SIAP DIPAKAI")
+                } else {
+                    val errBody = try { response.body?.string() } catch (_: Exception) { null }
+                    ModelTestResult(false, extractError(errBody, "HTTP ${response.code}"))
+                }
+            }
+        } catch (e: Exception) {
+            ModelTestResult(false, "Koneksi gagal: ${e.message ?: "unknown"}")
+        }
+    }
     /** Suara bawaan yang tersedia di model TTS Google (stabil, sesuai dokumentasi) */
     val ttsVoices: List<String> = listOf(
         "Zephyr", "Puck", "Charon", "Kore", "Fenrir", "Leda", "Orus", "Aoede",

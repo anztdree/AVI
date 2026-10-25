@@ -21,8 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.anztdree.avi.AviState
 import com.anztdree.avi.ui.theme.AviPalette
 import kotlin.math.PI
@@ -82,15 +85,20 @@ fun ReactorOrb(
 }
 
 /**
- * Halo animasi di sekitar reaktor — murni Canvas TANPA teks (nol tumpang tindih).
- * Dua busur berputar berlawanan arah + tick penghubung statis.
- * enabled = false → tidak digambar sama sekali.
+ * Halo Mark II — teks berputar mengelilingi reaktor + busur orbit.
+ * TIGA PITA GEOMETRIS YANG TIDAK PERNAH BERTABRAKAN (kunci anti-tumpang tindih):
+ *   Pita 1 (0–80dp)  : ReactorOrb — digambar composable lain di atasnya.
+ *   Pita 2 (80–99dp) : teks melingkar "AVI • ASISTEN VIRTUAL INDONESIA" berputar pelan.
+ *   Pita 3 (99–105dp): busur + tick + titik berlawanan arah.
+ * Semua murni Canvas + nativeCanvas.drawTextOnPath — satu panggilan gambar per
+ * frame per elemen, Paint & Path di-cache (remember) → ringan tanpa mengorbankan HD.
  */
 @Composable
 fun ReactorHalo(
     palette: AviPalette,
     enabled: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    glowLevel: Float = 0f
 ) {
     if (!enabled) return
     val transition = rememberInfiniteTransition(label = "halo")
@@ -100,9 +108,24 @@ fun ReactorHalo(
         animationSpec = infiniteRepeatable(tween(14000, easing = LinearEasing)),
         label = "haloTime"
     )
+
+    // Cache Paint & Path — TIDAK dialokasi per frame
+    val textPaint = remember {
+        android.graphics.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = android.graphics.Typeface.MONOSPACE
+            textAlign = android.graphics.Paint.Align.CENTER
+        }
+    }
+    val ringPath = remember { android.graphics.Path() }
+    val ringText = remember { "AVI  •  ASISTEN VIRTUAL INDONESIA  •  ".repeat(3) }
+
     Canvas(modifier = modifier) {
         val c = center
-        val r = size.minDimension / 2f * 0.96f
+        val R = size.minDimension / 2f          // penuh kotak (±105dp)
+        val dR = R / 105f                       // skala dp→px aktual
+
+        // ============ PITA 3 — busur & tick (99–105dp) ============
+        val bandR = 97f * dR
         // busur utama berputar searah jarum jam
         rotate(degrees = t * 360f, pivot = c) {
             drawArc(
@@ -130,15 +153,40 @@ fun ReactorHalo(
                 style = Stroke(width = 1.dp.toPx(), cap = StrokeCap.Round)
             )
         }
-        // tick penghubung statis ke 4 arah (diam — tidak menabrak apa pun)
+        // tick pendek ke 4 arah — hanya di pita luar, tidak masuk ke area orb/teks
         for (k in 0 until 4) {
             val rad = k * 90f * PI.toFloat() / 180f
             drawLine(
                 color = palette.accent.copy(alpha = 0.20f),
-                start = Offset(c.x + r * 0.72f * cos(rad), c.y + r * 0.72f * sin(rad)),
-                end = Offset(c.x + r * cos(rad), c.y + r * sin(rad)),
+                start = Offset(c.x + bandR * 0.97f * cos(rad), c.y + bandR * 0.97f * sin(rad)),
+                end = Offset(c.x + R * 0.995f * cos(rad), c.y + R * 0.995f * sin(rad)),
                 strokeWidth = 1f
             )
+        }
+        // dua titik emas berlawanan arah di pita yang sama
+        for (k in 0..1) {
+            val rad = (-t * 360f + k * 180f) * PI.toFloat() / 180f
+            drawCircle(
+                color = palette.gold,
+                radius = 1.8.dp.toPx(),
+                center = Offset(c.x + bandR * cos(rad), c.y + bandR * sin(rad)),
+                alpha = 0.75f
+            )
+        }
+
+        // ============ PITA 2 — teks melingkar berputar (80–99dp) ============
+        val textRadius = 90f * dR                       // garis dasar huruf
+        val glow = 0.42f + 0.20f * glowLevel + 0.10f * sin(t * 2f * PI.toFloat())
+        textPaint.color = palette.gold.toArgb()
+        textPaint.textSize = 8.5.sp.toPx()
+        textPaint.alpha = (255 * glow.coerceIn(0f, 1f)).toInt()
+        ringPath.reset()
+        ringPath.addCircle(c.x, c.y, textRadius, android.graphics.Path.Direction.CW)
+        drawIntoCanvas { canvas ->
+            canvas.save()
+            canvas.rotate(t * 360f, c.x, c.y)           // satu putaran penuh / 14 dtk
+            canvas.nativeCanvas.drawTextOnPath(ringText, ringPath, 0f, 0f, textPaint)
+            canvas.restore()
         }
     }
 }
@@ -209,6 +257,16 @@ private fun DrawScope.drawOrb(
                 useCenter = false,
                 style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
             )
+            // dua titik emas mengorbit pelan — reaktor tetap "hidup" saat siaga
+            for (k in 0..1) {
+                val a = time * 360f + k * 180f
+                drawCircle(
+                    color = palette.gold,
+                    radius = 2.2.dp.toPx(),
+                    center = pt(ringR * 0.84f, a),
+                    alpha = 0.7f
+                )
+            }
         }
         AviState.LISTENING, AviState.LIVE -> {
             val level = if (state == AviState.LIVE) maxOf(mic, voice) else mic
@@ -355,19 +413,18 @@ private fun DrawScope.drawOrb(
         }
     }
 
-    // ---- partikel terbatas (mati di powerSave) ----
+    // ---- partikel orbit + halo bercahaya (mati di powerSave) ----
     if (!powerSave && active) {
-        val count = 8
+        val count = 12
         for (k in 0 until count) {
             val speed = 0.5f + 0.35f * (k % 3)
             val ang = time * TAU * speed + k * (TAU / count)
             val r = ringR * (0.86f + 0.09f * sin(time * TAU + k))
-            drawCircle(
-                color = if (k % 4 == 0) palette.gold else palette.accentSoft,
-                radius = 1.4.dp.toPx(),
-                center = Offset(c.x + r * cos(ang), c.y + r * sin(ang)),
-                alpha = 0.55f
-            )
+            val col = if (k % 4 == 0) palette.gold else palette.accentSoft
+            val pos = Offset(c.x + r * cos(ang), c.y + r * sin(ang))
+            // halo lembut di belakang partikel — kesan HD tanpa biaya besar
+            drawCircle(color = col, radius = 3.2.dp.toPx(), center = pos, alpha = 0.16f)
+            drawCircle(color = col, radius = 1.4.dp.toPx(), center = pos, alpha = 0.55f)
         }
     }
 

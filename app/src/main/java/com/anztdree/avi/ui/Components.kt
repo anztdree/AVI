@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.anztdree.avi.ai.GeminiModelInfo
+import com.anztdree.avi.ai.ModelTestResult
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.LocalAviPalette
 import java.util.Locale
@@ -586,6 +587,7 @@ fun ModelCard(
     info: GeminiModelInfo,
     selected: Boolean,
     onSelect: () -> Unit,
+    test: ModelTestResult? = null,
     palette: AviPalette = LocalAviPalette.current
 ) {
     Column(
@@ -611,6 +613,7 @@ fun ModelCard(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
             )
+            if (info.isPreview) MiniBadge("UJI COBA", palette.gold)
             if (info.canTts) MiniBadge("TTS", palette.gold)
             if (info.canLive) MiniBadge("LIVE", palette.accent)
         }
@@ -623,12 +626,54 @@ fun ModelCard(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        Text(
-            "Konteks: ${formatContext(info.contextLimit)}",
-            color = palette.textDim,
-            fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "Konteks: ${formatContext(info.contextLimit)}",
+                color = palette.textDim,
+                fontSize = 10.sp,
+                fontFamily = FontFamily.Monospace
+            )
+            if (test != null) {
+                Spacer(Modifier.width(8.dp))
+                if (test.testing) {
+                    Text(
+                        "⋯ MENGUJI",
+                        color = palette.goldSoft,
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold
+                    )
+                } else if (test.ok) {
+                    Text(
+                        "✓ SIAP",
+                        color = palette.accent,
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold
+                    )
+                } else {
+                    Text(
+                        "✗ GAGAL",
+                        color = palette.danger,
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+        // Alasan gagal — ditampilkan utuh supaya penyebabnya jelas
+        if (test != null && !test.testing && !test.ok) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                test.message,
+                color = palette.danger.copy(alpha = 0.85f),
+                fontSize = 9.sp,
+                lineHeight = 12.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 

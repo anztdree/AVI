@@ -13,6 +13,7 @@ import com.anztdree.avi.ai.CloudTts
 import com.anztdree.avi.ai.LiveClient
 import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.ai.GeminiModelInfo
+import com.anztdree.avi.ai.ModelTestResult
 import com.anztdree.avi.ai.SystemPrompts
 import com.anztdree.avi.ai.cleanForSpeech
 import com.anztdree.avi.data.AviSettings
@@ -106,6 +107,10 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _modelsError = MutableStateFlow<String?>(null)
     val modelsError: StateFlow<String?> = _modelsError.asStateFlow()
+
+    /** Hasil uji per model: name → hasil (menguji / siap / gagal + alasan) */
+    private val _modelTest = MutableStateFlow<Map<String, ModelTestResult>>(emptyMap())
+    val modelTest: StateFlow<Map<String, ModelTestResult>> = _modelTest.asStateFlow()
 
     private val _memories = MutableStateFlow<List<MemoryItem>>(emptyList())
     val memories: StateFlow<List<MemoryItem>> = _memories.asStateFlow()
@@ -629,6 +634,23 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     // ===== Katalog model (fetch dari Google) =====
+
+    /**
+     * Uji cepat satu model — dipanggil otomatis saat model dipilih di Pusat Kendali.
+     * Satu permintaan kecil (maks 8 token) supaya hemat kuota.
+     */
+    fun testModel(name: String) {
+        val key = _settings.value.geminiKey.trim()
+        if (key.isBlank()) {
+            _modelTest.value = _modelTest.value + (name to ModelTestResult(false, false, "API key kosong"))
+            return
+        }
+        _modelTest.value = _modelTest.value + (name to ModelTestResult(true, false, "Menguji…"))
+        viewModelScope.launch {
+            val r = ModelCatalog.testModel(key, name)
+            _modelTest.value = _modelTest.value + (name to r)
+        }
+    }
 
     fun fetchModels() {
         val key = _settings.value.geminiKey.trim()

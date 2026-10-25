@@ -232,11 +232,12 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 )
             }
 
-            // ============ ZONA REAKTOR (halo murni canvas — nol tumpang tindih) ============
+            // ============ ZONA REAKTOR (Mark II: 3 pita geometris — orb · teks melingkar · busur) ============
             Box(Modifier.fillMaxWidth().height(210.dp)) {
                 ReactorHalo(
                     palette = palette,
                     enabled = settings.diagnosticsOrbit && !settings.powerSave,
+                    glowLevel = maxOf(rmsLevel, voiceLevel),
                     modifier = Modifier.matchParentSize()
                 )
                 ReactorOrb(

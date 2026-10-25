@@ -93,6 +93,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
     val models by vm.models.collectAsState()
     val modelsLoading by vm.modelsLoading.collectAsState()
     val modelsError by vm.modelsError.collectAsState()
+    val modelTest by vm.modelTest.collectAsState()
     val memories by vm.memories.collectAsState()
     val protocols by vm.protocols.collectAsState()
     val usageToday by vm.usageToday.collectAsState()
@@ -272,7 +273,12 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                             ModelCard(
                                 info = info,
                                 selected = settings.geminiModel == info.name,
-                                onSelect = { vm.updateSettings { it.copy(geminiModel = info.name) } },
+                                onSelect = {
+                                    vm.updateSettings { it.copy(geminiModel = info.name) }
+                                    // Uji otomatis: buktikan model ini benar-benar bisa dipakai
+                                    vm.testModel(info.name)
+                                },
+                                test = modelTest[info.name],
                                 palette = palette
                             )
                         }

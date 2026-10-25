@@ -87,19 +87,26 @@ fun extractError(body: String?, fallback: String): String {
 /**
  * Pesan error berbahasa Indonesia untuk pemilik.
  * Khusus 429 (kuota): sertakan retryDelay dari Google bila ada.
+ * Khusus 404: model mungkin sudah dipensiunkan Google / butuh versi API lain.
  */
-fun humanizeError(httpCode: Int, raw: String): String = when (httpCode) {
-    429 -> {
-        val retry = Regex("retryDelay\"?\\s*:\\s*\"(\\d+)s")
-            .find(raw)?.groupValues?.takeIf { it.isNotEmpty() }?.get(1)
-        val tunggu = if (retry != null) "Tunggu ±$retry detik lalu coba lagi, pak" else
-            "Tunggu sebentar lalu coba lagi, pak"
-        "Kuota Gemini habis untuk saat ini (HTTP 429). $tunggu. " +
-            "Kalau sering terjadi: kurangi mode riset/pencarian web, atau cek kuota gratis di AI Studio."
+fun humanizeError(httpCode: Int, raw: String, model: String = ""): String {
+    val short = model.removePrefix("models/")
+    return when (httpCode) {
+        429 -> {
+            val retry = Regex("retryDelay\"?\\s*:\\s*\"(\\d+)s")
+                .find(raw)?.groupValues?.takeIf { it.isNotEmpty() }?.get(1)
+            val tunggu = if (retry != null) "Tunggu ±$retry detik lalu coba lagi, pak" else
+                "Tunggu sebentar lalu coba lagi, pak"
+            "Kuota Gemini habis untuk saat ini (HTTP 429). $tunggu. " +
+                "Kalau sering terjadi: kurangi mode riset/pencarian web, atau cek kuota gratis di AI Studio."
+        }
+        404 -> "Model '$short' tidak tersedia (HTTP 404). Kemungkinan model ini sudah " +
+            "dipensiunkan Google atau butuh versi API lain — pilih model lain di Pusat Kendali ya pak. " +
+            "Detail: $raw"
+        400 -> "Permintaan ditolak Gemini (HTTP 400): $raw — coba pilih model lain di Pusat Kendali, pak."
+        401, 403 -> "API key ditolak (HTTP $httpCode): $raw — pastikan key dari aistudio.google.com/apikey masih aktif, pak."
+        else -> "Gemini (HTTP $httpCode): $raw"
     }
-    400 -> "Permintaan ditolak Gemini (HTTP 400): $raw — coba pilih model lain di Pusat Kendali, pak."
-    401, 403 -> "API key ditolak (HTTP $httpCode): $raw — pastikan key dari aistudio.google.com/apikey masih aktif, pak."
-    else -> "Gemini (HTTP $httpCode): $raw"
 }
 
 /** Bersihkan tag sistem & simbol untuk TTS (jangan dibacakan) */

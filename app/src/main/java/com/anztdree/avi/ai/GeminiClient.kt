@@ -21,18 +21,19 @@ class GeminiClient : AiClient {
         "https://generativelanguage.googleapis.com/v1beta/$model:streamGenerateContent?alt=sse&key=$key"
 
     /**
-     * Config generasi adaptif per model:
-     * - Keluarga 2.5-flash: thinking dimatikan (budget 0) supaya jawaban instan
-     *   dan token output tidak habis dipakai "pikiran" (penyebab jawaban kosong).
-     * - Model lain: tanpa thinkingConfig (aman untuk pro / lama).
-     * Buat versi minimal TANPA thinking/tools untuk fallback kalau model menolak.
+     * Config generasi adaptif per model (aturan resmi Google):
+     * - HANYA keluarga 2.5-flash (flash & flash-lite) yang boleh menerima
+     *   thinkingBudget = 0. Model 2.0 TIDAK kenal thinkingConfig (400 error),
+     *   dan 2.5-pro WAJIB berpikir (budget 0 ditolak).
+     * - Versi minimal TANPA thinking/tools untuk fallback kalau model menolak.
      */
     private fun genConfig(model: String, minimal: Boolean): GeminiGenerationConfig {
         if (minimal) return GeminiGenerationConfig(maxOutputTokens = 8192)
-        val noThinking = model.contains("2.5-flash") || model.contains("2.0-flash")
+        val m = model.lowercase()
+        val allowThinkingOff = m.contains("2.5-flash")   // mencakup flash & flash-lite
         return GeminiGenerationConfig(
             maxOutputTokens = 8192,
-            thinkingConfig = if (noThinking) GeminiThinkingConfig(0) else null
+            thinkingConfig = if (allowThinkingOff) GeminiThinkingConfig(0) else null
         )
     }
 
@@ -73,7 +74,9 @@ class GeminiClient : AiClient {
                 return@withContext
             }
 
-            // Tangga fallback: (tools, config penuh) → (tanpa tools, config minimal)
+            // Tangga fallback: (tools, config penuh) → (tanpa tools, config minimal).
+            // Gagal 400/404/500/503 → turun ke langkah berikutnya DENGAN MODEL YANG SAMA.
+            // 429/401/403 → berhenti dengan pesan yang jelas.
             val ladder = listOf(
                 settings.webSearch to false,
                 false to true
@@ -92,14 +95,18 @@ class GeminiClient : AiClient {
                     if (!it.isSuccessful) {
                         val errBody = try { it.body?.string() } catch (_: Exception) { null }
                         val message = extractError(errBody, "HTTP ${it.code}")
-                        if (index == 0 && it.code == 400) return@use // coba langkah berikutnya
-                        callback.onError(humanizeError(it.code, message))
+                        val retriable = it.code == 400 || it.code == 404 ||
+                            it.code == 500 || it.code == 503
+                        if (index == 0 && retriable) return@use // turun ke langkah minimal
+                        callback.onError(humanizeError(it.code, message, model))
                         return@withContext
                     }
                     val sb = StringBuilder()
+                    var finishReason: String? = null
                     readSse(it, CoroutineScope(currentCoroutineContext()), onEvent = { payload ->
                         try {
                             val chunk = jsonParser.decodeFromString<GeminiChunk>(payload)
+                            finishReason = chunk.candidates.firstOrNull()?.finishReason ?: finishReason
                             val text = chunk.candidates.firstOrNull()
                                 ?.content?.parts
                                 ?.mapNotNull { part -> part.text }
@@ -114,9 +121,16 @@ class GeminiClient : AiClient {
 
                     val full = sb.toString().trim()
                     if (full.isEmpty()) {
+                        val alasan = when (finishReason) {
+                            "SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST" ->
+                                "jawaban diblokir filter keamanan Google"
+                            "RECITATION" -> "jawaban dicegah karena mirip sumber tertentu"
+                            "MAX_TOKENS" -> "token output habis — turunkan panjang konteks"
+                            else -> "model merespons kosong"
+                        }
                         callback.onError(
-                            "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}). " +
-                                "Coba pilih model lain di Pusat Kendali ya, pak."
+                            "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}) — $alasan." +
+                                " Coba pilih model lain di Pusat Kendali ya, pak."
                         )
                     } else {
                         callback.onComplete(full)
