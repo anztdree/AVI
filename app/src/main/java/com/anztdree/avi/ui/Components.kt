@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -490,87 +488,9 @@ fun HoloPanel(
 }
 
 // ============================================================
-// Dock status bawah reaktor — STATIS (tidak pernah menabrak animasi)
+// (StatusDock & ChipRow DIHAPUS TOTAL — keputusan pemilik K10:
+//  data status kini mengorbit reaktor di ReactorHalo)
 // ============================================================
-
-@Composable
-fun StatusDock(
-    items: List<Pair<String, String>>,
-    palette: AviPalette = LocalAviPalette.current
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(palette.panel.copy(alpha = 0.78f))
-            .border(1.dp, palette.accent.copy(alpha = 0.22f), RoundedCornerShape(12.dp))
-            .padding(vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        items.forEachIndexed { index, pair ->
-            if (index > 0) {
-                Box(
-                    Modifier
-                        .width(1.dp)
-                        .height(20.dp)
-                        .background(palette.accent.copy(alpha = 0.18f))
-                )
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = pair.first,
-                    color = palette.textDim,
-                    fontSize = 8.sp,
-                    fontFamily = FontFamily.Monospace,
-                    letterSpacing = 1.sp,
-                    maxLines = 1
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    text = pair.second,
-                    color = palette.accent,
-                    fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
-                    letterSpacing = 0.5.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 6.dp)
-                )
-            }
-        }
-    }
-}
-
-// ============================================================
-// Chip perintah cepat
-// ============================================================
-
-@Composable
-fun ChipRow(
-    chips: List<String>,
-    enabled: Boolean,
-    onChip: (String) -> Unit,
-    palette: AviPalette = LocalAviPalette.current
-) {
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(chips) { chip ->
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .background(palette.panelLight.copy(alpha = 0.85f))
-                    .border(1.dp, palette.accent.copy(alpha = 0.35f), RoundedCornerShape(50))
-                    .clickable(enabled = enabled) { onChip(chip) }
-                    .padding(horizontal = 12.dp, vertical = 7.dp)
-            ) {
-                Text(chip, color = palette.text, fontSize = 12.sp)
-            }
-        }
-    }
-}
 
 // ============================================================
 // Kartu model — "inti daya"
@@ -667,10 +587,10 @@ fun ModelCard(
             Spacer(Modifier.height(4.dp))
             Text(
                 test.message,
-                color = palette.danger.copy(alpha = 0.85f),
+                color = palette.danger.copy(alpha = 0.9f),
                 fontSize = 9.sp,
-                lineHeight = 12.sp,
-                maxLines = 3,
+                lineHeight = 13.sp,
+                maxLines = 4,
                 overflow = TextOverflow.Ellipsis
             )
         }

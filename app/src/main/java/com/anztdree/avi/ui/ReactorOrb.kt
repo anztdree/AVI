@@ -87,20 +87,22 @@ fun ReactorOrb(
 }
 
 /**
- * Halo Mark II — teks berputar mengelilingi reaktor + busur orbit.
+ * Halo Mark III — DIagnostik mengorbit mengelilingi reaktor (pemulihan gaya 15 MB).
  * TIGA PITA GEOMETRIS YANG TIDAK PERNAH BERTABRAKAN (kunci anti-tumpang tindih):
  *   Pita 1 (0–80dp)  : ReactorOrb — digambar composable lain di atasnya.
- *   Pita 2 (80–99dp) : teks melingkar "AVI • ASISTEN VIRTUAL INDONESIA" berputar pelan.
+ *   Pita 2 (80–99dp) : data perangkat (JAM · BAT · RAM · NET · OTAK) berputar pelan
+ *                      mengelilingi orb, dipisah titik emas.
  *   Pita 3 (99–105dp): busur + tick + titik berlawanan arah.
- * Semua murni Canvas + nativeCanvas.drawTextOnPath — satu panggilan gambar per
- * frame per elemen, Paint & Path di-cache (remember) → ringan tanpa mengorbankan HD.
+ * Semua murni Canvas + nativeCanvas.drawText — Paint di-cache (remember) →
+ * HD penuh tanpa biaya GPU berlebih.
  */
 @Composable
 fun ReactorHalo(
     palette: AviPalette,
     enabled: Boolean,
     modifier: Modifier = Modifier,
-    glowLevel: Float = 0f
+    glowLevel: Float = 0f,
+    orbitItems: List<String> = emptyList()
 ) {
     if (!enabled) return
     val transition = rememberInfiniteTransition(label = "halo")
@@ -111,19 +113,17 @@ fun ReactorHalo(
         label = "haloTime"
     )
 
-    // Cache Paint & Path — TIDAK dialokasi per frame (TextPaint ada di paket android.text)
-    val textPaint = remember {
+    // Cache Paint — TIDAK dialokasi per frame (TextPaint ada di paket android.text)
+    val orbitPaint = remember {
         android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
             typeface = android.graphics.Typeface.MONOSPACE
             textAlign = android.graphics.Paint.Align.CENTER
         }
     }
-    val ringPath = remember { android.graphics.Path() }
-    val ringText = remember { "AVI  •  ASISTEN VIRTUAL INDONESIA  •  ".repeat(3) }
 
     Canvas(modifier = modifier) {
         val c = center
-        val R = size.minDimension / 2f          // penuh kotak (±105dp)
+        val R = size.minDimension / 2f          // penuh kotak (±105dp+)
         val dR = R / 105f                       // skala dp→px aktual
 
         // ============ PITA 3 — busur & tick (99–105dp) ============
@@ -176,20 +176,34 @@ fun ReactorHalo(
             )
         }
 
-        // ============ PITA 2 — teks melingkar berputar (80–99dp) ============
-        val textRadius = 90f * dR                       // garis dasar huruf
-        val glow = 0.42f + 0.20f * glowLevel + 0.10f * sin(t * 2f * PI.toFloat())
-        textPaint.color = palette.gold.toArgb()
-        textPaint.textSize = 8.5.sp.toPx()
-        textPaint.alpha = (255 * glow.coerceIn(0f, 1f)).toInt()
-        ringPath.reset()
-        ringPath.addCircle(c.x, c.y, textRadius, android.graphics.Path.Direction.CW)
-        drawIntoCanvas { canvas ->
-            val nc = canvas.nativeCanvas
-            nc.save()
-            nc.rotate(t * 360f, c.x, c.y)                // satu putaran penuh / 14 dtk
-            nc.drawTextOnPath(ringText, ringPath, 0f, 0f, textPaint)
-            nc.restore()
+        // ============ PITA 2 — diagnostik mengorbit (80–99dp) ============
+        val items = orbitItems
+        if (items.isNotEmpty()) {
+            val labelR = 89f * dR                    // garis dasar label
+            val glow = 0.50f + 0.22f * glowLevel + 0.10f * sin(t * 2f * PI.toFloat())
+            orbitPaint.textSize = 8.5.sp.toPx()
+            val n = items.size
+            for (i in 0 until n) {
+                val ang = t * 360f + i * (360f / n)
+                // label — teks mengikuti keliling lingkaran, terang mengikuti aktivitas
+                orbitPaint.color = if (i % 2 == 0) palette.accent.toArgb() else palette.gold.toArgb()
+                orbitPaint.alpha = (255 * glow.coerceIn(0f, 1f)).toInt()
+                drawIntoCanvas { canvas ->
+                    val nc = canvas.nativeCanvas
+                    nc.save()
+                    nc.rotate(ang, c.x, c.y)
+                    nc.drawText(items[i], c.x, c.y - labelR, orbitPaint)
+                    nc.restore()
+                }
+                // titik emas pemisah antar data — ikut berputar
+                val sep = (ang + 180f / n) * PI.toFloat() / 180f
+                drawCircle(
+                    color = palette.gold,
+                    radius = 1.4.dp.toPx(),
+                    center = Offset(c.x + labelR * cos(sep), c.y + labelR * sin(sep)),
+                    alpha = 0.65f
+                )
+            }
         }
     }
 }

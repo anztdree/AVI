@@ -117,6 +117,19 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     val setupNeeded = settings.provider == AiProvider.GEMINI &&
         (settings.geminiKey.isBlank() || settings.geminiModel.isBlank())
 
+    // ---- data yang mengorbit reaktor (JAM · BAT · RAM · NET · OTAK) ----
+    val orbitItems = remember(clockText, diagnostics, settings.geminiModel) {
+        buildList {
+            add("JAM $clockText")
+            diagnostics?.let { d ->
+                add("BAT ${d.batteryPct}%${if (d.charging) "⚡" else ""}")
+                add("RAM ${d.ramUsedPct}%")
+                add("NET ${d.network}")
+            }
+            add("OTAK ${settings.geminiModel.removePrefix("models/").ifBlank { "—" }}")
+        }
+    }
+
     val statusLabel = when (state) {
         AviState.IDLE -> "SIAGA"
         AviState.LISTENING -> "MENDENGAR"
@@ -232,12 +245,13 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 )
             }
 
-            // ============ ZONA REAKTOR (Mark II: 3 pita geometris — orb · teks melingkar · busur) ============
-            Box(Modifier.fillMaxWidth().height(210.dp)) {
+            // ============ ZONA REAKTOR (Mark III: orb · diagnostik mengorbit · busur) ============
+            Box(Modifier.fillMaxWidth().height(232.dp)) {
                 ReactorHalo(
                     palette = palette,
                     enabled = settings.diagnosticsOrbit && !settings.powerSave,
                     glowLevel = maxOf(rmsLevel, voiceLevel),
+                    orbitItems = orbitItems,
                     modifier = Modifier.matchParentSize()
                 )
                 ReactorOrb(
@@ -254,34 +268,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 )
             }
 
-            // ============ DOCK STATUS (statis — tidak mungkin menabrak reaktor) ============
-            StatusDock(
-                items = listOf(
-                    "JAM" to clockText,
-                    "BAT" to (diagnostics?.let { "${it.batteryPct}%${if (it.charging) "⚡" else ""}" } ?: "—"),
-                    "NET" to (diagnostics?.network ?: "OFFLINE"),
-                    "OTAK" to settings.geminiModel.removePrefix("models/").ifBlank { "—" }
-                ),
-                palette = palette
-            )
-            Spacer(Modifier.height(8.dp))
-
-            // ============ PERINTAH CEPAT ============
-            ChipRow(
-                chips = listOf("Cuaca", "Berita hari ini", "Kondisi HP", "Buka aplikasi", "Ingat…"),
-                enabled = state != AviState.THINKING,
-                onChip = { chip ->
-                    when (chip) {
-                        "Cuaca" -> vm.sendText("Bagaimana cuaca hari ini, pak?")
-                        "Berita hari ini" -> vm.sendText("Berikan 3 berita utama Indonesia hari ini.")
-                        "Kondisi HP" -> vm.sendText("Kondisi HP sekarang, pak")
-                        "Buka aplikasi" -> inputText = "Buka "
-                        "Ingat…" -> inputText = "Ingat ini pak: "
-                    }
-                },
-                palette = palette
-            )
-            Spacer(Modifier.height(6.dp))
+            // ============ PERINTAH CEPAT & DOCK STATUS DIHAPUS TOTAL (keputusan pemilik K10) ============
+            Spacer(Modifier.height(4.dp))
 
             // ============ BANNER MODE LIVE ============
             if (state == AviState.LIVE) {

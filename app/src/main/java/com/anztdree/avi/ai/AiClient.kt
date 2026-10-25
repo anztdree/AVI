@@ -40,6 +40,14 @@ object Http {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
+    /** Klien untuk uji model — cepat & tegas, jangan biarkan pemilik menunggu lama */
+    val testClient: OkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(25, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .callTimeout(35, TimeUnit.SECONDS)
+        .build()
+
     val jsonMedia = "application/json; charset=utf-8".toMediaType()
 }
 

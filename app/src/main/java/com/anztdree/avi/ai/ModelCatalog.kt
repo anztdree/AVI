@@ -2,6 +2,7 @@ package com.anztdree.avi.ai
 
 import com.anztdree.avi.data.AviSettings
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import okhttp3.Request
@@ -92,34 +93,63 @@ object ModelCatalog {
     )
 
     /**
-     * Uji satu model dengan 1 permintaan kecil (maks 8 token).
-     * Membuktikan model benar-benar bisa dipakai dengan API key pemilik —
-     * hasilnya ditampilkan langsung di Pusat Kendali.
+     * Uji satu model — CEPAT (thinking dimatikan di keluarga 2.5-flash) dan
+     * tahan limit: kalau 429, tunggu sesuai retryDelay Google (maks 30 dtk)
+     * lalu coba ulang SEKALI.
      */
     suspend fun testModel(apiKey: String, model: String): ModelTestResult = withContext(Dispatchers.IO) {
         val key = apiKey.trim()
         if (key.isEmpty()) return@withContext ModelTestResult(testing = false, ok = false, message = "API key kosong")
         try {
+            val m = model.lowercase()
             val body = jsonParser.encodeToString(
                 GeminiRequest(
                     contents = listOf(
                         GeminiContent(role = "user", parts = listOf(GeminiPart(text = "ping")))
                     ),
-                    generationConfig = GeminiGenerationConfig(temperature = 0.0, maxOutputTokens = 8)
+                    generationConfig = GeminiGenerationConfig(
+                        temperature = 0.0,
+                        maxOutputTokens = 8,
+                        thinkingConfig = if (m.contains("2.5-flash")) GeminiThinkingConfig(0) else null
+                    )
                 )
             )
-            val request = Request.Builder()
-                .url("https://generativelanguage.googleapis.com/v1beta/$model:generateContent?key=$key")
-                .header("Content-Type", "application/json")
-                .post(body.toRequestBody(Http.jsonMedia))
-                .build()
-            Http.client.newCall(request).execute().use { response ->
-                if (response.isSuccessful) {
-                    ModelTestResult(testing = false, ok = true, message = "SIAP DIPAKAI")
-                } else {
-                    val errBody = try { response.body?.string() } catch (_: Exception) { null }
-                    ModelTestResult(testing = false, ok = false, message = extractError(errBody, "HTTP ${response.code}"))
+            fun doCall(): Pair<Int, String> {
+                val request = Request.Builder()
+                    .url("https://generativelanguage.googleapis.com/v1beta/$model:generateContent?key=$key")
+                    .header("Content-Type", "application/json")
+                    .post(body.toRequestBody(Http.jsonMedia))
+                    .build()
+                Http.testClient.newCall(request).execute().use { response ->
+                    val errBody = if (response.isSuccessful) null else
+                        try { response.body?.string() } catch (_: Exception) { null }
+                    return Pair(response.code, extractError(errBody, "HTTP ${response.code}"))
                 }
+            }
+
+            var (code, err) = doCall()
+            if (code == 429) {
+                // Kuota sesaat habis — hormati retryDelay Google, coba ulang sekali
+                val wait = Regex("retryDelay\"?\\s*:\\s*\"(\\d+)s")
+                    .find(err)?.groupValues?.get(1)?.toIntOrNull()?.coerceIn(1, 30) ?: 12
+                delay(wait * 1000L)
+                val retry = doCall()
+                code = retry.first
+                err = retry.second
+            }
+            when {
+                code in 200..299 -> ModelTestResult(testing = false, ok = true, message = "SIAP DIPAKAI")
+                code == 429 -> ModelTestResult(
+                    testing = false,
+                    ok = false,
+                    message = "Kuota gratis model ini sedang habis (429). Tunggu sejenak lalu uji lagi — atau pilih model lain. Detail: $err"
+                )
+                code == 404 -> ModelTestResult(
+                    testing = false,
+                    ok = false,
+                    message = "Model ini tidak tersedia lagi untuk API v1beta (404) — pilih model lain. Detail: $err"
+                )
+                else -> ModelTestResult(testing = false, ok = false, message = "$err")
             }
         } catch (e: Exception) {
             ModelTestResult(testing = false, ok = false, message = "Koneksi gagal: ${e.message ?: "unknown"}")
