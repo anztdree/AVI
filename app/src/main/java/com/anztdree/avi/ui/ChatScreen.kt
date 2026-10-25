@@ -22,19 +22,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -49,276 +51,347 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.anztdree.avi.AviState
 import com.anztdree.avi.AviViewModel
 import com.anztdree.avi.data.AiProvider
-import com.anztdree.avi.ui.theme.AviAviBorder
-import com.anztdree.avi.ui.theme.AviBg
-import com.anztdree.avi.ui.theme.AviCyan
-import com.anztdree.avi.ui.theme.AviCyanSoft
-import com.anztdree.avi.ui.theme.AviDanger
-import com.anztdree.avi.ui.theme.AviGold
-import com.anztdree.avi.ui.theme.AviGoldSoft
-import com.anztdree.avi.ui.theme.AviPanel
-import com.anztdree.avi.ui.theme.AviPanelLight
-import com.anztdree.avi.ui.theme.AviText
-import com.anztdree.avi.ui.theme.AviTextDim
+import com.anztdree.avi.data.AviSettings
+import com.anztdree.avi.ui.theme.AviTheme
+import com.anztdree.avi.ui.theme.LocalAviPalette
+import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun ChatScreen(
-    vm: AviViewModel,
-    onOpenSettings: () -> Unit
-) {
-    val context = LocalContext.current
-    val messages by vm.messages.collectAsState()
+fun ChatScreen(vm: AviViewModel, onOpenSettings: () -> Unit) {
+    val settings by vm.settings.collectAsState()
+    // Live preview tema — mark diambil langsung dari settings
+    AviTheme(mark = settings.themeMark) {
+        ChatScreenContent(vm = vm, settings = settings, onOpenSettings = onOpenSettings)
+    }
+}
+
+@Composable
+private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSettings: () -> Unit) {
+    val palette = LocalAviPalette.current
     val state by vm.state.collectAsState()
+    val messages by vm.messages.collectAsState()
     val streamingText by vm.streamingText.collectAsState()
     val partialText by vm.partialText.collectAsState()
     val rmsLevel by vm.rmsLevel.collectAsState()
+    val voiceLevel by vm.voiceLevel.collectAsState()
     val error by vm.error.collectAsState()
-    val settings by vm.settings.collectAsState()
-
+    val diagnostics by vm.diagnostics.collectAsState()
     var inputText by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
+    // ---- izin mikrofon ----
+    val micLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) vm.onMicPermissionGranted()
-        else vm.dismissError() // biarkan error izin muncul dari toggleMic? tampilkan manual:
+    }
+    fun ensureMicThenToggle() {
+        val granted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        if (granted) vm.toggleMic() else micLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
-    val listState = rememberLazyListState()
-    val itemCount = messages.size + if (state == AviState.THINKING) 1 else 0
-    LaunchedEffect(itemCount, streamingText) {
-        if (itemCount > 0) listState.animateScrollToItem(itemCount - 1)
+    // ---- jam untuk diagnostik orbit (update tiap ± menit) ----
+    var clockText by remember { mutableStateOf("--.--") }
+    LaunchedEffect(Unit) {
+        val fmt = SimpleDateFormat("HH.mm", Locale.getDefault())
+        while (true) {
+            clockText = fmt.format(Date())
+            delay(10_000)
+        }
     }
+
+    val setupNeeded = settings.provider == AiProvider.GEMINI &&
+        (settings.geminiKey.isBlank() || settings.geminiModel.isBlank())
 
     val statusLabel = when (state) {
         AviState.IDLE -> "SIAGA"
-        AviState.LISTENING -> "MENDENGARKAN"
-        AviState.THINKING -> "BERPIKIR"
-        AviState.SPEAKING -> "BERBICARA"
+        AviState.LISTENING -> "MENDENGAR"
+        AviState.THINGKING -> "BERPIKIR"
+        AviState.SPEAKING -> "MENJAWAB"
+        AviState.LIVE -> "LIVE"
     }
     val statusColor = when (state) {
-        AviState.IDLE -> AviCyan
-        AviState.LISTENING -> AviCyanSoft
-        AviState.THINKING -> AviGold
-        AviState.SPEAKING -> AviGoldSoft
+        AviState.IDLE -> palette.accent
+        AviState.LISTENING -> palette.accent
+        AviState.THINGKING -> palette.gold
+        AviState.SPEAKING -> palette.goldSoft
+        AviState.LIVE -> palette.danger
     }
-    val brainConfigured = when (settings.provider) {
-        AiProvider.GEMINI -> settings.geminiKey.isNotBlank()
-        AiProvider.OPENAI_COMPAT -> settings.ocKey.isNotBlank()
+    val orbLabel = when (state) {
+        AviState.IDLE -> "SIAGA — SENTUH REAKTOR UNTUK BICARA"
+        AviState.LISTENING -> "MENDENGAR… SILAKAN BICARA PAK"
+        AviState.THINGKING -> "MEMPROSES…"
+        AviState.SPEAKING -> "AVI MENJAWAB…"
+        AviState.LIVE -> "MODE LIVE — SUARA LANGSUNG"
+    }
+    val modelChip = settings.geminiModel.removePrefix("models/").ifBlank { "PILIH MODEL" }
+
+    val listState = rememberLazyListState()
+    LaunchedEffect(messages.size, state, streamingText) {
+        val total = listState.layoutInfo.totalItemsCount
+        if (total > 0) listState.animateScrollToItem(total - 1)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AviBg)
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .imePadding()
-    ) {
-        // ===== BAR ATAS =====
-        Row(
+    Box(Modifier.fillMaxSize().background(palette.bg)) {
+        HexGridBackground(
+            palette = palette,
+            enabled = settings.parallaxEnabled && !settings.powerSave,
+            modifier = Modifier.matchParentSize()
+        )
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .imePadding()
+                .padding(horizontal = 14.dp)
         ) {
-            Text(
-                "AVI",
-                color = AviText,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 3.sp
-            )
-            Spacer(Modifier.width(10.dp))
-            StatusChip("● $statusLabel", statusColor)
-            Spacer(Modifier.width(8.dp))
-            TopBarChip(
-                label = if (brainConfigured)
-                    (if (settings.provider == AiProvider.GEMINI) "GEMINI" else "CUSTOM AI")
-                else "SETUP PERLU",
-                color = if (brainConfigured) AviCyan else AviGold,
-                onClick = onOpenSettings
-            )
-            Spacer(Modifier.weight(1f))
-            IconButton(onClick = {
-                vm.updateSettings { it.copy(autoSpeak = !it.autoSpeak) }
-            }) {
-                Icon(
-                    imageVector = if (settings.autoSpeak) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
-                    contentDescription = "Suara balasan ${if (settings.autoSpeak) "aktif" else "mati"}",
-                    tint = if (settings.autoSpeak) AviCyan else AviTextDim
+            // ============ BAR ATAS ============
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 6.dp)
+            ) {
+                Text(
+                    "AVI",
+                    color = palette.text,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 2.sp
                 )
-            }
-            IconButton(onClick = onOpenSettings) {
-                Icon(Icons.Default.Settings, contentDescription = "Pengaturan", tint = AviTextDim)
-            }
-        }
-
-        error?.let { ErrorBanner(message = it, onDismiss = { vm.dismissError() }) }
-
-        // ===== DAFTAR PESAN =====
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            if (!brainConfigured) {
-                item { SetupCard(onOpenSettings = onOpenSettings) }
-            }
-            messages.forEachIndexed { idx, m ->
-                item(key = "${m.timestamp}-$idx") {
-                    MessageBubble(role = m.role, text = m.text, imageUrl = m.imageUrl)
+                Spacer(Modifier.width(8.dp))
+                StatusChip(text = statusLabel, color = statusColor)
+                Spacer(Modifier.weight(1f))
+                TopBarChip(
+                    label = modelChip,
+                    color = if (settings.geminiModel.isBlank()) palette.textDim else palette.accent,
+                    onClick = onOpenSettings
+                )
+                IconButton(
+                    onClick = { vm.updateSettings { it.copy(translatorMode = !it.translatorMode) } },
+                    modifier = Modifier.size(38.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Translate,
+                        contentDescription = "Mode penerjemah",
+                        tint = if (settings.translatorMode) palette.accent else palette.textDim,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
-            }
-            if (state == AviState.THINKING) {
-                item {
-                    MessageBubble(
-                        role = "avi",
-                        text = streamingText.ifBlank { "..." },
-                        imageUrl = null,
-                        streaming = true
+                IconButton(
+                    onClick = { vm.updateSettings { it.copy(autoSpeak = !it.autoSpeak) } },
+                    modifier = Modifier.size(38.dp)
+                ) {
+                    Icon(
+                        if (settings.autoSpeak) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
+                        contentDescription = "Suara balasan",
+                        tint = if (settings.autoSpeak) palette.accent else palette.textDim,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                IconButton(onClick = onOpenSettings, modifier = Modifier.size(38.dp)) {
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = "Pengaturan",
+                        tint = palette.textDim,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
-        }
 
-        // ===== REAKTOR =====
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            ReactorOrb(
-                state = state,
-                rms = rmsLevel,
-                modifier = Modifier.size(150.dp)
-            )
-            Text(
-                text = statusLabel,
-                color = statusColor.copy(alpha = 0.85f),
-                fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 2.sp,
-                modifier = Modifier.padding(top = 0.dp)
-            )
-        }
+            error?.let { msg ->
+                ErrorBanner(message = msg, onDismiss = { vm.dismissError() })
+                Spacer(Modifier.height(6.dp))
+            }
 
-        // ===== TEKS PARSIAL SUARA =====
-        if (partialText.isNotBlank()) {
-            Text(
-                text = "“$partialText”",
-                color = AviCyanSoft,
-                fontSize = 13.sp,
-                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
-                maxLines = 2,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+            // ============ PESAN ============
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                if (setupNeeded) {
+                    item { SetupCard(onOpenSettings = onOpenSettings) }
+                }
+                items(messages) { msg ->
+                    MessageBubble(role = msg.role, text = msg.text)
+                }
+                if (state == AviState.THINGKING) {
+                    item { MessageBubble(role = "avi", text = streamingText, streaming = true) }
+                }
+            }
+
+            // ============ TEKS PARSIAL STT ============
+            if (partialText.isNotBlank()) {
+                Text(
+                    "\u201C$partialText\u201D",
+                    color = palette.accent,
+                    fontSize = 12.sp,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                )
+            }
+
+            // ============ AREA REAKTOR ============
+            Box(Modifier.fillMaxWidth().height(212.dp)) {
+                DiagnosticsOrbit(
+                    time = clockText,
+                    battery = diagnostics?.let { "${it.batteryPct}%${if (it.charging) "⚡" else ""}" } ?: "—",
+                    network = diagnostics?.network ?: "OFFLINE",
+                    model = settings.geminiModel.removePrefix("models/").ifBlank { "—" },
+                    palette = palette,
+                    enabled = settings.diagnosticsOrbit && !settings.powerSave,
+                    modifier = Modifier.matchParentSize()
+                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    ReactorOrb(
+                        state = state,
+                        micLevel = rmsLevel,
+                        voiceLevel = voiceLevel,
+                        palette = palette,
+                        powerSave = settings.powerSave,
+                        showVisor = true,
+                        modifier = Modifier.size(170.dp),
+                        onTap = { ensureMicThenToggle() }
+                    )
+                    Text(
+                        orbLabel,
+                        color = palette.textDim,
+                        fontSize = 9.sp,
+                        fontFamily = FontFamily.Monospace,
+                        letterSpacing = 1.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            // ============ PERINTAH CEPAT ============
+            ChipRow(
+                chips = listOf("Cuaca", "Berita hari ini", "Kondisi HP", "Buka aplikasi", "Ingat…"),
+                enabled = state != AviState.THINGKING,
+                onChip = { chip ->
+                    when (chip) {
+                        "Cuaca" -> vm.sendText("Bagaimana cuaca hari ini, pak?")
+                        "Berita hari ini" -> vm.sendText("Berikan 3 berita utama Indonesia hari ini.")
+                        "Kondisi HP" -> vm.sendText("Kondisi HP sekarang, pak")
+                        "Buka aplikasi" -> inputText = "Buka "
+                        "Ingat…" -> inputText = "Ingat ini pak: "
+                    }
+                },
+                palette = palette
             )
             Spacer(Modifier.height(6.dp))
-        }
 
-        // ===== BILAH INPUT =====
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(AviPanel.copy(alpha = 0.6f))
-                .padding(horizontal = 10.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(
-                value = inputText,
-                onValueChange = { inputText = it },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp),
-                placeholder = {
-                    Text("Ketik pesan ke AVI…", color = AviTextDim, fontSize = 14.sp)
-                },
-                enabled = state != AviState.THINKING,
-                shape = RoundedCornerShape(16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = AviCyan.copy(alpha = 0.6f),
-                    unfocusedBorderColor = AviAviBorder,
-                    focusedTextColor = AviText,
-                    unfocusedTextColor = AviText,
-                    cursorColor = AviCyan
-                ),
-                maxLines = 2
-            )
-            Spacer(Modifier.width(8.dp))
-
-            // Tombol Mikrofon
-            Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(
-                        when (state) {
-                            AviState.LISTENING -> AviDanger.copy(alpha = 0.25f)
-                            else -> AviPanelLight
-                        }
-                    )
-                    .border(
-                        width = if (state == AviState.LISTENING) 2.dp else 1.dp,
-                        color = when (state) {
-                            AviState.LISTENING -> AviDanger
-                            AviState.IDLE -> AviGold.copy(alpha = 0.7f)
-                            else -> AviTextDim.copy(alpha = 0.4f)
-                        },
-                        shape = CircleShape
-                    )
-                    .clickable(enabled = state != AviState.THINKING) {
-                        val granted = ContextCompat.checkSelfPermission(
-                            context, Manifest.permission.RECORD_AUDIO
-                        ) == PackageManager.PERMISSION_GRANTED
-                        if (granted) vm.toggleMic()
-                        else permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = if (state == AviState.LISTENING) Icons.Default.Stop else Icons.Default.Mic,
-                    contentDescription = if (state == AviState.LISTENING) "Hentikan mendengarkan" else "Bicara ke AVI",
-                    tint = if (state == AviState.LISTENING) AviDanger else AviGold,
-                    modifier = Modifier.size(24.dp)
+            // ============ BANNER MODE LIVE ============
+            if (state == AviState.LIVE) {
+                Text(
+                    "MODE LIVE — bicara langsung, sentuh reaktor untuk berhenti",
+                    color = palette.danger,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(palette.danger.copy(alpha = 0.10f))
+                        .padding(vertical = 6.dp)
                 )
+                Spacer(Modifier.height(6.dp))
             }
 
-            Spacer(Modifier.width(8.dp))
-
-            // Tombol Kirim
-            Box(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(CircleShape)
-                    .background(AviGold.copy(alpha = if (state == AviState.THINKING) 0.25f else 0.9f))
-                    .clickable(enabled = state != AviState.THINKING) {
-                        vm.sendText(inputText)
-                        inputText = ""
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.Send,
+            // ============ BILAH INPUT ============
+            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(bottom = 4.dp)) {
+                OutlinedTextField(
+                    value = inputText,
+                    onValueChange = { inputText = it },
+                    placeholder = { Text("Ketik pesan ke AVI…", color = palette.textDim, fontSize = 13.sp) },
+                    modifier = Modifier.weight(1f),
+                    maxLines = 4,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = palette.accent,
+                        unfocusedBorderColor = palette.panelLight,
+                        cursorColor = palette.accent,
+                        focusedTextColor = palette.text,
+                        unfocusedTextColor = palette.text
+                    )
+                )
+                Spacer(Modifier.width(6.dp))
+                InputButton(
+                    icon = Icons.Default.Podcasts,
+                    contentDescription = "Mode live",
+                    bg = if (state == AviState.LIVE) palette.danger else palette.panelLight,
+                    tint = if (state == AviState.LIVE) Color.White else palette.textDim,
+                    onClick = { if (state == AviState.LIVE) vm.stopLive() else vm.startLive() }
+                )
+                Spacer(Modifier.width(6.dp))
+                InputButton(
+                    icon = if (state == AviState.LISTENING) Icons.Default.Stop else Icons.Default.Mic,
+                    contentDescription = "Mikrofon",
+                    bg = if (state == AviState.LISTENING) palette.accent else palette.panelLight,
+                    tint = if (state == AviState.LISTENING) palette.bg else palette.accent,
+                    onClick = { ensureMicThenToggle() }
+                )
+                Spacer(Modifier.width(6.dp))
+                InputButton(
+                    icon = Icons.Default.Send,
                     contentDescription = "Kirim",
-                    tint = Color(0xFF0A0E14),
-                    modifier = Modifier.size(22.dp)
+                    bg = palette.gold,
+                    tint = palette.bg,
+                    onClick = {
+                        val t = inputText.trim()
+                        if (t.isNotEmpty()) {
+                            vm.sendText(t)
+                            inputText = ""
+                        }
+                    }
                 )
             }
+            Spacer(Modifier.height(6.dp))
         }
+    }
+}
+
+@Composable
+private fun InputButton(
+    icon: ImageVector,
+    contentDescription: String,
+    bg: Color,
+    tint: Color,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(44.dp)
+            .clip(CircleShape)
+            .background(bg)
+            .border(1.dp, tint.copy(alpha = 0.4f), CircleShape)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(icon, contentDescription = contentDescription, tint = tint, modifier = Modifier.size(20.dp))
     }
 }

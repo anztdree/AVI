@@ -6,7 +6,7 @@
 **AI 100% cloud** (Google Gemini) — HP spek rendah pun kuat, nol model di perangkat.
 **Model dinamis** — daftar model di-*fetch* langsung dari Google; pemilik pilih sendiri yang paling up-to-date.
 
-**Status: RENCANA FINAL — menunggu perintah eksekusi.** Kode dasar v1.0.0 sudah jalan (chat suara). README ini = dokumen tunggal proyek + log keputusan pemilik.
+**Status: v1.0.0 FULL FEATURE — sedang dibangun (CI otomatis).** Seluruh rencana (HUD Mark II, Pusat Kendali, fetch model dinamis, memori, aksi perangkat, flagship X1–X8) dikerjakan sekaligus dalam satu rilis sesuai keputusan pemilik. README ini = dokumen tunggal proyek + log keputusan pemilik.
 
 ---
 
@@ -338,5 +338,5 @@ AVI/
 | K2 | Ide pengembangan | **Ya**: memori jangka panjang, perintah cepat, buka aplikasi, info sistem HP. **Tidak**: panel notifikasi (tile) | Masuk F3–F4; tile ditandai ❌ |
 | K3 | Riwayat chat | (tidak diminta diubah) | Tetap file JSON |
 | K4 | Urutan fase | F1 → F5 sesuai §7 | Eksekusi setelah perintah |
-| K5 | Fitur flagship & menu ide §2-G | **Menunggu pilihan pemilik** — sebut ID-nya | Flagship X + opsional I masuk F8 |
-| K6 | Prioritas pengalaman | **Tampilan & pengaturan harus WAH, mewah, tetap ringan — ide dasar kurang nendang** | HUD Mark II + Pusat Kendali didahulukan (F3–F4); flagship X1–X8 diusulkan |
+| K5 | Fitur flagship & menu ide §2-G | **Semua flagship X1–X8 masuk** (pemilik: "semua itu wajib ada di versi 1.0.0, kerjakan semua sekaligus") | X1–X8 diimplementasi di v1.0.0 |
+| K6 | Prioritas pengalaman | **Tampilan & pengaturan harus WAH, mewah, tetap ringan** | HUD Mark II + Pusat Kendali diimplementasi di v1.0.0 |

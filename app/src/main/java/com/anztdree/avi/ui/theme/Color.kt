@@ -1,19 +1,80 @@
 package com.anztdree.avi.ui.theme
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-// Palet HUD ala Iron Man: latar gelap, aksen cyan & emas
-val AviBg = Color(0xFF0A0E14)
-val AviPanel = Color(0xFF121826)
-val AviPanelLight = Color(0xFF1A2233)
-val AviCyan = Color(0xFF22D3EE)
-val AviCyanSoft = Color(0xFF67E8F9)
-val AviGold = Color(0xFFF5B54A)
-val AviGoldSoft = Color(0xFFFFD98A)
-val AviText = Color(0xFFE8EEF5)
-val AviTextDim = Color(0xFF8A97A8)
-val AviDanger = Color(0xFFF87171)
-val AviUserBubble = Color(0xFF2A2413)   // emas gelap transparan
-val AviUserBorder = Color(0xFF6B5A2A)
-val AviAviBubble = Color(0xFF0F2733)    // cyan gelap transparan
-val AviAviBorder = Color(0xFF1E4A5A)
+/** Palet lengkap satu tema "Mark" HUD AVI */
+data class AviPalette(
+    val bg: Color,
+    val panel: Color,
+    val panelLight: Color,
+    val accent: Color,
+    val accentSoft: Color,
+    val gold: Color,
+    val goldSoft: Color,
+    val text: Color,
+    val textDim: Color,
+    val danger: Color,
+    val userBubble: Color,
+    val userBorder: Color,
+    val aviBubble: Color,
+    val aviBorder: Color,
+    val coreGlow: Color
+)
+
+/** 3 tema Mark — MK-I cyan/emas (default), MK-II Hot Rod merah, MK-III Aureus emas */
+val MarkPalettes: Map<String, AviPalette> = mapOf(
+    "MK1" to AviPalette(
+        bg = Color(0xFF070B12),
+        panel = Color(0xFF0D141F),
+        panelLight = Color(0xFF141E2E),
+        accent = Color(0xFF22D3EE),
+        accentSoft = Color(0xFF67E8F9),
+        gold = Color(0xFFF5B54A),
+        goldSoft = Color(0xFFFFD98A),
+        text = Color(0xFFE8EEF5),
+        textDim = Color(0xFF8A97A8),
+        danger = Color(0xFFF87171),
+        userBubble = Color(0xFF251D0E),
+        userBorder = Color(0xFF8A6A2F),
+        aviBubble = Color(0xFF0C2833),
+        aviBorder = Color(0xFF1B5E70),
+        coreGlow = Color(0xFF7DF3FF)
+    ),
+    "MK2" to AviPalette(
+        bg = Color(0xFF0C0708),
+        panel = Color(0xFF1A0D0F),
+        panelLight = Color(0xFF241114),
+        accent = Color(0xFFFF3B30),
+        accentSoft = Color(0xFFFF6B61),
+        gold = Color(0xFFF5B54A),
+        goldSoft = Color(0xFFFFD98A),
+        text = Color(0xFFE8EEF5),
+        textDim = Color(0xFF8A97A8),
+        danger = Color(0xFFF87171),
+        userBubble = Color(0xFF24140F),
+        userBorder = Color(0xFF8A4A2F),
+        aviBubble = Color(0xFF2A0E0C),
+        aviBorder = Color(0xFF7A2A22),
+        coreGlow = Color(0xFFFF8A80)
+    ),
+    "MK3" to AviPalette(
+        bg = Color(0xFF0B0A05),
+        panel = Color(0xFF171407),
+        panelLight = Color(0xFF201B0A),
+        accent = Color(0xFFF5B54A),
+        accentSoft = Color(0xFFFFD98A),
+        gold = Color(0xFFFFE082),
+        goldSoft = Color(0xFFFFF3C4),
+        text = Color(0xFFE8EEF5),
+        textDim = Color(0xFF8A97A8),
+        danger = Color(0xFFF87171),
+        userBubble = Color(0xFF221B08),
+        userBorder = Color(0xFF8A7430),
+        aviBubble = Color(0xFF1F1A06),
+        aviBorder = Color(0xFF7A6828),
+        coreGlow = Color(0xFFFFE9A8)
+    )
+)
+
+val LocalAviPalette = staticCompositionLocalOf<AviPalette> { MarkPalettes.getValue("MK1") }
