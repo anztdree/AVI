@@ -64,6 +64,7 @@ jobs:
           git push -f origin v1.0.0
 
           # Ganti isi release (APK baru menggantikan APK lama)
+          cp "app/build/outputs/apk/release/app-release.apk" /tmp/AVI-v1.0.0.apk
           gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 || {
             gh release create v1.0.0 \
               --repo "$GITHUB_REPOSITORY" \
@@ -71,7 +72,7 @@ jobs:
               --notes "APK resmi AVI. Selalu unduh dari release ini untuk versi terbaru."
           }
           gh release upload v1.0.0 \
-            "app/build/outputs/apk/release/app-release.apk#AVI-v1.0.0.apk" \
+            /tmp/AVI-v1.0.0.apk \
             --repo "$GITHUB_REPOSITORY" \
             --clobber
           echo "Release v1.0.0 diperbarui dengan commit: $GITHUB_SHA"
