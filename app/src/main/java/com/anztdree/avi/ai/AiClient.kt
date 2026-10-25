@@ -84,11 +84,12 @@ fun extractError(body: String?, fallback: String): String {
     }
 }
 
-/** Bersihkan teks untuk TTS (buang simbol yang tidak perlu dibacakan) */
+/** Bersihkan tag sistem & simbol untuk TTS (jangan dibacakan) */
 fun cleanForSpeech(text: String): String {
     return text
-        .replace(Regex("\\[GAMBAR:.*?]", setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)), " ")
-        .replace(Regex("[*_#`~>\\[\\]]"), " ")
+        .replace(Regex("\\[(INGAT|BUKA|LUPAKAN|PROTOKOL|GAMBAR)\\s*:.*?]", setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)), " ")
+        .replace(Regex("\\[/?[^]]*]"), " ")   // sisa tag bersimbol kurung
+        .replace(Regex("[*_#`~>]"), " ")
         .replace(Regex("\\s+"), " ")
         .trim()
 }

@@ -81,11 +81,24 @@ Semua dibaca/dijalankan **lokal di HP** — instan, tanpa internet; AVI tinggal 
 |---|---|---|
 | Mesin gambar (Google / Pollinations) | ❌ | **Dihapus total sesuai keputusan pemilik.** Kode v1 (`image/ImageGen.kt`, tag `[GAMBAR:]` di prompt & UI) dibersihkan di F2 |
 
-### G. Menu Ide Tambahan — pilih nomornya untuk masuk roadmap
+### G. Fitur Flagship & Menu Ide — pilih nomornya untuk masuk roadmap
 
-> Sasaran: **full fitur dulu, revisi sedikit demi sedikit**. Semua ide di bawah realistis
-> untuk native Android + AI cloud. Tanda ⚠️ = butuh izin Android (akan diminta saat dipakai,
-> dijelaskan alasannya, bukan saat install).
+> Tanda ⚠️ = butuh izin Android (diminta saat dipakai, dijelaskan alasannya, bukan saat install).
+
+**FLAGSHIP — level WAH (X):**
+
+| ID | Fitur | Kenapa WAH | Catatan realistis |
+|---|---|---|---|
+| X1 | **Live Voice Mode** — obrolan suara↔suara langsung, bisa disela di tengah kalimat, tanpa jeda "teks dulu" | Pengalaman Jarvis sejati | Model audio real-time diambil otomatis dari daftar `ListModels` (WebSocket); fallback: mode suara standar |
+| X2 | **Suara natural cloud** — suara Indonesia natural dari model TTS Google, pilihan karakter suara | Lompatan kualitas dari TTS robot | Model TTS muncul otomatis di daftar model; fallback TTS Android |
+| X3 | **Protokol** — makro kustom: satu frase → rangkaian aksi ("protokol kerja" = agenda + buka WA + cuaca) | Ala *House Party Protocol* | Dibuat sendiri di Pusat Kendali |
+| X4 | **Briefing pagi proaktif** — buka aplikasi: sapa + cuaca + berita utama + kondisi HP, tanpa diminta | AVI berinisiatif seperti staf pribadi | Search + aksi perangkat |
+| X5 | **Mode penerjemah percakapan** — bicara Indonesia → AVI ucapkan Inggris (atau sebaliknya) | Berguna & keren saat perjalanan | LLM |
+| X6 | **Agen riset** — "riset berita AI hari ini, rangkum 3 teratas" → cari–saring–rangkum otomatis | Kerja multi-langkah | Search grounding + LLM |
+| X7 | **Kesinambungan topik** — ingat pembahasan sesi-sesi lalu & bisa melanjutkan ("kemarin kita bahas X, lanjut?") | Di atas memori biasa: ringkasan sesi otomatis | LLM + penyimpanan lokal |
+| X8 | **Visor AVI** — "wajah" visor yang hidup: melirik saat mendengar, berdenyut saat bicara | AVI punya karakter, bukan sekadar orb | Canvas 2D ringan |
+
+**Ide level dasar (I) — opsional:**
 
 **Aksi Perangkat Lanjutan** (paling terasa "Jarvis"):
 
@@ -163,17 +176,49 @@ AVI  : "Siap pak."  → (YouTube terbuka)
 
 ---
 
-## 4. HUD & Visual
+## 4. Tampilan: HUD Mark II — wajib WAH & mewah, tetap ringan
 
-| Elemen | Nilai |
+> Keputusan pemilik: tampilan & pengaturan **tidak boleh terasa biasa**. Seluruh efek
+> digambar dengan Compose Canvas (vektor + GPU, tanpa video/GIF berat) — target 60 fps
+> di HP kentang, hemat baterai. Ada **Mode Hemat** yang mematikan efek berat otomatis.
+
+### 4.1 Lapisan Tampilan
+
+| Lapisan | Detail |
 |---|---|
-| Latar | `#070B12` |
-| Cyan reaktor | `#22D3EE` |
-| Emas | `#F5B942` |
-| Teks | Putih / abu kebiruan |
-| Label status | Monospace, uppercase |
-| Target sentuh | Minimal 48dp |
-| Animasi | 150–400 ms, hemat baterai |
+| **Boot Sequence** | Sekali per buka aplikasi (±2,5 dtk, bisa dimatikan): reaktor menyala → ring spin-up → sapuan scan → teks `AVI ONLINE` → elemen HUD meluncur masuk |
+| **Living Core** | Orb reaktor 4 state + **gelombang suara NYATA dari mikrofon** yang mengitar ring saat mendengar; saat berpikir: sapuan scan + dua ring orbit berlawanan arah; saat bicara: glow mengikuti amplitudo TTS |
+| **Diagnostik Orbit** | Readout hidup mengelilingi orb: jam, baterai, jaringan, nama model aktif — ala JARVIS |
+| **Latar Hex Grid** | Grid heksagonal samar + parallax halus mengikuti giroskop (mati otomatis di Mode Hemat) |
+| **Transisi Hologram** | Antar layar: efek scan-line + elemen muncul bertahap — bukan slide kaku |
+| **Haptic Khas** | Pola getar berbeda per state (mendengar / berpikir / menjawab) |
+
+### 4.2 Tema "Mark" (live preview, tanpa restart)
+
+| Tema | Palet |
+|---|---|
+| **MK-I — default** | Cyan `#22D3EE` + emas `#F5B942` di latar `#070B12` |
+| MK-II Hot Rod | Merah `#FF3B30` + emas |
+| MK-III Aureus | Emas dominan + aksen putih |
+
+### 4.3 Jaminan Ringan
+
+- Semua animasi = Compose Canvas + vector; tanpa aset gambar/video besar
+- Partikel terbatas & di-pool; animasi berbasis durasi (bukan frame)
+- **Mode Hemat**: deteksi otomatis (atau manual) → matikan parallax, partikel, boot sequence — HUD tetap WAH versi ringan
+
+### 4.4 Pusat Kendali — Pengaturan ala Mission Control
+
+> Pengaturan BUKAN daftar datar. Ini "ruang kendali markas":
+
+| Komponen | Detail |
+|---|---|
+| **Panel Sistem** | Disusun per sistem: `OTAK` · `SUARA` · `TAMPILAN` · `MEMORI` · `SISTEM` — dengan indikator status hidup per sistem |
+| **Toggle Reaktor** | Saklar beranimasi gaya reaktor + slider gaya "dial tenaga" |
+| **Kartu Model** | Pemilih model tampil sebagai kartu inti daya: nama, ukuran konteks, kemampuan — pemilik "memasang reaktor" |
+| **Ruang Tes Suara** | Tes STT & TTS instan dengan feedback visual; dengar contoh voice sebelum memilih |
+| **Gauge Diagnostik** | Baterai / RAM / penyimpanan / jaringan sebagai gauge HUD hidup + pemakaian API harian |
+| **Live Preview** | Ganti tema/efek langsung terlihat di belakang panel — tanpa restart |
 
 Siklus suara & state:
 
@@ -239,12 +284,15 @@ SIAGA ──(sentuh reaktor)──► MENYAPA ──► MENDENGAR ──► BERP
 
 | Fase | Isi | Status |
 |---|---|---|
-| **F1** | **Fetch model dinamis dari Google** + hapus hardcode (M1, M2) | **Siap eksekusi — menunggu "lanjut"** |
+| **F1** | **Fetch model dinamis dari Google** + hapus hardcode (M1, M2) — fondasi semua fitur | **Siap eksekusi — menunggu "lanjut"** |
 | F2 | Hapus total fitur gambar: `ImageGen.kt`, tag `[GAMBAR:]` di prompt/UI (M3) | Disetujui |
-| F3 | Memori jangka panjang: simpan/lookup/hapus + injeksi ke prompt | Disetujui |
-| F4 | Aksi perangkat: buka aplikasi + info kondisi HP + chips perintah cepat | Disetujui |
-| F5 | Gradle wrapper (M5) + key terenkripsi (M6) + polish + rilis **v1.1.0** | Disetujui |
-| F6+ | **Ide terpilih dari menu §2-G (I1–I19)** — dipecah jadi fase sesuai pilihan pemilik | Menunggu pilihan |
+| **F3** | **HUD Mark II** — tampilan WAH: boot sequence, living core + gelombang suara nyata, diagnostik orbit, tema Mark, haptic khas, mode hemat | Disetujui — **prioritas pemilik** |
+| **F4** | **Pusat Kendali** — pengaturan WAH: panel sistem, toggle reaktor, kartu model, ruang tes suara, gauge diagnostik, live preview | Disetujui — **prioritas pemilik** |
+| F5 | Rilis **v1.1.0** — APK dengan wajah baru | Disetujui |
+| F6 | Memori jangka panjang | Disetujui |
+| F7 | Aksi perangkat: buka aplikasi + kondisi HP + chips | Disetujui |
+| F8 | **Flagship X terpilih** (hasil keputusan K6) | Menunggu pilihan |
+| F9 | Gradle wrapper + key terenkripsi + polish + rilis **v1.2.0** | Disetujui |
 
 Setiap fase = 1 milestone + 1 push ke GitHub.
 
@@ -290,4 +338,5 @@ AVI/
 | K2 | Ide pengembangan | **Ya**: memori jangka panjang, perintah cepat, buka aplikasi, info sistem HP. **Tidak**: panel notifikasi (tile) | Masuk F3–F4; tile ditandai ❌ |
 | K3 | Riwayat chat | (tidak diminta diubah) | Tetap file JSON |
 | K4 | Urutan fase | F1 → F5 sesuai §7 | Eksekusi setelah perintah |
-| K5 | Menu ide tambahan §2-G (I1–I19) | **Menunggu pilihan pemilik** — sebut nomornya | Masuk F6+ |
+| K5 | Fitur flagship & menu ide §2-G | **Menunggu pilihan pemilik** — sebut ID-nya | Flagship X + opsional I masuk F8 |
+| K6 | Prioritas pengalaman | **Tampilan & pengaturan harus WAH, mewah, tetap ringan — ide dasar kurang nendang** | HUD Mark II + Pusat Kendali didahulukan (F3–F4); flagship X1–X8 diusulkan |

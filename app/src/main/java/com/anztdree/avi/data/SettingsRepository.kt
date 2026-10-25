@@ -6,10 +6,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private val Context.aviDataStore: DataStore<Preferences> by preferencesDataStore(name = "avi_settings")
 
@@ -23,18 +29,42 @@ enum class AiProvider(val id: String, val label: String) {
     }
 }
 
+/**
+ * Seluruh pengaturan AVI. Field memoryText / recap / researchMode HANYA runtime
+ * (diisi ViewModel sebelum memanggil AI, tidak pernah disimpan).
+ */
 data class AviSettings(
     val provider: AiProvider = AiProvider.GEMINI,
     val geminiKey: String = "",
     val ocBaseUrl: String = "https://openrouter.ai/api/v1",
     val ocKey: String = "",
     val ocModel: String = "meta-llama/llama-3.3-70b-instruct:free",
+    // model dinamis dari Google (TIDAK BOLEH hardcode)
+    val geminiModel: String = "",
+    // suara
     val autoSpeak: Boolean = true,
     val autoListen: Boolean = true,
     val speechRate: Float = 1.0f,
     val pitch: Float = 1.0f,
+    val cloudTtsEnabled: Boolean = false,
+    val cloudTtsModel: String = "",
+    val cloudVoice: String = "Kore",
+    // tampilan & efek HUD Mark II
+    val themeMark: String = "MK1",
+    val bootEnabled: Boolean = true,
+    val parallaxEnabled: Boolean = true,
+    val hapticsEnabled: Boolean = true,
+    val diagnosticsOrbit: Boolean = true,
+    val powerSave: Boolean = false,
+    // kepribadian & mode
+    val style: String = "santai",
     val webSearch: Boolean = true,
-    val userName: String = "Pak"
+    val userName: String = "Pak",
+    val translatorMode: Boolean = false,
+    // runtime-only
+    val memoryText: String = "",
+    val recap: String = "",
+    val researchMode: Boolean = false
 )
 
 class SettingsRepository(private val context: Context) {
@@ -45,57 +75,124 @@ class SettingsRepository(private val context: Context) {
         val ocBaseUrl = stringPreferencesKey("oc_base_url")
         val ocKey = stringPreferencesKey("oc_key")
         val ocModel = stringPreferencesKey("oc_model")
+        val geminiModel = stringPreferencesKey("gemini_model")
         val autoSpeak = booleanPreferencesKey("auto_speak")
         val autoListen = booleanPreferencesKey("auto_listen")
         val speechRate = floatPreferencesKey("speech_rate")
         val pitch = floatPreferencesKey("pitch")
+        val cloudTtsEnabled = booleanPreferencesKey("cloud_tts_enabled")
+        val cloudTtsModel = stringPreferencesKey("cloud_tts_model")
+        val cloudVoice = stringPreferencesKey("cloud_voice")
+        val themeMark = stringPreferencesKey("theme_mark")
+        val bootEnabled = booleanPreferencesKey("boot_enabled")
+        val parallaxEnabled = booleanPreferencesKey("parallax_enabled")
+        val hapticsEnabled = booleanPreferencesKey("haptics_enabled")
+        val diagnosticsOrbit = booleanPreferencesKey("diagnostics_orbit")
+        val powerSave = booleanPreferencesKey("power_save")
+        val style = stringPreferencesKey("style")
         val webSearch = booleanPreferencesKey("web_search")
         val userName = stringPreferencesKey("user_name")
+        val translatorMode = booleanPreferencesKey("translator_mode")
+        val usageDate = stringPreferencesKey("usage_date")
+        val usageCount = intPreferencesKey("usage_count")
+        val lastBriefDate = stringPreferencesKey("last_brief_date")
+        val lastGreetingAt = longPreferencesKey("last_greeting_at")
     }
 
-    val settings: Flow<AviSettings> = context.aviDataStore.data.map { p ->
-        AviSettings(
-            provider = AiProvider.from(p[Keys.provider] ?: AiProvider.GEMINI.id),
-            geminiKey = p[Keys.geminiKey] ?: "",
-            ocBaseUrl = p[Keys.ocBaseUrl] ?: "https://openrouter.ai/api/v1",
-            ocKey = p[Keys.ocKey] ?: "",
-            ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
-            autoSpeak = p[Keys.autoSpeak] ?: true,
-            autoListen = p[Keys.autoListen] ?: true,
-            speechRate = p[Keys.speechRate] ?: 1.0f,
-            pitch = p[Keys.pitch] ?: 1.0f,
-            webSearch = p[Keys.webSearch] ?: true,
-            userName = p[Keys.userName] ?: "Pak"
-        )
-    }
+    private fun today(): String =
+        SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+
+    private fun load(p: Preferences): AviSettings = AviSettings(
+        provider = AiProvider.from(p[Keys.provider] ?: AiProvider.GEMINI.id),
+        geminiKey = SecureStore.decrypt(p[Keys.geminiKey] ?: "") ?: (p[Keys.geminiKey] ?: ""),
+        ocBaseUrl = p[Keys.ocBaseUrl] ?: "https://openrouter.ai/api/v1",
+        ocKey = SecureStore.decrypt(p[Keys.ocKey] ?: "") ?: (p[Keys.ocKey] ?: ""),
+        ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
+        geminiModel = p[Keys.geminiModel] ?: "",
+        autoSpeak = p[Keys.autoSpeak] ?: true,
+        autoListen = p[Keys.autoListen] ?: true,
+        speechRate = p[Keys.speechRate] ?: 1.0f,
+        pitch = p[Keys.pitch] ?: 1.0f,
+        cloudTtsEnabled = p[Keys.cloudTtsEnabled] ?: false,
+        cloudTtsModel = p[Keys.cloudTtsModel] ?: "",
+        cloudVoice = p[Keys.cloudVoice] ?: "Kore",
+        themeMark = p[Keys.themeMark] ?: "MK1",
+        bootEnabled = p[Keys.bootEnabled] ?: true,
+        parallaxEnabled = p[Keys.parallaxEnabled] ?: true,
+        hapticsEnabled = p[Keys.hapticsEnabled] ?: true,
+        diagnosticsOrbit = p[Keys.diagnosticsOrbit] ?: true,
+        powerSave = p[Keys.powerSave] ?: false,
+        style = p[Keys.style] ?: "santai",
+        webSearch = p[Keys.webSearch] ?: true,
+        userName = p[Keys.userName] ?: "Pak",
+        translatorMode = p[Keys.translatorMode] ?: false
+    )
+
+    val settings: Flow<AviSettings> = context.aviDataStore.data.map { load(it) }
 
     suspend fun save(transform: (AviSettings) -> AviSettings) {
         context.aviDataStore.edit { p ->
-            val current = AviSettings(
-                provider = AiProvider.from(p[Keys.provider] ?: AiProvider.GEMINI.id),
-                geminiKey = p[Keys.geminiKey] ?: "",
-                ocBaseUrl = p[Keys.ocBaseUrl] ?: "https://openrouter.ai/api/v1",
-                ocKey = p[Keys.ocKey] ?: "",
-                ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
-                autoSpeak = p[Keys.autoSpeak] ?: true,
-                autoListen = p[Keys.autoListen] ?: true,
-                speechRate = p[Keys.speechRate] ?: 1.0f,
-                pitch = p[Keys.pitch] ?: 1.0f,
-                webSearch = p[Keys.webSearch] ?: true,
-                userName = p[Keys.userName] ?: "Pak"
-            )
-            val next = transform(current)
+            val next = transform(load(p))
             p[Keys.provider] = next.provider.id
-            p[Keys.geminiKey] = next.geminiKey
+            p[Keys.geminiKey] = SecureStore.encrypt(next.geminiKey) ?: next.geminiKey
             p[Keys.ocBaseUrl] = next.ocBaseUrl
-            p[Keys.ocKey] = next.ocKey
+            p[Keys.ocKey] = SecureStore.encrypt(next.ocKey) ?: next.ocKey
             p[Keys.ocModel] = next.ocModel
+            p[Keys.geminiModel] = next.geminiModel
             p[Keys.autoSpeak] = next.autoSpeak
             p[Keys.autoListen] = next.autoListen
             p[Keys.speechRate] = next.speechRate
             p[Keys.pitch] = next.pitch
+            p[Keys.cloudTtsEnabled] = next.cloudTtsEnabled
+            p[Keys.cloudTtsModel] = next.cloudTtsModel
+            p[Keys.cloudVoice] = next.cloudVoice
+            p[Keys.themeMark] = next.themeMark
+            p[Keys.bootEnabled] = next.bootEnabled
+            p[Keys.parallaxEnabled] = next.parallaxEnabled
+            p[Keys.hapticsEnabled] = next.hapticsEnabled
+            p[Keys.diagnosticsOrbit] = next.diagnosticsOrbit
+            p[Keys.powerSave] = next.powerSave
+            p[Keys.style] = next.style
             p[Keys.webSearch] = next.webSearch
-            p[Keys.userName] = next.userName
+            p[Keys.userName] = next.userName.ifBlank { "Pak" }
+            p[Keys.translatorMode] = next.translatorMode
         }
+    }
+
+    // ===== Pemakaian API per hari =====
+
+    val usageToday: Flow<Int> = context.aviDataStore.data.map { p ->
+        if (p[Keys.usageDate] == today()) p[Keys.usageCount] ?: 0 else 0
+    }
+
+    suspend fun bumpUsage(): Int {
+        var result = 0
+        context.aviDataStore.edit { p ->
+            val count = if (p[Keys.usageDate] == today()) p[Keys.usageCount] ?: 0 else 0
+            result = count + 1
+            p[Keys.usageDate] = today()
+            p[Keys.usageCount] = result
+        }
+        return result
+    }
+
+    // ===== Briefing harian =====
+
+    suspend fun markBriefed() {
+        context.aviDataStore.edit { it[Keys.lastBriefDate] = today() }
+    }
+
+    suspend fun isBriefedToday(): Boolean =
+        context.aviDataStore.data.first()[Keys.lastBriefDate] == today()
+
+    // ===== Greeting (jangan berulang terlalu sering) =====
+
+    suspend fun greetingDue(): Boolean {
+        val last = context.aviDataStore.data.first()[Keys.lastGreetingAt] ?: 0L
+        return System.currentTimeMillis() - last > 5 * 60 * 1000L
+    }
+
+    suspend fun markGreeted() {
+        context.aviDataStore.edit { it[Keys.lastGreetingAt] = System.currentTimeMillis() }
     }
 }

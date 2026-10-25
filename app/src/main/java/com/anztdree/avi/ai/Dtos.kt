@@ -15,8 +15,15 @@ val jsonParser: Json = Json {
 // ============ GEMINI DTO ============
 
 @Serializable
+data class GeminiBlob(
+    @SerialName("mimeType") val mimeType: String? = null,
+    @SerialName("data") val data: String? = null
+)
+
+@Serializable
 data class GeminiPart(
-    val text: String? = null
+    val text: String? = null,
+    @SerialName("inlineData") val inlineData: GeminiBlob? = null
 )
 
 @Serializable
@@ -31,9 +38,26 @@ data class GeminiTool(
 )
 
 @Serializable
+data class GeminiPrebuiltVoiceConfig(
+    @SerialName("voiceName") val voiceName: String? = null
+)
+
+@Serializable
+data class GeminiVoiceConfig(
+    @SerialName("prebuiltVoiceConfig") val prebuiltVoiceConfig: GeminiPrebuiltVoiceConfig? = null
+)
+
+@Serializable
+data class GeminiSpeechConfig(
+    @SerialName("voiceConfig") val voiceConfig: GeminiVoiceConfig? = null
+)
+
+@Serializable
 data class GeminiGenerationConfig(
     val temperature: Double = 0.8,
-    val maxOutputTokens: Int = 2048
+    val maxOutputTokens: Int = 2048,
+    @SerialName("responseModalities") val responseModalities: List<String>? = null,
+    @SerialName("speechConfig") val speechConfig: GeminiSpeechConfig? = null
 )
 
 @Serializable
@@ -59,6 +83,22 @@ data class GeminiErrorBody(val error: GeminiErrorDetail? = null)
 @Serializable
 data class GeminiChunk(
     val candidates: List<GeminiCandidate> = emptyList()
+)
+
+// ============ MODEL CATALOG DTO (ListModels) ============
+
+@Serializable
+data class ModelDto(
+    val name: String? = null,
+    @SerialName("displayName") val displayName: String? = null,
+    val description: String? = null,
+    @SerialName("inputTokenLimit") val inputTokenLimit: Long? = null,
+    @SerialName("supportedGenerationMethods") val supportedGenerationMethods: List<String> = emptyList()
+)
+
+@Serializable
+data class ModelListResponse(
+    val models: List<ModelDto> = emptyList()
 )
 
 // ============ OPENAI-COMPATIBLE DTO ============

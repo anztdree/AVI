@@ -24,7 +24,7 @@ class OpenAiCompatClient : AiClient {
             }
             val base = settings.ocBaseUrl.trim().trimEnd('/')
             val messages = buildList {
-                add(OcMessage("system", SystemPrompts.build(settings.userName)))
+                add(OcMessage("system", SystemPrompts.build(settings)))
                 history.forEach { msg ->
                     add(OcMessage(if (msg.role == "user") "user" else "assistant", msg.text))
                 }
