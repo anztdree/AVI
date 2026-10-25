@@ -22,6 +22,9 @@ node_modules/
 upload/
 download/
 tool-results/
+skills/
+.env
+*.jpg.bak
 
 # ===== Sistem =====
 .DS_Store

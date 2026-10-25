@@ -93,7 +93,7 @@ class GeminiClient : AiClient {
                         val errBody = try { it.body?.string() } catch (_: Exception) { null }
                         val message = extractError(errBody, "HTTP ${it.code}")
                         if (index == 0 && it.code == 400) return@use // coba langkah berikutnya
-                        callback.onError("Gemini (HTTP ${it.code}): $message")
+                        callback.onError(humanizeError(it.code, message))
                         return@withContext
                     }
                     val sb = StringBuilder()
