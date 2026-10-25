@@ -134,6 +134,8 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
     private val testPlayer = PcmPlayer()
 
+    private val mic = MicStreamer()
+
     // ===== Init =====
 
     init {

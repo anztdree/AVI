@@ -122,21 +122,21 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     val statusLabel = when (state) {
         AviState.IDLE -> "SIAGA"
         AviState.LISTENING -> "MENDENGAR"
-        AviState.THINGKING -> "BERPIKIR"
+        AviState.THINKING -> "BERPIKIR"
         AviState.SPEAKING -> "MENJAWAB"
         AviState.LIVE -> "LIVE"
     }
     val statusColor = when (state) {
         AviState.IDLE -> palette.accent
         AviState.LISTENING -> palette.accent
-        AviState.THINGKING -> palette.gold
+        AviState.THINKING -> palette.gold
         AviState.SPEAKING -> palette.goldSoft
         AviState.LIVE -> palette.danger
     }
     val orbLabel = when (state) {
         AviState.IDLE -> "SIAGA — SENTUH REAKTOR UNTUK BICARA"
         AviState.LISTENING -> "MENDENGAR… SILAKAN BICARA PAK"
-        AviState.THINGKING -> "MEMPROSES…"
+        AviState.THINKING -> "MEMPROSES…"
         AviState.SPEAKING -> "AVI MENJAWAB…"
         AviState.LIVE -> "MODE LIVE — SUARA LANGSUNG"
     }
@@ -231,7 +231,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 items(messages) { msg ->
                     MessageBubble(role = msg.role, text = msg.text)
                 }
-                if (state == AviState.THINGKING) {
+                if (state == AviState.THINKING) {
                     item { MessageBubble(role = "avi", text = streamingText, streaming = true) }
                 }
             }
@@ -291,7 +291,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             // ============ PERINTAH CEPAT ============
             ChipRow(
                 chips = listOf("Cuaca", "Berita hari ini", "Kondisi HP", "Buka aplikasi", "Ingat…"),
-                enabled = state != AviState.THINGKING,
+                enabled = state != AviState.THINKING,
                 onChip = { chip ->
                     when (chip) {
                         "Cuaca" -> vm.sendText("Bagaimana cuaca hari ini, pak?")

@@ -108,7 +108,7 @@ private fun DrawScope.drawVisor(
             baseAlpha = 0.7f + 0.3f * mic
             glowBoost = 0.5f + 0.5f * mic
         }
-        AviState.THINGKING -> {
+        AviState.THINKING -> {
             // mata berkedip cepat bergantian (scan)
             val s = abs(sin(time * TAU * 6f))
             leftMul = 0.35f + 0.65f * s
