@@ -29,6 +29,7 @@ import com.anztdree.avi.ui.theme.AviPalette
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 /**
