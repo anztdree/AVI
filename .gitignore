@@ -1,0 +1,28 @@
+# ===== Android / Gradle =====
+*.iml
+.gradle/
+/local.properties
+.idea/
+.DS_Store
+build/
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+*.apk.idsig
+
+# Keystore & kredensial (JANGAN pernah commit)
+*.jks
+*.keystore
+keystore.properties
+
+# ===== Sandbox lokal (BUKAN bagian proyek — tidak pernah di-push) =====
+worklog.md
+dev.log
+upload/
+download/
+node_modules/
+.next/
+
+# OS
+Thumbs.db
