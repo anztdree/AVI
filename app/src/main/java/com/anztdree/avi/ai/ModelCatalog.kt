@@ -98,7 +98,7 @@ object ModelCatalog {
      */
     suspend fun testModel(apiKey: String, model: String): ModelTestResult = withContext(Dispatchers.IO) {
         val key = apiKey.trim()
-        if (key.isEmpty()) return@withContext ModelTestResult(false, "API key kosong")
+        if (key.isEmpty()) return@withContext ModelTestResult(testing = false, ok = false, message = "API key kosong")
         try {
             val body = jsonParser.encodeToString(
                 GeminiRequest(

@@ -111,9 +111,9 @@ fun ReactorHalo(
         label = "haloTime"
     )
 
-    // Cache Paint & Path — TIDAK dialokasi per frame
+    // Cache Paint & Path — TIDAK dialokasi per frame (TextPaint ada di paket android.text)
     val textPaint = remember {
-        android.graphics.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+        android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
             typeface = android.graphics.Typeface.MONOSPACE
             textAlign = android.graphics.Paint.Align.CENTER
         }
