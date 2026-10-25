@@ -11,6 +11,13 @@ on:
       - ".github/workflows/build-android.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+concurrency:
+  group: build-avi
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -45,3 +52,26 @@ jobs:
         with:
           name: AVI-release-apk
           path: app/build/outputs/apk/release/app-release.apk
+
+      - name: Perbarui Release v1.0.0 dengan APK terbaru
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Tag v1.0.0 selalu digeser ke commit terbaru yang lulus build
+          git config user.name "avi-ci"
+          git config user.email "avi-ci@users.noreply.github.com"
+          git tag -f v1.0.0 "$GITHUB_SHA"
+          git push -f origin v1.0.0
+
+          # Ganti isi release (APK baru menggantikan APK lama)
+          gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 || {
+            gh release create v1.0.0 \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "AVI v1.0.0 — Full Feature (Mark II)" \
+              --notes "APK resmi AVI. Selalu unduh dari release ini untuk versi terbaru."
+          }
+          gh release upload v1.0.0 \
+            "app/build/outputs/apk/release/app-release.apk#AVI-v1.0.0.apk" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+          echo "Release v1.0.0 diperbarui dengan commit: $GITHUB_SHA"
