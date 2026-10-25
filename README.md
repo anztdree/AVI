@@ -296,7 +296,9 @@ Setiap perubahan = 1 push ke GitHub → CI otomatis menghasilkan APK.
 
 ## 8. Build APK & Setup
 
-**Dapat APK tanpa Android Studio**: tab **Actions** → workflow *Build AVI APK* → run hijau → **Artifacts** → `AVI-release-apk` → ekstrak → install di HP. Rilis stabil: tab **Releases**.
+**Dapat APK tanpa Android Studio**: tab **Actions** → workflow *Build AVI APK* → run hijau → **Artifacts** → `AVI-release-apk` → ekstrak (isinya `app-release.apk`) → install di HP.
+
+> ⚠️ Karena APK ditandatangani debug key sementara dari CI, **uninstall dulu AVI lama** sebelum memasang APK baru (tanda tangan beda → Android menolak pasang di atas yang lama).
 
 **Setup otak AVI**: https://aistudio.google.com/apikey → Create API key → aplikasi ⚙ Pengaturan → tempel key.
 
