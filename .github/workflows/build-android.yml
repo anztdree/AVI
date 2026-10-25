@@ -37,11 +37,11 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Build Debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+      - name: Build Release APK (R8 — ringan & cepat)
+        run: gradle assembleRelease --no-daemon --stacktrace
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AVI-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: AVI-release-apk
+          path: app/build/outputs/apk/release/app-release.apk

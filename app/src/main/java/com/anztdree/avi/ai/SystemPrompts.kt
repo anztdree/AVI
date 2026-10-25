@@ -4,14 +4,12 @@ import com.anztdree.avi.data.AviSettings
 
 /**
  * Kepribadian AVI — Asisten Virtual Indonesia.
- * Versi 2: gaya bicara variatif, memori jangka panjang, mode penerjemah,
- * mode riset, dan tag sistem [INGAT:] untuk memori.
+ * Gaya bicara variatif, memori jangka panjang, mode riset,
+ * dan tag sistem [INGAT:] untuk memori.
  */
 object SystemPrompts {
 
     fun build(s: AviSettings): String {
-        if (s.translatorMode) return translatorPrompt()
-
         val style = when (s.style) {
             "sopan" -> "Gaya bicara: SANGAT SOPAN dan formal, seperti pelayan butler kelas eksekutif."
             "jedai" -> "Gaya bicara: seperti AI markas sci-fi — tenang, presisi, sesekali melaporkan status " +
@@ -65,13 +63,5 @@ object SystemPrompts {
         MODE RISET AKTIF: pemilik meminta riset. Gunakan pencarian web beberapa kali,
         bandingkan sumber, lalu susun ringkasan terstruktur dan padat (maksimal 8 kalimat),
         sebutkan sumber utamanya. Akhiri dengan satu kesimpulan bergaya AVI.
-    """.trimIndent()
-
-    private fun translatorPrompt(): String = """
-        Kamu adalah AVI dalam MODE PENERJEMAH PERCAKAPAN.
-        Pemilik berbicara Bahasa Indonesia; tugas kamu MENERJEMAHKAN ke Bahasa Inggris.
-        Balas HANYA hasil terjemahan dalam kalimat siap ucap — tanpa penjelasan,
-        tanpa catatan, tanpa tanda kutip. Jaga gaya bicaranya tetap natural dan sopan.
-        Jika pemilik berbicara Bahasa Inggris, terjemahkan ke Bahasa Indonesia.
     """.trimIndent()
 }

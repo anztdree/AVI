@@ -489,6 +489,62 @@ fun HoloPanel(
 }
 
 // ============================================================
+// Dock status bawah reaktor — STATIS (tidak pernah menabrak animasi)
+// ============================================================
+
+@Composable
+fun StatusDock(
+    items: List<Pair<String, String>>,
+    palette: AviPalette = LocalAviPalette.current
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(palette.panel.copy(alpha = 0.78f))
+            .border(1.dp, palette.accent.copy(alpha = 0.22f), RoundedCornerShape(12.dp))
+            .padding(vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        items.forEachIndexed { index, pair ->
+            if (index > 0) {
+                Box(
+                    Modifier
+                        .width(1.dp)
+                        .height(20.dp)
+                        .background(palette.accent.copy(alpha = 0.18f))
+                )
+            }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = pair.first,
+                    color = palette.textDim,
+                    fontSize = 8.sp,
+                    fontFamily = FontFamily.Monospace,
+                    letterSpacing = 1.sp,
+                    maxLines = 1
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = pair.second,
+                    color = palette.accent,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace,
+                    letterSpacing = 0.5.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 6.dp)
+                )
+            }
+        }
+    }
+}
+
+// ============================================================
 // Chip perintah cepat
 // ============================================================
 

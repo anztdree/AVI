@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,9 +32,6 @@ import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -49,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -133,19 +131,12 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         AviState.SPEAKING -> palette.goldSoft
         AviState.LIVE -> palette.danger
     }
-    val orbLabel = when (state) {
-        AviState.IDLE -> "SIAGA — SENTUH REAKTOR UNTUK BICARA"
-        AviState.LISTENING -> "MENDENGAR… SILAKAN BICARA PAK"
-        AviState.THINKING -> "MEMPROSES…"
-        AviState.SPEAKING -> "AVI MENJAWAB…"
-        AviState.LIVE -> "MODE LIVE — SUARA LANGSUNG"
-    }
     val modelChip = settings.geminiModel.removePrefix("models/").ifBlank { "PILIH MODEL" }
 
     val listState = rememberLazyListState()
-    LaunchedEffect(messages.size, state, streamingText) {
+    LaunchedEffect(messages.size, state) {
         val total = listState.layoutInfo.totalItemsCount
-        if (total > 0) listState.animateScrollToItem(total - 1)
+        if (total > 0) listState.scrollToItem(total - 1)
     }
 
     Box(Modifier.fillMaxSize().background(palette.bg)) {
@@ -182,28 +173,6 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     color = if (settings.geminiModel.isBlank()) palette.textDim else palette.accent,
                     onClick = onOpenSettings
                 )
-                IconButton(
-                    onClick = { vm.updateSettings { it.copy(translatorMode = !it.translatorMode) } },
-                    modifier = Modifier.size(38.dp)
-                ) {
-                    Icon(
-                        Icons.Default.Translate,
-                        contentDescription = "Mode penerjemah",
-                        tint = if (settings.translatorMode) palette.accent else palette.textDim,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                IconButton(
-                    onClick = { vm.updateSettings { it.copy(autoSpeak = !it.autoSpeak) } },
-                    modifier = Modifier.size(38.dp)
-                ) {
-                    Icon(
-                        if (settings.autoSpeak) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
-                        contentDescription = "Suara balasan",
-                        tint = if (settings.autoSpeak) palette.accent else palette.textDim,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
                 IconButton(onClick = onOpenSettings, modifier = Modifier.size(38.dp)) {
                     Icon(
                         Icons.Default.Settings,
@@ -219,17 +188,28 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 Spacer(Modifier.height(6.dp))
             }
 
-            // ============ PESAN ============
+            // ============ PESAN — HANYA 3 TERAKHIR (efisien, animasi bawah tetap terlihat) ============
+            val visibleMessages = remember(messages) { messages.takeLast(3) }
             LazyColumn(
                 state = listState,
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (setupNeeded) {
                     item { SetupCard(onOpenSettings = onOpenSettings) }
                 }
-                items(messages) { msg ->
-                    MessageBubble(role = msg.role, text = msg.text)
+                itemsIndexed(visibleMessages) { index, msg ->
+                    // makin tua makin pudar — fokus ke jawaban terbaru
+                    val fade = when {
+                        visibleMessages.size <= 1 -> 1f
+                        index == 0 && visibleMessages.size == 3 -> 0.45f
+                        index == 0 -> 0.6f
+                        index == 1 && visibleMessages.size == 3 -> 0.7f
+                        else -> 1f
+                    }
+                    Box(Modifier.alpha(fade)) {
+                        MessageBubble(role = msg.role, text = msg.text)
+                    }
                 }
                 if (state == AviState.THINKING) {
                     item { MessageBubble(role = "avi", text = streamingText, streaming = true) }
@@ -252,41 +232,38 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 )
             }
 
-            // ============ AREA REAKTOR ============
-            Box(Modifier.fillMaxWidth().height(212.dp)) {
-                DiagnosticsOrbit(
-                    time = clockText,
-                    battery = diagnostics?.let { "${it.batteryPct}%${if (it.charging) "⚡" else ""}" } ?: "—",
-                    network = diagnostics?.network ?: "OFFLINE",
-                    model = settings.geminiModel.removePrefix("models/").ifBlank { "—" },
+            // ============ ZONA REAKTOR (halo murni canvas — nol tumpang tindih) ============
+            Box(Modifier.fillMaxWidth().height(210.dp)) {
+                ReactorHalo(
                     palette = palette,
                     enabled = settings.diagnosticsOrbit && !settings.powerSave,
                     modifier = Modifier.matchParentSize()
                 )
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.align(Alignment.Center)
-                ) {
-                    ReactorOrb(
-                        state = state,
-                        micLevel = rmsLevel,
-                        voiceLevel = voiceLevel,
-                        palette = palette,
-                        powerSave = settings.powerSave,
-                        showVisor = true,
-                        modifier = Modifier.size(170.dp),
-                        onTap = { ensureMicThenToggle() }
-                    )
-                    Text(
-                        orbLabel,
-                        color = palette.textDim,
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        letterSpacing = 1.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                ReactorOrb(
+                    state = state,
+                    micLevel = rmsLevel,
+                    voiceLevel = voiceLevel,
+                    palette = palette,
+                    powerSave = settings.powerSave,
+                    showVisor = true,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(160.dp),
+                    onTap = { ensureMicThenToggle() }
+                )
             }
+
+            // ============ DOCK STATUS (statis — tidak mungkin menabrak reaktor) ============
+            StatusDock(
+                items = listOf(
+                    "JAM" to clockText,
+                    "BAT" to (diagnostics?.let { "${it.batteryPct}%${if (it.charging) "⚡" else ""}" } ?: "—"),
+                    "NET" to (diagnostics?.network ?: "OFFLINE"),
+                    "OTAK" to settings.geminiModel.removePrefix("models/").ifBlank { "—" }
+                ),
+                palette = palette
+            )
+            Spacer(Modifier.height(8.dp))
 
             // ============ PERINTAH CEPAT ============
             ChipRow(

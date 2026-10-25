@@ -9,20 +9,20 @@ build/
 /captures
 .externalNativeBuild
 .cxx
-*.apk.idsig
 
-# Keystore & kredensial (JANGAN pernah commit)
+# ===== Keystore (JANGAN pernah commit) =====
 *.jks
 *.keystore
 keystore.properties
 
-# ===== Sandbox lokal (BUKAN bagian proyek — tidak pernah di-push) =====
+# ===== Sandbox lokal (bukan bagian proyek AVI) =====
 worklog.md
-dev.log
-upload/
-download/
 node_modules/
 .next/
+upload/
+download/
+tool-results/
 
-# OS
-Thumbs.db
+# ===== Sistem =====
+.DS_Store
+*.log

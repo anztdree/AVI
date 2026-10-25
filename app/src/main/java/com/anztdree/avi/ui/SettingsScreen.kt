@@ -299,13 +299,6 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     Text("Buka AI Studio", fontSize = 11.sp, color = palette.accent)
                 }
                 Spacer(Modifier.height(2.dp))
-                ReactorToggle(
-                    label = "Mode penerjemah",
-                    checked = settings.translatorMode,
-                    onChange = { v -> vm.updateSettings { it.copy(translatorMode = v) } },
-                    palette = palette
-                )
-                Spacer(Modifier.height(4.dp))
                 Text(
                     "GAYA BICARA",
                     color = palette.textDim,
@@ -384,12 +377,13 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
         // ============ B. SUARA ============
         SystemHeader(name = "SUARA", active = ttsReady, palette = palette)
         HoloPanel(palette = palette) {
-            ReactorToggle(
-                label = "AVI menjawab dengan suara",
-                checked = settings.autoSpeak,
-                onChange = { v -> vm.updateSettings { it.copy(autoSpeak = v) } },
-                palette = palette
+            Text(
+                "AVI selalu membacakan setiap jawaban — wajib, tanpa tombol",
+                color = palette.textDim,
+                fontSize = 11.sp,
+                lineHeight = 15.sp
             )
+            Spacer(Modifier.height(6.dp))
             ReactorToggle(
                 label = "Mode percakapan beruntun",
                 checked = settings.autoListen,

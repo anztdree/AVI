@@ -263,44 +263,40 @@ SIAGA ──(sentuh reaktor)──► MENYAPA ──► MENDENGAR ──► BERP
 
 ---
 
-## 6. Kondisi Kode Saat Ini (audit v1.0.0)
+## 6. Kondisi Kode Saat Ini (audit v1.0.0 — pasca koreksi)
 
-**Sudah ada**: proyek Gradle (minSdk 26), HUD orb + chat + pengaturan (Compose), Gemini streaming + search grounding + fallback, OpenAI-compat client, STT/TTS id-ID + mode beruntun, gambar Pollinations (→ dihapus di F2), riwayat JSON, DataStore, CI build APK, Release v1.0.0.
+**Sudah ada**: proyek Gradle (minSdk 26), HUD Mark II (boot sequence, living core + visor, halo reaktor, dock status, tema Mark, haptic, mode hemat), Pusat Kendali (panel OTAK/SUARA/TAMPILAN/SISTEM/MEMORI/PROTOKOL, kartu model dinamis, ruang tes suara), Gemini streaming + grounding + fallback config, fetch model dinamis (ListModels), Live Voice Mode (BidiGenerateContent), Cloud TTS, STT/TTS id-ID + mode beruntun, memori jangka panjang `[INGAT:]`, protokol, aksi perangkat (buka aplikasi, kondisi HP, briefing), riwayat JSON, DataStore + SecureStore terenkripsi, CI build APK release (R8).
 
-**Masalah tercatat**:
+**Fitur dihapus permanen**: mesin gambar (K1), tile notifikasi (K2), tombol translate & sound di layar utama (K7 — AVI selalu membacakan jawaban; terjemahan cukup lewat perintah suara biasa).
 
-| # | Masalah | Lokasi | Penanganan |
-|---|---|---|---|
-| M1 | Model hardcode `"gemini-2.0-flash"` | `ai/GeminiClient.kt:47` | F1 |
-| M2 | Tidak ada `ListModels` / pilihan model | `ai/`, `data/` | F1 |
-| M3 | Fitur gambar harus dihapus (keputusan pemilik) | `image/`, prompt `[GAMBAR:]`, UI | F2 |
-| M4 | Riwayat file JSON | `data/ChatHistoryRepository.kt` | Tetap — keputusan pemilik |
-| M5 | Tidak ada Gradle Wrapper | root | F5 |
-| M6 | API key plaintext | `data/SettingsRepository.kt` | F5 |
+**Koreksi performa & tampilan (K7)**:
+
+| # | Koreksi | Penanganan |
+|---|---|---|
+| C1 | Jawaban Gemini kadang kosong — `maxOutputTokens` 2048 habis dipakai thinking model 2.5 | `thinkingConfig(budget 0)` untuk keluarga 2.5-flash + budget 8192 + tangga fallback 2 tahap + pesan error jelas (kode HTTP) |
+| C2 | Tombol translate & sound dilarang | Dihapus dari bar atas & Pusat Kendali; `speakReply` selalu bersuara |
+| C3 | Bubble menutupi animasi bawah | Hanya 3 pesan terakhir ditampilkan, makin tua makin pudar |
+| C4 | Label orbit menumpuk reaktor | Orbit teks diganti halo murni canvas + dock status statis di bawah (nol tumpang tindih) |
+| C5 | 15 MB terasa lag | Hex parallax via GPU layer (path tak digambar ulang), RMS throttled 30 Hz, kurangi draw per frame (tick 32, waveform 48, partikel 8), loop smoothing tidur saat stabil, APK release R8 + shrinkResources |
 
 ---
 
-## 7. Roadmap Final (hasil keputusan pemilik)
+## 7. Roadmap (pasca v1.0.0 — revisi sedikit demi sedikit)
 
 | Fase | Isi | Status |
 |---|---|---|
-| **F1** | **Fetch model dinamis dari Google** + hapus hardcode (M1, M2) — fondasi semua fitur | **Siap eksekusi — menunggu "lanjut"** |
-| F2 | Hapus total fitur gambar: `ImageGen.kt`, tag `[GAMBAR:]` di prompt/UI (M3) | Disetujui |
-| **F3** | **HUD Mark II** — tampilan WAH: boot sequence, living core + gelombang suara nyata, diagnostik orbit, tema Mark, haptic khas, mode hemat | Disetujui — **prioritas pemilik** |
-| **F4** | **Pusat Kendali** — pengaturan WAH: panel sistem, toggle reaktor, kartu model, ruang tes suara, gauge diagnostik, live preview | Disetujui — **prioritas pemilik** |
-| F5 | Rilis **v1.1.0** — APK dengan wajah baru | Disetujui |
-| F6 | Memori jangka panjang | Disetujui |
-| F7 | Aksi perangkat: buka aplikasi + kondisi HP + chips | Disetujui |
-| F8 | **Flagship X terpilih** (hasil keputusan K6) | Menunggu pilihan |
-| F9 | Gradle wrapper + key terenkripsi + polish + rilis **v1.2.0** | Disetujui |
+| v1.0.0 | Full fitur + HUD Mark II + Pusat Kendali + koreksi K7 (C1–C5) | **Selesai** |
+| F-next | Uji coba pak di HP → catat bug & rasa di §10 | Berjalan |
+| F-next+1 | Gradle wrapper agar build lokal memungkinkan | Menunggu |
+| F-next+2 | Polish lanjutan hasil pemakaian harian | Menunggu |
 
-Setiap fase = 1 milestone + 1 push ke GitHub.
+Setiap perubahan = 1 push ke GitHub → CI otomatis menghasilkan APK.
 
 ---
 
 ## 8. Build APK & Setup
 
-**Dapat APK tanpa Android Studio**: tab **Actions** → workflow *Build AVI APK* → run hijau → **Artifacts** → `AVI-debug-apk` → ekstrak → install di HP. Rilis stabil: tab **Releases**.
+**Dapat APK tanpa Android Studio**: tab **Actions** → workflow *Build AVI APK* → run hijau → **Artifacts** → `AVI-release-apk` → ekstrak → install di HP. Rilis stabil: tab **Releases**.
 
 **Setup otak AVI**: https://aistudio.google.com/apikey → Create API key → aplikasi ⚙ Pengaturan → tempel key.
 
@@ -310,11 +306,10 @@ Setiap fase = 1 milestone + 1 push ke GitHub.
 AVI/
 ├── app/src/main/java/com/anztdree/avi/
 │   ├── MainActivity.kt · AviViewModel.kt   # orkestrasi state chat+suara+HUD
-│   ├── ai/      # Gemini SSE + OpenAI-compat + prompt kepribadian
+│   ├── ai/      # Gemini SSE + ListModels + prompt kepribadian
 │   ├── data/    # DataStore + riwayat
-│   ├── speech/  # AviTts + AviStt
-│   ├── image/   # (akan dihapus di F2)
-│   └── ui/      # HUD orb, chat, pengaturan
+│   ├── speech/  # AviTts + AviStt + MicStreamer
+│   └── ui/      # HUD Mark II + Pusat Kendali
 ├── .github/workflows/build-android.yml       # CI APK otomatis
 ├── build.gradle.kts · settings.gradle.kts · gradle.properties
 └── README.md                                 # ← dokumen tunggal proyek
@@ -340,3 +335,4 @@ AVI/
 | K4 | Urutan fase | F1 → F5 sesuai §7 | Eksekusi setelah perintah |
 | K5 | Fitur flagship & menu ide §2-G | **Semua flagship X1–X8 masuk** (pemilik: "semua itu wajib ada di versi 1.0.0, kerjakan semua sekaligus") | X1–X8 diimplementasi di v1.0.0 |
 | K6 | Prioritas pengalaman | **Tampilan & pengaturan harus WAH, mewah, tetap ringan** | HUD Mark II + Pusat Kendali diimplementasi di v1.0.0 |
+| K7 | Koreksi rasa pakai: API Gemini tak jalan, tombol translate/sound dilarang, bubble menutupi animasi, animasi bawah tumpang tindih, 15 MB terasa lag | **Perintah koreksi langsung** | C1–C5 dieksekusi; AVI wajib membacakan jawaban; terjemahan cukup lewat perintah suara |

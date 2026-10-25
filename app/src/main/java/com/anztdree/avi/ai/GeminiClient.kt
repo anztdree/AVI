@@ -20,7 +20,28 @@ class GeminiClient : AiClient {
     private fun url(model: String, key: String): String =
         "https://generativelanguage.googleapis.com/v1beta/$model:streamGenerateContent?alt=sse&key=$key"
 
-    private fun buildBody(history: List<ChatMessage>, settings: AviSettings, withTools: Boolean): String {
+    /**
+     * Config generasi adaptif per model:
+     * - Keluarga 2.5-flash: thinking dimatikan (budget 0) supaya jawaban instan
+     *   dan token output tidak habis dipakai "pikiran" (penyebab jawaban kosong).
+     * - Model lain: tanpa thinkingConfig (aman untuk pro / lama).
+     * Buat versi minimal TANPA thinking/tools untuk fallback kalau model menolak.
+     */
+    private fun genConfig(model: String, minimal: Boolean): GeminiGenerationConfig {
+        if (minimal) return GeminiGenerationConfig(maxOutputTokens = 8192)
+        val noThinking = model.contains("2.5-flash") || model.contains("2.0-flash")
+        return GeminiGenerationConfig(
+            maxOutputTokens = 8192,
+            thinkingConfig = if (noThinking) GeminiThinkingConfig(0) else null
+        )
+    }
+
+    private fun buildBody(
+        history: List<ChatMessage>,
+        settings: AviSettings,
+        withTools: Boolean,
+        minimal: Boolean
+    ): String {
         val contents = history.map { msg ->
             GeminiContent(
                 role = if (msg.role == "user") "user" else "model",
@@ -33,7 +54,8 @@ class GeminiClient : AiClient {
                 role = "user",
                 parts = listOf(GeminiPart(text = SystemPrompts.build(settings)))
             ),
-            tools = if (withTools && settings.webSearch) listOf(GeminiTool()) else null
+            tools = if (withTools && settings.webSearch) listOf(GeminiTool()) else null,
+            generationConfig = genConfig(settings.geminiModel, minimal)
         )
         return jsonParser.encodeToString(req)
     }
@@ -50,37 +72,38 @@ class GeminiClient : AiClient {
                 callback.onError("Model belum dipilih pak. Buka Pusat Kendali → OTAK → Muat Daftar Model, lalu pilih model terbaru.")
                 return@withContext
             }
-            var useTools = settings.webSearch
 
-            // percobaan pertama (dengan tools), jika ditolak ulangi tanpa tools
-            repeat(2) { attempt ->
-                val body = buildBody(history, settings, withTools = useTools)
+            // Tangga fallback: (tools, config penuh) → (tanpa tools, config minimal)
+            val ladder = listOf(
+                settings.webSearch to false,
+                false to true
+            )
+            for ((index, step) in ladder.withIndex()) {
+                val (useTools, minimal) = step
+                val body = buildBody(history, settings, withTools = useTools, minimal = minimal)
                 val request = Request.Builder()
                     .url(url(model, key))
                     .header("Content-Type", "application/json")
                     .post(body.toRequestBody(Http.jsonMedia))
                     .build()
 
-                Http.client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) {
-                        val errBody = try { response.body?.string() } catch (_: Exception) { null }
-                        val message = extractError(errBody, "HTTP ${response.code}")
-                        if (useTools && attempt == 0 && response.code == 400) {
-                            useTools = false
-                            return@repeat
-                        }
-                        callback.onError("Gemini: $message")
+                val response = Http.client.newCall(request).execute()
+                response.use {
+                    if (!it.isSuccessful) {
+                        val errBody = try { it.body?.string() } catch (_: Exception) { null }
+                        val message = extractError(errBody, "HTTP ${it.code}")
+                        if (index == 0 && it.code == 400) return@use // coba langkah berikutnya
+                        callback.onError("Gemini (HTTP ${it.code}): $message")
                         return@withContext
                     }
-
                     val sb = StringBuilder()
-                    readSse(response, CoroutineScope(currentCoroutineContext()), onEvent = { payload ->
+                    readSse(it, CoroutineScope(currentCoroutineContext()), onEvent = { payload ->
                         try {
                             val chunk = jsonParser.decodeFromString<GeminiChunk>(payload)
                             val text = chunk.candidates.firstOrNull()
                                 ?.content?.parts
-                                ?.mapNotNull { it.text }
-                                ?.joinToString("") { it }
+                                ?.mapNotNull { part -> part.text }
+                                ?.joinToString("") { t -> t }
                             if (!text.isNullOrEmpty()) {
                                 sb.append(text)
                                 callback.onDelta(text)
@@ -91,7 +114,10 @@ class GeminiClient : AiClient {
 
                     val full = sb.toString().trim()
                     if (full.isEmpty()) {
-                        callback.onError("Gemini tidak mengirim jawaban. Coba ulangi ya pak.")
+                        callback.onError(
+                            "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}). " +
+                                "Coba pilih model lain di Pusat Kendali ya, pak."
+                        )
                     } else {
                         callback.onComplete(full)
                     }

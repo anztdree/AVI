@@ -42,7 +42,6 @@ data class AviSettings(
     // model dinamis dari Google (TIDAK BOLEH hardcode)
     val geminiModel: String = "",
     // suara
-    val autoSpeak: Boolean = true,
     val autoListen: Boolean = true,
     val speechRate: Float = 1.0f,
     val pitch: Float = 1.0f,
@@ -60,7 +59,6 @@ data class AviSettings(
     val style: String = "santai",
     val webSearch: Boolean = true,
     val userName: String = "Pak",
-    val translatorMode: Boolean = false,
     // runtime-only
     val memoryText: String = "",
     val recap: String = "",
@@ -76,7 +74,6 @@ class SettingsRepository(private val context: Context) {
         val ocKey = stringPreferencesKey("oc_key")
         val ocModel = stringPreferencesKey("oc_model")
         val geminiModel = stringPreferencesKey("gemini_model")
-        val autoSpeak = booleanPreferencesKey("auto_speak")
         val autoListen = booleanPreferencesKey("auto_listen")
         val speechRate = floatPreferencesKey("speech_rate")
         val pitch = floatPreferencesKey("pitch")
@@ -92,7 +89,6 @@ class SettingsRepository(private val context: Context) {
         val style = stringPreferencesKey("style")
         val webSearch = booleanPreferencesKey("web_search")
         val userName = stringPreferencesKey("user_name")
-        val translatorMode = booleanPreferencesKey("translator_mode")
         val usageDate = stringPreferencesKey("usage_date")
         val usageCount = intPreferencesKey("usage_count")
         val lastBriefDate = stringPreferencesKey("last_brief_date")
@@ -109,7 +105,6 @@ class SettingsRepository(private val context: Context) {
         ocKey = SecureStore.decrypt(p[Keys.ocKey] ?: "") ?: (p[Keys.ocKey] ?: ""),
         ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
         geminiModel = p[Keys.geminiModel] ?: "",
-        autoSpeak = p[Keys.autoSpeak] ?: true,
         autoListen = p[Keys.autoListen] ?: true,
         speechRate = p[Keys.speechRate] ?: 1.0f,
         pitch = p[Keys.pitch] ?: 1.0f,
@@ -124,8 +119,7 @@ class SettingsRepository(private val context: Context) {
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
         webSearch = p[Keys.webSearch] ?: true,
-        userName = p[Keys.userName] ?: "Pak",
-        translatorMode = p[Keys.translatorMode] ?: false
+        userName = p[Keys.userName] ?: "Pak"
     )
 
     val settings: Flow<AviSettings> = context.aviDataStore.data.map { load(it) }
@@ -139,7 +133,6 @@ class SettingsRepository(private val context: Context) {
             p[Keys.ocKey] = SecureStore.encrypt(next.ocKey) ?: next.ocKey
             p[Keys.ocModel] = next.ocModel
             p[Keys.geminiModel] = next.geminiModel
-            p[Keys.autoSpeak] = next.autoSpeak
             p[Keys.autoListen] = next.autoListen
             p[Keys.speechRate] = next.speechRate
             p[Keys.pitch] = next.pitch
@@ -155,7 +148,6 @@ class SettingsRepository(private val context: Context) {
             p[Keys.style] = next.style
             p[Keys.webSearch] = next.webSearch
             p[Keys.userName] = next.userName.ifBlank { "Pak" }
-            p[Keys.translatorMode] = next.translatorMode
         }
     }
 

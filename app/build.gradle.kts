@@ -13,14 +13,18 @@ android {
         applicationId = "com.anztdree.avi"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
+        versionCode = 3
         versionName = "1.0.0"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 + resource shrink: APK ringan dan runtime lebih cepat.
+            // Ditandatangani debug key agar langsung bisa dipasang.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

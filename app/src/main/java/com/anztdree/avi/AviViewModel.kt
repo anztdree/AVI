@@ -72,6 +72,16 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private val _rmsLevel = MutableStateFlow(0f)
     val rmsLevel: StateFlow<Float> = _rmsLevel.asStateFlow()
 
+    /** Gate waktu: RMS maksimal ±30x/detik agar UI tidak recompose berlebihan */
+    private var lastRmsEmit = 0L
+    private fun emitRms(level: Float) {
+        val now = System.currentTimeMillis()
+        if (now - lastRmsEmit >= 33) {
+            lastRmsEmit = now
+            _rmsLevel.value = level
+        }
+    }
+
     /** Level suara AVI 0..1 — glow HUD saat AVI bicara */
     private val _voiceLevel = MutableStateFlow(0f)
     val voiceLevel: StateFlow<Float> = _voiceLevel.asStateFlow()
@@ -181,7 +191,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             override fun onRms(level: Float) {
-                _rmsLevel.value = level
+                emitRms(level)
             }
 
             override fun onPartial(text: String) {
@@ -310,12 +320,9 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private fun addLocalReply(reply: String) {
         _messages.value = _messages.value + ChatMessage(role = "avi", text = reply)
         persist()
-        if (_settings.value.autoSpeak && _settings.value.autoListen) {
-            setState(AviState.SPEAKING)
-            tts.speak(cleanForSpeech(reply))
-        } else {
-            maybeAutoListen()
-        }
+        // AVI WAJIB membacakan setiap jawaban
+        setState(AviState.SPEAKING)
+        tts.speak(cleanForSpeech(reply))
     }
 
     // ===== Alur ke model AI =====
@@ -432,11 +439,11 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun speakReply(text: String) {
         val speech = cleanForSpeech(text)
-        val s = _settings.value
-        if (!s.autoSpeak || speech.isBlank()) {
+        if (speech.isBlank()) {
             afterSpeak()
             return
         }
+        val s = _settings.value
         setState(AviState.SPEAKING)
         if (s.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
             s.cloudTtsEnabled && s.cloudTtsModel.isNotBlank()
@@ -451,7 +458,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Sapaan langsung (selalu bersuara, abaikan autoSpeak) */
+    /** Sapaan langsung (selalu bersuara) */
     private fun speakDirect(text: String) {
         setState(AviState.SPEAKING)
         val s = _settings.value
@@ -602,7 +609,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
         mic.start(
             onChunk = { pcm, level ->
-                _rmsLevel.value = level
+                emitRms(level)
                 liveWs?.sendAudioPcm(pcm)
             },
             onError = { msg ->

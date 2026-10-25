@@ -53,9 +53,15 @@ data class GeminiSpeechConfig(
 )
 
 @Serializable
+data class GeminiThinkingConfig(
+    @SerialName("thinkingBudget") val thinkingBudget: Int = 0
+)
+
+@Serializable
 data class GeminiGenerationConfig(
     val temperature: Double = 0.8,
-    val maxOutputTokens: Int = 2048,
+    val maxOutputTokens: Int = 8192,
+    @SerialName("thinkingConfig") val thinkingConfig: GeminiThinkingConfig? = null,
     @SerialName("responseModalities") val responseModalities: List<String>? = null,
     @SerialName("speechConfig") val speechConfig: GeminiSpeechConfig? = null
 )
