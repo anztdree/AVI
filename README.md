@@ -6,7 +6,7 @@
 **AI 100% cloud** (Google Gemini) — HP spek rendah pun kuat, nol model di perangkat.
 **Model dinamis** — daftar model di-*fetch* langsung dari Google; pemilik pilih sendiri yang paling up-to-date.
 
-**Status: v1.0.0 FULL FEATURE — sedang dibangun (CI otomatis).** Seluruh rencana (HUD Mark II, Pusat Kendali, fetch model dinamis, memori, aksi perangkat, flagship X1–X8) dikerjakan sekaligus dalam satu rilis sesuai keputusan pemilik. README ini = dokumen tunggal proyek + log keputusan pemilik.
+**Status: v1.0.0 FULL FEATURE — RILIS.** Build CI hijau, APK terpasang di [Releases](https://github.com/anztdree/AVI/releases/download/v1.0.0/AVI-v1.0.0.apk). Seluruh rencana (HUD Mark II, Pusat Kendali, fetch model dinamis, memori, aksi perangkat, flagship X1–X8) dikerjakan sekaligus dalam satu rilis sesuai keputusan pemilik. Revisi lanjutan dilakukan sedikit demi sedikit.
 
 ---
 
