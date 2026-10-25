@@ -81,6 +81,51 @@ Semua dibaca/dijalankan **lokal di HP** — instan, tanpa internet; AVI tinggal 
 |---|---|---|
 | Mesin gambar (Google / Pollinations) | ❌ | **Dihapus total sesuai keputusan pemilik.** Kode v1 (`image/ImageGen.kt`, tag `[GAMBAR:]` di prompt & UI) dibersihkan di F2 |
 
+### G. Menu Ide Tambahan — pilih nomornya untuk masuk roadmap
+
+> Sasaran: **full fitur dulu, revisi sedikit demi sedikit**. Semua ide di bawah realistis
+> untuk native Android + AI cloud. Tanda ⚠️ = butuh izin Android (akan diminta saat dipakai,
+> dijelaskan alasannya, bukan saat install).
+
+**Aksi Perangkat Lanjutan** (paling terasa "Jarvis"):
+
+| ID | Ide | Catatan teknis |
+|---|---|---|
+| I1 | **Alarm & timer suara** — "bangunin jam 5 pak", "timer 10 menit" | Intent alarm sistem, tanpa izin khusus |
+| I2 | **Telepon & SMS** — "telpon Budi", "SMS Budi: ..." | ⚠️ izin kontak/telepon; AVI selalu konfirmasi sebelum eksekusi |
+| I3 | **Senter, volume, kecerahan** — "nyalain senter pak", "kecilin volume" | CameraManager + panel pengaturan |
+| I4 | **Buka website** — "buka tokopedia.com" | Intent browser |
+| I5 | **Cuaca otomatis sesuai lokasi** — tidak perlu sebut kota | ⚠️ izin lokasi; hanya kota yang dikirim ke API |
+| I6 | **Pengingat & catatan** — "ingetin meeting jam 2", "catet: beli kopi" | ⚠️ izin notifikasi; daftar catatan di dalam aplikasi |
+
+**Produktivitas:**
+
+| ID | Ide | Catatan teknis |
+|---|---|---|
+| I7 | **Rangkum link/berita** — tempel URL → AVI baca & rangkum | Fetch artikel + LLM |
+| I8 | **Draft pesan** — "bikinin pesan izin sakit ke bos" → kirim ke WA/Telegram | Share intent |
+| I9 | **Terjemahan & penulisan** — terjemah, rapikan bahasa, caption, email formal | LLM |
+| I10 | **Hitung & konversi** — "1 dolar berapa rupiah" | LLM + search kurs |
+
+**Personalitas & Suara:**
+
+| ID | Ide | Catatan teknis |
+|---|---|---|
+| I11 | **Sapaan sesuai waktu + status markas** — "Selamat pagi pak", "Semua sistem normal, pak" | Jam perangkat, gratis |
+| I12 | **Efek suara HUD** — bunyi kecil ala Jarvis saat state berubah | Bisa dimatikan di Pengaturan |
+| I13 | **Gaya bicara** — pilihan: sopan / santai / jedai | Variasi system prompt |
+| I14 | **Interupsi** — sentuh orb saat AVI bicara → langsung diam & dengar | Kontrol TTS |
+
+**Sistem & Kualitas:**
+
+| ID | Ide | Catatan teknis |
+|---|---|---|
+| I15 | **Jawaban instan offline** — jam, tanggal, hitung cepat: tanpa API, <100 ms | Template lokal, hemat kuota |
+| I16 | **Onboarding wizard** — key → muat model → pilih → tes suara, sekali jalan | UI |
+| I17 | **Pemantau pemakaian API** — hitung request/token per hari | Lokal |
+| I18 | **Cek pembaruan in-app** — baca release GitHub → tawarkan APK baru | GitHub API |
+| I19 | **Riwayat per sesi** — judul otomatis, cari chat lama | UI + file JSON |
+
 ---
 
 ## 3. Kepribadian & Aturan Jawaban
@@ -199,6 +244,7 @@ SIAGA ──(sentuh reaktor)──► MENYAPA ──► MENDENGAR ──► BERP
 | F3 | Memori jangka panjang: simpan/lookup/hapus + injeksi ke prompt | Disetujui |
 | F4 | Aksi perangkat: buka aplikasi + info kondisi HP + chips perintah cepat | Disetujui |
 | F5 | Gradle wrapper (M5) + key terenkripsi (M6) + polish + rilis **v1.1.0** | Disetujui |
+| F6+ | **Ide terpilih dari menu §2-G (I1–I19)** — dipecah jadi fase sesuai pilihan pemilik | Menunggu pilihan |
 
 Setiap fase = 1 milestone + 1 push ke GitHub.
 
@@ -244,3 +290,4 @@ AVI/
 | K2 | Ide pengembangan | **Ya**: memori jangka panjang, perintah cepat, buka aplikasi, info sistem HP. **Tidak**: panel notifikasi (tile) | Masuk F3–F4; tile ditandai ❌ |
 | K3 | Riwayat chat | (tidak diminta diubah) | Tetap file JSON |
 | K4 | Urutan fase | F1 → F5 sesuai §7 | Eksekusi setelah perintah |
+| K5 | Menu ide tambahan §2-G (I1–I19) | **Menunggu pilihan pemilik** — sebut nomornya | Masuk F6+ |
