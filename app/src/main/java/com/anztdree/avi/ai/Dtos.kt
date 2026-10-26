@@ -71,7 +71,10 @@ data class GeminiRequest(
     val contents: List<GeminiContent>,
     val systemInstruction: GeminiContent? = null,
     val tools: List<GeminiTool>? = null,
-    val generationConfig: GeminiGenerationConfig = GeminiGenerationConfig()
+    // K14 — nullable: kalau tidak dikirim, field ini DILEPAS dari JSON
+    // (explicitNulls=false) sehingga badan permintaan bisa PERSIS curl bukti
+    // pemilik: {"contents":[{"parts":[{"text":"..."}]}]} tanpa generationConfig.
+    val generationConfig: GeminiGenerationConfig? = null
 )
 
 @Serializable

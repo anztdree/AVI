@@ -129,52 +129,78 @@ object ModelCatalog {
     )
 
     /**
-     * Uji satu model — CEPAT (thinking dimatikan di keluarga 2.5-flash) dan
-     * tahan limit: kalau 429, tunggu sesuai retryDelay Google (maks 30 dtk)
-     * lalu coba ulang SEKALI.
+     * Uji satu model — K14 sadar-berpikir: model 2.5/alias -latest diberi
+     * thinkingBudget 0 supaya ping-8 token tidak dilahap proses berpikir.
+     * Kalau model menolak thinkingConfig (400) → ulang tanpa thinkingConfig.
+     * Kalau 200 tapi teks kosong → tetap SIAP (model bisa dipanggil), dengan catatan.
+     * Kalau 429, tunggu sesuai retryDelay Google (maks 30 dtk) lalu coba ulang SEKALI.
      */
     suspend fun testModel(apiKey: String, model: String): ModelTestResult = withContext(Dispatchers.IO) {
         val key = apiKey.trim()
         if (key.isEmpty()) return@withContext ModelTestResult(testing = false, ok = false, message = "API key kosong")
         try {
             val m = model.lowercase()
-            val body = jsonParser.encodeToString(
+            val mungkinBerpikir = m.contains("2.5") || m.contains("-latest") || m.contains("thinking")
+
+            fun body(thinkingOff: Boolean) = jsonParser.encodeToString(
                 GeminiRequest(
                     contents = listOf(
                         GeminiContent(role = "user", parts = listOf(GeminiPart(text = "ping")))
                     ),
                     generationConfig = GeminiGenerationConfig(
                         temperature = 0.0,
-                        maxOutputTokens = 8,
-                        thinkingConfig = if (m.contains("2.5-flash")) GeminiThinkingConfig(0) else null
+                        maxOutputTokens = 32,
+                        thinkingConfig = if (thinkingOff && mungkinBerpikir) GeminiThinkingConfig(0) else null
                     )
                 )
             )
-            fun doCall(): Pair<Int, String> {
+
+            fun doCall(thinkingOff: Boolean): Pair<Int, Pair<String, String>> {
                 val request = okhttpAuth(Request.Builder(), key)
                     .url("https://generativelanguage.googleapis.com/v1beta/$model:generateContent")
                     .header("Content-Type", "application/json")
-                    .post(body.toRequestBody(Http.jsonMedia))
+                    .post(body(thinkingOff).toRequestBody(Http.jsonMedia))
                     .build()
                 Http.testClient.newCall(request).execute().use { response ->
                     val errBody = if (response.isSuccessful) null else
                         try { response.body?.string() } catch (_: Exception) { null }
-                    return Pair(response.code, extractError(errBody, "HTTP ${response.code}"))
+                    val rawBody = if (response.isSuccessful)
+                        try { response.body?.string() } catch (_: Exception) { null } else errBody
+                    return Pair(response.code, Pair(extractError(errBody, "HTTP ${response.code}"), rawBody ?: ""))
                 }
             }
 
-            var (code, err) = doCall()
+            var (code, pair) = doCall(mungkinBerpikir)
+            var err = pair.first
+            var rawOk = pair.second
+
+            // Model menolak thinkingConfig → coba sekali lagi TANPA thinkingConfig
+            if (code == 400 && err.lowercase().contains("thinking")) {
+                val ulang = doCall(false)
+                code = ulang.first; err = ulang.second.first; rawOk = ulang.second.second
+            }
+
             if (code == 429) {
-                // Kuota sesaat habis — hormati retryDelay Google, coba ulang sekali
                 val wait = Regex("retryDelay\"?\\s*:\\s*\"(\\d+)s")
                     .find(err)?.groupValues?.get(1)?.toIntOrNull()?.coerceIn(1, 30) ?: 12
                 delay(wait * 1000L)
-                val retry = doCall()
-                code = retry.first
-                err = retry.second
+                val retry = doCall(mungkinBerpikir && !err.lowercase().contains("thinking"))
+                code = retry.first; err = retry.second.first; rawOk = retry.second.second
             }
+
             when {
-                code in 200..299 -> ModelTestResult(testing = false, ok = true, message = "SIAP DIPAKAI")
+                code in 200..299 -> {
+                    val kosong = try {
+                        val chunk = jsonParser.decodeFromString<GeminiChunk>(rawOk)
+                        val cand = chunk.candidates.firstOrNull()
+                        val t = cand?.content?.parts?.mapNotNull { it.text }?.joinToString("")?.trim()
+                        t.isNullOrEmpty()
+                    } catch (_: Exception) { false }
+                    ModelTestResult(
+                        testing = false, ok = true,
+                        message = if (kosong) "SIAP (ping kosong — model butuh prompt lebih besar)" else "SIAP DIPAKAI"
+                    )
+                }
                 code == 429 -> ModelTestResult(
                     testing = false,
                     ok = false,

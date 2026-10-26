@@ -54,7 +54,7 @@ object SecureStore {
     fun decrypt(stored: String): String? = try {
         if (!stored.startsWith(PREFIX)) stored
         else {
-            val key = getOrCreateKey() ?: return null
+            val key = getOrCreateKey() ?: return ""
             val raw = Base64.decode(stored.removePrefix(PREFIX), Base64.NO_WRAP)
             val spec = GCMParameterSpec(128, raw, 0, 12)
             val cipher = Cipher.getInstance(TRANSFORM)
@@ -62,6 +62,9 @@ object SecureStore {
             String(cipher.doFinal(raw, 12, raw.size - 12), Charsets.UTF_8)
         }
     } catch (_: Exception) {
-        null
+        // K14 — nilai terenkripsi rusak / kunci KeyStore hilang → kosongkan
+        // supaya UI jelas "key belum ada" dan pemilik menempel ulang, BUKAN
+        // mengirim sampah terenkripsi ke Google sebagai API key.
+        if (stored.startsWith(PREFIX)) "" else null
     }
 }

@@ -13,20 +13,27 @@ import okhttp3.RequestBody.Companion.toRequestBody
  *
  *   POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
  *   Header: Content-Type: application/json
- *           x-goog-api-key: <API key>
+ *           X-goog-api-key: <API key>
  *
- * NON-STREAMING. Satu permintaan → satu jawaban utuh. Tidak ada lagi jalur
- * SSE/streaming yang di-buffer sebagian jaringan seluler Indonesia sehingga
- * terlihat "loading lama lalu gagal semua".
+ * NON-STREAMING. Satu permintaan → satu jawaban utuh.
  *
- * Model diambil dari pengaturan (di-fetch dari ListModels) — TIDAK ADA HARDCODE.
+ * K14 — TANGGA ADAPTIF 3 BENTUK (satu model, tiga bentuk badan permintaan):
+ *  1. PENUH   : tools (kalau riset aktif) + thinking dimatikan utk model yang
+ *               cuma-cuma bisa berpikir (keluarga 2.5 / alias -latest).
+ *  2. TANPA TOOLS : thinking off, tanpa google_search.
+ *  3. BENTUK CURL BUKTI : badan persis curl pemilik — contents saja, TANPA
+ *               generationConfig apa pun. Bentuk inilah yang terbukti jalan di
+ *               nyaring, jadi selalu jadi bentuk penyelamat terakhir.
+ * Turun satu anak tangga tiap kena 400/404/5xx ATAU jawaban kosong (mis. token
+ * habis dimakan "thinking") — bukti lapangan: 2.5 bisa menghabiskan seluruh
+ * budget token utk berpikir lalu mengirim teks kosong.
  */
 class GeminiClient : AiClient {
 
     private fun url(model: String): String =
         "https://generativelanguage.googleapis.com/v1beta/$model:generateContent"
 
-    /** Auth selalu lewat HEADER x-goog-api-key (key baru "AQ." & lama "AIza." sama-sama didukung). */
+    /** Auth selalu lewat HEADER X-goog-api-key (key "AQ." baru & "AIza" lama). */
     private fun request(model: String, key: String, body: String): Request =
         okhttpAuth(Request.Builder(), key)
             .url(url(model))
@@ -34,43 +41,55 @@ class GeminiClient : AiClient {
             .post(body.toRequestBody(Http.jsonMedia))
             .build()
 
-    /**
-     * Config generasi adaptif per model (aturan resmi Google):
-     * - HANYA keluarga 2.5-flash yang boleh thinkingBudget = 0 (model lain 400 / wajib berpikir).
-     * - Versi minimal TANPA thinking/tools untuk fallback kalau model menolak.
-     */
-    private fun genConfig(model: String, minimal: Boolean): GeminiGenerationConfig {
-        if (minimal) return GeminiGenerationConfig(maxOutputTokens = 8192)
+    private fun contentsOf(history: List<ChatMessage>): List<GeminiContent> =
+        history.map { msg ->
+            GeminiContent(
+                role = if (msg.role == "user") "user" else "model",
+                parts = listOf(GeminiPart(text = msg.text))
+            )
+        }
+
+    /** Model yang mungkin berpikir: keluarga 2.5 apa pun bentuk namanya + alias -latest. */
+    private fun mungkinBerpikir(model: String): Boolean {
         val m = model.lowercase()
-        val allowThinkingOff = m.contains("2.5-flash")
-        return GeminiGenerationConfig(
-            maxOutputTokens = 8192,
-            thinkingConfig = if (allowThinkingOff) GeminiThinkingConfig(0) else null
-        )
+        return m.contains("2.5") || m.contains("-latest") || m.contains("thinking")
     }
 
     private fun buildBody(
         history: List<ChatMessage>,
         settings: AviSettings,
         withTools: Boolean,
+        thinkingOff: Boolean,
         minimal: Boolean
     ): String {
-        val contents = history.map { msg ->
-            GeminiContent(
-                role = if (msg.role == "user") "user" else "model",
-                parts = listOf(GeminiPart(text = msg.text))
+        val contents = contentsOf(history)
+        if (minimal) {
+            // BENTUK CURL BUKTI pemilik — tanpa generationConfig, tanpa tools.
+            return jsonParser.encodeToString(
+                GeminiRequest(
+                    contents = contents,
+                    systemInstruction = GeminiContent(
+                        role = "user",
+                        parts = listOf(GeminiPart(text = SystemPrompts.build(settings)))
+                    )
+                )
             )
         }
-        val req = GeminiRequest(
-            contents = contents,
-            systemInstruction = GeminiContent(
-                role = "user",
-                parts = listOf(GeminiPart(text = SystemPrompts.build(settings)))
-            ),
-            tools = if (withTools && settings.webSearch) listOf(GeminiTool()) else null,
-            generationConfig = genConfig(settings.geminiModel, minimal)
+        return jsonParser.encodeToString(
+            GeminiRequest(
+                contents = contents,
+                systemInstruction = GeminiContent(
+                    role = "user",
+                    parts = listOf(GeminiPart(text = SystemPrompts.build(settings)))
+                ),
+                tools = if (withTools && settings.webSearch) listOf(GeminiTool()) else null,
+                generationConfig = GeminiGenerationConfig(
+                    maxOutputTokens = 8192,
+                    thinkingConfig = if (thinkingOff && mungkinBerpikir(settings.geminiModel))
+                        GeminiThinkingConfig(0) else null
+                )
+            )
         )
-        return jsonParser.encodeToString(req)
     }
 
     override suspend fun stream(history: List<ChatMessage>, settings: AviSettings, callback: AiStreamCallback) {
@@ -86,33 +105,45 @@ class GeminiClient : AiClient {
                 return@withContext
             }
 
-            // Tangga fallback: (tools, config penuh) → (tanpa tools, config minimal).
-            // Gagal 400/404/500/503 → turun ke langkah berikutnya DENGAN MODEL YANG SAMA.
-            // 429/401/403 → berhenti dengan pesan yang jelas.
-            val ladder = listOf(
-                settings.webSearch to false,
-                false to true
+            // Tangga K14: (tools, thinkingOff, minimal)
+            val tangga = listOf(
+                Triple(true, true, false),
+                Triple(false, true, false),
+                Triple(false, false, true)
             )
-            for ((index, step) in ladder.withIndex()) {
-                val (useTools, minimal) = step
-                val body = buildBody(history, settings, withTools = useTools, minimal = minimal)
 
-                val response = Http.client.newCall(request(model, key, body)).execute()
+            var kodeTerakhir = 0
+            var pesanTerakhir = ""
+            for ((index, step) in tangga.withIndex()) {
+                val (useTools, thinkingOff, minimal) = step
+                val body = buildBody(history, settings, useTools, thinkingOff, minimal)
+
+                val response = try {
+                    Http.client.newCall(request(model, key, body)).execute()
+                } catch (e: Exception) {
+                    // Jaringan putus — tidak ada gunanya turun tangga (bukan penolakan model)
+                    callback.onError(
+                        "Koneksi ke Google terputus (${e.message ?: "unknown"}). " +
+                            "Cek internet, VPN, lalu coba lagi ya pak."
+                    )
+                    return@withContext
+                }
+
                 response.use {
                     val code = it.code
                     val errBody = if (it.isSuccessful) null else
                         try { it.body?.string() } catch (_: Exception) { null }
+                    val message = extractError(errBody, "HTTP $code")
+                    kodeTerakhir = code
+                    pesanTerakhir = message
 
                     if (!it.isSuccessful) {
-                        val message = extractError(errBody, "HTTP $code")
-                        // Blok tingkat-project (free tier/lokasi): mencoba langkah lain
-                        // PERCUMA, semua model kena penolakan sama → berhenti sekarang.
                         if (isProjectLevelBlock(code, message)) {
                             callback.onError(humanizeError(code, message, model))
                             return@withContext
                         }
                         val retriable = code == 400 || code == 404 || code == 500 || code == 503
-                        if (index == 0 && retriable) return@use // turun ke langkah minimal
+                        if (index < tangga.lastIndex && retriable) return@use // turun tangga
                         callback.onError(humanizeError(code, message, model))
                         return@withContext
                     }
@@ -131,13 +162,16 @@ class GeminiClient : AiClient {
                         ?.trim()
                         .orEmpty()
 
-                    val blocked = chunk?.promptFeedback?.blockReason
                     if (text.isNotEmpty()) {
                         callback.onDelta(text)
                         callback.onComplete(text)
                         return@withContext
                     }
 
+                    // 200 tapi kosong → turun tangga (bentuk berikutnya), kecuali ini bentuk terakhir.
+                    if (index < tangga.lastIndex) return@use
+
+                    val blocked = chunk?.promptFeedback?.blockReason
                     val alasan = when {
                         !blocked.isNullOrBlank() ->
                             "permintaan diblokir filter Google ($blocked)"
@@ -146,12 +180,13 @@ class GeminiClient : AiClient {
                         finishReason == "RECITATION" ->
                             "jawaban dicegah karena mirip sumber tertentu"
                         finishReason == "MAX_TOKENS" ->
-                            "token output habis — turunkan panjang konteks"
+                            "budget token habis (umumnya dimakan proses berpikir model)"
                         else -> "model merespons kosong"
                     }
                     callback.onError(
-                        "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}) — $alasan." +
-                            " Coba pilih model lain di Pusat Kendali ya, pak."
+                        "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}) — $alasan. " +
+                            "Ketiga bentuk permintaan (termasuk bentuk curl bukti Pak) sudah dicoba. " +
+                            "Coba UJI SEMUA MODEL di Pusat Kendali lalu pilih model berbadge ✓ ya, pak."
                     )
                     return@withContext
                 }

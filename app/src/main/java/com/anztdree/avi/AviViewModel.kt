@@ -113,6 +113,11 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private val _modelTest = MutableStateFlow<Map<String, ModelTestResult>>(emptyMap())
     val modelTest: StateFlow<Map<String, ModelTestResult>> = _modelTest.asStateFlow()
 
+    /** K14 — progres UJI SEMUA MODEL: (sudah diuji, total) — null kalau tidak jalan. */
+    private val _batchTest = MutableStateFlow<Pair<Int, Int>?>(null)
+    val batchTest: StateFlow<Pair<Int, Int>?> = _batchTest.asStateFlow()
+    private var batchJob: Job? = null
+
     /** K11 — hasil diagnosa koneksi (Pusat Kendali → DIAGNOSA KONEKSI) */
     private val _diagnosis = MutableStateFlow<DiagnoseResult?>(null)
     val diagnosis: StateFlow<DiagnoseResult?> = _diagnosis.asStateFlow()
@@ -654,6 +659,47 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val r = ModelCatalog.testModel(key, name)
             _modelTest.value = _modelTest.value + (name to r)
+        }
+    }
+
+    /**
+     * K14 — UJI SEMUA MODEL: ping SEMUA model chat di daftar satu per satu
+     * (bukan cuma satu generasi). Hasil per model tampil di kartu masing-masing
+     * (✓ SIAP / ✗ gagal + alasan Google). Tekan lagi utk membatalkan.
+     */
+    fun testAllModels() {
+        if (batchJob?.isActive == true) {          // sedang jalan → batalkan
+            batchJob?.cancel()
+            _batchTest.value = null
+            return
+        }
+        val key = _settings.value.geminiKey.trim()
+        if (key.isBlank()) {
+            _modelsError.value = "Isi API key Gemini dulu, pak."
+            return
+        }
+        val daftar = _models.value.filter { it.canChat }
+        if (daftar.isEmpty()) {
+            _modelsError.value = "Muat Daftar Model dulu, pak."
+            return
+        }
+        batchJob = viewModelScope.launch {
+            var selesai = 0
+            try {
+                for (info in daftar) {
+                    _modelTest.value = _modelTest.value + (info.name to ModelTestResult(true, false, "Menguji…"))
+                    val r = ModelCatalog.testModel(key, info.name)
+                    _modelTest.value = _modelTest.value + (info.name to r)
+                    selesai++
+                    _batchTest.value = selesai to daftar.size
+                    delay(700)   // toleransi limit RPM gratis
+                }
+            } catch (_: CancellationException) {
+                // dibatalkan pemilik — biarkan hasil sebagian tetap tampil
+            } finally {
+                delay(4000)      // beri waktu ringkasan terbaca
+                _batchTest.value = null
+            }
         }
     }
 

@@ -103,6 +103,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
     val modelsLoading by vm.modelsLoading.collectAsState()
     val modelsError by vm.modelsError.collectAsState()
     val modelTest by vm.modelTest.collectAsState()
+    val batchTest by vm.batchTest.collectAsState()   // K14 — progres uji semua model
     val diagnosis by vm.diagnosis.collectAsState()
     val memories by vm.memories.collectAsState()
     val protocols by vm.protocols.collectAsState()
@@ -318,6 +319,45 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                         }
                     }
                 }
+                Spacer(Modifier.height(8.dp))
+
+                // ============ K14 — UJI SEMUA MODEL (semua generasi, bukan cuma 2.5) ============
+                val sedangBatch = batchTest != null
+                OutlinedButton(
+                    onClick = { vm.testAllModels() },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = palette.accent)
+                ) {
+                    if (sedangBatch) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(13.dp),
+                            strokeWidth = 2.dp,
+                            color = palette.accent
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            "MENGUJI ${batchTest!!.first}/${batchTest!!.second} — SENTUH UTK BATAL",
+                            fontSize = 11.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold
+                        )
+                    } else {
+                        Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(13.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "UJI SEMUA MODEL (${chatModels.size})",
+                            fontSize = 11.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                if (!sedangBatch && modelTest.isNotEmpty()) {
+                    val siap = modelTest.values.count { it.ok }
+                    Text(
+                        "Hasil uji terakhir: $siap SIAP dari ${modelTest.size} model dicoba",
+                        color = if (siap > 0) palette.accent else palette.danger,
+                        fontSize = 10.sp,
+                        lineHeight = 13.sp
+                    )
+                }
+
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = {
@@ -896,8 +936,14 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 )
             }
             Spacer(Modifier.height(8.dp))
+            // K14 — versi APK terlihat jelas: pemilik bisa memastikan build terbaru terpasang
+            val versiAvi = remember {
+                try {
+                    context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "?"
+                } catch (_: Exception) { "?" }
+            }
             Text(
-                "${d.device} · ${d.androidVersion}",
+                "AVI v$versiAvi · ${d.device} · ${d.androidVersion}",
                 color = palette.textDim,
                 fontSize = 11.sp,
                 fontFamily = AviHud

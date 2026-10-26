@@ -45,8 +45,10 @@ object CloudTts {
                         )
                     )
                 )
-                val request = Request.Builder()
-                    .url("https://generativelanguage.googleapis.com/v1beta/$model:generateContent?key=$key")
+                val request = okhttpAuth(Request.Builder(), key)
+                    // K14 — auth lewat HEADER X-goog-api-key (key "AQ." baru tidak
+                    // dijamin lewat ?key= query param)
+                    .url("https://generativelanguage.googleapis.com/v1beta/$model:generateContent")
                     .header("Content-Type", "application/json")
                     .post(jsonParser.encodeToString(body).toRequestBody(Http.jsonMedia))
                     .build()
