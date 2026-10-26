@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Uji key & SEMUA model (spesifikasi pemilik: POST :generateContent NON-streaming + header X-goog-api-key)
+      - name: Uji key & SEMUA model (spec pemilik — non-streaming + header X-goog-api-key)
         env:
           GEMINI_KEY: ${{ secrets.GEMINI_DIAG_KEY }}
         run: |
