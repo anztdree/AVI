@@ -1,0 +1,111 @@
+name: "DIAG-429 (akar masalah chat — tools vs tanpa-tools)"
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Matriks diferensial — pisahkan bahan penyebab 429
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_DIAG_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import json, time, urllib.request, urllib.error, os, sys
+
+          KEY = os.environ.get("GEMINI_KEY", "").strip()
+          if not KEY:
+              print("SECRET GEMINI_DIAG_KEY belum diisi!"); sys.exit(1)
+          BASE = "https://generativelanguage.googleapis.com/v1beta"
+          SYS = "Kamu AVI, asisten virtual berbahasa Indonesia. Jawab singkat."
+
+          def call(model, body, tag):
+              url = f"{BASE}/{model}:generateContent"
+              data = json.dumps(body).encode()
+              req = urllib.request.Request(url, data=data, method="POST")
+              req.add_header("Content-Type", "application/json")
+              req.add_header("X-goog-api-key", KEY)
+              t0 = time.time()
+              try:
+                  with urllib.request.urlopen(req, timeout=45) as r:
+                      dt = time.time() - t0
+                      out = json.loads(r.read().decode())
+                      cand = (out.get("candidates") or [{}])[0]
+                      parts = ((cand.get("content") or {}).get("parts") or [])
+                      text = "".join(p.get("text", "") for p in parts).strip()
+                      print(f"[{tag}] {model} -> 200 OK ({dt:.1f}s) finish={cand.get('finishReason')} "
+                            f"teks='{text[:60]}'")
+                      return 200
+              except urllib.error.HTTPError as e:
+                  dt = time.time() - t0
+                  raw = e.read().decode(errors="replace")
+                  print(f"[{tag}] {model} -> HTTP {e.code} ({dt:.1f}s)")
+                  # BONGKAR PENUH: quotaMetric, limit, retryDelay
+                  try:
+                      ej = json.loads(raw)
+                      err = ej.get("error", {})
+                      print(f"    status={err.get('status')} message={err.get('message','')[:220]}")
+                      for d in err.get("details", []):
+                          if d.get("@type", "").endswith("QuotaFailure"):
+                              for v in d.get("violations", []):
+                                  qm = v.get("quotaMetric", "?")
+                                  sub = ((v.get("violationValue") or {}) if "violationValue" in v else v)
+                                  print(f"    QUOTA: metric={qm}")
+                                  print(f"           value={json.dumps(v)[:300]}")
+                          if d.get("@type", "").endswith("RetryInfo"):
+                              print(f"    RETRY: {json.dumps(d)[:120]}")
+                      if not err.get("details"):
+                          print("    RAW:", raw[:600])
+                  except Exception:
+                      print("    RAW:", raw[:600])
+                  return e.code
+              except Exception as e:
+                  print(f"[{tag}] {model} -> EXC {e}")
+                  return -1
+
+          MODELS = [
+              "gemini-3.6-flash",
+              "gemini-3.5-flash-lite",
+              "gemini-3.1-flash-lite",
+              "gemini-flash-lite-latest",
+          ]
+
+          summary = []
+          for m in MODELS:
+              print(f"\n================ {m} ================")
+              # S0 — bentuk UJI MODEL (tanpa tools) → dugaan: SIAP
+              r0 = call(m, {"contents":[{"role":"user","parts":[{"text":"ping"}]}],
+                            "generationConfig":{"temperature":0.0,"maxOutputTokens":8}}, "S0-uji   ")
+              time.sleep(3)
+              # S1 — ANAK TANGGA 1 CHAT: systemInstruction + tools google_search + genConfig
+              r1 = call(m, {"contents":[{"role":"user","parts":[{"text":"Halo, apa kabar?"}]}],
+                            "systemInstruction":{"role":"user","parts":[{"text":SYS}]},
+                            "tools":[{"google_search":{}}],
+                            "generationConfig":{"temperature":0.8,"maxOutputTokens":8192}}, "S1-tools ")
+              time.sleep(3)
+              # S2 — PERSIS S1 tapi TANPA tools → dugaan: SIAP kalau tools pelakunya
+              r2 = call(m, {"contents":[{"role":"user","parts":[{"text":"Halo, apa kabar?"}]}],
+                            "systemInstruction":{"role":"user","parts":[{"text":SYS}]},
+                            "generationConfig":{"temperature":0.8,"maxOutputTokens":8192}}, "S2-notool")
+              time.sleep(3)
+              # S3 — bentuk curl bukti pemilik (tanpa genConfig tanpa tools)
+              r3 = call(m, {"contents":[{"parts":[{"text":"Explain how AI works in a few words"}]}]}, "S3-curl  ")
+              time.sleep(3)
+              verdict = "TOOLS PELAKU" if (r0==200 and r1==429 and r2==200) else (
+                        "QUOTA UMUM" if (r0==429) else "LAIN")
+              summary.append((m, r0, r1, r2, r3, verdict))
+
+          print("\n================ RINGKASAN ================")
+          print(f"{'model':28} S0-uji S1-tools S2-notool S3-curl  vonis")
+          for m,r0,r1,r2,r3,v in summary:
+              print(f"{m:28} {r0:6} {r1:7} {r2:9} {r3:7}  {v}")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write("| model | S0 uji | S1 tools | S2 tanpa-tools | S3 curl | vonis |\n|---|---|---|---|---|---|\n")
+              for m,r0,r1,r2,r3,v in summary:
+                  f.write(f"| {m} | {r0} | {r1} | {r2} | {r3} | {v} |\n")
+          PYEOF
