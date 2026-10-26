@@ -1,0 +1,1169 @@
+     1→package com.anztdree.avi.ui
+     2→
+     3→import android.content.Intent
+     4→import android.net.Uri
+     5→import androidx.compose.foundation.Image
+     6→import androidx.compose.foundation.background
+     7→import androidx.compose.foundation.border
+     8→import androidx.compose.foundation.clickable
+     9→import androidx.compose.foundation.layout.Arrangement
+    10→import androidx.compose.foundation.layout.Box
+    11→import androidx.compose.foundation.layout.Column
+    12→import androidx.compose.foundation.layout.Row
+    13→import androidx.compose.foundation.layout.Spacer
+    14→import androidx.compose.foundation.layout.fillMaxSize
+    15→import androidx.compose.foundation.layout.fillMaxWidth
+    16→import androidx.compose.foundation.layout.height
+    17→import androidx.compose.foundation.layout.heightIn
+    18→import androidx.compose.foundation.layout.navigationBarsPadding
+    19→import androidx.compose.foundation.layout.padding
+    20→import androidx.compose.foundation.layout.size
+    21→import androidx.compose.foundation.layout.statusBarsPadding
+    22→import androidx.compose.foundation.layout.width
+    23→import androidx.compose.foundation.rememberScrollState
+    24→import androidx.compose.foundation.shape.CircleShape
+    25→import androidx.compose.foundation.shape.RoundedCornerShape
+    26→import androidx.compose.foundation.verticalScroll
+    27→import androidx.compose.material.icons.Icons
+    28→import androidx.compose.material.icons.automirrored.filled.ArrowBack
+    29→import androidx.compose.material.icons.filled.ArrowDropDown
+    30→import androidx.compose.material.icons.filled.Cancel
+    31→import androidx.compose.material.icons.filled.CheckCircle
+    32→import androidx.compose.material.icons.filled.Delete
+    33→import androidx.compose.material.icons.filled.OpenInNew
+    34→import androidx.compose.material.icons.filled.Refresh
+    35→import androidx.compose.material.icons.filled.Troubleshoot
+    36→import androidx.compose.material.icons.filled.Visibility
+    37→import androidx.compose.material.icons.filled.VisibilityOff
+    38→import androidx.compose.material3.Button
+    39→import androidx.compose.material3.ButtonDefaults
+    40→import androidx.compose.material3.CircularProgressIndicator
+    41→import androidx.compose.material3.DropdownMenu
+    42→import androidx.compose.material3.DropdownMenuItem
+    43→import androidx.compose.material3.Icon
+    44→import androidx.compose.material3.IconButton
+    45→import androidx.compose.material3.OutlinedButton
+    46→import androidx.compose.material3.OutlinedTextField
+    47→import androidx.compose.material3.OutlinedTextFieldDefaults
+    48→import androidx.compose.material3.Text
+    49→import androidx.compose.material3.TextButton
+    50→import androidx.compose.runtime.Composable
+    51→import androidx.compose.runtime.LaunchedEffect
+    52→import androidx.compose.runtime.collectAsState
+    53→import androidx.compose.runtime.getValue
+    54→import androidx.compose.runtime.mutableStateOf
+    55→import androidx.compose.runtime.remember
+    56→import androidx.compose.runtime.setValue
+    57→import androidx.compose.ui.Alignment
+    58→import androidx.compose.ui.Modifier
+    59→import androidx.compose.ui.draw.clip
+    60→import androidx.compose.ui.graphics.Brush
+    61→import androidx.compose.ui.graphics.Color
+    62→import androidx.compose.ui.layout.ContentScale
+    63→import androidx.compose.ui.platform.LocalContext
+    64→import androidx.compose.ui.res.painterResource
+    65→import androidx.compose.ui.text.font.FontStyle
+    66→import androidx.compose.ui.text.font.FontWeight
+    67→import androidx.compose.ui.text.input.PasswordVisualTransformation
+    68→import androidx.compose.ui.text.input.VisualTransformation
+    69→import androidx.compose.ui.text.style.TextAlign
+    70→import androidx.compose.ui.text.style.TextOverflow
+    71→import androidx.compose.ui.unit.dp
+    72→import androidx.compose.ui.unit.sp
+    73→import com.anztdree.avi.AviViewModel
+    74→import com.anztdree.avi.R
+    75→import com.anztdree.avi.ai.DiagnoseResult
+    76→import com.anztdree.avi.ai.ModelCatalog
+    77→import com.anztdree.avi.data.AiProvider
+    78→import com.anztdree.avi.data.AviSettings
+    79→import com.anztdree.avi.data.Protocol
+    80→import com.anztdree.avi.device.DeviceDiagnostics
+    81→import com.anztdree.avi.ui.theme.AviDisplay
+    82→import com.anztdree.avi.ui.theme.AviHud
+    83→import com.anztdree.avi.ui.theme.AviPalette
+    84→import com.anztdree.avi.ui.theme.AviTheme
+    85→import com.anztdree.avi.ui.theme.LocalAviPalette
+    86→import com.anztdree.avi.ui.theme.MarkPalettes
+    87→import java.util.Locale
+    88→import java.util.UUID
+    89→
+    90→@Composable
+    91→fun SettingsScreen(vm: AviViewModel, onBack: () -> Unit) {
+    92→    val settings by vm.settings.collectAsState()
+    93→    // Live preview tema — mark diambil langsung dari settings
+    94→    AviTheme(mark = settings.themeMark) {
+    95→        SettingsScreenContent(vm = vm, settings = settings, onBack = onBack)
+    96→    }
+    97→}
+    98→
+    99→@Composable
+   100→private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBack: () -> Unit) {
+   101→    val palette = LocalAviPalette.current
+   102→    val models by vm.models.collectAsState()
+   103→    val modelsLoading by vm.modelsLoading.collectAsState()
+   104→    val modelsError by vm.modelsError.collectAsState()
+   105→    val modelTest by vm.modelTest.collectAsState()
+   106→    val batchTest by vm.batchTest.collectAsState()   // K14 — progres uji semua model
+   107→    val pickNote by vm.pickNote.collectAsState()     // K14 — catatan auto-pick
+   108→    val diagnosis by vm.diagnosis.collectAsState()
+   109→    val memories by vm.memories.collectAsState()
+   110→    val protocols by vm.protocols.collectAsState()
+   111→    val usageToday by vm.usageToday.collectAsState()
+   112→    val diagnostics by vm.diagnostics.collectAsState()
+   113→    val ttsReady by vm.ttsReady.collectAsState()
+   114→    val context = LocalContext.current
+   115→
+   116→    LaunchedEffect(Unit) { vm.refreshDiagnostics() }
+   117→
+   118→    var showKey by remember { mutableStateOf(false) }
+   119→    var inputMem by remember { mutableStateOf("") }
+   120→    var protoName by remember { mutableStateOf("") }
+   121→    var protoPhrase by remember { mutableStateOf("") }
+   122→    var protoSteps by remember { mutableStateOf("") }
+   123→    var testResult by remember { mutableStateOf<String?>(null) }
+   124→    var ttsModelMenu by remember { mutableStateOf(false) }
+   125→    var voiceMenu by remember { mutableStateOf(false) }
+   126→
+   127→    val brainActive = if (settings.provider == AiProvider.GEMINI) {
+   128→        settings.geminiKey.isNotBlank() && settings.geminiModel.isNotBlank()
+   129→    } else {
+   130→        settings.ocKey.isNotBlank() && settings.ocModel.isNotBlank()
+   131→    }
+   132→
+   133→    Box(modifier = Modifier.fillMaxSize()) {
+   134→        // K12 — latar bintang HD halus di seluruh Pusat Kendali
+   135→        Image(
+   136→            painter = painterResource(R.drawable.bg_stars),
+   137→            contentDescription = null,
+   138→            modifier = Modifier.matchParentSize(),
+   139→            contentScale = ContentScale.Crop,
+   140→            alpha = 0.30f
+   141→        )
+   142→        Box(
+   143→            Modifier
+   144→                .matchParentSize()
+   145→                .background(palette.bg.copy(alpha = 0.74f))
+   146→        )
+   147→        Column(
+   148→            modifier = Modifier
+   149→                .fillMaxSize()
+   150→                .verticalScroll(rememberScrollState())
+   151→                .statusBarsPadding()
+   152→                .navigationBarsPadding()
+   153→                .padding(horizontal = 16.dp, vertical = 8.dp)
+   154→        ) {
+   155→        // ============ HEADER ============
+   156→        Row(verticalAlignment = Alignment.CenterVertically) {
+   157→            IconButton(onClick = onBack) {
+   158→                Icon(
+   159→                    Icons.AutoMirrored.Filled.ArrowBack,
+   160→                    contentDescription = "Kembali",
+   161→                    tint = palette.text
+   162→                )
+   163→            }
+   164→            // K12 — badge inti plasma HD
+   165→            Image(
+   166→                painter = painterResource(R.drawable.tex_core),
+   167→                contentDescription = null,
+   168→                modifier = Modifier
+   169→                    .padding(end = 10.dp)
+   170→                    .size(34.dp)
+   171→                    .clip(CircleShape)
+   172→                    .border(1.dp, palette.accent.copy(alpha = 0.5f), CircleShape),
+   173→                contentScale = ContentScale.Crop
+   174→            )
+   175→            Column {
+   176→                Text(
+   177→                    "PUSAT KENDALI",
+   178→                    color = palette.text,
+   179→                    fontSize = 17.sp,
+   180→                    fontFamily = AviDisplay,
+   181→                    fontWeight = FontWeight.Bold,
+   182→                    letterSpacing = 3.sp
+   183→                )
+   184→                Text(
+   185→                    "SISTEM MARKAS — v1.0.0",
+   186→                    color = palette.textDim,
+   187→                    fontSize = 9.sp,
+   188→                    fontFamily = AviHud,
+   189→                    letterSpacing = 1.sp
+   190→                )
+   191→            }
+   192→        }
+   193→        Spacer(Modifier.height(10.dp))
+   194→
+   195→        // ============ A. OTAK ============
+   196→        SystemHeader(name = "OTAK", active = brainActive, palette = palette)
+   197→        HoloPanel(palette = palette) {
+   198→            Text(
+   199→                "PROVIDER OTAK",
+   200→                color = palette.textDim,
+   201→                fontSize = 10.sp,
+   202→                fontFamily = AviHud,
+   203→                letterSpacing = 1.sp
+   204→            )
+   205→            Spacer(Modifier.height(6.dp))
+   206→            AiProvider.entries.forEach { p ->
+   207→                val selected = settings.provider == p
+   208→                Row(
+   209→                    verticalAlignment = Alignment.CenterVertically,
+   210→                    modifier = Modifier
+   211→                        .fillMaxWidth()
+   212→                        .clip(RoundedCornerShape(10.dp))
+   213→                        .background(if (selected) palette.accent.copy(alpha = 0.10f) else Color.Transparent)
+   214→                        .border(
+   215→                            1.dp,
+   216→                            if (selected) palette.accent.copy(alpha = 0.6f) else palette.panelLight,
+   217→                            RoundedCornerShape(10.dp)
+   218→                        )
+   219→                        .clickable { vm.updateSettings { it.copy(provider = p) } }
+   220→                        .padding(horizontal = 10.dp, vertical = 8.dp)
+   221→                ) {
+   222→                    Box(
+   223→                        modifier = Modifier
+   224→                            .size(16.dp)
+   225→                            .clip(CircleShape)
+   226→                            .border(2.dp, if (selected) palette.accent else palette.textDim, CircleShape),
+   227→                        contentAlignment = Alignment.Center
+   228→                    ) {
+   229→                        if (selected) Box(Modifier.size(7.dp).clip(CircleShape).background(palette.accent))
+   230→                    }
+   231→                    Spacer(Modifier.width(8.dp))
+   232→                    Text(p.label, color = palette.text, fontSize = 12.sp, lineHeight = 15.sp, maxLines = 2)
+   233→                }
+   234→                Spacer(Modifier.height(6.dp))
+   235→            }
+   236→
+   237→            if (settings.provider == AiProvider.GEMINI) {
+   238→                OutlinedTextField(
+   239→                    value = settings.geminiKey,
+   240→                    onValueChange = { v -> vm.updateSettings { it.copy(geminiKey = v) } },
+   241→                    label = { Text("API Key Gemini", color = palette.textDim, fontSize = 12.sp) },
+   242→                    singleLine = true,
+   243→                    visualTransformation = if (showKey) VisualTransformation.None else PasswordVisualTransformation(),
+   244→                    trailingIcon = {
+   245→                        IconButton(onClick = { showKey = !showKey }) {
+   246→                            Icon(
+   247→                                if (showKey) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+   248→                                contentDescription = null,
+   249→                                tint = palette.textDim,
+   250→                                modifier = Modifier.size(18.dp)
+   251→                            )
+   252→                        }
+   253→                    },
+   254→                    modifier = Modifier.fillMaxWidth(),
+   255→                    colors = hudFieldColors(palette)
+   256→                )
+   257→                Spacer(Modifier.height(8.dp))
+   258→                Button(
+   259→                    onClick = { vm.fetchModels() },
+   260→                    enabled = !modelsLoading,
+   261→                    modifier = Modifier.fillMaxWidth(),
+   262→                    colors = ButtonDefaults.buttonColors(
+   263→                        containerColor = palette.accent,
+   264→                        contentColor = palette.bg
+   265→                    )
+   266→                ) {
+   267→                    if (modelsLoading) {
+   268→                        CircularProgressIndicator(
+   269→                            modifier = Modifier.size(14.dp),
+   270→                            strokeWidth = 2.dp,
+   271→                            color = palette.bg
+   272→                        )
+   273→                        Spacer(Modifier.width(8.dp))
+   274→                    } else {
+   275→                        Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(14.dp))
+   276→                        Spacer(Modifier.width(6.dp))
+   277→                    }
+   278→                    Text(
+   279→                        "MUAT DAFTAR MODEL",
+   280→                        fontSize = 12.sp,
+   281→                        fontFamily = AviHud,
+   282→                        fontWeight = FontWeight.Bold
+   283→                    )
+   284→                }
+   285→                modelsError?.let { err ->
+   286→                    Spacer(Modifier.height(4.dp))
+   287→                    Text(err, color = palette.danger, fontSize = 11.sp, lineHeight = 14.sp)
+   288→                }
+   289→                pickNote?.let { catatan ->
+   290→                    Spacer(Modifier.height(4.dp))
+   291→                    Text(catatan, color = palette.accent, fontSize = 11.sp, lineHeight = 14.sp)
+   292→                }
+   293→                Spacer(Modifier.height(8.dp))
+   294→                // K14 — hanya model MURNI-OBROLAN (bukan TTS/gambar/live dsb.)
+   295→                val chatModels = models.filter { it.canChat && it.isPureChat }
+   296→                if (chatModels.isEmpty()) {
+   297→                    Text(
+   298→                        "Tekan MUAT DAFTAR MODEL untuk menarik daftar model terbaru langsung dari Google.",
+   299→                        color = palette.textDim,
+   300→                        fontSize = 11.sp,
+   301→                        lineHeight = 15.sp
+   302→                    )
+   303→                } else {
+   304→                    Column(
+   305→                        modifier = Modifier
+   306→                            .fillMaxWidth()
+   307→                            .heightIn(max = 340.dp)
+   308→                            .clip(RoundedCornerShape(10.dp))
+   309→                            .background(palette.bg.copy(alpha = 0.5f))
+   310→                            .verticalScroll(rememberScrollState()),
+   311→                        verticalArrangement = Arrangement.spacedBy(8.dp)
+   312→                    ) {
+   313→                        chatModels.forEach { info ->
+   314→                            ModelCard(
+   315→                                info = info,
+   316→                                selected = settings.geminiModel == info.name,
+   317→                                onSelect = {
+   318→                                    vm.updateSettings { it.copy(geminiModel = info.name) }
+   319→                                    // Uji otomatis: buktikan model ini benar-benar bisa dipakai
+   320→                                    vm.testModel(info.name)
+   321→                                },
+   322→                                test = modelTest[info.name],
+   323→                                palette = palette
+   324→                            )
+   325→                        }
+   326→                    }
+   327→                }
+   328→                Spacer(Modifier.height(8.dp))
+   329→
+   330→                // ============ K14 — UJI SEMUA MODEL (semua generasi, bukan cuma 2.5) ============
+   331→                val sedangBatch = batchTest != null
+   332→                OutlinedButton(
+   333→                    onClick = { vm.testAllModels() },
+   334→                    modifier = Modifier.fillMaxWidth(),
+   335→                    colors = ButtonDefaults.outlinedButtonColors(contentColor = palette.accent)
+   336→                ) {
+   337→                    if (sedangBatch) {
+   338→                        CircularProgressIndicator(
+   339→                            modifier = Modifier.size(13.dp),
+   340→                            strokeWidth = 2.dp,
+   341→                            color = palette.accent
+   342→                        )
+   343→                        Spacer(Modifier.width(8.dp))
+   344→                        Text(
+   345→                            "MENGUJI ${batchTest!!.first}/${batchTest!!.second} — SENTUH UTK BATAL",
+   346→                            fontSize = 11.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold
+   347→                        )
+   348→                    } else {
+   349→                        Icon(Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(13.dp))
+   350→                        Spacer(Modifier.width(6.dp))
+   351→                        Text(
+   352→                            "UJI SEMUA MODEL (${chatModels.size})",
+   353→                            fontSize = 11.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold
+   354→                        )
+   355→                    }
+   356→                }
+   357→                if (!sedangBatch && modelTest.isNotEmpty()) {
+   358→                    val siap = modelTest.values.count { it.ok }
+   359→                    Text(
+   360→                        "Hasil uji terakhir: $siap SIAP dari ${modelTest.size} model dicoba",
+   361→                        color = if (siap > 0) palette.accent else palette.danger,
+   362→                        fontSize = 10.sp,
+   363→                        lineHeight = 13.sp
+   364→                    )
+   365→                }
+   366→
+   367→                Spacer(Modifier.height(8.dp))
+   368→                OutlinedButton(
+   369→                    onClick = {
+   370→                        try {
+   371→                            context.startActivity(
+   372→                                Intent(Intent.ACTION_VIEW, Uri.parse("https://aistudio.google.com/apikey"))
+   373→                            )
+   374→                        } catch (_: Exception) {
+   375→                        }
+   376→                    }
+   377→                ) {
+   378→                    Icon(
+   379→                        Icons.Default.OpenInNew,
+   380→                        contentDescription = null,
+   381→                        modifier = Modifier.size(13.dp),
+   382→                        tint = palette.accent
+   383→                    )
+   384→                    Spacer(Modifier.width(6.dp))
+   385→                    Text("Buka AI Studio", fontSize = 11.sp, color = palette.accent)
+   386→                }
+   387→
+   388→                // ============ K11 — DIAGNOSA KONEKSI ============
+   389→                Spacer(Modifier.height(10.dp))
+   390→                DiagnosisCard(
+   391→                    diagnosis = diagnosis,
+   392→                    onRun = { vm.runDiagnosis() },
+   393→                    palette = palette
+   394→                )
+   395→
+   396→                Spacer(Modifier.height(2.dp))
+   397→                Text(
+   398→                    "GAYA BICARA",
+   399→                    color = palette.textDim,
+   400→                    fontSize = 10.sp,
+   401→                    fontFamily = AviHud,
+   402→                    letterSpacing = 1.sp
+   403→                )
+   404→                Spacer(Modifier.height(6.dp))
+   405→                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+   406→                    listOf("sopan" to "Sopan", "santai" to "Santai", "jedai" to "Jedai").forEach { pair ->
+   407→                        val value = pair.first
+   408→                        val label = pair.second
+   409→                        val sel = settings.style == value
+   410→                        Box(
+   411→                            modifier = Modifier
+   412→                                .clip(RoundedCornerShape(50))
+   413→                                .background(if (sel) palette.accent.copy(alpha = 0.18f) else palette.panelLight)
+   414→                                .border(
+   415→                                    1.dp,
+   416→                                    if (sel) palette.accent else palette.panelLight,
+   417→                                    RoundedCornerShape(50)
+   418→                                )
+   419→                                .clickable { vm.updateSettings { it.copy(style = value) } }
+   420→                                .padding(horizontal = 14.dp, vertical = 7.dp)
+   421→                        ) {
+   422→                            Text(
+   423→                                label,
+   424→                                color = if (sel) palette.accent else palette.textDim,
+   425→                                fontSize = 12.sp
+   426→                            )
+   427→                        }
+   428→                    }
+   429→                }
+   430→            } else {
+   431→                OutlinedTextField(
+   432→                    value = settings.ocBaseUrl,
+   433→                    onValueChange = { v -> vm.updateSettings { it.copy(ocBaseUrl = v) } },
+   434→                    label = { Text("Base URL", color = palette.textDim, fontSize = 12.sp) },
+   435→                    singleLine = true,
+   436→                    modifier = Modifier.fillMaxWidth(),
+   437→                    colors = hudFieldColors(palette)
+   438→                )
+   439→                Spacer(Modifier.height(6.dp))
+   440→                OutlinedTextField(
+   441→                    value = settings.ocKey,
+   442→                    onValueChange = { v -> vm.updateSettings { it.copy(ocKey = v) } },
+   443→                    label = { Text("API Key", color = palette.textDim, fontSize = 12.sp) },
+   444→                    singleLine = true,
+   445→                    visualTransformation = if (showKey) VisualTransformation.None else PasswordVisualTransformation(),
+   446→                    trailingIcon = {
+   447→                        IconButton(onClick = { showKey = !showKey }) {
+   448→                            Icon(
+   449→                                if (showKey) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+   450→                                contentDescription = null,
+   451→                                tint = palette.textDim,
+   452→                                modifier = Modifier.size(18.dp)
+   453→                            )
+   454→                        }
+   455→                    },
+   456→                    modifier = Modifier.fillMaxWidth(),
+   457→                    colors = hudFieldColors(palette)
+   458→                )
+   459→                Spacer(Modifier.height(6.dp))
+   460→                OutlinedTextField(
+   461→                    value = settings.ocModel,
+   462→                    onValueChange = { v -> vm.updateSettings { it.copy(ocModel = v) } },
+   463→                    label = { Text("Nama Model", color = palette.textDim, fontSize = 12.sp) },
+   464→                    singleLine = true,
+   465→                    modifier = Modifier.fillMaxWidth(),
+   466→                    colors = hudFieldColors(palette)
+   467→                )
+   468→            }
+   469→        }
+   470→        Spacer(Modifier.height(14.dp))
+   471→
+   472→        // ============ B. SUARA ============
+   473→        SystemHeader(name = "SUARA", active = ttsReady, palette = palette)
+   474→        HoloPanel(palette = palette) {
+   475→            Text(
+   476→                "AVI selalu membacakan setiap jawaban — wajib, tanpa tombol",
+   477→                color = palette.textDim,
+   478→                fontSize = 11.sp,
+   479→                lineHeight = 15.sp
+   480→            )
+   481→            Spacer(Modifier.height(6.dp))
+   482→            ReactorToggle(
+   483→                label = "Mode percakapan beruntun",
+   484→                checked = settings.autoListen,
+   485→                onChange = { v -> vm.updateSettings { it.copy(autoListen = v) } },
+   486→                palette = palette
+   487→            )
+   488→            PowerDial(
+   489→                label = "Kecepatan bicara",
+   490→                value = settings.speechRate,
+   491→                valueRange = 0.5f..2.0f,
+   492→                display = String.format(Locale.US, "%.1f x", settings.speechRate),
+   493→                onChange = { v -> vm.updateSettings { it.copy(speechRate = v) } },
+   494→                palette = palette
+   495→            )
+   496→            PowerDial(
+   497→                label = "Nada bicara",
+   498→                value = settings.pitch,
+   499→                valueRange = 0.5f..2.0f,
+   500→                display = String.format(Locale.US, "%.1f x", settings.pitch),
+   501→                onChange = { v -> vm.updateSettings { it.copy(pitch = v) } },
+   502→                palette = palette
+   503→            )
+   504→            Spacer(Modifier.height(8.dp))
+   505→            SectionTitle("SUARA NATURAL CLOUD", palette)
+   506→            ReactorToggle(
+   507→                label = "Gunakan suara natural cloud (model TTS Google)",
+   508→                checked = settings.cloudTtsEnabled,
+   509→                onChange = { v -> vm.updateSettings { it.copy(cloudTtsEnabled = v) } },
+   510→                palette = palette
+   511→            )
+   512→            if (settings.cloudTtsEnabled) {
+   513→                Spacer(Modifier.height(6.dp))
+   514→                val ttsModels = models.filter { it.canTts }
+   515→                Box {
+   516→                    OutlinedButton(
+   517→                        onClick = { ttsModelMenu = true },
+   518→                        modifier = Modifier.fillMaxWidth()
+   519→                    ) {
+   520→                        Text(
+   521→                            ttsModels.firstOrNull { it.name == settings.cloudTtsModel }?.shortName?.uppercase()
+   522→                                ?: "PILIH MODEL TTS",
+   523→                            color = if (settings.cloudTtsModel.isBlank()) palette.textDim else palette.accent,
+   524→                            fontSize = 11.sp,
+   525→                            fontFamily = AviHud,
+   526→                            modifier = Modifier.weight(1f),
+   527→                            maxLines = 1,
+   528→                            overflow = TextOverflow.Ellipsis
+   529→                        )
+   530→                        Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = palette.textDim)
+   531→                    }
+   532→                    DropdownMenu(expanded = ttsModelMenu, onDismissRequest = { ttsModelMenu = false }) {
+   533→                        if (ttsModels.isEmpty()) {
+   534→                            DropdownMenuItem(
+   535→                                text = {
+   536→                                    Text(
+   537→                                        "Tidak ada model TTS — muat daftar model dulu, pak.",
+   538→                                        color = palette.textDim,
+   539→                                        fontSize = 11.sp
+   540→                                    )
+   541→                                },
+   542→                                onClick = { ttsModelMenu = false }
+   543→                            )
+   544→                        }
+   545→                        ttsModels.forEach { m ->
+   546→                            DropdownMenuItem(
+   547→                                text = {
+   548→                                    Text(
+   549→                                        m.shortName,
+   550→                                        color = if (m.name == settings.cloudTtsModel) palette.accent else palette.text,
+   551→                                        fontSize = 12.sp,
+   552→                                        fontFamily = AviHud
+   553→                                    )
+   554→                                },
+   555→                                onClick = {
+   556→                                    vm.updateSettings { it.copy(cloudTtsModel = m.name) }
+   557→                                    ttsModelMenu = false
+   558→                                }
+   559→                            )
+   560→                        }
+   561→                    }
+   562→                }
+   563→                Spacer(Modifier.height(6.dp))
+   564→                Box {
+   565→                    OutlinedButton(
+   566→                        onClick = { voiceMenu = true },
+   567→                        modifier = Modifier.fillMaxWidth()
+   568→                    ) {
+   569→                        Text(
+   570→                            if (settings.cloudVoice.isBlank()) "PILIH KARAKTER SUARA"
+   571→                            else "SUARA: ${settings.cloudVoice.uppercase()}",
+   572→                            color = palette.accent,
+   573→                            fontSize = 11.sp,
+   574→                            fontFamily = AviHud,
+   575→                            modifier = Modifier.weight(1f),
+   576→                            maxLines = 1,
+   577→                            overflow = TextOverflow.Ellipsis
+   578→                        )
+   579→                        Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = palette.textDim)
+   580→                    }
+   581→                    DropdownMenu(expanded = voiceMenu, onDismissRequest = { voiceMenu = false }) {
+   582→                        ModelCatalog.ttsVoices.forEach { v ->
+   583→                            DropdownMenuItem(
+   584→                                text = {
+   585→                                    Text(
+   586→                                        v,
+   587→                                        color = if (v == settings.cloudVoice) palette.accent else palette.text,
+   588→                                        fontSize = 12.sp,
+   589→                                        fontFamily = AviHud
+   590→                                    )
+   591→                                },
+   592→                                onClick = {
+   593→                                    vm.updateSettings { it.copy(cloudVoice = v) }
+   594→                                    voiceMenu = false
+   595→                                }
+   596→                            )
+   597→                        }
+   598→                    }
+   599→                }
+   600→                Spacer(Modifier.height(8.dp))
+   601→                OutlinedButton(
+   602→                    onClick = { vm.speakTest("Hay pak, semua sistem normal. AVI siap membantu.") },
+   603→                    modifier = Modifier.fillMaxWidth()
+   604→                ) {
+   605→                    Text(
+   606→                        "TES SUARA AVI",
+   607→                        color = palette.accent,
+   608→                        fontSize = 12.sp,
+   609→                        fontFamily = AviHud,
+   610→                        fontWeight = FontWeight.Bold
+   611→                    )
+   612→                }
+   613→            }
+   614→            Spacer(Modifier.height(8.dp))
+   615→            SectionTitle("RUANG TES MENDENGAR", palette)
+   616→            OutlinedButton(
+   617→                onClick = { vm.listenOnce { result -> testResult = result } },
+   618→                modifier = Modifier.fillMaxWidth()
+   619→            ) {
+   620→                Text(
+   621→                    "TES MENDENGAR",
+   622→                    color = palette.accent,
+   623→                    fontSize = 12.sp,
+   624→                    fontFamily = AviHud,
+   625→                    fontWeight = FontWeight.Bold
+   626→                )
+   627→            }
+   628→            testResult?.let { res ->
+   629→                Spacer(Modifier.height(4.dp))
+   630→                Text(
+   631→                    "AVI dengar: \u201C$res\u201D",
+   632→                    color = palette.accent,
+   633→                    fontSize = 12.sp,
+   634→                    fontStyle = FontStyle.Italic
+   635→                )
+   636→            }
+   637→        }
+   638→        Spacer(Modifier.height(14.dp))
+   639→
+   640→        // ============ C. TAMPILAN ============
+   641→        SystemHeader(name = "TAMPILAN", active = true, palette = palette)
+   642→        HoloPanel(palette = palette) {
+   643→            Text(
+   644→                "TEMA MARK",
+   645→                color = palette.textDim,
+   646→                fontSize = 10.sp,
+   647→                fontFamily = AviHud,
+   648→                letterSpacing = 1.sp
+   649→            )
+   650→            Spacer(Modifier.height(8.dp))
+   651→            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+   652→                listOf("MK1" to "MK-I", "MK2" to "MK-II", "MK3" to "MK-III").forEach { pair ->
+   653→                    val key = pair.first
+   654→                    val label = pair.second
+   655→                    val markPal = MarkPalettes[key] ?: MarkPalettes.getValue("MK1")
+   656→                    val sel = settings.themeMark == key
+   657→                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+   658→                        Box(
+   659→                            modifier = Modifier
+   660→                                .size(56.dp)
+   661→                                .clip(CircleShape)
+   662→                                .background(
+   663→                                    Brush.radialGradient(listOf(markPal.accent, markPal.gold, markPal.panel))
+   664→                                )
+   665→                                .border(
+   666→                                    if (sel) 2.dp else 1.dp,
+   667→                                    if (sel) markPal.accent else palette.textDim.copy(alpha = 0.35f),
+   668→                                    CircleShape
+   669→                                )
+   670→                                .clickable { vm.updateSettings { it.copy(themeMark = key) } }
+   671→                        )
+   672→                        Spacer(Modifier.height(4.dp))
+   673→                        Text(
+   674→                            label,
+   675→                            color = if (sel) palette.accent else palette.textDim,
+   676→                            fontSize = 10.sp,
+   677→                            fontFamily = AviHud
+   678→                        )
+   679→                    }
+   680→                }
+   681→            }
+   682→            Spacer(Modifier.height(8.dp))
+   683→            ReactorToggle(
+   684→                label = "Boot sequence sinematik",
+   685→                checked = settings.bootEnabled,
+   686→                onChange = { v -> vm.updateSettings { it.copy(bootEnabled = v) } },
+   687→                palette = palette
+   688→            )
+   689→            ReactorToggle(
+   690→                label = "Parallax giroskop",
+   691→                checked = settings.parallaxEnabled,
+   692→                onChange = { v -> vm.updateSettings { it.copy(parallaxEnabled = v) } },
+   693→                palette = palette
+   694→            )
+   695→            ReactorToggle(
+   696→                label = "Getaran khas status",
+   697→                checked = settings.hapticsEnabled,
+   698→                onChange = { v -> vm.updateSettings { it.copy(hapticsEnabled = v) } },
+   699→                palette = palette
+   700→            )
+   701→            ReactorToggle(
+   702→                label = "Diagnostik orbit",
+   703→                checked = settings.diagnosticsOrbit,
+   704→                onChange = { v -> vm.updateSettings { it.copy(diagnosticsOrbit = v) } },
+   705→                palette = palette
+   706→            )
+   707→            ReactorToggle(
+   708→                label = "Mode hemat daya (matikan efek berat)",
+   709→                checked = settings.powerSave,
+   710→                onChange = { v -> vm.updateSettings { it.copy(powerSave = v) } },
+   711→                palette = palette
+   712→            )
+   713→        }
+   714→        Spacer(Modifier.height(14.dp))
+   715→
+   716→        // ============ D. MEMORI ============
+   717→        SystemHeader(name = "MEMORI", active = memories.isNotEmpty(), palette = palette)
+   718→        HoloPanel(palette = palette) {
+   719→            Text(
+   720→                "Fakta yang AVI ingat permanen di setiap obrolan, pak.",
+   721→                color = palette.textDim,
+   722→                fontSize = 11.sp
+   723→            )
+   724→            Spacer(Modifier.height(8.dp))
+   725→            if (memories.isNotEmpty()) {
+   726→                Column(
+   727→                    modifier = Modifier
+   728→                        .fillMaxWidth()
+   729→                        .heightIn(max = 240.dp)
+   730→                        .verticalScroll(rememberScrollState()),
+   731→                    verticalArrangement = Arrangement.spacedBy(6.dp)
+   732→                ) {
+   733→                    memories.forEach { mem ->
+   734→                        Row(verticalAlignment = Alignment.CenterVertically) {
+   735→                            Text(
+   736→                                "• ${mem.text}",
+   737→                                color = palette.text,
+   738→                                fontSize = 12.sp,
+   739→                                lineHeight = 16.sp,
+   740→                                modifier = Modifier.weight(1f)
+   741→                            )
+   742→                            IconButton(onClick = { vm.deleteMemory(mem.id) }, modifier = Modifier.size(30.dp)) {
+   743→                                Icon(
+   744→                                    Icons.Default.Delete,
+   745→                                    contentDescription = "Hapus memori",
+   746→                                    tint = palette.danger,
+   747→                                    modifier = Modifier.size(16.dp)
+   748→                                )
+   749→                            }
+   750→                        }
+   751→                    }
+   752→                }
+   753→            } else {
+   754→                Text(
+   755→                    "Belum ada memori, pak.",
+   756→                    color = palette.textDim,
+   757→                    fontSize = 11.sp,
+   758→                    fontFamily = AviHud
+   759→                )
+   760→            }
+   761→            Spacer(Modifier.height(8.dp))
+   762→            Row(verticalAlignment = Alignment.CenterVertically) {
+   763→                OutlinedTextField(
+   764→                    value = inputMem,
+   765→                    onValueChange = { inputMem = it },
+   766→                    placeholder = { Text("Contoh: Saya suka kopi hitam", color = palette.textDim, fontSize = 12.sp) },
+   767→                    modifier = Modifier.weight(1f),
+   768→                    maxLines = 2,
+   769→                    shape = RoundedCornerShape(10.dp),
+   770→                    colors = hudFieldColors(palette)
+   771→                )
+   772→                Spacer(Modifier.width(8.dp))
+   773→                Button(
+   774→                    onClick = {
+   775→                        vm.addMemory(inputMem)
+   776→                        inputMem = ""
+   777→                    },
+   778→                    colors = ButtonDefaults.buttonColors(
+   779→                        containerColor = palette.gold,
+   780→                        contentColor = palette.bg
+   781→                    )
+   782→                ) {
+   783→                    Text(
+   784→                        "INGAT",
+   785→                        fontSize = 11.sp,
+   786→                        fontFamily = AviHud,
+   787→                        fontWeight = FontWeight.Bold
+   788→                    )
+   789→                }
+   790→            }
+   791→            Spacer(Modifier.height(12.dp))
+   792→            SectionTitle("PROTOKOL", palette)
+   793→            protocols.forEach { p ->
+   794→                Column(
+   795→                    modifier = Modifier
+   796→                        .fillMaxWidth()
+   797→                        .clip(RoundedCornerShape(10.dp))
+   798→                        .background(palette.panelLight.copy(alpha = 0.5f))
+   799→                        .border(1.dp, palette.accent.copy(alpha = 0.25f), RoundedCornerShape(10.dp))
+   800→                        .padding(10.dp)
+   801→                ) {
+   802→                    Row(verticalAlignment = Alignment.CenterVertically) {
+   803→                        Column(Modifier.weight(1f)) {
+   804→                            Text(p.name, color = palette.text, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+   805→                            Text(
+   806→                                "Frasa: \u201C${p.phrase}\u201D",
+   807→                                color = palette.accent,
+   808→                                fontSize = 10.sp,
+   809→                                fontFamily = AviHud
+   810→                            )
+   811→                            Text(
+   812→                                "${p.steps.size} langkah",
+   813→                                color = palette.textDim,
+   814→                                fontSize = 10.sp,
+   815→                                fontFamily = AviHud
+   816→                            )
+   817→                        }
+   818→                        TextButton(onClick = { vm.runProtocol(p) }) {
+   819→                            Text(
+   820→                                "JALANKAN",
+   821→                                color = palette.accent,
+   822→                                fontSize = 10.sp,
+   823→                                fontFamily = AviHud,
+   824→                                fontWeight = FontWeight.Bold
+   825→                            )
+   826→                        }
+   827→                        IconButton(onClick = { vm.deleteProtocol(p.id) }, modifier = Modifier.size(28.dp)) {
+   828→                            Icon(
+   829→                                Icons.Default.Delete,
+   830→                                contentDescription = "Hapus protokol",
+   831→                                tint = palette.danger,
+   832→                                modifier = Modifier.size(15.dp)
+   833→                            )
+   834→                        }
+   835→                    }
+   836→                }
+   837→                Spacer(Modifier.height(6.dp))
+   838→            }
+   839→            Spacer(Modifier.height(4.dp))
+   840→            OutlinedTextField(
+   841→                value = protoName,
+   842→                onValueChange = { protoName = it },
+   843→                placeholder = { Text("Nama protokol (mis. Protokol Malam)", color = palette.textDim, fontSize = 12.sp) },
+   844→                singleLine = true,
+   845→                modifier = Modifier.fillMaxWidth(),
+   846→                shape = RoundedCornerShape(10.dp),
+   847→                colors = hudFieldColors(palette)
+   848→            )
+   849→            Spacer(Modifier.height(6.dp))
+   850→            OutlinedTextField(
+   851→                value = protoPhrase,
+   852→                onValueChange = { protoPhrase = it },
+   853→                placeholder = { Text("Frasa pemicu (mis. protokol malam)", color = palette.textDim, fontSize = 12.sp) },
+   854→                singleLine = true,
+   855→                modifier = Modifier.fillMaxWidth(),
+   856→                shape = RoundedCornerShape(10.dp),
+   857→                colors = hudFieldColors(palette)
+   858→            )
+   859→            Spacer(Modifier.height(6.dp))
+   860→            OutlinedTextField(
+   861→                value = protoSteps,
+   862→                onValueChange = { protoSteps = it },
+   863→                placeholder = { Text("Langkah — satu perintah per baris", color = palette.textDim, fontSize = 12.sp) },
+   864→                modifier = Modifier.fillMaxWidth().heightIn(min = 70.dp),
+   865→                shape = RoundedCornerShape(10.dp),
+   866→                colors = hudFieldColors(palette)
+   867→            )
+   868→            Spacer(Modifier.height(8.dp))
+   869→            Button(
+   870→                onClick = {
+   871→                    val steps = protoSteps.lines().map { it.trim() }.filter { it.isNotEmpty() }
+   872→                    val name = protoName.trim()
+   873→                    val phrase = protoPhrase.trim()
+   874→                    if (name.isNotEmpty() && phrase.isNotEmpty() && steps.isNotEmpty()) {
+   875→                        vm.saveProtocol(
+   876→                            Protocol(id = UUID.randomUUID().toString(), name = name, phrase = phrase, steps = steps)
+   877→                        )
+   878→                        protoName = ""
+   879→                        protoPhrase = ""
+   880→                        protoSteps = ""
+   881→                    }
+   882→                },
+   883→                modifier = Modifier.fillMaxWidth(),
+   884→                colors = ButtonDefaults.buttonColors(
+   885→                    containerColor = palette.accent,
+   886→                    contentColor = palette.bg
+   887→                )
+   888→            ) {
+   889→                Text(
+   890→                    "SIMPAN PROTOKOL",
+   891→                    fontSize = 12.sp,
+   892→                    fontFamily = AviHud,
+   893→                    fontWeight = FontWeight.Bold
+   894→                )
+   895→            }
+   896→        }
+   897→        Spacer(Modifier.height(14.dp))
+   898→
+   899→        // ============ E. SISTEM ============
+   900→        SystemHeader(name = "SISTEM", active = true, palette = palette)
+   901→        HoloPanel(palette = palette) {
+   902→            val d = diagnostics ?: DeviceDiagnostics()
+   903→            Row(
+   904→                horizontalArrangement = Arrangement.SpaceEvenly,
+   905→                modifier = Modifier.fillMaxWidth()
+   906→            ) {
+   907→                GaugeRing(
+   908→                    label = "BATERAI",
+   909→                    valueText = "${d.batteryPct}%",
+   910→                    progress = d.batteryPct / 100f,
+   911→                    palette = palette,
+   912→                    modifier = Modifier.weight(1f)
+   913→                )
+   914→                GaugeRing(
+   915→                    label = "RAM",
+   916→                    valueText = "${d.ramUsedPct}%",
+   917→                    progress = d.ramUsedPct / 100f,
+   918→                    palette = palette,
+   919→                    modifier = Modifier.weight(1f)
+   920→                )
+   921→            }
+   922→            Row(
+   923→                horizontalArrangement = Arrangement.SpaceEvenly,
+   924→                modifier = Modifier.fillMaxWidth()
+   925→            ) {
+   926→                val storProg = if (d.storageTotalGb > 0f) {
+   927→                    (1f - d.storageFreeGb / d.storageTotalGb).coerceIn(0f, 1f)
+   928→                } else 0f
+   929→                GaugeRing(
+   930→                    label = "PENYIMPANAN",
+   931→                    valueText = String.format(Locale.US, "sisa %.1f G", d.storageFreeGb),
+   932→                    progress = storProg,
+   933→                    palette = palette,
+   934→                    modifier = Modifier.weight(1f)
+   935→                )
+   936→                GaugeRing(
+   937→                    label = "JARINGAN",
+   938→                    valueText = d.network,
+   939→                    progress = 1f,
+   940→                    palette = palette,
+   941→                    modifier = Modifier.weight(1f)
+   942→                )
+   943→            }
+   944→            Spacer(Modifier.height(8.dp))
+   945→            // K14 — versi APK terlihat jelas: pemilik bisa memastikan build terbaru terpasang
+   946→            val versiAvi = remember {
+   947→                try {
+   948→                    context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "?"
+   949→                } catch (_: Exception) { "?" }
+   950→            }
+   951→            Text(
+   952→                "AVI v$versiAvi · ${d.device} · ${d.androidVersion}",
+   953→                color = palette.textDim,
+   954→                fontSize = 11.sp,
+   955→                fontFamily = AviHud
+   956→            )
+   957→            Spacer(Modifier.height(4.dp))
+   958→            Text(
+   959→                "Pemakaian API hari ini: $usageToday permintaan",
+   960→                color = palette.textDim,
+   961→                fontSize = 11.sp,
+   962→                fontFamily = AviHud
+   963→            )
+   964→            Spacer(Modifier.height(10.dp))
+   965→            Button(
+   966→                onClick = { vm.clearHistory() },
+   967→                modifier = Modifier.fillMaxWidth(),
+   968→                colors = ButtonDefaults.buttonColors(
+   969→                    containerColor = palette.danger.copy(alpha = 0.16f),
+   970→                    contentColor = palette.danger
+   971→                )
+   972→            ) {
+   973→                Text(
+   974→                    "HAPUS RIWAYAT PERCAKAPAN",
+   975→                    fontSize = 12.sp,
+   976→                    fontFamily = AviHud,
+   977→                    fontWeight = FontWeight.Bold
+   978→                )
+   979→            }
+   980→        }
+   981→
+   982→        Spacer(Modifier.height(18.dp))
+   983→        Text(
+   984→            "AVI — Asisten Virtual Indonesia · Semua data tersimpan lokal di HP Anda.",
+   985→            color = palette.textDim,
+   986→            fontSize = 10.sp,
+   987→            fontFamily = AviHud,
+   988→            textAlign = TextAlign.Center,
+   989→            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
+   990→        )
+   991→        }
+   992→    }
+   993→}
+   994→
+   995→/**
+   996→ * K11 — Kartu DIAGNOSA KONEKSI: membongkar akar masalah koneksi ke Google dalam
+   997→ * hitungan detik dan menampilkan JALAN KELUAR yang bisa dijalankan (tautan aktif),
+   998→ * bukan sekadar pesan gagal. Tampil menyatu dengan gaya HUD Pusat Kendali.
+   999→ */
+  1000→@Composable
+  1001→private fun DiagnosisCard(
+  1002→    diagnosis: DiagnoseResult?,
+  1003→    onRun: () -> Unit,
+  1004→    palette: AviPalette
+  1005→) {
+  1006→    val context = LocalContext.current
+  1007→    Column(
+  1008→        modifier = Modifier
+  1009→            .fillMaxWidth()
+  1010→            .clip(RoundedCornerShape(12.dp))
+  1011→            .background(palette.panel.copy(alpha = 0.55f))
+  1012→            .border(
+  1013→                1.dp,
+  1014→                when {
+  1015→                    diagnosis == null -> palette.panelLight
+  1016→                    diagnosis.running -> palette.accent.copy(alpha = 0.6f)
+  1017→                    diagnosis.verdictOk -> palette.accent
+  1018→                    else -> palette.danger.copy(alpha = 0.7f)
+  1019→                },
+  1020→                RoundedCornerShape(12.dp)
+  1021→            )
+  1022→            .padding(14.dp)
+  1023→    ) {
+  1024→        Row(verticalAlignment = Alignment.CenterVertically) {
+  1025→            Icon(
+  1026→                Icons.Default.Troubleshoot,
+  1027→                contentDescription = null,
+  1028→                tint = palette.gold,
+  1029→                modifier = Modifier.size(16.dp)
+  1030→            )
+  1031→            Spacer(Modifier.width(8.dp))
+  1032→            Text(
+  1033→                "DIAGNOSA KONEKSI",
+  1034→                color = palette.text,
+  1035→                fontSize = 12.sp,
+  1036→                fontFamily = AviHud,
+  1037→                fontWeight = FontWeight.Bold,
+  1038→                letterSpacing = 1.sp
+  1039→            )
+  1040→        }
+  1041→        Spacer(Modifier.height(4.dp))
+  1042→        Text(
+  1043→            "Ketahuan akar masalahnya dalam ±15 detik — kunci, daftar model, hak pakai.",
+  1044→            color = palette.textDim,
+  1045→            fontSize = 10.sp,
+  1046→            lineHeight = 14.sp
+  1047→        )
+  1048→        Spacer(Modifier.height(10.dp))
+  1049→        Button(
+  1050→            onClick = onRun,
+  1051→            enabled = diagnosis?.running != true,
+  1052→            modifier = Modifier.fillMaxWidth(),
+  1053→            colors = ButtonDefaults.buttonColors(
+  1054→                containerColor = palette.gold,
+  1055→                contentColor = palette.bg
+  1056→            )
+  1057→        ) {
+  1058→            if (diagnosis?.running == true) {
+  1059→                CircularProgressIndicator(
+  1060→                    modifier = Modifier.size(14.dp),
+  1061→                    strokeWidth = 2.dp,
+  1062→                    color = palette.bg
+  1063→                )
+  1064→                Spacer(Modifier.width(8.dp))
+  1065→                Text("MEMERIKSA…", fontSize = 12.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold)
+  1066→            } else {
+  1067→                Text("JALANKAN DIAGNOSA", fontSize = 12.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold)
+  1068→            }
+  1069→        }
+  1070→
+  1071→        diagnosis?.takeIf { !it.running && it.steps.isNotEmpty() }?.let { d ->
+  1072→            Spacer(Modifier.height(10.dp))
+  1073→            // ---- langkah-langkah ----
+  1074→            d.steps.forEach { step ->
+  1075→                Row(modifier = Modifier.padding(vertical = 3.dp)) {
+  1076→                    Icon(
+  1077→                        if (step.ok) Icons.Default.CheckCircle else Icons.Default.Cancel,
+  1078→                        contentDescription = if (step.ok) "berhasil" else "gagal",
+  1079→                        tint = if (step.ok) palette.accent else palette.danger,
+  1080→                        modifier = Modifier.size(13.dp).padding(top = 1.dp)
+  1081→                    )
+  1082→                    Spacer(Modifier.width(6.dp))
+  1083→                    Column {
+  1084→                        Text(
+  1085→                            step.label,
+  1086→                            color = palette.text,
+  1087→                            fontSize = 10.sp,
+  1088→                            fontFamily = AviHud,
+  1089→                            fontWeight = FontWeight.Bold
+  1090→                        )
+  1091→                        Text(
+  1092→                            step.detail,
+  1093→                            color = if (step.ok) palette.textDim else palette.danger,
+  1094→                            fontSize = 10.sp,
+  1095→                            lineHeight = 13.sp
+  1096→                        )
+  1097→                    }
+  1098→                }
+  1099→            }
+  1100→            // ---- vonak ----
+  1101→            Spacer(Modifier.height(8.dp))
+  1102→            Text(
+  1103→                d.verdict,
+  1104→                color = if (d.verdictOk) palette.accent else palette.danger,
+  1105→                fontSize = 11.sp,
+  1106→                fontFamily = AviHud,
+  1107→                fontWeight = FontWeight.Bold,
+  1108→                lineHeight = 15.sp
+  1109→            )
+  1110→            // ---- panduan perbaikan (tautan bisa ditekan) ----
+  1111→            if (d.fixGuide.isNotEmpty()) {
+  1112→                Spacer(Modifier.height(8.dp))
+  1113→                d.fixGuide.forEachIndexed { i, line ->
+  1114→                    val url = Regex("https://[^\\s,)]+").find(line)?.value
+  1115→                    Column(
+  1116→                        modifier = Modifier
+  1117→                            .fillMaxWidth()
+  1118→                            .padding(vertical = 3.dp)
+  1119→                            .clip(RoundedCornerShape(8.dp))
+  1120→                            .background(palette.bg.copy(alpha = 0.45f))
+  1121→                            .padding(horizontal = 10.dp, vertical = 8.dp)
+  1122→                    ) {
+  1123→                        Text(
+  1124→                            line,
+  1125→                            color = palette.textDim,
+  1126→                            fontSize = 10.sp,
+  1127→                            lineHeight = 14.sp
+  1128→                        )
+  1129→                        url?.let {
+  1130→                            Spacer(Modifier.height(6.dp))
+  1131→                            OutlinedButton(
+  1132→                                onClick = {
+  1133→                                    try {
+  1134→                                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+  1135→                                    } catch (_: Exception) {
+  1136→                                    }
+  1137→                                },
+  1138→                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+  1139→                                    horizontal = 12.dp, vertical = 4.dp
+  1140→                                ),
+  1141→                                modifier = Modifier.height(28.dp)
+  1142→                            ) {
+  1143→                                Icon(
+  1144→                                    Icons.Default.OpenInNew,
+  1145→                                    contentDescription = null,
+  1146→                                    modifier = Modifier.size(11.dp),
+  1147→                                    tint = palette.accent
+  1148→                                )
+  1149→                                Spacer(Modifier.width(5.dp))
+  1150→                                Text("BUKA TAUTAN", fontSize = 9.sp, color = palette.accent, fontFamily = AviHud)
+  1151→                            }
+  1152→                        }
+  1153→                    }
+  1154→                    if (i < d.fixGuide.lastIndex) Spacer(Modifier.height(2.dp))
+  1155→                }
+  1156→            }
+  1157→        }
+  1158→    }
+  1159→}
+  1160→
+  1161→@Composable
+  1162→private fun hudFieldColors(palette: AviPalette) = OutlinedTextFieldDefaults.colors(
+  1163→    focusedBorderColor = palette.accent,
+  1164→    unfocusedBorderColor = palette.panelLight,
+  1165→    cursorColor = palette.accent,
+  1166→    focusedTextColor = palette.text,
+  1167→    unfocusedTextColor = palette.text
+  1168→)
+  1169→

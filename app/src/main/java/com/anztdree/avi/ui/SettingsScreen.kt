@@ -48,7 +48,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,7 +76,6 @@ import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.data.AiProvider
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.Protocol
-import com.anztdree.avi.device.DeviceDiagnostics
 import com.anztdree.avi.ui.theme.AviDisplay
 import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
@@ -109,11 +107,17 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
     val memories by vm.memories.collectAsState()
     val protocols by vm.protocols.collectAsState()
     val usageToday by vm.usageToday.collectAsState()
-    val diagnostics by vm.diagnostics.collectAsState()
     val ttsReady by vm.ttsReady.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) { vm.refreshDiagnostics() }
+    // K18 — panggilan custom: AVI tidak lagi menyapa “Pak” terus-menerus
+    var inputPanggilan by remember { mutableStateOf(settings.userName) }
+    // K18 — versi build ditampilkan dinamis (ikut build, bukan teks manual)
+    val versiApp = remember {
+        try {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "?"
+        } catch (_: Exception) { "?" }
+    }
 
     var showKey by remember { mutableStateOf(false) }
     var inputMem by remember { mutableStateOf("") }
@@ -182,7 +186,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     letterSpacing = 3.sp
                 )
                 Text(
-                    "SISTEM MARKAS — v1.0.0",
+                    "SISTEM MARKAS — v$versiApp",
                     color = palette.textDim,
                     fontSize = 9.sp,
                     fontFamily = AviHud,
@@ -466,6 +470,40 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     colors = hudFieldColors(palette)
                 )
             }
+        }
+        Spacer(Modifier.height(14.dp))
+
+        // ============ K18 — PEMILIK (panggilan custom) ============
+        SystemHeader(name = "PEMILIK", active = true, palette = palette)
+        HoloPanel(palette = palette) {
+            Text(
+                "PANGGILAN SAYA",
+                color = palette.textDim,
+                fontSize = 10.sp,
+                fontFamily = AviHud,
+                letterSpacing = 1.sp
+            )
+            Spacer(Modifier.height(6.dp))
+            OutlinedTextField(
+                value = inputPanggilan,
+                onValueChange = { v ->
+                    inputPanggilan = v
+                    val bersih = v.trim()
+                    vm.updateSettings { it.copy(userName = bersih.ifBlank { "Pak" }) }
+                },
+                label = { Text("AVI memanggil saya sebagai…", color = palette.textDim, fontSize = 12.sp) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = hudFieldColors(palette)
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Contoh: Pak, Mas, Bang, Kak — atau nama Anda sendiri. " +
+                    "AVI memakai panggilan ini di sapaan, greeting, dan seluruh jawabannya.",
+                color = palette.textDim.copy(alpha = 0.75f),
+                fontSize = 10.sp,
+                fontFamily = AviHud
+            )
         }
         Spacer(Modifier.height(14.dp))
 
@@ -899,49 +937,9 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
         // ============ E. SISTEM ============
         SystemHeader(name = "SISTEM", active = true, palette = palette)
         HoloPanel(palette = palette) {
-            val d = diagnostics ?: DeviceDiagnostics()
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                GaugeRing(
-                    label = "BATERAI",
-                    valueText = "${d.batteryPct}%",
-                    progress = d.batteryPct / 100f,
-                    palette = palette,
-                    modifier = Modifier.weight(1f)
-                )
-                GaugeRing(
-                    label = "RAM",
-                    valueText = "${d.ramUsedPct}%",
-                    progress = d.ramUsedPct / 100f,
-                    palette = palette,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val storProg = if (d.storageTotalGb > 0f) {
-                    (1f - d.storageFreeGb / d.storageTotalGb).coerceIn(0f, 1f)
-                } else 0f
-                GaugeRing(
-                    label = "PENYIMPANAN",
-                    valueText = String.format(Locale.US, "sisa %.1f G", d.storageFreeGb),
-                    progress = storProg,
-                    palette = palette,
-                    modifier = Modifier.weight(1f)
-                )
-                GaugeRing(
-                    label = "JARINGAN",
-                    valueText = d.network,
-                    progress = 1f,
-                    palette = palette,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Spacer(Modifier.height(8.dp))
+            // K18 — bagian STATUS SISTEM (gauge baterai/RAM/penyimpanan/jaringan)
+            // DIHAPUS dari Pusat Kendali sesuai permintaan pemilik; telemetri
+            // perangkat tetap hidup mengorbit reaktor di layar utama.
             // K14 — versi APK terlihat jelas: pemilik bisa memastikan build terbaru terpasang
             val versiAvi = remember {
                 try {
@@ -949,7 +947,8 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 } catch (_: Exception) { "?" }
             }
             Text(
-                "AVI v$versiAvi · ${d.device} · ${d.androidVersion}",
+                "AVI v$versiAvi · ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} · " +
+                    "Android ${android.os.Build.VERSION.RELEASE}",
                 color = palette.textDim,
                 fontSize = 11.sp,
                 fontFamily = AviHud

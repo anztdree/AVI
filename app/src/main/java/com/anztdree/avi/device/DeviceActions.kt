@@ -81,9 +81,9 @@ object DeviceActions {
         )
     }
 
-    fun summary(d: DeviceDiagnostics): String {
+    fun summary(d: DeviceDiagnostics, panggilan: String = "Pak"): String {
         val charge = if (d.charging) "sedang diisi" else "tidak diisi"
-        return "Kondisi markas, Pak: baterai ${d.batteryPct} persen $charge, " +
+        return "Kondisi markas, $panggilan: baterai ${d.batteryPct} persen $charge, " +
             "RAM terpakai ${d.ramUsedPct} persen dari ${"%.1f".format(d.ramTotalGb)} gigabyte, " +
             "penyimpanan sisa ${"%.1f".format(d.storageFreeGb)} gigabyte dari ${"%.1f".format(d.storageTotalGb)} gigabyte, " +
             "jaringan ${d.network.lowercase()}, perangkat ${d.device}, ${d.androidVersion}."
@@ -145,8 +145,9 @@ object DeviceActions {
     /**
      * Deteksi pertanyaan dasar yang bisa dijawab lokal: kondisi HP, baterai, RAM,
      * penyimpanan, jaringan, jam, tanggal. Return null kalau bukan.
+     * K18 — seluruh jawaban memakai panggilan custom pemilik (bukan selalu "pak").
      */
-    fun localAnswer(text: String, d: DeviceDiagnostics): String? {
+    fun localAnswer(text: String, d: DeviceDiagnostics, panggilan: String = "Pak"): String? {
         val t = normalized(text)
         if (t.isEmpty()) return null
 
@@ -164,21 +165,21 @@ object DeviceActions {
 
         if (askJam) {
             val now = SimpleDateFormat("HH.mm", Locale("id")).format(Date())
-            return "Sekarang jam $now, pak."
+            return "Sekarang jam $now, $panggilan."
         }
         if (askTanggal) {
             val now = SimpleDateFormat("EEEE, d MMMM yyyy", Locale("id")).format(Date())
-            return "Hari ini $now, pak."
+            return "Hari ini $now, $panggilan."
         }
         if (askKondisi || askBaterai || askRam || askStorage || askJaringan) {
-            if (askKondisi) return summary(d)
+            if (askKondisi) return summary(d, panggilan)
             val parts = buildList {
-                if (askBaterai) add(if (d.charging) "baterai ${d.batteryPct} persen, lagi diisi, santai pak" else "baterai ${d.batteryPct} persen, pak")
+                if (askBaterai) add(if (d.charging) "baterai ${d.batteryPct} persen, lagi diisi, santai $panggilan" else "baterai ${d.batteryPct} persen, $panggilan")
                 if (askRam) add("RAM terpakai ${d.ramUsedPct} persen")
                 if (askStorage) add("penyimpanan sisa ${"%.1f".format(d.storageFreeGb)} gigabyte")
                 if (askJaringan) add("jaringan ${d.network.lowercase()}")
             }
-            return "${parts.joinToString(", ")}, pak."
+            return "${parts.joinToString(", ")}, $panggilan."
         }
         return null
     }

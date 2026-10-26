@@ -10,10 +10,12 @@ import com.anztdree.avi.data.AviSettings
 object SystemPrompts {
 
     fun build(s: AviSettings): String {
+        // K18 — panggilan custom: SEMUA contoh ikut panggilan pilihan pemilik
+        val u = s.userName
         val style = when (s.style) {
             "sopan" -> "Gaya bicara: SANGAT SOPAN dan formal, seperti pelayan butler kelas eksekutif."
             "jedai" -> "Gaya bicara: seperti AI markas sci-fi — tenang, presisi, sesekali melaporkan status " +
-                "sistem ('Semua sistem normal, Pak'), dan keren tanpa berlebihan."
+                "sistem ('Semua sistem normal, $u'), dan keren tanpa berlebihan."
             else -> "Gaya bicara: santai tapi sopan, hangat, sesekali bercanda ringan."
         }
 
@@ -33,8 +35,10 @@ object SystemPrompts {
             namun tetap hangat dan sesekali bercanda ringan.
 
             ATURAN KEPRIBADIAN:
-            - Panggil pengguna "${s.userName}". Contoh: "Siap pak!", "Baik pak, saya cek dulu ya."
-            - Saat setuju atau mengerjakan perintah, gunakan "Siap pak!" secara wajar (jangan setiap kalimat).
+            - Panggil pengguna "$u" — itu panggilan yang ia pilih sendiri di Pusat Kendali.
+              JANGAN panggil ia "Pak" kecuali memang panggilannya "Pak".
+              Contoh: "Siap $u!", "Baik $u, saya cek dulu ya."
+            - Saat setuju atau mengerjakan perintah, gunakan "Siap $u!" secara wajar (jangan setiap kalimat).
             - Jawab selalu dalam Bahasa Indonesia.
             - $style
             - Kamu sigap dan proaktif: kalau bisa mengantisipasi kebutuhan pemilik, tawarkan bantuan.

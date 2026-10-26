@@ -182,9 +182,15 @@ fun ReactorHalo(
             val labelR = 89f * dR                    // garis dasar label
             val glow = 0.50f + 0.22f * glowLevel + 0.10f * sin(t * 2f * PI.toFloat())
             orbitPaint.textSize = 8.5.sp.toPx()
+            // K18 — putaran teks kembali GAK BERATURAN seperti versi awal:
+            // kecepatan berombak organik (superposisi dua gelombang sinus dgn
+            // periode berbeda) — kadang melaju, kadang melambat, tak pernah monoton.
+            // Semua periodik terhadap siklus t (0→1) supaya lintasan mulus tanpa lompatan.
+            val wob = 16f * sin(2f * PI.toFloat() * t) +
+                10f * sin(2f * PI.toFloat() * t * 3f + 1.7f)
             val n = items.size
             for (i in 0 until n) {
-                val ang = t * 360f + i * (360f / n)
+                val ang = t * 360f + wob + i * (360f / n)
                 // label — teks mengikuti keliling lingkaran, terang mengikuti aktivitas
                 orbitPaint.color = if (i % 2 == 0) palette.accent.toArgb() else palette.gold.toArgb()
                 orbitPaint.alpha = (255 * glow.coerceIn(0f, 1f)).toInt()

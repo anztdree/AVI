@@ -37,6 +37,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -179,13 +180,16 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
         viewModelScope.launch {
+            // K18 — tunggu pengaturan termuat dulu supaya sapaan boot memakai
+            // panggilan custom pemilik (bukan selalu "pak")
+            val s0 = settingsRepo.settings.first()
             val saved = historyRepo.load()
             _messages.value = if (saved.isEmpty()) {
                 listOf(
                     ChatMessage(
                         role = "avi",
-                        text = "Hay pak! AVI online — semua sistem normal. Sentuh reaktor untuk bicara, " +
-                            "atau ketik di bawah ya, pak."
+                        text = "Hay ${s0.userName}! AVI online — semua sistem normal. " +
+                            "Sentuh reaktor untuk bicara, atau ketik di bawah ya, ${s0.userName}."
                     )
                 )
             } else saved
@@ -315,11 +319,22 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         // K17 — kata kerja diperluas (jalankan/bukakan) + word-boundary: kata lain
         // yang mengandung potongan kata (mis. "buku" mengandung "bu") TIDAK ikut
         // terbuang, supaya nama aplikasi tidak rusak saat dibersihkan.
+        // K18 — panggilan custom ikut dibersihkan, tapi HANYA bila berdiri di awal/
+        // akhir kalimat (posisi sapaan wajar) — nama aplikasi yang kebetulan sama
+        // dengan panggilan tidak ikut terbuang.
         if (lower.startsWith("buka ") || lower.startsWith("open ") ||
             lower.startsWith("jalankan ") || lower.startsWith("bukakan ") ||
             (lower.contains(" buka ") && lower.length < 60)
         ) {
-            val query = text.replace(
+            val u = _settings.value.userName.trim()
+            var core = text
+            if (u.isNotEmpty() && !u.contains(' ')) {
+                core = core.replace(
+                    Regex("(?i)^\\s*${Regex.escape(u)}\\b|\\b${Regex.escape(u)}\\s*$"),
+                    " "
+                )
+            }
+            val query = core.replace(
                 Regex("(?i)\\b(tolong|coba|sekarang|ya|dunk|dong|pak|bu|aplikasi|app|open|buka|bukakan|jalankan)\\b"),
                 " "
             ).replace(Regex("\\s+"), " ").trim()
@@ -328,16 +343,19 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 if (apps.isNotEmpty()) {
                     val app = apps.first()
                     DeviceActions.openApp(ctx, app.packageName)
-                    addLocalReply("Siap pak, ${app.label} sudah saya buka.")
+                    addLocalReply("Siap $u, ${app.label} sudah saya buka.")
                 } else {
-                    addLocalReply("Tidak ada aplikasi yang cocok dengan \"$query\" di HP, pak.")
+                    addLocalReply("Tidak ada aplikasi yang cocok dengan \"$query\" di HP, $u.")
                 }
                 return true
             }
         }
 
-        DeviceActions.localAnswer(text, _diagnostics.value ?: DeviceActions.readDiagnostics(ctx))
-            ?.let { addLocalReply(it); return true }
+        DeviceActions.localAnswer(
+            text,
+            _diagnostics.value ?: DeviceActions.readDiagnostics(ctx),
+            _settings.value.userName
+        )?.let { addLocalReply(it); return true }
 
         return false
     }
@@ -445,7 +463,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             .replace(Regex("\\[/?[A-Z_]*]"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
-        if (text.isBlank()) text = "Siap pak."
+        if (text.isBlank()) text = "Siap ${_settings.value.userName}."
 
         _messages.value = _messages.value + ChatMessage(role = "avi", text = text)
         _streamingText.value = ""
@@ -521,7 +539,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             in 15..17 -> "Selamat sore"
             else -> "Selamat malam"
         }
-        return "$salam, ${_settings.value.userName}. AVI mendengarkan — silakan bicara, pak."
+        return "$salam, ${_settings.value.userName}. AVI mendengarkan — silakan bicara."
     }
 
     // ===== Protokol & antrian =====
@@ -866,7 +884,10 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearHistory() {
         _messages.value = listOf(
-            ChatMessage(role = "avi", text = "Riwayat sudah saya bersihkan, pak. Ada yang bisa saya bantu lagi?")
+            ChatMessage(
+                role = "avi",
+                text = "Riwayat sudah saya bersihkan, ${_settings.value.userName}. Ada yang bisa saya bantu lagi?"
+            )
         )
         viewModelScope.launch { historyRepo.clear() }
     }
