@@ -25,6 +25,28 @@ tool-results/
 skills/
 .env
 *.jpg.bak
+# scaffold Next.js bawaan sandbox — JANGAN pernah ikut ke repo AVI
+package.json
+package-lock.json
+bun.lock
+tsconfig.json
+next.config.ts
+next-env.d.ts
+postcss.config.mjs
+tailwind.config.ts
+components.json
+eslint.config.mjs
+src/
+public/
+prisma/
+db/
+tests/
+examples/
+mini-services/
+.zscripts/
+Caddyfile
+server.log
+dev.log
 
 # ===== Sistem =====
 .DS_Store

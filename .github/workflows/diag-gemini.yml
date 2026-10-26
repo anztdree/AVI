@@ -1,0 +1,122 @@
+name: DIAG-GEMINI (uji SEMUA model dari server AS)
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Uji key & SEMUA model (spesifikasi pemilik: POST :generateContent NON-streaming + header X-goog-api-key)
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_DIAG_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import json, time, urllib.request, urllib.error, os, sys
+
+          KEY = os.environ.get("GEMINI_KEY", "").strip()
+          if not KEY:
+              print("SECRET GEMINI_DIAG_KEY belum diisi!"); sys.exit(1)
+          BASE = "https://generativelanguage.googleapis.com/v1beta"
+
+          def call(path, body=None, method="GET", auth="header", timeout=40):
+              headers = {"Content-Type": "application/json"}
+              if auth == "header":
+                  headers["X-goog-api-key"] = KEY
+              else:
+                  headers["Authorization"] = "Bearer " + KEY
+              data = json.dumps(body).encode() if body is not None else None
+              req = urllib.request.Request(BASE + path, data=data, headers=headers, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=timeout) as r:
+                      return r.status, json.loads(r.read().decode())
+              except urllib.error.HTTPError as e:
+                  raw = e.read().decode(errors="replace")
+                  try:
+                      return e.code, json.loads(raw)
+                  except Exception:
+                      return e.code, {"_raw": raw[:200]}
+              except Exception as e:
+                  return -1, {"_raw": str(e)}
+
+          def text_of(resp):
+              cand = (resp.get("candidates") or [{}])[0]
+              parts = ((cand.get("content") or {}).get("parts") or [])
+              t = "".join(p.get("text", "") for p in parts if isinstance(p, dict))
+              return t.strip(), cand.get("finishReason", "")
+
+          print("=== LANGKAH 1: ListModels (header auth) ===")
+          code, lst = call("/models?pageSize=1000")
+          if code != 200:
+              print("LIST GAGAL HTTP", code, json.dumps(lst)[:300]); sys.exit(1)
+          allm = lst.get("models", [])
+          models = [m for m in allm if "generateContent" in (m.get("supportedGenerationMethods") or [])]
+          print(f"OK — {len(models)} model mendukung generateContent (dari {len(allm)} total)")
+          print()
+
+          print("=== LANGKAH 2: ping SEMUA model (spec pemilik, non-streaming, header) ===")
+          rows, ok_list, quota_list, closed_list, other_fail = [], [], [], [], []
+          for m in models:
+              name = m["name"]
+              code, resp = call(f"/{name}:generateContent",
+                                {"contents": [{"parts": [{"text": "ping"}]}]}, "POST")
+              if code == 200:
+                  t, fr = text_of(resp)
+                  if t:
+                      rows.append((name, code, f"OK teks='{t[:24]}'")); ok_list.append(name)
+                  else:
+                      code2, resp2 = call(f"/{name}:generateContent",
+                          {"contents": [{"parts": [{"text": "ping"}]}],
+                           "generationConfig": {"maxOutputTokens": 512,
+                                                "thinkingConfig": {"thinkingBudget": 0}}}, "POST")
+                      if code2 == 200:
+                          t2, fr2 = text_of(resp2)
+                          if t2:
+                              rows.append((name, code, f"ping-8 KOSONG (finish={fr}) → OK dgn thinkingOFF teks='{t2[:20]}'"))
+                          else:
+                              rows.append((name, code, f"200 tapi kosong dua-duanya (finish={fr}/{fr2})"))
+                          ok_list.append(name)
+                      else:
+                          em = (resp2.get("error") or {}).get("message", "")[:80]
+                          rows.append((name, code2, f"ping-8 kosong (finish={fr}); +thinkingOFF gagal HTTP {code2}: {em}"))
+                          other_fail.append(name + " (thinkingoff)")
+              elif code == 429:
+                  em = (resp.get("error") or {}).get("message", "")
+                  rows.append((name, code, "KUOTA/limit — auth & hak akses OK: " + em[:70])); quota_list.append(name)
+              elif code == 404:
+                  em = (resp.get("error") or {}).get("message", "")
+                  rows.append((name, code, "DITUTUP/TAK TERSEDIA: " + em[:80])); closed_list.append(name)
+              else:
+                  em = (resp.get("error") or {}).get("message", json.dumps(resp)[:100])
+                  rows.append((name, code, em[:110])); other_fail.append(name)
+              time.sleep(1.0)
+
+          print()
+          for n, c, msg in rows:
+              print(f"{c:>4}  {n.replace('models/',''):<44}  {msg}")
+
+          print()
+          print("=== LANGKAH 3: jalur OpenAI-compat ala nanobot (Bearer) gemini-flash-latest ===")
+          code3, resp3 = call("/openai/chat/completions",
+              {"model": "gemini-flash-latest",
+               "messages": [{"role": "user", "content": "ping"}], "max_tokens": 16},
+              "POST", auth="bearer")
+          print("HTTP", code3, json.dumps(resp3)[:250])
+          code3b, resp3b = call("/openai/models", None, "GET", auth="bearer")
+          print("OpenAI-compat LIST MODEL → HTTP", code3b, json.dumps(resp3b)[:200])
+
+          print()
+          print("================ RINGKASAN ================")
+          print(f"[OK] siap dipakai            : {len(ok_list)}")
+          for n in ok_list: print("   PASS ", n.replace("models/", ""))
+          print(f"[~] auth OK, kehabisan kuota (429): {len(quota_list)}")
+          for n in quota_list: print("   RATE ", n.replace("models/", ""))
+          print(f"[x] ditutup utk key baru (404)  : {len(closed_list)}")
+          for n in closed_list: print("   CLOSED", n.replace("models/", ""))
+          print(f"[!] gagal lain                : {len(other_fail)}")
+          for n in other_fail: print("   FAIL ", n.replace("models/", ""))
+          PYEOF
