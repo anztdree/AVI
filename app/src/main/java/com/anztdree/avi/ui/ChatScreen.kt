@@ -177,10 +177,16 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     }
 
     Box(Modifier.fillMaxSize().background(palette.bg)) {
-        // ---- K12 — latar nebula HD (dilucuti di hemat daya) ----
+        // ---- K12 — latar nebula HD sadar-tema (dilucuti di hemat daya) ----
         if (!settings.powerSave) {
             Image(
-                painter = painterResource(R.drawable.bg_nebula),
+                painter = painterResource(
+                    when (settings.themeMark) {
+                        "MK2" -> R.drawable.bg_nebula_mk2
+                        "MK3" -> R.drawable.bg_nebula_mk3
+                        else -> R.drawable.bg_nebula
+                    }
+                ),
                 contentDescription = null,
                 modifier = Modifier.matchParentSize(),
                 contentScale = ContentScale.Crop,
@@ -296,6 +302,16 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
 
             // ============ ZONA REAKTOR (Mark III: orb · diagnostik mengorbit · busur) ============
             Box(Modifier.fillMaxWidth().height(232.dp)) {
+                // K12 — tekstur grid HUD tipis di balik reaktor
+                if (!settings.powerSave) {
+                    Image(
+                        painter = painterResource(R.drawable.bg_grid),
+                        contentDescription = null,
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.Crop,
+                        alpha = 0.16f
+                    )
+                }
                 ReactorHalo(
                     palette = palette,
                     enabled = settings.diagnosticsOrbit && !settings.powerSave,

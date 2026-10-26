@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
 
                 // Boot sequence sinematik (bisa dimatikan di Pusat Kendali)
                 if (!booted && settings.bootEnabled && !settings.powerSave) {
-                    BootScreen(palette = palette, onFinish = { booted = true })
+                    BootScreen(palette = palette, onFinish = { booted = true }, mark = settings.themeMark)
                 }
             }
         }

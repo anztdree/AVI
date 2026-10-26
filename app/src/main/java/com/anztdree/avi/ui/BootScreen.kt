@@ -52,7 +52,7 @@ import kotlin.math.sin
  * Semua Canvas + timeline tunggal (Animatable) — tanpa bitmap. Tap kapan pun → onFinish.
  */
 @Composable
-fun BootScreen(palette: AviPalette, onFinish: () -> Unit) {
+fun BootScreen(palette: AviPalette, onFinish: () -> Unit, mark: String = "MK1") {
     var done by remember { mutableStateOf(false) }
     fun finish() {
         if (!done) {
@@ -86,9 +86,11 @@ fun BootScreen(palette: AviPalette, onFinish: () -> Unit) {
     ) {
         Box(modifier = Modifier.fillMaxSize().alpha(overallAlpha)) {
 
-            // ---- K12 — latar reaktor HD (dilucuti di hemat daya) ----
+            // ---- K12 — latar reaktor HD sadar-tema (dilucuti di hemat daya) ----
             Image(
-                painter = painterResource(R.drawable.bg_boot),
+                painter = painterResource(
+                    if (mark == "MK2") R.drawable.bg_boot_mk2 else R.drawable.bg_boot
+                ),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
