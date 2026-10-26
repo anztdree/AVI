@@ -13,17 +13,21 @@ android {
         applicationId = "com.anztdree.avi"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
+        versionCode = 4
         versionName = "1.0.0"
     }
 
     buildTypes {
         release {
-            // R8 + resource shrink: APK ringan dan runtime lebih cepat.
+            // K12 — KODE PENUH, TANPA PANGKAS (keputusan pemilik):
+            // tidak ada R8 minify / shrink resources. Seluruh pustaka Compose,
+            // Material 3, ikon extended, OkHttp, dsb. ikut utuh di APK + seluruh
+            // aset HD (font premium, efek suara, tekstur latar). Hasil: APK premium
+            // puluhan MB yang tetap ringan dijalankan (kinerja dijaga di kode,
+            // bukan dengan membuang kode).
             // Ditandatangani debug key agar langsung bisa dipasang.
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isMinifyEnabled = false
+            isShrinkResources = false
             signingConfig = signingConfigs.getByName("debug")
         }
     }

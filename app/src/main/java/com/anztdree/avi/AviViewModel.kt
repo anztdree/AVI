@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.anztdree.avi.ai.AiClientFactory
 import com.anztdree.avi.ai.AiStreamCallback
 import com.anztdree.avi.ai.CloudTts
+import com.anztdree.avi.ai.DiagnoseResult
 import com.anztdree.avi.ai.LiveClient
 import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.ai.GeminiModelInfo
@@ -111,6 +112,10 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     /** Hasil uji per model: name → hasil (menguji / siap / gagal + alasan) */
     private val _modelTest = MutableStateFlow<Map<String, ModelTestResult>>(emptyMap())
     val modelTest: StateFlow<Map<String, ModelTestResult>> = _modelTest.asStateFlow()
+
+    /** K11 — hasil diagnosa koneksi (Pusat Kendali → DIAGNOSA KONEKSI) */
+    private val _diagnosis = MutableStateFlow<DiagnoseResult?>(null)
+    val diagnosis: StateFlow<DiagnoseResult?> = _diagnosis.asStateFlow()
 
     private val _memories = MutableStateFlow<List<MemoryItem>>(emptyList())
     val memories: StateFlow<List<MemoryItem>> = _memories.asStateFlow()
@@ -665,12 +670,42 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 .onSuccess { list ->
                     _models.value = list
                     _modelsLoading.value = false
+                    autoPickModel(list)
                 }
                 .onFailure {
                     _modelsLoading.value = false
                     _modelsError.value = it.message
                 }
         }
+    }
+
+    /**
+     * K11 — pilih otomatis model terbaik (urutan daftar sudah sadar-generasi):
+     * dipakai kalau pilihan lama kosong atau sudah tidak ada di daftar terbaru,
+     * supaya pemilik tidak pernah terjebak di model yang sudah ditutup Google.
+     */
+    private fun autoPickModel(list: List<GeminiModelInfo>) {
+        val current = _settings.value.geminiModel
+        val masihAda = list.any { it.name == current }
+        if (current.isNotBlank() && masihAda) return
+        val terbaik = list.firstOrNull { it.canChat && !it.isPreview } ?: list.firstOrNull { it.canChat } ?: return
+        updateSettings { it.copy(geminiModel = terbaik.name) }
+        testModel(terbaik.name)
+    }
+
+    // ===== K11 — DIAGNOSA KONEKSI =====
+
+    /** Jalankan diagnosa penuh: kunci → daftar model → hak pakai model. */
+    fun runDiagnosis() {
+        val key = _settings.value.geminiKey.trim()
+        _diagnosis.value = DiagnoseResult(running = true)
+        viewModelScope.launch {
+            _diagnosis.value = ModelCatalog.diagnose(key)
+        }
+    }
+
+    fun clearDiagnosis() {
+        _diagnosis.value = null
     }
 
     // ===== Ruang tes suara (Pusat Kendali) =====

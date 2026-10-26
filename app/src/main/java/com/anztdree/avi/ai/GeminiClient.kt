@@ -17,8 +17,19 @@ import okhttp3.RequestBody.Companion.toRequestBody
  */
 class GeminiClient : AiClient {
 
-    private fun url(model: String, key: String): String =
-        "https://generativelanguage.googleapis.com/v1beta/$model:streamGenerateContent?alt=sse&key=$key"
+    private fun url(model: String): String =
+        "https://generativelanguage.googleapis.com/v1beta/$model:streamGenerateContent?alt=sse"
+
+    /**
+     * K11 — auth selalu lewat HEADER x-goog-api-key (format key baru "AQ." dan
+     * lama "AIza." sama-sama didukung; sama persis dengan contoh resmi Google).
+     */
+    private fun request(model: String, key: String, body: String): Request =
+        okhttpAuth(Request.Builder(), key)
+            .url(url(model))
+            .header("Content-Type", "application/json")
+            .post(body.toRequestBody(Http.jsonMedia))
+            .build()
 
     /**
      * Config generasi adaptif per model (aturan resmi Google):
@@ -84,17 +95,18 @@ class GeminiClient : AiClient {
             for ((index, step) in ladder.withIndex()) {
                 val (useTools, minimal) = step
                 val body = buildBody(history, settings, withTools = useTools, minimal = minimal)
-                val request = Request.Builder()
-                    .url(url(model, key))
-                    .header("Content-Type", "application/json")
-                    .post(body.toRequestBody(Http.jsonMedia))
-                    .build()
 
-                val response = Http.client.newCall(request).execute()
+                val response = Http.client.newCall(request(model, key, body)).execute()
                 response.use {
                     if (!it.isSuccessful) {
                         val errBody = try { it.body?.string() } catch (_: Exception) { null }
                         val message = extractError(errBody, "HTTP ${it.code}")
+                        // K11 — blok tingkat-project (free tier/lokasi): mencoba langkah
+                        // lain PERCUMA, semua model kena penolakan sama → berhenti sekarang.
+                        if (isProjectLevelBlock(it.code, message)) {
+                            callback.onError(humanizeError(it.code, message, model))
+                            return@withContext
+                        }
                         val retriable = it.code == 400 || it.code == 404 ||
                             it.code == 500 || it.code == 503
                         if (index == 0 && retriable) return@use // turun ke langkah minimal

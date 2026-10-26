@@ -35,9 +35,10 @@ object AiClientFactory {
 /** Klien HTTP bersama */
 object Http {
     val client: OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
+        .callTimeout(180, TimeUnit.SECONDS)   // K11: loading tidak boleh menggantung selamanya
         .build()
 
     /** Klien untuk uji model — cepat & tegas, jangan biarkan pemilik menunggu lama */
@@ -93,14 +94,40 @@ fun extractError(body: String?, fallback: String): String {
 }
 
 /**
- * Pesan error berbahasa Indonesia untuk pemilik.
- * Khusus 429 (kuota): sertakan retryDelay dari Google bila ada.
- * Khusus 404: model mungkin sudah dipensiunkan Google / butuh versi API lain.
+ * Pesan error berbahasa Indonesia untuk pemilik — K11: AKAR MASALAH DIUNGKAP.
+ * Google punya beberapa penolakan tingkat-project yang membuat SEMUA model gagal.
+ * Pesan di bawah menerjemahkan tiap kasus beserta JALAN KELUARnya, bukan sekadar
+ * "gagal" — supaya pemilik tahu persis apa yang harus dilakukan.
  */
 fun humanizeError(httpCode: Int, raw: String, model: String = ""): String {
     val short = model.removePrefix("models/")
-    return when (httpCode) {
-        429 -> {
+    val rawLower = raw.lowercase()
+    return when {
+        // ==== KASUS 1 — project tanpa free tier (penyebab "gagal semua model") ====
+        httpCode == 403 && rawLower.contains("free tier is not available") ->
+            "Project API key Pak tidak punya akses GRATIS dari Google (HTTP 403). " +
+                "Ini penyebab semua model gagal — bukan salah model. JALAN KELUAR: " +
+                "(1) buka Pusat Kendali → DIAGNOSA KONEKSI untuk panduan lengkap, " +
+                "(2) aktifkan penagihan di aistudio.google.com/billing, atau " +
+                "(3) buat API key baru di aistudio.google.com/apikey (project baru)."
+
+        // ==== KASUS 2 — lokasi jaringan ditolak Google ====
+        httpCode == 400 && rawLower.contains("location is not supported") ->
+            "Google menolak lokasi jaringan ini (HTTP 400). " +
+                "Coba matikan VPN/proxy, ganti WiFi↔seluler, lalu ulangi ya pak."
+
+        // ==== KASUS 3 — model lama ditutup untuk key baru (contoh: 2.5 ditutup, era 3.x) ====
+        httpCode == 404 && rawLower.contains("no longer available to new users") -> {
+            val saran = Regex("use\\s+(models/)?([A-Za-z0-9._-]+)").find(raw)?.groupValues?.get(2)
+            if (saran != null)
+                "Model '$short' sudah ditutup Google untuk key baru (HTTP 404). " +
+                    "Penggantinya: $saran — pilih model itu di Pusat Kendali ya pak."
+            else
+                "Model '$short' sudah ditutup Google untuk key baru (HTTP 404) — " +
+                    "pilih model generasi terbaru di Pusat Kendali ya pak."
+        }
+
+        httpCode == 429 -> {
             val retry = Regex("retryDelay\"?\\s*:\\s*\"(\\d+)s")
                 .find(raw)?.groupValues?.takeIf { it.isNotEmpty() }?.get(1)
             val tunggu = if (retry != null) "Tunggu ±$retry detik lalu coba lagi, pak" else
@@ -108,13 +135,36 @@ fun humanizeError(httpCode: Int, raw: String, model: String = ""): String {
             "Kuota Gemini habis untuk saat ini (HTTP 429). $tunggu. " +
                 "Kalau sering terjadi: kurangi mode riset/pencarian web, atau cek kuota gratis di AI Studio."
         }
-        404 -> "Model '$short' tidak tersedia (HTTP 404). Kemungkinan model ini sudah " +
+        httpCode == 404 -> "Model '$short' tidak tersedia (HTTP 404). Kemungkinan model ini sudah " +
             "dipensiunkan Google atau butuh versi API lain — pilih model lain di Pusat Kendali ya pak. " +
             "Detail: $raw"
-        400 -> "Permintaan ditolak Gemini (HTTP 400): $raw — coba pilih model lain di Pusat Kendali, pak."
-        401, 403 -> "API key ditolak (HTTP $httpCode): $raw — pastikan key dari aistudio.google.com/apikey masih aktif, pak."
+        httpCode == 400 -> "Permintaan ditolak Gemini (HTTP 400): $raw — coba pilih model lain di Pusat Kendali, pak."
+        httpCode == 401 -> "API key ditolak (HTTP 401): $raw — pastikan key dari aistudio.google.com/apikey masih aktif, pak."
+        httpCode == 403 -> "Akses ditolak Google untuk project key ini (HTTP 403): $raw — " +
+            "buka Pusat Kendali → DIAGNOSA KONEKSI untuk panduan perbaikan, pak."
         else -> "Gemini (HTTP $httpCode): $raw"
     }
+}
+
+/**
+ * K11 — klasifikasi error tingkat-project: kalau TRUE, mencoba model lain PERCUMA
+ * (semua model pasti kena penolakan yang sama). Dipakai agar app berhenti cepat
+ * dan langsung menunjukkan panduan, bukan loading panjang.
+ */
+fun isProjectLevelBlock(httpCode: Int, raw: String): Boolean {
+    val r = raw.lowercase()
+    return (httpCode == 403 && r.contains("free tier is not available")) ||
+        (httpCode == 400 && r.contains("location is not supported")) ||
+        (httpCode == 403 && r.contains("permission_denied"))
+}
+
+/**
+ * K11 — DETEKSI KEY FORMAT BARU. Key AI Studio terbaru berawalan "AQ." — auth
+ * WAJIB lewat header x-goog-api-key (key lama "AIza..." juga didukung header).
+ */
+fun okhttpAuth(builder: Request.Builder, key: String): Request.Builder {
+    builder.header("x-goog-api-key", key.trim())
+    return builder
 }
 
 /** Bersihkan tag sistem & simbol untuk TTS (jangan dibacakan) */

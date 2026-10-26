@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,9 +49,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -61,8 +65,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.anztdree.avi.AviState
 import com.anztdree.avi.AviViewModel
+import com.anztdree.avi.R
 import com.anztdree.avi.data.AiProvider
 import com.anztdree.avi.data.AviSettings
+import com.anztdree.avi.sound.UiSounds
+import com.anztdree.avi.ui.theme.AviBody
+import com.anztdree.avi.ui.theme.AviDisplay
+import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviTheme
 import com.anztdree.avi.ui.theme.LocalAviPalette
 import kotlinx.coroutines.delay
@@ -114,6 +123,21 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         }
     }
 
+    // ---- K12 — efek suara mengikuti denyut state reaktor ----
+    LaunchedEffect(state) {
+        if (settings.powerSave) return@LaunchedEffect
+        when (state) {
+            AviState.THINKING -> UiSounds.send(context)
+            AviState.SPEAKING -> UiSounds.receive(context)
+            AviState.LISTENING -> UiSounds.wake(context)
+            AviState.LIVE -> UiSounds.live(context)
+            AviState.IDLE -> Unit
+        }
+    }
+    LaunchedEffect(error) {
+        if (error != null && !settings.powerSave) UiSounds.error(context)
+    }
+
     val setupNeeded = settings.provider == AiProvider.GEMINI &&
         (settings.geminiKey.isBlank() || settings.geminiModel.isBlank())
 
@@ -153,6 +177,29 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     }
 
     Box(Modifier.fillMaxSize().background(palette.bg)) {
+        // ---- K12 — latar nebula HD (dilucuti di hemat daya) ----
+        if (!settings.powerSave) {
+            Image(
+                painter = painterResource(R.drawable.bg_nebula),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.4f
+            )
+            Box(
+                Modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                palette.bg.copy(alpha = 0.45f),
+                                palette.bg.copy(alpha = 0.72f),
+                                palette.bg.copy(alpha = 0.88f)
+                            )
+                        )
+                    )
+            )
+        }
         HexGridBackground(
             palette = palette,
             enabled = settings.parallaxEnabled && !settings.powerSave,
@@ -176,6 +223,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     color = palette.text,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Black,
+                    fontFamily = AviDisplay,
                     letterSpacing = 2.sp
                 )
                 Spacer(Modifier.width(8.dp))
@@ -236,6 +284,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     color = palette.accent,
                     fontSize = 12.sp,
                     fontStyle = FontStyle.Italic,
+                    fontFamily = AviBody,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
@@ -277,7 +326,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     "MODE LIVE — bicara langsung, sentuh reaktor untuk berhenti",
                     color = palette.danger,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()

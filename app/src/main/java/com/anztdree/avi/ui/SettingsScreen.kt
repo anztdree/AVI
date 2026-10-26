@@ -2,6 +2,7 @@ package com.anztdree.avi.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,9 +27,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Troubleshoot
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -55,9 +59,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -66,11 +71,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.anztdree.avi.AviViewModel
+import com.anztdree.avi.R
+import com.anztdree.avi.ai.DiagnoseResult
 import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.data.AiProvider
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.Protocol
 import com.anztdree.avi.device.DeviceDiagnostics
+import com.anztdree.avi.ui.theme.AviDisplay
+import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.AviTheme
 import com.anztdree.avi.ui.theme.LocalAviPalette
@@ -94,6 +103,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
     val modelsLoading by vm.modelsLoading.collectAsState()
     val modelsError by vm.modelsError.collectAsState()
     val modelTest by vm.modelTest.collectAsState()
+    val diagnosis by vm.diagnosis.collectAsState()
     val memories by vm.memories.collectAsState()
     val protocols by vm.protocols.collectAsState()
     val usageToday by vm.usageToday.collectAsState()
@@ -118,15 +128,28 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
         settings.ocKey.isNotBlank() && settings.ocModel.isNotBlank()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(palette.bg)
-            .verticalScroll(rememberScrollState())
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // K12 — latar bintang HD halus di seluruh Pusat Kendali
+        Image(
+            painter = painterResource(R.drawable.bg_stars),
+            contentDescription = null,
+            modifier = Modifier.matchParentSize(),
+            contentScale = ContentScale.Crop,
+            alpha = 0.30f
+        )
+        Box(
+            Modifier
+                .matchParentSize()
+                .background(palette.bg.copy(alpha = 0.74f))
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
         // ============ HEADER ============
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {
@@ -136,12 +159,23 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     tint = palette.text
                 )
             }
+            // K12 — badge inti plasma HD
+            Image(
+                painter = painterResource(R.drawable.tex_core),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .size(34.dp)
+                    .clip(CircleShape)
+                    .border(1.dp, palette.accent.copy(alpha = 0.5f), CircleShape),
+                contentScale = ContentScale.Crop
+            )
             Column {
                 Text(
                     "PUSAT KENDALI",
                     color = palette.text,
                     fontSize = 17.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviDisplay,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 3.sp
                 )
@@ -149,7 +183,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     "SISTEM MARKAS — v1.0.0",
                     color = palette.textDim,
                     fontSize = 9.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     letterSpacing = 1.sp
                 )
             }
@@ -163,7 +197,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 "PROVIDER OTAK",
                 color = palette.textDim,
                 fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = AviHud,
                 letterSpacing = 1.sp
             )
             Spacer(Modifier.height(6.dp))
@@ -242,7 +276,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     Text(
                         "MUAT DAFTAR MODEL",
                         fontSize = 12.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = AviHud,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -304,12 +338,21 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     Spacer(Modifier.width(6.dp))
                     Text("Buka AI Studio", fontSize = 11.sp, color = palette.accent)
                 }
+
+                // ============ K11 — DIAGNOSA KONEKSI ============
+                Spacer(Modifier.height(10.dp))
+                DiagnosisCard(
+                    diagnosis = diagnosis,
+                    onRun = { vm.runDiagnosis() },
+                    palette = palette
+                )
+
                 Spacer(Modifier.height(2.dp))
                 Text(
                     "GAYA BICARA",
                     color = palette.textDim,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     letterSpacing = 1.sp
                 )
                 Spacer(Modifier.height(6.dp))
@@ -433,7 +476,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                                 ?: "PILIH MODEL TTS",
                             color = if (settings.cloudTtsModel.isBlank()) palette.textDim else palette.accent,
                             fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = AviHud,
                             modifier = Modifier.weight(1f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -460,7 +503,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                                         m.shortName,
                                         color = if (m.name == settings.cloudTtsModel) palette.accent else palette.text,
                                         fontSize = 12.sp,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = AviHud
                                     )
                                 },
                                 onClick = {
@@ -482,7 +525,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                             else "SUARA: ${settings.cloudVoice.uppercase()}",
                             color = palette.accent,
                             fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = AviHud,
                             modifier = Modifier.weight(1f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -497,7 +540,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                                         v,
                                         color = if (v == settings.cloudVoice) palette.accent else palette.text,
                                         fontSize = 12.sp,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = AviHud
                                     )
                                 },
                                 onClick = {
@@ -517,7 +560,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                         "TES SUARA AVI",
                         color = palette.accent,
                         fontSize = 12.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = AviHud,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -532,7 +575,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     "TES MENDENGAR",
                     color = palette.accent,
                     fontSize = 12.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -555,7 +598,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 "TEMA MARK",
                 color = palette.textDim,
                 fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = AviHud,
                 letterSpacing = 1.sp
             )
             Spacer(Modifier.height(8.dp))
@@ -585,7 +628,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                             label,
                             color = if (sel) palette.accent else palette.textDim,
                             fontSize = 10.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = AviHud
                         )
                     }
                 }
@@ -666,7 +709,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     "Belum ada memori, pak.",
                     color = palette.textDim,
                     fontSize = 11.sp,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = AviHud
                 )
             }
             Spacer(Modifier.height(8.dp))
@@ -694,7 +737,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     Text(
                         "INGAT",
                         fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = AviHud,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -717,13 +760,13 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                                 "Frasa: \u201C${p.phrase}\u201D",
                                 color = palette.accent,
                                 fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace
+                                fontFamily = AviHud
                             )
                             Text(
                                 "${p.steps.size} langkah",
                                 color = palette.textDim,
                                 fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace
+                                fontFamily = AviHud
                             )
                         }
                         TextButton(onClick = { vm.runProtocol(p) }) {
@@ -731,7 +774,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                                 "JALANKAN",
                                 color = palette.accent,
                                 fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = AviHud,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -800,7 +843,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 Text(
                     "SIMPAN PROTOKOL",
                     fontSize = 12.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -857,14 +900,14 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 "${d.device} · ${d.androidVersion}",
                 color = palette.textDim,
                 fontSize = 11.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = AviHud
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 "Pemakaian API hari ini: $usageToday permintaan",
                 color = palette.textDim,
                 fontSize = 11.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = AviHud
             )
             Spacer(Modifier.height(10.dp))
             Button(
@@ -878,7 +921,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 Text(
                     "HAPUS RIWAYAT PERCAKAPAN",
                     fontSize = 12.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -889,10 +932,177 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
             "AVI — Asisten Virtual Indonesia · Semua data tersimpan lokal di HP Anda.",
             color = palette.textDim,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
         )
+        }
+    }
+}
+
+/**
+ * K11 — Kartu DIAGNOSA KONEKSI: membongkar akar masalah koneksi ke Google dalam
+ * hitungan detik dan menampilkan JALAN KELUAR yang bisa dijalankan (tautan aktif),
+ * bukan sekadar pesan gagal. Tampil menyatu dengan gaya HUD Pusat Kendali.
+ */
+@Composable
+private fun DiagnosisCard(
+    diagnosis: DiagnoseResult?,
+    onRun: () -> Unit,
+    palette: AviPalette
+) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(palette.panel.copy(alpha = 0.55f))
+            .border(
+                1.dp,
+                when {
+                    diagnosis == null -> palette.panelLight
+                    diagnosis.running -> palette.accent.copy(alpha = 0.6f)
+                    diagnosis.verdictOk -> palette.accent
+                    else -> palette.danger.copy(alpha = 0.7f)
+                },
+                RoundedCornerShape(12.dp)
+            )
+            .padding(14.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                Icons.Default.Troubleshoot,
+                contentDescription = null,
+                tint = palette.gold,
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                "DIAGNOSA KONEKSI",
+                color = palette.text,
+                fontSize = 12.sp,
+                fontFamily = AviHud,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "Ketahuan akar masalahnya dalam ±15 detik — kunci, daftar model, hak pakai.",
+            color = palette.textDim,
+            fontSize = 10.sp,
+            lineHeight = 14.sp
+        )
+        Spacer(Modifier.height(10.dp))
+        Button(
+            onClick = onRun,
+            enabled = diagnosis?.running != true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = palette.gold,
+                contentColor = palette.bg
+            )
+        ) {
+            if (diagnosis?.running == true) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(14.dp),
+                    strokeWidth = 2.dp,
+                    color = palette.bg
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("MEMERIKSA…", fontSize = 12.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold)
+            } else {
+                Text("JALANKAN DIAGNOSA", fontSize = 12.sp, fontFamily = AviHud, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        diagnosis?.takeIf { !it.running && it.steps.isNotEmpty() }?.let { d ->
+            Spacer(Modifier.height(10.dp))
+            // ---- langkah-langkah ----
+            d.steps.forEach { step ->
+                Row(modifier = Modifier.padding(vertical = 3.dp)) {
+                    Icon(
+                        if (step.ok) Icons.Default.CheckCircle else Icons.Default.Cancel,
+                        contentDescription = if (step.ok) "berhasil" else "gagal",
+                        tint = if (step.ok) palette.accent else palette.danger,
+                        modifier = Modifier.size(13.dp).padding(top = 1.dp)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Column {
+                        Text(
+                            step.label,
+                            color = palette.text,
+                            fontSize = 10.sp,
+                            fontFamily = AviHud,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            step.detail,
+                            color = if (step.ok) palette.textDim else palette.danger,
+                            fontSize = 10.sp,
+                            lineHeight = 13.sp
+                        )
+                    }
+                }
+            }
+            // ---- vonak ----
+            Spacer(Modifier.height(8.dp))
+            Text(
+                d.verdict,
+                color = if (d.verdictOk) palette.accent else palette.danger,
+                fontSize = 11.sp,
+                fontFamily = AviHud,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 15.sp
+            )
+            // ---- panduan perbaikan (tautan bisa ditekan) ----
+            if (d.fixGuide.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                d.fixGuide.forEachIndexed { i, line ->
+                    val url = Regex("https://[^\\s,)]+").find(line)?.value
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 3.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(palette.bg.copy(alpha = 0.45f))
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            line,
+                            color = palette.textDim,
+                            fontSize = 10.sp,
+                            lineHeight = 14.sp
+                        )
+                        url?.let {
+                            Spacer(Modifier.height(6.dp))
+                            OutlinedButton(
+                                onClick = {
+                                    try {
+                                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+                                    } catch (_: Exception) {
+                                    }
+                                },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 12.dp, vertical = 4.dp
+                                ),
+                                modifier = Modifier.height(28.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.OpenInNew,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(11.dp),
+                                    tint = palette.accent
+                                )
+                                Spacer(Modifier.width(5.dp))
+                                Text("BUKA TAUTAN", fontSize = 9.sp, color = palette.accent, fontFamily = AviHud)
+                            }
+                        }
+                    }
+                    if (i < d.fixGuide.lastIndex) Spacer(Modifier.height(2.dp))
+                }
+            }
+        }
     }
 }
 

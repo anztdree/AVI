@@ -56,6 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.anztdree.avi.ai.GeminiModelInfo
 import com.anztdree.avi.ai.ModelTestResult
+import com.anztdree.avi.ui.theme.AviBody
+import com.anztdree.avi.ui.theme.AviCode
+import com.anztdree.avi.ui.theme.AviHead
+import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.LocalAviPalette
 import java.util.Locale
@@ -80,7 +84,7 @@ fun StatusChip(text: String, color: Color, modifier: Modifier = Modifier) {
             text = text,
             color = color,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             letterSpacing = 1.sp,
             maxLines = 1
         )
@@ -103,7 +107,7 @@ fun TopBarChip(label: String, color: Color, onClick: (() -> Unit)? = null) {
             text = label,
             color = color,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.widthIn(max = 110.dp)
@@ -173,7 +177,7 @@ fun SetupCard(onOpenSettings: () -> Unit) {
             "PASANG OTAK AVI",
             color = palette.gold,
             fontSize = 12.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp
         )
@@ -237,7 +241,8 @@ fun MessageBubble(role: String, text: String, streaming: Boolean = false) {
                 text = if (streaming) "$text▌" else text,
                 color = palette.text,
                 fontSize = 14.sp,
-                lineHeight = 20.sp
+                lineHeight = 20.sp,
+                fontFamily = AviBody
             )
         }
     }
@@ -259,7 +264,7 @@ fun SectionTitle(text: String, palette: AviPalette = LocalAviPalette.current) {
             text = text.uppercase(),
             color = palette.accent,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -291,7 +296,7 @@ fun SystemHeader(name: String, active: Boolean, palette: AviPalette = LocalAviPa
             text = name,
             color = if (active) palette.text else palette.textDim,
             fontSize = 13.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -301,7 +306,7 @@ fun SystemHeader(name: String, active: Boolean, palette: AviPalette = LocalAviPa
                 "AKTIF",
                 color = palette.accent.copy(alpha = 0.8f),
                 fontSize = 9.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = AviHud,
                 letterSpacing = 1.sp
             )
         }
@@ -376,7 +381,7 @@ fun PowerDial(
                 display,
                 color = palette.accent,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = AviHud,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -438,7 +443,7 @@ fun GaugeRing(
                     valueText,
                     color = palette.text,
                     fontSize = 13.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
@@ -446,7 +451,7 @@ fun GaugeRing(
                     label,
                     color = palette.textDim,
                     fontSize = 9.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     letterSpacing = 1.sp,
                     maxLines = 1
                 )
@@ -527,8 +532,10 @@ fun ModelCard(
             Text(
                 info.displayName,
                 color = palette.text,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
+                fontFamily = AviHead,
+                letterSpacing = 0.3.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f)
@@ -542,7 +549,7 @@ fun ModelCard(
             info.shortName,
             color = palette.accent,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviCode,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -560,7 +567,7 @@ fun ModelCard(
                         "⋯ MENGUJI",
                         color = palette.goldSoft,
                         fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = AviHud,
                         fontWeight = FontWeight.Bold
                     )
                 } else if (test.ok) {
@@ -568,7 +575,7 @@ fun ModelCard(
                         "✓ SIAP",
                         color = palette.accent,
                         fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = AviHud,
                         fontWeight = FontWeight.Bold
                     )
                 } else {
@@ -576,7 +583,7 @@ fun ModelCard(
                         "✗ GAGAL",
                         color = palette.danger,
                         fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = AviHud,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -611,7 +618,7 @@ private fun MiniBadge(text: String, color: Color) {
             text,
             color = color,
             fontSize = 8.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = AviHud,
             fontWeight = FontWeight.Bold
         )
     }

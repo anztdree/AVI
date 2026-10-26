@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +31,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.anztdree.avi.R
+import com.anztdree.avi.sound.UiSounds
+import com.anztdree.avi.ui.theme.AviDisplay
+import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import kotlin.math.PI
 import kotlin.math.sin
@@ -54,7 +62,9 @@ fun BootScreen(palette: AviPalette, onFinish: () -> Unit) {
     }
 
     val progress = remember { Animatable(0f) }
+    val ctx = LocalContext.current
     LaunchedEffect(Unit) {
+        UiSounds.boot(ctx)   // K12 — nyala reaktor dengan suara sinematik
         progress.animateTo(1f, animationSpec = tween(2600, easing = LinearEasing))
         finish()
     }
@@ -75,6 +85,24 @@ fun BootScreen(palette: AviPalette, onFinish: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Box(modifier = Modifier.fillMaxSize().alpha(overallAlpha)) {
+
+            // ---- K12 — latar reaktor HD (dilucuti di hemat daya) ----
+            Image(
+                painter = painterResource(R.drawable.bg_boot),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = 0.62f
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(palette.bg.copy(alpha = 0.42f), palette.bg.copy(alpha = 0.8f))
+                        )
+                    )
+            )
 
             // ---- garis sapuan scan (Fase 3) ----
             if (scan > 0f && scan < 1f) {
@@ -176,7 +204,7 @@ fun BootScreen(palette: AviPalette, onFinish: () -> Unit) {
                     color = palette.accent,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviDisplay,
                     letterSpacing = 6.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.alpha(online)
@@ -185,7 +213,7 @@ fun BootScreen(palette: AviPalette, onFinish: () -> Unit) {
                     "SISTEM MARKAS — HUD MARK II",
                     color = palette.textDim,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = AviHud,
                     letterSpacing = 2.sp,
                     modifier = Modifier.alpha(online)
                 )
