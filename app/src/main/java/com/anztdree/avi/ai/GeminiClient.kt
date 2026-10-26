@@ -24,9 +24,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
  *  3. BENTUK CURL BUKTI : badan persis curl pemilik — contents saja, TANPA
  *               generationConfig apa pun. Bentuk inilah yang terbukti jalan di
  *               nyaring, jadi selalu jadi bentuk penyelamat terakhir.
- * Turun satu anak tangga tiap kena 400/404/5xx ATAU jawaban kosong (mis. token
- * habis dimakan "thinking") — bukti lapangan: 2.5 bisa menghabiskan seluruh
- * budget token utk berpikir lalu mengirim teks kosong.
+ * Turun satu anak tangga tiap kena 400/404/5xx, jawaban kosong (mis. token
+ * habis dimakan "thinking"), ATAU 429 pada request ber-tools — K16: kuota
+ * grounding google_search free tier = 0 (terbukti matriks DIAG-429 dari
+ * server AS: ber-tools selalu 429 instan, tanpa-tools selalu 200).
  */
 class GeminiClient : AiClient {
 
@@ -142,7 +143,14 @@ class GeminiClient : AiClient {
                             callback.onError(humanizeError(code, message, model))
                             return@withContext
                         }
-                        val retriable = code == 400 || code == 404 || code == 500 || code == 503
+                        // K16 — AKAR MASALAH 429 TERBUKTI (matriks DIAG-429 dari server AS,
+                        // 4/4 model sama persis): request yang membawa tools google_search
+                        // ditolak Google dgn 429 instan (kuota grounding free tier = 0),
+                        // sementara request PERSIS SAMA tanpa tools selalu 200.
+                        // Maka: 429 pada request ber-tools WAJIB turun tangga ke bentuk
+                        // tanpa-tools. 429 tanpa tools = kuota sungguhan → berhenti & laporkan.
+                        val retriable = code == 400 || code == 404 || code == 500 || code == 503 ||
+                            (code == 429 && useTools && settings.webSearch)
                         if (index < tangga.lastIndex && retriable) return@use // turun tangga
                         callback.onError(humanizeError(code, message, model))
                         return@withContext
