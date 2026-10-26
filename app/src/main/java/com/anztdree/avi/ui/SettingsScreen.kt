@@ -104,6 +104,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
     val modelsError by vm.modelsError.collectAsState()
     val modelTest by vm.modelTest.collectAsState()
     val batchTest by vm.batchTest.collectAsState()   // K14 — progres uji semua model
+    val pickNote by vm.pickNote.collectAsState()     // K14 — catatan auto-pick
     val diagnosis by vm.diagnosis.collectAsState()
     val memories by vm.memories.collectAsState()
     val protocols by vm.protocols.collectAsState()
@@ -285,8 +286,13 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     Spacer(Modifier.height(4.dp))
                     Text(err, color = palette.danger, fontSize = 11.sp, lineHeight = 14.sp)
                 }
+                pickNote?.let { catatan ->
+                    Spacer(Modifier.height(4.dp))
+                    Text(catatan, color = palette.accent, fontSize = 11.sp, lineHeight = 14.sp)
+                }
                 Spacer(Modifier.height(8.dp))
-                val chatModels = models.filter { it.canChat }
+                // K14 — hanya model MURNI-OBROLAN (bukan TTS/gambar/live dsb.)
+                val chatModels = models.filter { it.canChat && it.isPureChat }
                 if (chatModels.isEmpty()) {
                     Text(
                         "Tekan MUAT DAFTAR MODEL untuk menarik daftar model terbaru langsung dari Google.",

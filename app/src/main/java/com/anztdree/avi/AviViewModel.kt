@@ -109,6 +109,10 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private val _modelsError = MutableStateFlow<String?>(null)
     val modelsError: StateFlow<String?> = _modelsError.asStateFlow()
 
+    /** K14 — catatan pemilihan model otomatis (model terpilih ✓ / tidak ada yang lolos) */
+    private val _pickNote = MutableStateFlow<String?>(null)
+    val pickNote: StateFlow<String?> = _pickNote.asStateFlow()
+
     /** Hasil uji per model: name → hasil (menguji / siap / gagal + alasan) */
     private val _modelTest = MutableStateFlow<Map<String, ModelTestResult>>(emptyMap())
     val modelTest: StateFlow<Map<String, ModelTestResult>> = _modelTest.asStateFlow()
@@ -697,7 +701,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             } catch (_: CancellationException) {
                 // dibatalkan pemilik — biarkan hasil sebagian tetap tampil
             } finally {
-                delay(4000)      // beri waktu ringkasan terbaca
+                try { delay(4000) } catch (_: Exception) { }   // beri waktu ringkasan terbaca
                 _batchTest.value = null
             }
         }
@@ -726,17 +730,47 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * K11 — pilih otomatis model terbaik (urutan daftar sudah sadar-generasi):
-     * dipakai kalau pilihan lama kosong atau sudah tidak ada di daftar terbaru,
-     * supaya pemilik tidak pernah terjebak di model yang sudah ditutup Google.
+     * K11→K14 — pilih otomatis model terbaik. BUKAN lagi menebak dari nama:
+     * DIAGNOSA server membuktikan alias/urutan nama bisa menipu (2.5 ditutup
+     * utk key baru, alias -latest bisa menggantung). Sekarang app MENGUJI
+     * turun daftar dan MEMILIH model pertama yang benar-benar menjawab.
      */
+    private var pickJob: Job? = null
+
     private fun autoPickModel(list: List<GeminiModelInfo>) {
         val current = _settings.value.geminiModel
         val masihAda = list.any { it.name == current }
         if (current.isNotBlank() && masihAda) return
-        val terbaik = list.firstOrNull { it.canChat && !it.isPreview } ?: list.firstOrNull { it.canChat } ?: return
-        updateSettings { it.copy(geminiModel = terbaik.name) }
-        testModel(terbaik.name)
+        pickBestModel(list)
+    }
+
+    /** Uji kandidat satu per satu (maks 12 teratas), pilih pertama yang ✓ SIAP. */
+    fun pickBestModel(list: List<GeminiModelInfo> = _models.value) {
+        if (pickJob?.isActive == true) return
+        val key = _settings.value.geminiKey.trim()
+        if (key.isBlank()) {
+            _modelsError.value = "Isi API key Gemini dulu, pak."
+            return
+        }
+        val kandidat = list.filter { it.canChat && it.isPureChat }.take(12)
+        if (kandidat.isEmpty()) {
+            _modelsError.value = "Tidak ada model obrolan di daftar — tekan MUAT DAFTAR MODEL."
+            return
+        }
+        pickJob = viewModelScope.launch {
+            for (info in kandidat) {
+                _modelTest.value = _modelTest.value + (info.name to ModelTestResult(true, false, "Menguji…"))
+                val r = ModelCatalog.testModel(key, info.name)
+                _modelTest.value = _modelTest.value + (info.name to r)
+                if (r.ok) {
+                    updateSettings { it.copy(geminiModel = info.name) }
+                    _modelsError.value = null
+                    _pickNote.value = "Model terbaik terpilih otomatis: ${info.shortName} ✓"
+                    return@launch
+                }
+            }
+            _pickNote.value = "Tidak ada model yang lolos uji — lihat badge ✗ tiap kartu untuk alasan Google, lalu jalankan UJI SEMUA MODEL."
+        }
     }
 
     // ===== K11 — DIAGNOSA KONEKSI =====

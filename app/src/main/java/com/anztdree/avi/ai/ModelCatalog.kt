@@ -26,6 +26,21 @@ data class GeminiModelInfo(
     val isPreview: Boolean get() =
         name.contains("preview", true) || name.contains("exp", true) ||
             name.contains("deprecated", true) || name.contains("image", true)
+
+    /**
+     * K14 — murni-OBROLAN: bukan varian TTS/gambar/transkripsi/musik/live dsb.
+     * Model-model itu menerima generateContent tapi MENOLAK teks biasa (400),
+     * jadi tidak boleh masuk daftar pilihan otak percakapan.
+     */
+    val isPureChat: Boolean get() {
+        val n = shortName.lowercase()
+        val kotor = listOf(
+            "tts", "image", "transcribe", "lyria", "antigravity", "deep-research",
+            "computer-use", "robotics", "nano-banana", "imagen", "veo",
+            "embed", "native-audio", "live"
+        )
+        return kotor.none { n.contains(it) }
+    }
 }
 
 /** Hasil uji cepat satu model (1 permintaan kecil ke Google) */
@@ -108,17 +123,16 @@ object ModelCatalog {
     }
 
     /**
-     * Alias "-latest" (contoh: gemini-flash-latest) selalu menunjuk model generasi
-     * berjalan yang TERBUKA untuk key baru — terbukti lewat uji langsung pemilik.
-     * Alias ini diungkit ke puncak daftar supaya jadi pilihan default teraman.
+     * Urutan tampil — K14 REVISI JUJUR (bukti DIAGNOSA server): alias "-latest"
+     * TIDAK diungkit lagi ke puncak — alias bisa saja sedang digantungkan Google
+     * (terbukti: gemini-flash-latest hang >40 detik). Urutan sekarang murni:
+     * generasi tertinggi dulu → flash → flash-lite → pro → abjad.
+     * Model mana yang benar-benar hidup ditentukan UJI MODEL (badge ✓/✗) dan
+     * auto-pick yang menguji sebelum memilih — bukan tebakan nama.
      */
-    private val effectiveGen = { info: GeminiModelInfo ->
-        if (info.shortName.contains("-latest")) 99 else genNumber(info.shortName)
-    }
-
     private val modelOrder = compareBy<GeminiModelInfo>(
         { if (it.isPreview) 1 else 0 },
-        { -effectiveGen(it) },                        // generasi terbaru dulu; alias -latest paling atas
+        { -genNumber(it.shortName) },                 // generasi terbaru dulu
         { when {
             it.shortName.contains("flash-lite") -> 2
             it.shortName.contains("flash") -> 0      // flash tercepat — pilihan utama

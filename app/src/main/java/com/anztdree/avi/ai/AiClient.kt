@@ -41,12 +41,13 @@ object Http {
         .callTimeout(180, TimeUnit.SECONDS)   // K11: loading tidak boleh menggantung selamanya
         .build()
 
-    /** Klien untuk uji model — cepat & tegas, jangan biarkan pemilik menunggu lama */
+    /** Klien untuk uji model — cepat & tegas (20 dtk: ping normal 1–5 dtk; yang
+     *  menggantung >20 dtk hampir pasti model yang sedang bermasalah) */
     val testClient: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(25, TimeUnit.SECONDS)
+        .readTimeout(20, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
-        .callTimeout(35, TimeUnit.SECONDS)
+        .callTimeout(20, TimeUnit.SECONDS)
         .build()
 
     val jsonMedia = "application/json; charset=utf-8".toMediaType()
@@ -138,6 +139,9 @@ fun humanizeError(httpCode: Int, raw: String, model: String = ""): String {
         httpCode == 404 -> "Model '$short' tidak tersedia (HTTP 404). Kemungkinan model ini sudah " +
             "dipensiunkan Google atau butuh versi API lain — pilih model lain di Pusat Kendali ya pak. " +
             "Detail: $raw"
+        httpCode == 500 || httpCode == 503 -> "Model '$short' sedang bermasalah di sisi Google " +
+            "(HTTP $httpCode — internal/kelebihan beban). Bukan salah app: ulangi beberapa saat, " +
+            "atau pilih model lain di Pusat Kendali ya pak."
         httpCode == 400 -> "Permintaan ditolak Gemini (HTTP 400): $raw — coba pilih model lain di Pusat Kendali, pak."
         httpCode == 401 -> "API key ditolak (HTTP 401): $raw — pastikan key dari aistudio.google.com/apikey masih aktif, pak."
         httpCode == 403 -> "Akses ditolak Google untuk project key ini (HTTP 403): $raw — " +
