@@ -87,8 +87,14 @@ data class GeminiErrorDetail(val message: String? = null)
 data class GeminiErrorBody(val error: GeminiErrorDetail? = null)
 
 @Serializable
+data class GeminiPromptFeedback(
+    @SerialName("blockReason") val blockReason: String? = null
+)
+
+@Serializable
 data class GeminiChunk(
-    val candidates: List<GeminiCandidate> = emptyList()
+    val candidates: List<GeminiCandidate> = emptyList(),
+    @SerialName("promptFeedback") val promptFeedback: GeminiPromptFeedback? = null
 )
 
 // ============ MODEL CATALOG DTO (ListModels) ============

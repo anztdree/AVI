@@ -107,9 +107,18 @@ object ModelCatalog {
         Regex("gemini-(\\d+)").find(name.lowercase())?.groupValues?.get(1)?.toIntOrNull() ?: 0
     }
 
+    /**
+     * Alias "-latest" (contoh: gemini-flash-latest) selalu menunjuk model generasi
+     * berjalan yang TERBUKA untuk key baru — terbukti lewat uji langsung pemilik.
+     * Alias ini diungkit ke puncak daftar supaya jadi pilihan default teraman.
+     */
+    private val effectiveGen = { info: GeminiModelInfo ->
+        if (info.shortName.contains("-latest")) 99 else genNumber(info.shortName)
+    }
+
     private val modelOrder = compareBy<GeminiModelInfo>(
         { if (it.isPreview) 1 else 0 },
-        { -genNumber(it.shortName) },                 // generasi terbaru dulu
+        { -effectiveGen(it) },                        // generasi terbaru dulu; alias -latest paling atas
         { when {
             it.shortName.contains("flash-lite") -> 2
             it.shortName.contains("flash") -> 0      // flash tercepat — pilihan utama

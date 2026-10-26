@@ -3,6 +3,7 @@ package com.anztdree.avi.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.StartOffset
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -48,6 +49,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -70,6 +72,13 @@ import java.util.Locale
 
 @Composable
 fun StatusChip(text: String, color: Color, modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "chipDot")
+    val pulse by transition.animateFloat(
+        initialValue = 0.35f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(1100, easing = LinearEasing)),
+        label = "pulse"
+    )
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(50))
@@ -78,7 +87,13 @@ fun StatusChip(text: String, color: Color, modifier: Modifier = Modifier) {
             .padding(horizontal = 10.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.size(6.dp).clip(CircleShape).background(color))
+        Box(
+            Modifier
+                .size(6.dp)
+                .graphicsLayer { alpha = pulse }
+                .clip(CircleShape)
+                .background(color)
+        )
         Spacer(Modifier.width(6.dp))
         Text(
             text = text,
@@ -216,7 +231,8 @@ fun SetupCard(onOpenSettings: () -> Unit) {
 }
 
 // ============================================================
-// Bubble chat
+// Bubble chat — kaca berlapis: tag peran, gradien, kursor kedip,
+// indikator mengetik. Masuk beranimasi dari BubbleEntrance.
 // ============================================================
 
 @Composable
@@ -225,6 +241,11 @@ fun MessageBubble(role: String, text: String, streaming: Boolean = false) {
     val isUser = role == "user"
     val bg = if (isUser) palette.userBubble else palette.aviBubble
     val border = if (isUser) palette.userBorder else palette.aviBorder
+    // ekor sudut menghadap pengirim — identitas visual tiap sisi
+    val shape = if (isUser)
+        RoundedCornerShape(16.dp, 4.dp, 16.dp, 16.dp)
+    else
+        RoundedCornerShape(4.dp, 16.dp, 16.dp, 16.dp)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
@@ -232,17 +253,92 @@ fun MessageBubble(role: String, text: String, streaming: Boolean = false) {
         Column(
             modifier = Modifier
                 .widthIn(max = 300.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(bg)
-                .border(1.dp, border.copy(alpha = 0.55f), RoundedCornerShape(16.dp))
+                .clip(shape)
+                .background(
+                    Brush.linearGradient(
+                        listOf(bg.copy(alpha = 0.94f), bg)
+                    )
+                )
+                .border(1.dp, border.copy(alpha = 0.55f), shape)
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
-            Text(
-                text = if (streaming) "$text▌" else text,
-                color = palette.text,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                fontFamily = AviBody
+            // tag peran — identitas HUD tiap bubble
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier
+                        .size(5.dp)
+                        .clip(CircleShape)
+                        .background(if (isUser) palette.gold else palette.accent)
+                )
+                Spacer(Modifier.width(5.dp))
+                Text(
+                    if (isUser) "PAK" else "AVI",
+                    color = if (isUser) palette.gold else palette.accent,
+                    fontSize = 8.5.sp,
+                    fontFamily = AviHud,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.5.sp
+                )
+            }
+            Spacer(Modifier.height(3.dp))
+            if (streaming && text.isEmpty()) {
+                // menunggu suku kata pertama — tetesan mengetik
+                TypingDots(palette = palette)
+            } else {
+                Row {
+                    Text(
+                        text = text,
+                        color = palette.text,
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        fontFamily = AviBody
+                    )
+                    if (streaming) {
+                        val blink = rememberInfiniteTransition(label = "cursor")
+                        val on by blink.animateFloat(
+                            initialValue = 1f,
+                            targetValue = 0.1f,
+                            animationSpec = infiniteRepeatable(tween(460, easing = LinearEasing)),
+                            label = "on"
+                        )
+                        Text(
+                            "▌",
+                            color = palette.accent,
+                            fontSize = 14.sp,
+                            fontFamily = AviBody,
+                            modifier = Modifier.graphicsLayer { alpha = on }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** Tiga tetesan melompat bergiliran — AVI sedang berpikir */
+@Composable
+fun TypingDots(palette: AviPalette) {
+    val transition = rememberInfiniteTransition(label = "typing")
+    Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        repeat(3) { i ->
+            val p by transition.animateFloat(
+                initialValue = 0f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(
+                    tween(820, easing = LinearEasing),
+                    initialStartOffset = StartOffset(i * 160)
+                ),
+                label = "dot$i"
+            )
+            // gelombang segitiga 0→1→0
+            val bob = if (p < 0.5f) p * 2f else (1f - p) * 2f
+            Box(
+                Modifier
+                    .padding(horizontal = 3.dp)
+                    .size(7.dp)
+                    .graphicsLayer { translationY = -(4f * bob).dp.toPx() }
+                    .clip(CircleShape)
+                    .background(if (i == 1) palette.gold else palette.accent)
             )
         }
     }

@@ -2,28 +2,30 @@ package com.anztdree.avi.ai
 
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.ChatMessage
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
 /**
- * Klien Google Gemini (generativelanguage.googleapis.com) dengan streaming SSE.
+ * Klien Google Gemini — PERSIS mengikuti spesifikasi terbukti milik pemilik:
+ *
+ *   POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+ *   Header: Content-Type: application/json
+ *           x-goog-api-key: <API key>
+ *
+ * NON-STREAMING. Satu permintaan → satu jawaban utuh. Tidak ada lagi jalur
+ * SSE/streaming yang di-buffer sebagian jaringan seluler Indonesia sehingga
+ * terlihat "loading lama lalu gagal semua".
+ *
  * Model diambil dari pengaturan (di-fetch dari ListModels) — TIDAK ADA HARDCODE.
- * Mendukung grounding Google Search dengan fallback otomatis.
  */
 class GeminiClient : AiClient {
 
     private fun url(model: String): String =
-        "https://generativelanguage.googleapis.com/v1beta/$model:streamGenerateContent?alt=sse"
+        "https://generativelanguage.googleapis.com/v1beta/$model:generateContent"
 
-    /**
-     * K11 — auth selalu lewat HEADER x-goog-api-key (format key baru "AQ." dan
-     * lama "AIza." sama-sama didukung; sama persis dengan contoh resmi Google).
-     */
+    /** Auth selalu lewat HEADER x-goog-api-key (key baru "AQ." & lama "AIza." sama-sama didukung). */
     private fun request(model: String, key: String, body: String): Request =
         okhttpAuth(Request.Builder(), key)
             .url(url(model))
@@ -33,15 +35,13 @@ class GeminiClient : AiClient {
 
     /**
      * Config generasi adaptif per model (aturan resmi Google):
-     * - HANYA keluarga 2.5-flash (flash & flash-lite) yang boleh menerima
-     *   thinkingBudget = 0. Model 2.0 TIDAK kenal thinkingConfig (400 error),
-     *   dan 2.5-pro WAJIB berpikir (budget 0 ditolak).
+     * - HANYA keluarga 2.5-flash yang boleh thinkingBudget = 0 (model lain 400 / wajib berpikir).
      * - Versi minimal TANPA thinking/tools untuk fallback kalau model menolak.
      */
     private fun genConfig(model: String, minimal: Boolean): GeminiGenerationConfig {
         if (minimal) return GeminiGenerationConfig(maxOutputTokens = 8192)
         val m = model.lowercase()
-        val allowThinkingOff = m.contains("2.5-flash")   // mencakup flash & flash-lite
+        val allowThinkingOff = m.contains("2.5-flash")
         return GeminiGenerationConfig(
             maxOutputTokens = 8192,
             thinkingConfig = if (allowThinkingOff) GeminiThinkingConfig(0) else null
@@ -98,55 +98,60 @@ class GeminiClient : AiClient {
 
                 val response = Http.client.newCall(request(model, key, body)).execute()
                 response.use {
+                    val code = it.code
+                    val errBody = if (it.isSuccessful) null else
+                        try { it.body?.string() } catch (_: Exception) { null }
+
                     if (!it.isSuccessful) {
-                        val errBody = try { it.body?.string() } catch (_: Exception) { null }
-                        val message = extractError(errBody, "HTTP ${it.code}")
-                        // K11 — blok tingkat-project (free tier/lokasi): mencoba langkah
-                        // lain PERCUMA, semua model kena penolakan sama → berhenti sekarang.
-                        if (isProjectLevelBlock(it.code, message)) {
-                            callback.onError(humanizeError(it.code, message, model))
+                        val message = extractError(errBody, "HTTP $code")
+                        // Blok tingkat-project (free tier/lokasi): mencoba langkah lain
+                        // PERCUMA, semua model kena penolakan sama → berhenti sekarang.
+                        if (isProjectLevelBlock(code, message)) {
+                            callback.onError(humanizeError(code, message, model))
                             return@withContext
                         }
-                        val retriable = it.code == 400 || it.code == 404 ||
-                            it.code == 500 || it.code == 503
+                        val retriable = code == 400 || code == 404 || code == 500 || code == 503
                         if (index == 0 && retriable) return@use // turun ke langkah minimal
-                        callback.onError(humanizeError(it.code, message, model))
+                        callback.onError(humanizeError(code, message, model))
                         return@withContext
                     }
-                    val sb = StringBuilder()
-                    var finishReason: String? = null
-                    readSse(it, CoroutineScope(currentCoroutineContext()), onEvent = { payload ->
-                        try {
-                            val chunk = jsonParser.decodeFromString<GeminiChunk>(payload)
-                            finishReason = chunk.candidates.firstOrNull()?.finishReason ?: finishReason
-                            val text = chunk.candidates.firstOrNull()
-                                ?.content?.parts
-                                ?.mapNotNull { part -> part.text }
-                                ?.joinToString("") { t -> t }
-                            if (!text.isNullOrEmpty()) {
-                                sb.append(text)
-                                callback.onDelta(text)
-                            }
-                        } catch (_: Exception) {
-                        }
-                    })
 
-                    val full = sb.toString().trim()
-                    if (full.isEmpty()) {
-                        val alasan = when (finishReason) {
-                            "SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST" ->
-                                "jawaban diblokir filter keamanan Google"
-                            "RECITATION" -> "jawaban dicegah karena mirip sumber tertentu"
-                            "MAX_TOKENS" -> "token output habis — turunkan panjang konteks"
-                            else -> "model merespons kosong"
-                        }
-                        callback.onError(
-                            "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}) — $alasan." +
-                                " Coba pilih model lain di Pusat Kendali ya, pak."
-                        )
-                    } else {
-                        callback.onComplete(full)
+                    // ---- Jawaban utuh (non-streaming) ----
+                    val raw = try { it.body?.string() } catch (_: Exception) { null }
+                    val chunk = try {
+                        raw?.let { r -> jsonParser.decodeFromString<GeminiChunk>(r) }
+                    } catch (_: Exception) { null }
+
+                    val cand = chunk?.candidates?.firstOrNull()
+                    val finishReason = cand?.finishReason
+                    val text = cand?.content?.parts
+                        ?.mapNotNull { part -> part.text }
+                        ?.joinToString("") { t -> t }
+                        ?.trim()
+                        .orEmpty()
+
+                    val blocked = chunk?.promptFeedback?.blockReason
+                    if (text.isNotEmpty()) {
+                        callback.onDelta(text)
+                        callback.onComplete(text)
+                        return@withContext
                     }
+
+                    val alasan = when {
+                        !blocked.isNullOrBlank() ->
+                            "permintaan diblokir filter Google ($blocked)"
+                        finishReason == "SAFETY" || finishReason == "PROHIBITED_CONTENT" || finishReason == "BLOCKLIST" ->
+                            "jawaban diblokir filter keamanan Google"
+                        finishReason == "RECITATION" ->
+                            "jawaban dicegah karena mirip sumber tertentu"
+                        finishReason == "MAX_TOKENS" ->
+                            "token output habis — turunkan panjang konteks"
+                        else -> "model merespons kosong"
+                    }
+                    callback.onError(
+                        "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}) — $alasan." +
+                            " Coba pilih model lain di Pusat Kendali ya, pak."
+                    )
                     return@withContext
                 }
             }
