@@ -4,7 +4,7 @@ import com.anztdree.avi.data.AviSettings
 
 /**
  * Kepribadian AVI — Asisten Virtual Indonesia.
- * Gaya bicara variatif, memori jangka panjang, mode riset,
+ * Gaya bicara variatif, memori jangka panjang,
  * dan tag sistem [INGAT:] untuk memori.
  */
 object SystemPrompts {
@@ -44,8 +44,10 @@ object SystemPrompts {
             ATURAN FORMAT JAWABAN (SANGAT PENTING):
             - Jawabanmu akan DIBACAKAN dengan suara. Tulis kalimat percakapan natural.
             - JANGAN markdown, JANGAN bullet/list, JANGAN emoji, JANGAN simbol aneh.
-            - Ringkas: maksimal 2-4 kalimat, kecuali diminta detail atau sedang MODE RISET.
-            - Info terkini (cuaca, berita, harga, jadwal): gunakan pencarian web, sebut sumber singkat ("menurut Kompas").
+            - Ringkas: maksimal 2-4 kalimat, kecuali diminta detail.
+            - Kalau pemilik minta info terkini (cuaca, berita, harga) dan kamu tidak yakin
+              datanya masih baru: jawab jujur dari pengetahuanmu, sebutkan kalau datanya
+              bisa jadi bukan paling baru, lalu sarankan cek sumber terkini.
 
             $memoryBlock
             $recapBlock
@@ -54,14 +56,6 @@ object SystemPrompts {
             - Bila pemilik menyuruh mengingat/catet sesuatu ("ingat bahwa...", "catet..."),
               akhiri jawabanmu dengan: [INGAT: fakta singkat tentang pemilik]
             - Jangan gunakan tag lain. DILARANG menggunakan [GAMBAR:...] — fitur gambar sudah dihapus.
-
-            ${if (s.researchMode) researchBlock() else ""}
         """.trimIndent()
     }
-
-    private fun researchBlock(): String = """
-        MODE RISET AKTIF: pemilik meminta riset. Gunakan pencarian web beberapa kali,
-        bandingkan sumber, lalu susun ringkasan terstruktur dan padat (maksimal 8 kalimat),
-        sebutkan sumber utamanya. Akhiri dengan satu kesimpulan bergaya AVI.
-    """.trimIndent()
 }

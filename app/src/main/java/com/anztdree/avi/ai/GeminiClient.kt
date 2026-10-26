@@ -17,17 +17,19 @@ import okhttp3.RequestBody.Companion.toRequestBody
  *
  * NON-STREAMING. Satu permintaan → satu jawaban utuh.
  *
- * K14 — TANGGA ADAPTIF 3 BENTUK (satu model, tiga bentuk badan permintaan):
- *  1. PENUH   : tools (kalau riset aktif) + thinking dimatikan utk model yang
- *               cuma-cuma bisa berpikir (keluarga 2.5 / alias -latest).
- *  2. TANPA TOOLS : thinking off, tanpa google_search.
- *  3. BENTUK CURL BUKTI : badan persis curl pemilik — contents saja, TANPA
- *               generationConfig apa pun. Bentuk inilah yang terbukti jalan di
- *               nyaring, jadi selalu jadi bentuk penyelamat terakhir.
- * Turun satu anak tangga tiap kena 400/404/5xx, jawaban kosong (mis. token
- * habis dimakan "thinking"), ATAU 429 pada request ber-tools — K16: kuota
- * grounding google_search free tier = 0 (terbukti matriks DIAG-429 dari
- * server AS: ber-tools selalu 429 instan, tanpa-tools selalu 200).
+ * K17 — RISET WEB DIHAPUS TOTAL (keputusan pemilik): tools google_search
+ * tidak pernah dikirim lagi. Alasannya terbukti (matriks DIAG-429, server AS,
+ * 4/4 model): kuota grounding google_search free tier = 0 → request ber-tools
+ * selalu ditolak 429 instan, sementara request tanpa-tools selalu 200. Pencarian
+ * web nanti memakai provider lain (mis. DDG), bukan lewat Gemini.
+ *
+ * TANGGA 2 BENTUK (satu model, dua bentuk badan permintaan):
+ *  1. BENTUK LENGKAP : systemInstruction + generationConfig (thinking dimatikan
+ *                      utk model yang cuma-cuma bisa berpikir).
+ *  2. BENTUK CURL BUKTI : badan persis curl pemilik — contents saja, TANPA
+ *                      generationConfig apa pun. Terbukti jalan di nyaring.
+ * Turun satu anak tangga tiap kena 400/404/5xx ATAU jawaban kosong (mis. token
+ * habis dimakan "thinking"). 429 tanpa-tools = kuota sungguhan → dilaporkan.
  */
 class GeminiClient : AiClient {
 
@@ -59,7 +61,6 @@ class GeminiClient : AiClient {
     private fun buildBody(
         history: List<ChatMessage>,
         settings: AviSettings,
-        withTools: Boolean,
         thinkingOff: Boolean,
         minimal: Boolean
     ): String {
@@ -83,7 +84,6 @@ class GeminiClient : AiClient {
                     role = "user",
                     parts = listOf(GeminiPart(text = SystemPrompts.build(settings)))
                 ),
-                tools = if (withTools && settings.webSearch) listOf(GeminiTool()) else null,
                 generationConfig = GeminiGenerationConfig(
                     maxOutputTokens = 8192,
                     thinkingConfig = if (thinkingOff && mungkinBerpikir(settings.geminiModel))
@@ -106,18 +106,17 @@ class GeminiClient : AiClient {
                 return@withContext
             }
 
-            // Tangga K14: (tools, thinkingOff, minimal)
+            // Tangga K17 (tanpa riset web): (thinkingOff, minimal)
             val tangga = listOf(
-                Triple(true, true, false),
-                Triple(false, true, false),
-                Triple(false, false, true)
+                Pair(true, false),
+                Pair(false, true)
             )
 
             var kodeTerakhir = 0
             var pesanTerakhir = ""
             for ((index, step) in tangga.withIndex()) {
-                val (useTools, thinkingOff, minimal) = step
-                val body = buildBody(history, settings, useTools, thinkingOff, minimal)
+                val (thinkingOff, minimal) = step
+                val body = buildBody(history, settings, thinkingOff, minimal)
 
                 val response = try {
                     Http.client.newCall(request(model, key, body)).execute()
@@ -143,14 +142,9 @@ class GeminiClient : AiClient {
                             callback.onError(humanizeError(code, message, model))
                             return@withContext
                         }
-                        // K16 — AKAR MASALAH 429 TERBUKTI (matriks DIAG-429 dari server AS,
-                        // 4/4 model sama persis): request yang membawa tools google_search
-                        // ditolak Google dgn 429 instan (kuota grounding free tier = 0),
-                        // sementara request PERSIS SAMA tanpa tools selalu 200.
-                        // Maka: 429 pada request ber-tools WAJIB turun tangga ke bentuk
-                        // tanpa-tools. 429 tanpa tools = kuota sungguhan → berhenti & laporkan.
-                        val retriable = code == 400 || code == 404 || code == 500 || code == 503 ||
-                            (code == 429 && useTools && settings.webSearch)
+                        // K17 — tidak ada request ber-tools, jadi 429 pasti kuota
+                        // sungguhan (per menit/hari free tier) → dilaporkan jujur.
+                        val retriable = code == 400 || code == 404 || code == 500 || code == 503
                         if (index < tangga.lastIndex && retriable) return@use // turun tangga
                         callback.onError(humanizeError(code, message, model))
                         return@withContext
@@ -193,7 +187,7 @@ class GeminiClient : AiClient {
                     }
                     callback.onError(
                         "Gemini tidak mengirim jawaban (model: ${model.removePrefix("models/")}) — $alasan. " +
-                            "Ketiga bentuk permintaan (termasuk bentuk curl bukti Pak) sudah dicoba. " +
+                            "Kedua bentuk permintaan (termasuk bentuk curl bukti Pak) sudah dicoba. " +
                             "Coba UJI SEMUA MODEL di Pusat Kendali lalu pilih model berbadge ✓ ya, pak."
                     )
                     return@withContext

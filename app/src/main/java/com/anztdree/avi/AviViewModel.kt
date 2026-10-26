@@ -312,11 +312,17 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         val lower = text.lowercase(Locale.ROOT).trim()
+        // K17 — kata kerja diperluas (jalankan/bukakan) + word-boundary: kata lain
+        // yang mengandung potongan kata (mis. "buku" mengandung "bu") TIDAK ikut
+        // terbuang, supaya nama aplikasi tidak rusak saat dibersihkan.
         if (lower.startsWith("buka ") || lower.startsWith("open ") ||
+            lower.startsWith("jalankan ") || lower.startsWith("bukakan ") ||
             (lower.contains(" buka ") && lower.length < 60)
         ) {
-            val query = text.replace(Regex("(?i)(tolong|coba|sekarang|ya|dunk|dong|pak|bu|aplikasi|app|open|buka)"), " ")
-                .replace(Regex("\\s+"), " ").trim()
+            val query = text.replace(
+                Regex("(?i)\\b(tolong|coba|sekarang|ya|dunk|dong|pak|bu|aplikasi|app|open|buka|bukakan|jalankan)\\b"),
+                " "
+            ).replace(Regex("\\s+"), " ").trim()
             if (query.isNotEmpty()) {
                 val apps = DeviceActions.findApps(ctx, query)
                 if (apps.isNotEmpty()) {
@@ -355,8 +361,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
         val runtime = _settings.value.copy(
             memoryText = memoryRepo.joinedText(),
-            recap = buildRecap(),
-            researchMode = isResearchRequest(userText)
+            recap = buildRecap()
         )
 
         val history = historyRepo.contextWindow(_messages.value)
@@ -396,12 +401,6 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 pendingSteps.clear()
             }
         }
-    }
-
-    private fun isResearchRequest(text: String): Boolean {
-        val t = text.lowercase(Locale.ROOT)
-        return t.startsWith("riset") || t.contains("risetkan") || t.contains("riset tentang") ||
-            t.contains("teliti tentang") || t.contains("cari tahu tentang")
     }
 
     /** X7 — kesinambungan topik: potongan obrolan sebelumnya (pesan lama) */

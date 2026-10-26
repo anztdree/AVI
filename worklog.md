@@ -15,3 +15,20 @@ Work Log:
 Stage Summary:
 - Akar masalah TERBUKTI dgn bukti server: tools google_search → 429 instan; tanpa tools → 200
 - Fix satu baris terarah; perilaku chat baru = tangga-1 (429 instan) → tangga-2 (200) → jawaban utuh
+
+---
+Task ID: R5-hapus-riset-web
+Agent: Z.ai Code (main)
+Task: "hapus riset web total. lebih baik nanti pake provider lain seperti DDG. wajib jalan fitur utama: obrolan berjalan + buka aplikasi"
+
+Work Log:
+- Petakan semua jejak: webSearch (SettingsRepository 4 titik), researchMode (field runtime + isResearchRequest), GeminiTool/tools (Dtos), tools di buildBody+tangga (GeminiClient), MODE RISET + "gunakan pencarian web" (SystemPrompts), saran riset di pesan 429 (AiClient)
+- Hapus SEMUA: field+key DataStore webSearch, researchMode, isResearchRequest, GeminiTool+field tools, tangga 3→2 bentuk (lengkap tanpa-tools → curl bukti), prompt riset diganti jawaban jujur soal data terkini, pesan 429 jujur soal jatah per menit/hari
+- Verifikasi manifest: <queries> LAUNCHER sudah ada (wajib Android 11+ utk daftar app)
+- Perkuat buka-app: kata kerja jalankan/bukakan + word-boundary di pembersih kata (nama app "buku" tidak rusak oleh "bu")
+- rg final: hanya komentar KDoc GeminiClient yg menyebut google_search (dokumentasi alasan penghapusan)
+- Bump v1.0.3(8), README K17, push, pantau CI & release
+
+Stage Summary:
+- Seluruh request chat kini murni jalur tanpa-tools yang terbukti 200 (matriks AS 4/4)
+- Buka aplikasi: jalur lokal langsung + jalur [BUKA:] model, manifest aman, pencocokan diperkuat

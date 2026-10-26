@@ -134,7 +134,8 @@ fun humanizeError(httpCode: Int, raw: String, model: String = ""): String {
             val tunggu = if (retry != null) "Tunggu ±$retry detik lalu coba lagi, pak" else
                 "Tunggu sebentar lalu coba lagi, pak"
             "Kuota Gemini habis untuk saat ini (HTTP 429). $tunggu. " +
-                "Kalau sering terjadi: kurangi mode riset/pencarian web, atau cek kuota gratis di AI Studio."
+                "Key gratis punya jatah per menit dan per hari — kalau sering terjadi, " +
+                "beri jeda antar pertanyaan atau cek kuota di AI Studio, pak."
         }
         httpCode == 404 -> "Model '$short' tidak tersedia (HTTP 404). Kemungkinan model ini sudah " +
             "dipensiunkan Google atau butuh versi API lain — pilih model lain di Pusat Kendali ya pak. " +

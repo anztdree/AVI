@@ -3,7 +3,6 @@ package com.anztdree.avi.ai
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 
 val jsonParser: Json = Json {
     ignoreUnknownKeys = true
@@ -30,11 +29,6 @@ data class GeminiPart(
 data class GeminiContent(
     val role: String? = null,
     val parts: List<GeminiPart> = emptyList()
-)
-
-@Serializable
-data class GeminiTool(
-    @SerialName("google_search") val googleSearch: JsonObject = JsonObject(emptyMap())
 )
 
 @Serializable
@@ -70,7 +64,7 @@ data class GeminiGenerationConfig(
 data class GeminiRequest(
     val contents: List<GeminiContent>,
     val systemInstruction: GeminiContent? = null,
-    val tools: List<GeminiTool>? = null,
+    // K17 — riset web dihapus total: tidak ada field tools lagi.
     // K14 — nullable: kalau tidak dikirim, field ini DILEPAS dari JSON
     // (explicitNulls=false) sehingga badan permintaan bisa PERSIS curl bukti
     // pemilik: {"contents":[{"parts":[{"text":"..."}]}]} tanpa generationConfig.

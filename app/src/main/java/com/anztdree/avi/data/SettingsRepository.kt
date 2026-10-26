@@ -30,7 +30,7 @@ enum class AiProvider(val id: String, val label: String) {
 }
 
 /**
- * Seluruh pengaturan AVI. Field memoryText / recap / researchMode HANYA runtime
+ * Seluruh pengaturan AVI. Field memoryText / recap HANYA runtime
  * (diisi ViewModel sebelum memanggil AI, tidak pernah disimpan).
  */
 data class AviSettings(
@@ -57,12 +57,10 @@ data class AviSettings(
     val powerSave: Boolean = false,
     // kepribadian & mode
     val style: String = "santai",
-    val webSearch: Boolean = true,
     val userName: String = "Pak",
     // runtime-only
     val memoryText: String = "",
-    val recap: String = "",
-    val researchMode: Boolean = false
+    val recap: String = ""
 )
 
 class SettingsRepository(private val context: Context) {
@@ -87,7 +85,6 @@ class SettingsRepository(private val context: Context) {
         val diagnosticsOrbit = booleanPreferencesKey("diagnostics_orbit")
         val powerSave = booleanPreferencesKey("power_save")
         val style = stringPreferencesKey("style")
-        val webSearch = booleanPreferencesKey("web_search")
         val userName = stringPreferencesKey("user_name")
         val usageDate = stringPreferencesKey("usage_date")
         val usageCount = intPreferencesKey("usage_count")
@@ -118,7 +115,6 @@ class SettingsRepository(private val context: Context) {
         diagnosticsOrbit = p[Keys.diagnosticsOrbit] ?: true,
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
-        webSearch = p[Keys.webSearch] ?: true,
         userName = p[Keys.userName] ?: "Pak"
     )
 
@@ -146,7 +142,6 @@ class SettingsRepository(private val context: Context) {
             p[Keys.diagnosticsOrbit] = next.diagnosticsOrbit
             p[Keys.powerSave] = next.powerSave
             p[Keys.style] = next.style
-            p[Keys.webSearch] = next.webSearch
             p[Keys.userName] = next.userName.ifBlank { "Pak" }
         }
     }
