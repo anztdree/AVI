@@ -4,6 +4,7 @@ import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.ChatMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
