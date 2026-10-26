@@ -63,16 +63,65 @@ jobs:
           git tag -f v1.0.0 "$GITHUB_SHA"
           git push -f origin v1.0.0
 
-          # Ganti isi release (APK baru menggantikan APK lama)
-          cp "app/build/outputs/apk/release/app-release.apk" /tmp/AVI-v1.0.0.apk
+          # === Nama file UNIK per build: versi + kode build + hash commit ===
+          # Supaya setiap pembaruan TERLIHAT jelas di halaman Release
+          # (nama file lama selalu berbeda dari yang baru).
+          VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts | head -1)
+          CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts | head -1)
+          SHORT="${GITHUB_SHA::7}"
+          APK_NAME="AVI-v${VERSION}-${CODE}-${SHORT}.apk"
+          echo "Nama APK build ini: $APK_NAME"
+          cp "app/build/outputs/apk/release/app-release.apk" "/tmp/$APK_NAME"
+
           gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 || {
             gh release create v1.0.0 \
               --repo "$GITHUB_REPOSITORY" \
               --title "AVI v1.0.0 — Full Feature (Mark II)" \
               --notes "APK resmi AVI. Selalu unduh dari release ini untuk versi terbaru."
           }
-          gh release upload v1.0.0 \
-            /tmp/AVI-v1.0.0.apk \
+
+          # Hapus semua APK lama di release — hanya tersisa build terbaru
+          for a in $(gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null || true); do
+            case "$a" in
+              AVI-*.apk)
+                gh release delete-asset "v1.0.0" "$a" --repo "$GITHUB_REPOSITORY" --yes || true ;;
+            esac
+          done
+
+          gh release upload v1.0.0 "/tmp/$APK_NAME" \
             --repo "$GITHUB_REPOSITORY" \
             --clobber
-          echo "Release v1.0.0 diperbarui dengan commit: $GITHUB_SHA"
+
+          # === Catatan rilis otomatis: cap waktu WIB + versi + commit ===
+          BUILD_TIME=$(TZ=Asia/Jakarta date '+%d %b %Y — %H:%M WIB')
+          SIZE_MB=$(du -m "/tmp/$APK_NAME" | cut -f1)
+          cat > /tmp/notes-rilis.md <<EOF
+          ## 📦 Build Terbaru
+
+          | | |
+          |---|---|
+          | **File APK** | \`${APK_NAME}\` |
+          | **Versi** | ${VERSION} (build ${CODE}) |
+          | **Commit** | \`${SHORT}\` |
+          | **Dibangun** | ${BUILD_TIME} |
+          | **Ukuran** | ${SIZE_MB} MB |
+
+          > ⚡ **Cara cek pembaruan:** nama file APK selalu berbeda di setiap build
+          > (memuat versi + kode build + hash commit). Jika nama berubah → ada versi baru.
+          > Setelah memasang APK baru, hapus dulu APK lama bila installer menolak.
+
+          ---
+          ### Fitur yang tersedia
+          - 🔊 Bicara bebas "Hay pak…" — STT & TTS selalu aktif, ramah bahasa Indonesia
+          - 🧠 AI cloud Google Gemini — auth header \`X-goog-api-key\`, non-streaming, daftar model dinamis (semua keluarga: 1.5 / 2.0 / 2.5 / alias \`-latest\`)
+          - 🧪 Uji Model per-kartu & tombol **UJI SEMUA MODEL** di Pusat Kendali
+          - 🛰️ Orbit telemetri di sekeliling orb (baterai, memori, penyimpanan, jaringan, jam)
+          - 🌌 Chat full animasi HD — nebula ken-burns, bintang paralaks, piringan reaktor, riwayat ber-spring, dock kaca beriak
+          - ⚙️ Perintah perangkat lokal (buka app, WiFi/Bluetooth, baterai, telepon, dan lainnya)
+          EOF
+          gh release edit v1.0.0 \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "AVI v1.0.0 — Full Feature (Mark II)" \
+            --notes-file /tmp/notes-rilis.md
+
+          echo "Release v1.0.0 diperbarui: $APK_NAME (commit $GITHUB_SHA)"
