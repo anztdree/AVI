@@ -25,7 +25,7 @@ jobs:
           SYS = "Kamu AVI, asisten virtual berbahasa Indonesia. Jawab singkat."
 
           def call(model, body, tag):
-              url = f"{BASE}/{model}:generateContent"
+              url = f"{BASE}/models/{model}:generateContent"
               data = json.dumps(body).encode()
               req = urllib.request.Request(url, data=data, method="POST")
               req.add_header("Content-Type", "application/json")
@@ -60,13 +60,25 @@ jobs:
                           if d.get("@type", "").endswith("RetryInfo"):
                               print(f"    RETRY: {json.dumps(d)[:120]}")
                       if not err.get("details"):
-                          print("    RAW:", raw[:600])
+                          print("    RAW:", repr(raw[:600]))
                   except Exception:
-                      print("    RAW:", raw[:600])
+                      print("    RAW:", repr(raw[:600]))
                   return e.code
               except Exception as e:
                   print(f"[{tag}] {model} -> EXC {e}")
                   return -1
+
+          # Cek key dulu: ListModels harus 200 — kalau tidak, semua vonis batal
+          listurl = f"{BASE}/models?pageSize=5"
+          lreq = urllib.request.Request(listurl)
+          lreq.add_header("X-goog-api-key", KEY)
+          try:
+              with urllib.request.urlopen(lreq, timeout=30) as r:
+                  n = len(json.loads(r.read().decode()).get("models", []))
+                  print(f"=== ListModels OK ({n} model, key VALID) ===")
+          except urllib.error.HTTPError as e:
+              print(f"=== ListModels GAGAL HTTP {e.code}: {repr(e.read().decode()[:300])} ===")
+              sys.exit(1)
 
           MODELS = [
               "gemini-3.6-flash",
