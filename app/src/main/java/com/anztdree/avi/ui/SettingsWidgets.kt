@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -70,12 +71,13 @@ import com.anztdree.avi.ui.theme.LocalAviPalette
  * tetap satu keluarga dgn layar obrolan (panel kaca, tipografi HUD).
  */
 
-/** Tab misi Pusat Kendali */
-enum class HudTab { OTAK, SUARA, GAYA, SISTEM }
+/** Tab misi Pusat Kendali — K22: tab AGENT masuk (mesin function calling) */
+enum class HudTab { OTAK, AGENT, SUARA, GAYA, SISTEM }
 
 private val HudTab.icon: ImageVector
     get() = when (this) {
         HudTab.OTAK -> Icons.Filled.Psychology
+        HudTab.AGENT -> Icons.Filled.SmartToy
         HudTab.SUARA -> Icons.Filled.GraphicEq
         HudTab.GAYA -> Icons.Filled.Face
         HudTab.SISTEM -> Icons.Filled.Tune
@@ -155,6 +157,53 @@ fun HudTabBar(
                     .background(palette.accent)
             )
         }
+    }
+}
+
+// ============================================================
+// K22 — Sakelar HUD mini (perkakas agen aktif/nonaktif)
+// ============================================================
+
+@Composable
+fun HudToggle(
+    on: Boolean,
+    enabled: Boolean = true,
+    palette: AviPalette = LocalAviPalette.current,
+    onClick: () -> Unit
+) {
+    val trackW = 38.dp
+    val knob = 15.dp
+    val offX by animateDpAsState(
+        targetValue = if (on) trackW - knob - 3.dp else 3.dp,
+        animationSpec = tween(180),
+        label = "tog"
+    )
+    Box(
+        Modifier
+            .width(trackW)
+            .height(22.dp)
+            .clip(RoundedCornerShape(50))
+            .background(
+                when {
+                    on && enabled -> palette.accent.copy(alpha = 0.32f)
+                    else -> palette.panelLight.copy(alpha = 0.6f)
+                }
+            )
+            .border(
+                1.dp,
+                if (on && enabled) palette.accent else palette.textDim.copy(alpha = 0.35f),
+                RoundedCornerShape(50)
+            )
+            .clickable(enabled = enabled) { onClick() },
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Box(
+            Modifier
+                .offset(x = offX)
+                .size(knob)
+                .clip(CircleShape)
+                .background(if (on && enabled) palette.accent else palette.textDim.copy(alpha = 0.7f))
+        )
     }
 }
 

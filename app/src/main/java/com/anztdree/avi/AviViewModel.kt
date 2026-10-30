@@ -7,10 +7,18 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.anztdree.avi.agent.AgentEngine
+import com.anztdree.avi.agent.AgentEvent
+import com.anztdree.avi.agent.AgentOutcome
+import com.anztdree.avi.agent.AgentRouter
+import com.anztdree.avi.agent.AgentTools
+import com.anztdree.avi.agent.Otoritas
+import com.anztdree.avi.agent.ToolResult
 import com.anztdree.avi.ai.AiClientFactory
 import com.anztdree.avi.ai.AiStreamCallback
 import com.anztdree.avi.ai.CloudTts
 import com.anztdree.avi.ai.DiagnoseResult
+import com.anztdree.avi.ai.GeminiClient
 import com.anztdree.avi.ai.LiveClient
 import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.ai.GeminiModelInfo
@@ -18,6 +26,8 @@ import com.anztdree.avi.ai.ModelTestResult
 import com.anztdree.avi.ai.SystemPrompts
 import com.anztdree.avi.ai.cleanForSpeech
 import com.anztdree.avi.data.AviSettings
+import com.anztdree.avi.data.AgentLogItem
+import com.anztdree.avi.data.AgentLogRepository
 import com.anztdree.avi.data.ChatHistoryRepository
 import com.anztdree.avi.data.ChatMessage
 import com.anztdree.avi.data.MemoryItem
@@ -39,6 +49,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -53,6 +64,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private val historyRepo = ChatHistoryRepository(app)
     private val memoryRepo = MemoryRepository(app)
     private val protocolRepo = ProtocolRepository(app)
+    private val agentLogRepo = AgentLogRepository(app)
 
     // ===== Flows (kontrak UI) =====
 
@@ -136,6 +148,26 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private val _usageToday = MutableStateFlow(0)
     val usageToday: StateFlow<Int> = _usageToday.asStateFlow()
 
+    // ===== K22 — Mesin AGEN =====
+
+    private val agentTools by lazy { AgentTools(memoryRepo) }
+    private val agentEngine by lazy { AgentEngine(getApplication(), GeminiClient(), agentTools) }
+
+    /** Timeline aksi agen untuk layar obrolan (dibersihkan tiap putaran baru). */
+    private val _agentEvents = MutableStateFlow<List<AgentEvent>>(emptyList())
+    val agentEvents: StateFlow<List<AgentEvent>> = _agentEvents.asStateFlow()
+
+    /** True saat mesin agen sedang menjalankan perkakas (badge HUD). */
+    private val _agentAktif = MutableStateFlow(false)
+    val agentAktif: StateFlow<Boolean> = _agentAktif.asStateFlow()
+
+    /** Log aksi agen (Pusat Kendali → AGENT → LOG AKSI). */
+    private val _agentLog = MutableStateFlow<List<AgentLogItem>>(emptyList())
+    val agentLog: StateFlow<List<AgentLogItem>> = _agentLog.asStateFlow()
+
+    /** Registri perkakas utk UI (daftar, deskripsi, uji). */
+    val toolRegistry: AgentTools get() = agentTools
+
     // ===== Mesin internal =====
 
     private var streamJob: Job? = null
@@ -196,6 +228,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         }
         viewModelScope.launch { _memories.value = memoryRepo.load() }
         viewModelScope.launch { _protocols.value = protocolRepo.load() }
+        viewModelScope.launch { _agentLog.value = agentLogRepo.load() }
         viewModelScope.launch {
             settingsRepo.usageToday.collect { _usageToday.value = it }
         }
@@ -301,6 +334,12 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private fun handleUserInput(text: String) {
         if (_state.value == AviState.THINKING || _state.value == AviState.SPEAKING) return
         if (_state.value == AviState.LIVE) return
+        // K22 — perintah berantai ("…lalu…", "…terus…") TIDAK boleh dimakan
+        // jalur lokal buka-aplikasi → langsung ke model (router memilih agen).
+        if (AgentRouter.adaGabung(text)) {
+            sendToModel(text)
+            return
+        }
         if (handleLocal(text)) return
         sendToModel(text)
     }
@@ -382,6 +421,26 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             recap = buildRecap()
         )
 
+        // ===== K22 — ROUTER: asisten tetap; perintah kompleks masuk mesin agen =====
+        // AUTO: heuristik kata kerja aksi/perintah berantai (gratis, di-perangkat)
+        // SELALU: semua lewat agen • MATI: asisten murni (perilaku lama)
+        val pakaiAgent = runtime.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
+            runtime.geminiKey.isNotBlank() && runtime.geminiModel.isNotBlank() &&
+            when (runtime.agentMode) {
+                "SELALU" -> true
+                "MATI" -> false
+                else -> AgentRouter.perluAgent(userText)
+            }
+
+        if (pakaiAgent) {
+            jalankanAgen(userText, runtime)
+            return
+        }
+        streamPlain(runtime)
+    }
+
+    /** Jalur chat polos — bentuk terbukti selalu hidup (K14/K17). TIDAK diubah. */
+    private fun streamPlain(runtime: AviSettings) {
         val history = historyRepo.contextWindow(_messages.value)
         val client = AiClientFactory.create(runtime)
 
@@ -415,6 +474,77 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 setState(AviState.IDLE)
                 _streamingText.value = ""
                 _error.value = "Gagal terhubung ke server AI: ${e.message ?: "unknown"}"
+                _conversationActive.value = false
+                pendingSteps.clear()
+            }
+        }
+    }
+
+    /**
+     * K22 — jalankan MESIN AGEN (function calling).
+     * Setiap langkah terlihat di layar (timeline agent); hasilnya tercatat di
+     * log aksi. Rantai gagal-aman: JatuhkanKeChat → ulang lewat chat polos.
+     */
+    private fun jalankanAgen(userText: String, runtime: AviSettings) {
+        _agentEvents.value = emptyList()
+        _agentAktif.value = true
+
+        streamJob = viewModelScope.launch {
+            try {
+                val outcome = agentEngine.jalankan(
+                    userText = userText,
+                    history = historyRepo.contextWindow(_messages.value),
+                    settings = runtime
+                ) { ev ->
+                    _agentEvents.value = _agentEvents.value + ev
+                    if (ev is AgentEvent.Hasil) {
+                        val aksi = _agentEvents.value.lastOrNull {
+                            it is AgentEvent.Aksi && it.tool == ev.tool
+                        } as? AgentEvent.Aksi
+                        viewModelScope.launch {
+                            _agentLog.value = agentLogRepo.add(
+                                AgentLogItem(
+                                    waktu = System.currentTimeMillis(),
+                                    tool = ev.tool,
+                                    label = aksi?.label ?: ev.tool,
+                                    argumen = aksi?.argumen ?: "",
+                                    ok = ev.ok,
+                                    pesan = ev.pesan
+                                )
+                            )
+                        }
+                    }
+                }
+
+                when (outcome) {
+                    is AgentOutcome.Sukses -> {
+                        _agentAktif.value = false
+                        settingsRepo.bumpUsage()
+                        finishReply(outcome.jawaban)
+                    }
+                    AgentOutcome.JatuhkanKeChat -> {
+                        // Rantai gagal-aman — jalur chat polos yang terbukti.
+                        _agentAktif.value = false
+                        _agentEvents.value = emptyList()
+                        streamPlain(runtime)
+                    }
+                    is AgentOutcome.Gagal -> {
+                        _agentAktif.value = false
+                        setState(AviState.IDLE)
+                        _streamingText.value = ""
+                        _error.value = outcome.pesan
+                        _conversationActive.value = false
+                        pendingSteps.clear()
+                    }
+                }
+            } catch (e: CancellationException) {
+                _agentAktif.value = false
+                throw e
+            } catch (e: Exception) {
+                _agentAktif.value = false
+                setState(AviState.IDLE)
+                _streamingText.value = ""
+                _error.value = "Mesin agen gagal: ${e.message ?: "unknown"}"
                 _conversationActive.value = false
                 pendingSteps.clear()
             }
@@ -857,6 +987,54 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             memoryRepo.removeAll()
             _memories.value = memoryRepo.current
+        }
+    }
+
+    // ===== K22 — Kendali AGEN (Pusat Kendali) =====
+
+    /** Aktif/nonaktifkan satu perkakas (toggle pemilik). */
+    fun setToolOff(name: String, off: Boolean) {
+        updateSettings { s ->
+            s.copy(agentToolsOff = if (off) s.agentToolsOff + name else s.agentToolsOff - name)
+        }
+    }
+
+    /** Hasil uji perkakas lokal (Pusat Kendali → UJI PERKAKAS): nama → hasil. */
+    private val _ujiPerkakas = MutableStateFlow<Pair<String, ToolResult>?>(null)
+    val ujiPerkakasState: StateFlow<Pair<String, ToolResult>?> = _ujiPerkakas.asStateFlow()
+
+    /**
+     * Uji satu perkakas LANGSUNG di perangkat (tanpa model) — bukti nyata ke
+     * pemilik bahwa perkakas bekerja. Hanya perkakas AMAN yang boleh diuji
+     * lewat tombol ini (yang lain punya efek samping perangkat).
+     */
+    fun ujiPerkakas(name: String) {
+        val tool = agentTools.byName(name) ?: return
+        if (tool.level != Otoritas.AMAN) return
+        _ujiPerkakas.value = name to ToolResult(true, "Menjalankan…")
+        viewModelScope.launch {
+            val hasil = try {
+                tool.executor(getApplication(), JsonObject(emptyMap()), _settings.value)
+            } catch (e: Exception) {
+                ToolResult(false, "Gagal: ${e.message ?: "unknown"}")
+            }
+            _ujiPerkakas.value = name to hasil
+            _agentLog.value = agentLogRepo.add(
+                AgentLogItem(
+                    waktu = System.currentTimeMillis(),
+                    tool = name,
+                    label = tool.label,
+                    argumen = "uji manual",
+                    ok = hasil.ok,
+                    pesan = hasil.pesan
+                )
+            )
+        }
+    }
+
+    fun clearAgentLog() {
+        viewModelScope.launch {
+            _agentLog.value = agentLogRepo.clear()
         }
     }
 

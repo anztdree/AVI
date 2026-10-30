@@ -88,6 +88,7 @@ import androidx.core.content.ContextCompat
 import com.anztdree.avi.AviState
 import com.anztdree.avi.AviViewModel
 import com.anztdree.avi.R
+import com.anztdree.avi.agent.AgentEvent
 import com.anztdree.avi.data.AiProvider
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.sound.UiSounds
@@ -132,6 +133,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     val voiceLevel by vm.voiceLevel.collectAsState()
     val error by vm.error.collectAsState()
     val diagnostics by vm.diagnostics.collectAsState()
+    // K22 — timeline aksi mesin agen
+    val agentEvents by vm.agentEvents.collectAsState()
     var inputText by remember { mutableStateOf("") }
     // K19 — deck modul kelas Jarvis
     var showDeck by remember { mutableStateOf(false) }
@@ -324,6 +327,11 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 }
                 if (state == AviState.THINKING) {
                     item {
+                        // K22 — timeline aksi agen: pikir → aksi → hasil
+                        if (agentEvents.isNotEmpty()) {
+                            AgentTimeline(events = agentEvents, palette = palette)
+                            Spacer(Modifier.height(6.dp))
+                        }
                         BubbleEntrance(key = -1L) {
                             MessageBubble(role = "avi", text = streamingText, streaming = true)
                         }
@@ -841,6 +849,107 @@ private fun PulseButton(
             contentAlignment = Alignment.Center
         ) {
             Icon(icon, contentDescription = contentDescription, tint = tint, modifier = Modifier.size(21.dp))
+        }
+    }
+}
+
+// ============================================================
+// K22 — TIMELINE MESIN AGEN: pikir → aksi → hasil.
+// Satu keluarga dengan HUD: rail node + monospace + denyut
+// saat AVI sedang menimbang langkah berikutnya.
+// ============================================================
+
+@Composable
+private fun AgentTimeline(events: List<AgentEvent>, palette: AviPalette) {
+    val pulse = rememberInfiniteTransition(label = "agentPulse")
+    val glow by pulse.animateFloat(
+        initialValue = 0.45f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(900, easing = LinearEasing)),
+        label = "agentGlow"
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(palette.textDim.copy(alpha = 0.07f))
+            .border(1.dp, palette.accent.copy(alpha = 0.3f * glow), RoundedCornerShape(14.dp))
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier
+                    .size(7.dp)
+                    .graphicsLayer { alpha = glow }
+                    .background(palette.gold, CircleShape)
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                "MESIN AGEN",
+                color = palette.gold,
+                fontSize = 11.sp,
+                fontFamily = AviHud,
+                letterSpacing = 2.sp
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        events.forEachIndexed { i, ev ->
+            Row(verticalAlignment = Alignment.Top) {
+                Text(
+                    when (ev) {
+                        is AgentEvent.Berpikir -> "◆"
+                        is AgentEvent.Aksi -> "⚙"
+                        is AgentEvent.Hasil -> if (ev.ok) "✓" else "✗"
+                    },
+                    color = when (ev) {
+                        is AgentEvent.Berpikir -> palette.accent.copy(alpha = glow)
+                        is AgentEvent.Aksi -> palette.gold
+                        is AgentEvent.Hasil -> if (ev.ok) palette.accent else palette.danger
+                    },
+                    fontSize = 13.sp,
+                    fontFamily = AviHud,
+                    modifier = Modifier.width(24.dp)
+                )
+                Column(Modifier.weight(1f)) {
+                    when (ev) {
+                        is AgentEvent.Berpikir -> Text(
+                            "AVI berpikir…",
+                            color = palette.accent.copy(alpha = 0.5f + glow * 0.5f),
+                            fontSize = 12.sp,
+                            fontFamily = AviBody
+                        )
+                        is AgentEvent.Aksi -> {
+                            Text(
+                                ev.label.uppercase(Locale.ROOT),
+                                color = palette.text,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = AviHud,
+                                letterSpacing = 1.sp
+                            )
+                            if (ev.argumen.isNotBlank()) {
+                                Text(
+                                    ev.argumen,
+                                    color = palette.textDim,
+                                    fontSize = 11.sp,
+                                    fontFamily = AviHud,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                        is AgentEvent.Hasil -> Text(
+                            ev.pesan,
+                            color = if (ev.ok) palette.textDim else palette.danger,
+                            fontSize = 12.sp,
+                            fontFamily = AviBody,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+            if (i < events.lastIndex) Spacer(Modifier.height(7.dp))
         }
     }
 }

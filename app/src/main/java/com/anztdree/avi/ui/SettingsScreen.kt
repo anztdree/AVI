@@ -91,6 +91,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.anztdree.avi.AviViewModel
 import com.anztdree.avi.R
+import com.anztdree.avi.agent.AgentEngine
+import com.anztdree.avi.agent.Otoritas
 import com.anztdree.avi.ai.DiagnoseResult
 import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.data.AiProvider
@@ -331,6 +333,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                                 }
                             }
                         )
+                        HudTab.AGENT -> AgentTab(vm = vm, settings = settings, palette = palette)
                         HudTab.SUARA -> SuaraTab(
                             vm = vm,
                             settings = settings,
@@ -1587,3 +1590,304 @@ private fun hudFieldColors(palette: AviPalette) = OutlinedTextFieldDefaults.colo
     focusedTextColor = palette.text,
     unfocusedTextColor = palette.text
 )
+
+// ============================================================
+// K22 — TAB AGENT: mesin function calling AVI.
+// Asisten tetap jalan di jalurnya; perintah kompleks masuk ke
+// sini. Semua kendali pemilik: mode, otoritas, perkakas, log.
+// ============================================================
+
+@Composable
+private fun AgentTab(
+    vm: AviViewModel,
+    settings: AviSettings,
+    palette: AviPalette
+) {
+    val agentLog by vm.agentLog.collectAsState()
+    val uji by vm.ujiPerkakasState.collectAsState()
+    val registry = vm.toolRegistry
+
+    val modeUraian = when (settings.agentMode) {
+        "SELALU" -> "Semua perintah lewat mesin agen — AVI selalu menyusun langkah dulu."
+        "MATI" -> "Asisten murni — mesin agen dimatikan, perilaku klasik."
+        else -> "Perintah kompleks (multi-aksi) otomatis masuk mesin agen; obrolan biasa tetap di jalur asisten cepat."
+    }
+    val otorAktif = when (settings.agentAuthority) {
+        "AMAN" -> Otoritas.AMAN
+        "PENUH" -> Otoritas.PENUH
+        else -> Otoritas.BAKU
+    }
+    val perkakasAktif = registry.daftarAktif(settings).size
+    val logFmt = remember { SimpleDateFormat("dd MMM · HH:mm", Locale("id")) }
+
+    Column {
+        // ============ PANEL 1 — MESIN AGEN ============
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(palette.panel.copy(alpha = 0.78f))
+                .border(1.dp, palette.accent.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            PanelTitle(title = "MESIN AGEN", badge = settings.agentMode, palette = palette)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "AVI bukan pengikut perintah — dia menyusun langkah sendiri: berpikir, " +
+                    "menjalankan perkakas di HP, membaca hasil, lalu melapor. " +
+                    "Perkakas gagal atau model tak mendukung? Otomatis jatuh ke jalur asisten yang terbukti.",
+                color = palette.textDim,
+                fontSize = 11.sp,
+                lineHeight = 15.sp
+            )
+            Spacer(Modifier.height(10.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("AUTO", "SELALU", "MATI").forEach { m ->
+                    HudChip(m, selected = settings.agentMode == m, palette = palette) {
+                        vm.updateSettings { it.copy(agentMode = m) }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(modeUraian, color = palette.textDim, fontSize = 10.sp, fontStyle = FontStyle.Italic)
+            Spacer(Modifier.height(8.dp))
+            InfoRow("MAKS LANGKAH", "${AgentEngine.MAKS_LANGKAH}", palette = palette)
+            InfoRow(
+                "PERKAKAS AKTIF",
+                "$perkakasAktif dari ${registry.semua.size}",
+                valueColor = palette.gold,
+                palette = palette
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // ============ PANEL 2 — TINGKAT OTORITAS ============
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(palette.panel.copy(alpha = 0.78f))
+                .border(1.dp, palette.accent.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            PanelTitle(title = "TINGKAT OTORITAS", badge = settings.agentAuthority, palette = palette)
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Otoritas.entries.forEach { o ->
+                    HudChip(o.label, selected = settings.agentAuthority == o.label, palette = palette) {
+                        vm.updateSettings { it.copy(agentAuthority = o.label) }
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                otorAktif.uraian,
+                color = palette.textDim,
+                fontSize = 10.sp,
+                fontStyle = FontStyle.Italic
+            )
+            if (settings.agentAuthority == "PENUH") {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "Telepon & SMS selalu lewat layar konfirmasi — AVI tidak pernah menelepon/mengirim diam-diam.",
+                    color = palette.gold,
+                    fontSize = 9.5.sp
+                )
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // ============ PANEL 3 — PERKAKAS AGEN ============
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(palette.panel.copy(alpha = 0.78f))
+                .border(1.dp, palette.accent.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            PanelTitle(title = "PERKAKAS AGEN", badge = "$perkakasAktif AKTIF", palette = palette)
+            Spacer(Modifier.height(6.dp))
+            registry.semua.forEach { tool ->
+                val izin = otorAktif.mengizinkan(tool.level)
+                val off = !izin || tool.name in settings.agentToolsOff
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                tool.label,
+                                color = if (off) palette.textDim else palette.text,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                tool.level.label,
+                                color = when (tool.level) {
+                                    Otoritas.AMAN -> palette.accent
+                                    Otoritas.BAKU -> palette.gold
+                                    Otoritas.PENUH -> palette.danger
+                                },
+                                fontSize = 7.5.sp,
+                                fontFamily = AviHud,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.6.sp
+                            )
+                        }
+                        Text(
+                            tool.description,
+                            color = palette.textDim.copy(alpha = if (off) 0.55f else 1f),
+                            fontSize = 9.5.sp,
+                            lineHeight = 12.sp,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    HudToggle(
+                        on = !off,
+                        enabled = izin,
+                        palette = palette
+                    ) {
+                        if (izin) vm.setToolOff(tool.name, tool.name !in settings.agentToolsOff)
+                    }
+                }
+            }
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Perkakas di atas otoritas otomatis terkunci. Matikan perkakas yang tidak Anda mau AVI pakai.",
+                color = palette.textDim,
+                fontSize = 9.sp,
+                fontStyle = FontStyle.Italic
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // ============ PANEL 4 — UJI PERKAKAS ============
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(palette.panel.copy(alpha = 0.78f))
+                .border(1.dp, palette.accent.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            PanelTitle(title = "UJI PERKAKAS", badge = "LOKAL", palette = palette)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Jalankan langsung di HP (tanpa AI) — bukti nyata perkakas bekerja:",
+                color = palette.textDim, fontSize = 10.sp
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.horizontalScroll(rememberScrollState())
+            ) {
+                registry.semua.filter { it.level == Otoritas.AMAN }.forEach { tool ->
+                    HudChip(tool.label, selected = uji?.first == tool.name, palette = palette) {
+                        vm.ujiPerkakas(tool.name)
+                    }
+                }
+            }
+            uji?.let { (nama, hasil) ->
+                Spacer(Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        if (hasil.ok) "✓" else "✗",
+                        color = if (hasil.ok) palette.accent else palette.danger,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.width(7.dp))
+                    Text(
+                        "${registry.byName(nama)?.label ?: nama} — ${hasil.pesan}",
+                        color = if (hasil.ok) palette.text else palette.danger,
+                        fontSize = 10.5.sp,
+                        lineHeight = 13.sp
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // ============ PANEL 5 — LOG AKSI AGEN ============
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(palette.panel.copy(alpha = 0.78f))
+                .border(1.dp, palette.accent.copy(alpha = 0.28f), RoundedCornerShape(14.dp))
+                .padding(14.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                PanelTitle(title = "LOG AKSI AGEN", badge = "${agentLog.size}", palette = palette)
+                Spacer(Modifier.weight(1f))
+                if (agentLog.isNotEmpty()) {
+                    TextButton(onClick = { vm.clearAgentLog() }) {
+                        Text("HAPUS", color = palette.danger, fontSize = 10.sp, fontFamily = AviHud)
+                    }
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+            if (agentLog.isEmpty()) {
+                Text(
+                    "Belum ada aksi tercatat. Nyalakan agen dan beri perintah berantai, misal: " +
+                        "\"cek baterai lalu atur volume 40 persen\".",
+                    color = palette.textDim, fontSize = 10.sp, fontStyle = FontStyle.Italic
+                )
+            } else {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 250.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    agentLog.asReversed().forEach { item ->
+                        Row(verticalAlignment = Alignment.Top) {
+                            Text(
+                                if (item.ok) "✓" else "✗",
+                                color = if (item.ok) palette.accent else palette.danger,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Column(Modifier.weight(1f)) {
+                                Row {
+                                    Text(
+                                        item.label,
+                                        color = palette.text, fontSize = 11.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(Modifier.weight(1f))
+                                    Text(
+                                        logFmt.format(Date(item.waktu)),
+                                        color = palette.textDim, fontSize = 9.sp, fontFamily = AviHud
+                                    )
+                                }
+                                if (item.argumen.isNotBlank()) {
+                                    Text(item.argumen, color = palette.textDim, fontSize = 9.5.sp, fontFamily = AviHud)
+                                }
+                                Text(
+                                    item.pesan,
+                                    color = if (item.ok) palette.textDim else palette.danger.copy(alpha = 0.85f),
+                                    fontSize = 9.5.sp, lineHeight = 12.sp,
+                                    maxLines = 2, overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                        Spacer(Modifier.height(7.dp))
+                    }
+                }
+            }
+        }
+    }
+}

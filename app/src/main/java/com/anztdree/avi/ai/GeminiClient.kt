@@ -7,7 +7,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-
 /**
  * Klien Google Gemini — PERSIS mengikuti spesifikasi terbukti milik pemilik:
  *
@@ -30,8 +29,31 @@ import okhttp3.RequestBody.Companion.toRequestBody
  *                      generationConfig apa pun. Terbukti jalan di nyaring.
  * Turun satu anak tangga tiap kena 400/404/5xx ATAU jawaban kosong (mis. token
  * habis dimakan "thinking"). 429 tanpa-tools = kuota sungguhan → dilaporkan.
+ *
+ * K22 — generateOnce(): SATU putaran model dengan perkakas AVI (function
+ * calling). Bukti DIAG-AGENT v2 (runner AS, key pemilik):
+ *   - fc tunggal 200 + functionCall tepat (2/2 model)
+ *   - loop echo-verbatim + functionResponse 200 (2/2 model)
+ *   - thinkingOff+tools 400 di flash-lite → tangga wajib turun ke bentuk minimal.
+ * thoughtSignature pada part model HARUS dikembalikan verbatim.
  */
 class GeminiClient : AiClient {
+
+    /** Hasil SATU putaran model — kontrak AgentEngine. */
+    sealed class Round {
+        /** Model selesai — jawaban teks utuh. */
+        data class Teks(val text: String) : Round()
+
+        /** Model minta perkakas dijalankan. modelContent WAJIB di-echo verbatim
+         *  (termasuk thoughtSignature) di putaran berikutnya. */
+        data class Panggilan(
+            val calls: List<GeminiFunctionCall>,
+            val modelContent: GeminiContent
+        ) : Round()
+
+        /** Gagal bermakna (kuota/blokir) — AgentEngine jatuh ke jalur chat polos. */
+        data class Gagal(val httpCode: Int, val pesan: String) : Round()
+    }
 
     private fun url(model: String): String =
         "https://generativelanguage.googleapis.com/v1beta/$model:generateContent"
@@ -51,6 +73,107 @@ class GeminiClient : AiClient {
                 parts = listOf(GeminiPart(text = msg.text))
             )
         }
+
+    // ===== K22 — SATU PUTARAN DENGAN PERKAKAS (function calling) =====
+
+    /**
+     * Satu permintaan → satu hasil. TANGGA BENTUK DENGAN PERKAKAS:
+     *  1. thinkingOff + generationConfig + tools (bukti 200 di 3.6-flash)
+     *  2. minimal (tanpa generationConfig) + tools (bukti 200 di kedua model)
+     * Turun pada 400/404/5xx ATAU jawaban kosong. 429 = kuota sungguhan → Gagal.
+     */
+    suspend fun generateOnce(
+        contents: List<GeminiContent>,
+        settings: AviSettings,
+        tools: List<GeminiTool>
+    ): Round = withContext(Dispatchers.IO) {
+        val key = settings.geminiKey.trim()
+        if (key.isEmpty()) return@withContext Round.Gagal(0, "API key kosong")
+        val model = settings.geminiModel.trim()
+        if (model.isEmpty()) return@withContext Round.Gagal(0, "Model belum dipilih")
+
+        // Putaran pamungkas tanpa perkakas: tools kosong TIDAK boleh dikirim
+        // sebagai [] (INVALID_ARGUMENT) — harus dilepas dari JSON (null).
+        val toolsKirim: List<GeminiTool>? = if (tools.isEmpty()) null else tools
+
+        val si = GeminiContent(
+            role = "user",
+            parts = listOf(GeminiPart(text = SystemPrompts.buildAgent(settings)))
+        )
+
+        fun body(minimal: Boolean): String {
+            val req = if (minimal) {
+                GeminiRequest(contents = contents, systemInstruction = si, tools = toolsKirim)
+            } else {
+                GeminiRequest(
+                    contents = contents,
+                    systemInstruction = si,
+                    tools = toolsKirim,
+                    generationConfig = GeminiGenerationConfig(
+                        maxOutputTokens = 8192,
+                        thinkingConfig = if (mungkinBerpikir(model)) GeminiThinkingConfig(0) else null
+                    )
+                )
+            }
+            return jsonParser.encodeToString(req)
+        }
+
+        val tangga = listOf(false, true) // false = bentuk penuh, true = minimal
+        var kodeTerakhir = 0
+        var pesanTerakhir = ""
+
+        for ((index, minimal) in tangga.withIndex()) {
+            val response = try {
+                Http.client.newCall(request(model, key, body(minimal))).execute()
+            } catch (e: Exception) {
+                return@withContext Round.Gagal(0, "Koneksi ke Google terputus (${e.message ?: "unknown"})")
+            }
+
+            response.use {
+                val code = it.code
+                val errBody = if (it.isSuccessful) null else
+                    try { it.body?.string() } catch (_: Exception) { null }
+                kodeTerakhir = code
+                pesanTerakhir = extractError(errBody, "HTTP $code")
+
+                if (!it.isSuccessful) {
+                    val lanjut = code == 400 || code == 404 || code == 500 || code == 503
+                    if (index < tangga.lastIndex && lanjut) return@use // turun tangga
+                    return@withContext Round.Gagal(code, humanizeError(code, pesanTerakhir, model))
+                }
+
+                val raw = try { it.body?.string() } catch (_: Exception) { null }
+                val chunk = try {
+                    raw?.let { r -> jsonParser.decodeFromString<GeminiChunk>(r) }
+                } catch (_: Exception) { null }
+                val cand = chunk?.candidates?.firstOrNull()
+                val parts = cand?.content?.parts.orEmpty()
+
+                val calls = parts.mapNotNull { p -> p.functionCall }
+                    .filter { !it.name.isNullOrBlank() }
+
+                if (calls.isNotEmpty()) {
+                    // ECHO VERBATIM — bagian model persis seperti dikirim Google
+                    // (functionCall + thoughtSignature). Bukti DIAG-AGENT v2.
+                    val echo = GeminiContent(
+                        role = cand?.content?.role ?: "model",
+                        parts = parts
+                    )
+                    return@withContext Round.Panggilan(calls, echo)
+                }
+
+                val text = parts.mapNotNull { p -> p.text }
+                    .joinToString("") { t -> t }
+                    .trim()
+                if (text.isNotEmpty()) return@withContext Round.Teks(text)
+
+                // 200 tapi kosong → turun tangga bila bisa
+                if (index < tangga.lastIndex) return@use
+            }
+        }
+
+        Round.Gagal(kodeTerakhir, humanizeError(kodeTerakhir, pesanTerakhir, model))
+    }
 
     /** Model yang mungkin berpikir: keluarga 2.5 apa pun bentuk namanya + alias -latest. */
     private fun mungkinBerpikir(model: String): Boolean {

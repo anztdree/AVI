@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -62,6 +63,10 @@ data class AviSettings(
     val userName: String = "Pak",
     // K21 — bahasa pengenalan suara (dengaran) — nyata, disambungkan ke AviStt
     val sttLanguage: String = "id-ID",
+    // K22 — mesin AGEN (function calling, bukti DIAG-AGENT v2)
+    val agentMode: String = "AUTO",        // AUTO | SELALU | MATI
+    val agentAuthority: String = "BAKU",   // AMAN | BAKU | PENUH
+    val agentToolsOff: Set<String> = emptySet(),   // perkakas yang dilarang pemilik
     // runtime-only
     val memoryText: String = "",
     val recap: String = ""
@@ -92,6 +97,9 @@ class SettingsRepository(private val context: Context) {
         val style = stringPreferencesKey("style")
         val userName = stringPreferencesKey("user_name")
         val sttLanguage = stringPreferencesKey("stt_language")
+        val agentMode = stringPreferencesKey("agent_mode")
+        val agentAuthority = stringPreferencesKey("agent_authority")
+        val agentToolsOff = stringSetPreferencesKey("agent_tools_off")
         val usageDate = stringPreferencesKey("usage_date")
         val usageCount = intPreferencesKey("usage_count")
         val lastBriefDate = stringPreferencesKey("last_brief_date")
@@ -123,7 +131,10 @@ class SettingsRepository(private val context: Context) {
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
         userName = p[Keys.userName] ?: "Pak",
-        sttLanguage = p[Keys.sttLanguage] ?: "id-ID"
+        sttLanguage = p[Keys.sttLanguage] ?: "id-ID",
+        agentMode = p[Keys.agentMode] ?: "AUTO",
+        agentAuthority = p[Keys.agentAuthority] ?: "BAKU",
+        agentToolsOff = p[Keys.agentToolsOff] ?: emptySet()
     )
 
     val settings: Flow<AviSettings> = context.aviDataStore.data.map { load(it) }
@@ -153,6 +164,9 @@ class SettingsRepository(private val context: Context) {
             p[Keys.style] = next.style
             p[Keys.userName] = next.userName.ifBlank { "Pak" }
             p[Keys.sttLanguage] = next.sttLanguage.ifBlank { "id-ID" }
+            p[Keys.agentMode] = next.agentMode
+            p[Keys.agentAuthority] = next.agentAuthority
+            p[Keys.agentToolsOff] = next.agentToolsOff
         }
     }
 
