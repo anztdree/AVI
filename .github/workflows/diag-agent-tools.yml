@@ -1,4 +1,4 @@
-name: "DIAG-AGENT (bukti function calling free tier — tools kustom AVI)"
+name: "DIAG-AGENT v2 (loop agent: echo thoughtSignature — verbatim passthrough)"
 
 on:
   workflow_dispatch: {}
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: "Matriks function calling: S1 fc tunggal, S2 loop agent, S3 bentuk app (thinkingOff+tools)"
+      - name: "S1 fc tunggal, S2 echo-verbatim, S3 app-shape, S4 loop dua putaran"
         env:
           GEMINI_KEY: ${{ secrets.GEMINI_DIAG_KEY }}
         run: |
@@ -40,6 +40,11 @@ jobs:
               ]
           }]
 
+          SYS = ("Kamu AVI, agen Android berbahasa Indonesia milik Pak. "
+                 "Untuk perintah yang butuh aksi perangkat, PANGGIL fungsi perkakas. "
+                 "Setiap hasil aksi sudah kamu terima lewat functionResponse. "
+                 "Setelah semua langkah selesai, laporkan singkat dalam Bahasa Indonesia.")
+
           def call(model, body, tag):
               url = f"{BASE}/models/{model}:generateContent"
               data = json.dumps(body).encode()
@@ -55,11 +60,14 @@ jobs:
                       parts = ((cand.get("content") or {}).get("parts") or [])
                       text = "".join(p.get("text", "") for p in parts).strip()
                       fcs = [p["functionCall"] for p in parts if p.get("functionCall")]
+                      sigs = [p.get("thoughtSignature", "")[:18] for p in parts if p.get("thoughtSignature")]
                       print(f"[{tag}] {model} -> 200 OK ({dt:.1f}s) finish={cand.get('finishReason')}")
                       for fc in fcs:
                           print(f"    FUNGSI: {fc.get('name')} args={json.dumps(fc.get('args', {}), ensure_ascii=False)}")
+                      if sigs:
+                          print(f"    SIG: {sigs}")
                       if text:
-                          print(f"    TEKS: '{text[:80]}'")
+                          print(f"    TEKS: '{text[:110]}'")
                       return 200, out, fcs, text
               except urllib.error.HTTPError as e:
                   dt = time.time() - t0
@@ -74,51 +82,67 @@ jobs:
                   print(f"    {msg}")
                   return e.code, None, [], ""
 
+          def fc_response(fcs):
+              # balasan hasil untuk SEMUA functionCall di satu giliran model
+              return {"role": "user", "parts": [
+                  {"functionResponse": {
+                      "name": fc.get("name", ""),
+                      "response": {"status": "OK", "pesan": f"{fc.get('name','')} selesai dijalankan di perangkat"}}
+                  } for fc in fcs]}
+
           MODELS = ["gemini-3.6-flash", "gemini-3.5-flash-lite"]
           hasil = []
 
           for m in MODELS:
-              # S1 — fc tunggal: perintah buka aplikasi, harapkan functionCall
               print(f"\n===== {m} =====")
+              # S1 — fc tunggal
               b1 = {
-                  "systemInstruction": {"parts": [{"text":
-                      "Kamu AVI, agen Android berbahasa Indonesia. "
-                      "Untuk perintah mengenai ponsel, PANGGIL fungsi perkakas yang tersedia. "
-                      "Jangan jawab pakai teks bila fungsi tersedia."}]},
+                  "systemInstruction": {"parts": [{"text": SYS}]},
                   "contents": [{"role": "user", "parts": [{"text": "Buka YouTube"}]}],
                   "tools": TOOLS,
               }
               c1, out1, fcs1, t1 = call(m, b1, "S1-fc-tunggal")
               hasil.append((m, "S1", c1, len(fcs1)))
+              if not fcs1 or not out1:
+                  continue
 
-              # S2 — loop agent: fc -> functionResponse -> jawaban teks
-              if fcs1:
-                  fc = fcs1[0]
-                  b2 = {
-                      "systemInstruction": {"parts": [{"text":
-                          "Kamu AVI, agen Android berbahasa Indonesia."}]},
-                      "contents": [
-                          {"role": "user", "parts": [{"text": "Buka YouTube"}]},
-                          {"role": "model", "parts": [{"functionCall": fc}]},
-                          {"role": "user", "parts": [{"functionResponse": {
-                              "name": fc.get("name", ""),
-                              "response": {"status": "OK", "pesan": "aplikasi YouTube sudah dibuka"}}}]},
-                      ],
-                      "tools": TOOLS,
-                  }
-                  c2, out2, fcs2, t2 = call(m, b2, "S2-loop-agent")
-                  hasil.append((m, "S2", c2, len(t2)))
+              model_content = out1["candidates"][0]["content"]  # VERBATIM: fc + thoughtSignature
 
-                  # S3 — bentuk persis app: generationConfig thinkingOff + tools
-                  b3 = dict(b2)
-                  b3["generationConfig"] = {"maxOutputTokens": 8192, "thinkingConfig": {"thinkingBudget": 0}}
-                  c3, out3, fcs3, t3 = call(m, b3, "S3-app-shape")
-                  hasil.append((m, "S3", c3, len(t3)))
+              # S2 — echo verbatim giliran model + functionResponse
+              b2 = {
+                  "systemInstruction": {"parts": [{"text": SYS}]},
+                  "contents": [
+                      {"role": "user", "parts": [{"text": "Buka YouTube"}]},
+                      model_content,
+                      fc_response(fcs1),
+                  ],
+                  "tools": TOOLS,
+              }
+              c2, out2, fcs2, t2 = call(m, b2, "S2-echo-verbatim")
+              hasil.append((m, "S2", c2, len(t2)))
+
+              # S3 — bentuk persis app: + generationConfig thinkingOff
+              b3 = dict(b2)
+              b3["generationConfig"] = {"maxOutputTokens": 8192, "thinkingConfig": {"thinkingBudget": 0}}
+              c3, out3, fcs3, t3 = call(m, b3, "S3-app-shape")
+              hasil.append((m, "S3", c3, len(t3)))
+
+              # S4 — loop dua putaran: kalau model minta fungsi lagi, balas lagi
+              if out2 and fcs2:
+                  konten = list(b2["contents"]) + [out2["candidates"][0]["content"], fc_response(fcs2)]
+                  b4 = {"systemInstruction": {"parts": [{"text": SYS}]}, "contents": konten, "tools": TOOLS}
+                  c4, out4, fcs4, t4 = call(m, b4, "S4-loop-dua-putaran")
+                  hasil.append((m, "S4", c4, len(t4)))
+                  if out4 and fcs4:
+                      konten = list(b4["contents"]) + [out4["candidates"][0]["content"], fc_response(fcs4)]
+                      b5 = {"systemInstruction": {"parts": [{"text": SYS}]}, "contents": konten, "tools": TOOLS}
+                      c5, out5, fcs5, t5 = call(m, b5, "S5-loop-tiga-putaran")
+                      hasil.append((m, "S5", c5, len(t5)))
 
           print("\n===== RINGKASAN =====")
           ok = all(c == 200 for (_, _, c, _) in hasil)
           for (m, s, c, n) in hasil:
-              print(f"{m} {s}: HTTP {c} (fungsi/teks len={n})")
-          print("KEPUTUSAN:", "FUNCTION CALLING FREE TIER = JALAN — bangun AgentEngine"
-                if ok else "ADA YANG GAGAL — periksa detail di atas")
+              print(f"{m} {s}: HTTP {c} (teks len={n})")
+          print("KEPUTUSAN:", "LOOP AGENT FREE TIER = JALAN — bangun AgentEngine"
+                if ok else "MASIH ADA GAGAL — periksa detail")
           PYEOF
