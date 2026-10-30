@@ -120,3 +120,75 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ============ AVI HUD — font keluarga app + animasi reactor ============ */
+.font-orbitron { font-family: var(--font-orbitron), sans-serif; }
+.font-rajdhani { font-family: var(--font-rajdhani), sans-serif; }
+.font-hud { font-family: var(--font-jbmono), monospace; }
+
+@keyframes avi-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+@keyframes avi-spin { to { transform: rotate(360deg); } }
+@keyframes avi-breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes avi-scan {
+  0% { top: -12%; }
+  100% { top: 112%; }
+}
+@keyframes avi-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes avi-spin-orb {
+  to { transform: rotate(360deg); }
+}
+
+.avi-pulse-dot { animation: avi-pulse 1.6s ease-in-out infinite; }
+.avi-spin { animation: avi-spin 2.4s linear infinite; }
+.avi-breathe { animation: avi-breathe 2.8s ease-in-out infinite; }
+.avi-float { animation: avi-float 5s ease-in-out infinite; }
+
+/* langit AVI: nebula + bintang + grid (keluarga HexBackground app) */
+.avi-nebula {
+  background:
+    radial-gradient(ellipse 85% 55% at 72% -8%, rgba(34, 211, 238, 0.16), transparent 62%),
+    radial-gradient(ellipse 75% 48% at 12% 110%, rgba(245, 181, 74, 0.12), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(125, 243, 255, 0.05), transparent 70%),
+    #070b12;
+}
+.avi-nebula-deep {
+  background:
+    radial-gradient(ellipse 70% 45% at 80% -5%, rgba(34, 211, 238, 0.12), transparent 60%),
+    radial-gradient(ellipse 65% 42% at 10% 108%, rgba(245, 181, 74, 0.08), transparent 62%),
+    #05080d;
+}
+.avi-stars {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.9), transparent 100%),
+    radial-gradient(1px 1px at 32% 8%, rgba(255, 255, 255, 0.55), transparent 100%),
+    radial-gradient(1.5px 1.5px at 56% 22%, rgba(125, 243, 255, 0.75), transparent 100%),
+    radial-gradient(1px 1px at 78% 12%, rgba(255, 255, 255, 0.6), transparent 100%),
+    radial-gradient(1px 1px at 88% 32%, rgba(255, 217, 138, 0.65), transparent 100%),
+    radial-gradient(1px 1px at 22% 44%, rgba(255, 255, 255, 0.4), transparent 100%),
+    radial-gradient(1.5px 1.5px at 68% 38%, rgba(255, 255, 255, 0.5), transparent 100%),
+    radial-gradient(1px 1px at 44% 30%, rgba(103, 232, 249, 0.55), transparent 100%);
+}
+.avi-grid {
+  background-image:
+    linear-gradient(rgba(103, 232, 249, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103, 232, 249, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.avi-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14%;
+  background: linear-gradient(to bottom, transparent, rgba(125, 243, 255, 0.07), transparent);
+  animation: avi-scan 5.5s linear infinite;
+  pointer-events: none;
+}
