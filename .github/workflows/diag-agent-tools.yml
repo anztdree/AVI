@@ -1,0 +1,124 @@
+name: "DIAG-AGENT (bukti function calling free tier — tools kustom AVI)"
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: "Matriks function calling: S1 fc tunggal, S2 loop agent, S3 bentuk app (thinkingOff+tools)"
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_DIAG_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import json, time, urllib.request, urllib.error, os, sys
+
+          KEY = os.environ.get("GEMINI_KEY", "").strip()
+          if not KEY:
+              print("SECRET GEMINI_DIAG_KEY belum diisi!"); sys.exit(1)
+          BASE = "https://generativelanguage.googleapis.com/v1beta"
+
+          TOOLS = [{
+              "functionDeclarations": [
+                  {"name": "buka_aplikasi", "description": "Membuka aplikasi di ponsel tuan",
+                   "parameters": {"type": "OBJECT", "properties": {
+                       "nama": {"type": "STRING", "description": "nama aplikasi"}},
+                       "required": ["nama"]}},
+                  {"name": "cek_baterai", "description": "Cek persentase dan status baterai ponsel",
+                   "parameters": {"type": "OBJECT", "properties": {}}},
+                  {"name": "jam_sekarang", "description": "Jam dan tanggal saat ini",
+                   "parameters": {"type": "OBJECT", "properties": {}}},
+                  {"name": "set_volume", "description": "Atur volume media 0-100",
+                   "parameters": {"type": "OBJECT", "properties": {
+                       "persen": {"type": "NUMBER", "description": "0 sampai 100"}},
+                       "required": ["persen"]}}
+              ]
+          }]
+
+          def call(model, body, tag):
+              url = f"{BASE}/models/{model}:generateContent"
+              data = json.dumps(body).encode()
+              req = urllib.request.Request(url, data=data, method="POST")
+              req.add_header("Content-Type", "application/json")
+              req.add_header("X-goog-api-key", KEY)
+              t0 = time.time()
+              try:
+                  with urllib.request.urlopen(req, timeout=60) as r:
+                      dt = time.time() - t0
+                      out = json.loads(r.read().decode())
+                      cand = (out.get("candidates") or [{}])[0]
+                      parts = ((cand.get("content") or {}).get("parts") or [])
+                      text = "".join(p.get("text", "") for p in parts).strip()
+                      fcs = [p["functionCall"] for p in parts if p.get("functionCall")]
+                      print(f"[{tag}] {model} -> 200 OK ({dt:.1f}s) finish={cand.get('finishReason')}")
+                      for fc in fcs:
+                          print(f"    FUNGSI: {fc.get('name')} args={json.dumps(fc.get('args', {}), ensure_ascii=False)}")
+                      if text:
+                          print(f"    TEKS: '{text[:80]}'")
+                      return 200, out, fcs, text
+              except urllib.error.HTTPError as e:
+                  dt = time.time() - t0
+                  raw = e.read().decode(errors="replace")
+                  try:
+                      ej = json.loads(raw)
+                      msg = ej.get("error", {}).get("message", "")[:200]
+                      status = ej.get("error", {}).get("status", "")
+                  except Exception:
+                      msg, status = raw[:200], "?"
+                  print(f"[{tag}] {model} -> HTTP {e.code} ({dt:.1f}s) status={status}")
+                  print(f"    {msg}")
+                  return e.code, None, [], ""
+
+          MODELS = ["gemini-3.6-flash", "gemini-3.5-flash-lite"]
+          hasil = []
+
+          for m in MODELS:
+              # S1 — fc tunggal: perintah buka aplikasi, harapkan functionCall
+              print(f"\n===== {m} =====")
+              b1 = {
+                  "systemInstruction": {"parts": [{"text":
+                      "Kamu AVI, agen Android berbahasa Indonesia. "
+                      "Untuk perintah mengenai ponsel, PANGGIL fungsi perkakas yang tersedia. "
+                      "Jangan jawab pakai teks bila fungsi tersedia."}]},
+                  "contents": [{"role": "user", "parts": [{"text": "Buka YouTube"}]}],
+                  "tools": TOOLS,
+              }
+              c1, out1, fcs1, t1 = call(m, b1, "S1-fc-tunggal")
+              hasil.append((m, "S1", c1, len(fcs1)))
+
+              # S2 — loop agent: fc -> functionResponse -> jawaban teks
+              if fcs1:
+                  fc = fcs1[0]
+                  b2 = {
+                      "systemInstruction": {"parts": [{"text":
+                          "Kamu AVI, agen Android berbahasa Indonesia."}]},
+                      "contents": [
+                          {"role": "user", "parts": [{"text": "Buka YouTube"}]},
+                          {"role": "model", "parts": [{"functionCall": fc}]},
+                          {"role": "user", "parts": [{"functionResponse": {
+                              "name": fc.get("name", ""),
+                              "response": {"status": "OK", "pesan": "aplikasi YouTube sudah dibuka"}}}]},
+                      ],
+                      "tools": TOOLS,
+                  }
+                  c2, out2, fcs2, t2 = call(m, b2, "S2-loop-agent")
+                  hasil.append((m, "S2", c2, len(t2)))
+
+                  # S3 — bentuk persis app: generationConfig thinkingOff + tools
+                  b3 = dict(b2)
+                  b3["generationConfig"] = {"maxOutputTokens": 8192, "thinkingConfig": {"thinkingBudget": 0}}
+                  c3, out3, fcs3, t3 = call(m, b3, "S3-app-shape")
+                  hasil.append((m, "S3", c3, len(t3)))
+
+          print("\n===== RINGKASAN =====")
+          ok = all(c == 200 for (_, _, c, _) in hasil)
+          for (m, s, c, n) in hasil:
+              print(f"{m} {s}: HTTP {c} (fungsi/teks len={n})")
+          print("KEPUTUSAN:", "FUNCTION CALLING FREE TIER = JALAN — bangun AgentEngine"
+                if ok else "ADA YANG GAGAL — periksa detail di atas")
+          PYEOF
