@@ -38,9 +38,9 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteSweep
-import androidx.compose.material.icons.filled.GitHub
 import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.HomeWork
 import androidx.compose.material.icons.filled.Memory
@@ -1466,7 +1466,7 @@ private fun SistemTab(
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
-                Icons.Default.GitHub,
+                Icons.Default.Code,
                 contentDescription = null,
                 modifier = Modifier.size(14.dp),
                 tint = palette.accent
