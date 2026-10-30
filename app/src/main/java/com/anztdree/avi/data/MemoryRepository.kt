@@ -62,6 +62,12 @@ class MemoryRepository(context: Context) {
         persist()
     }
 
+    /** K21 — bersihkan seluruh ingatan (panel Data & Privasi) */
+    suspend fun removeAll() = withContext(Dispatchers.IO) {
+        cache = emptyList()
+        persist()
+    }
+
     /** Teks gabungan untuk disuntikkan ke prompt */
     fun joinedText(): String =
         cache.joinToString("\n") { "- ${it.text}" }

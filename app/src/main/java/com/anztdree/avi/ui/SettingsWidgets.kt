@@ -30,7 +30,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.GraphicEq
-import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Icon
@@ -62,25 +61,23 @@ import com.anztdree.avi.ui.theme.AviHead
 import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.LocalAviPalette
-import com.anztdree.avi.ui.theme.MarkPalettes
 
 /**
- * K20 — WIDGET PUSAT KENDALI KELAS JARVIS
- * Rombakan total Pengaturan: satu gulungan panjang diganti Misi Kendali 5 tab
- * dengan header sinematik, strip status hidup, dan modul-modul kaya.
- * Semua widget di sini dipakai SettingsScreen; gaya satu keluarga dgn layar
- * obrolan (panel kaca, garis scan, tipografi HUD).
+ * K21 — WIDGET PUSAT KENDALI (versi bersih):
+ * Tab misi dirampingkan jadi 4 (OTAK · SUARA · GAYA · SISTEM) — tab TAMPILAN
+ * dihapus total atas arahan pemilik (detail tampilan bukan prioritas), slider
+ * kecepatan/nada suara dibuang, memori dirombak jadi INGATAN. Widget di sini
+ * tetap satu keluarga dgn layar obrolan (panel kaca, tipografi HUD).
  */
 
 /** Tab misi Pusat Kendali */
-enum class HudTab { OTAK, SUARA, GAYA, HUD, SISTEM }
+enum class HudTab { OTAK, SUARA, GAYA, SISTEM }
 
 private val HudTab.icon: ImageVector
     get() = when (this) {
         HudTab.OTAK -> Icons.Filled.Psychology
         HudTab.SUARA -> Icons.Filled.GraphicEq
         HudTab.GAYA -> Icons.Filled.Face
-        HudTab.HUD -> Icons.Filled.Palette
         HudTab.SISTEM -> Icons.Filled.Tune
     }
 
@@ -485,50 +482,3 @@ fun ModuleCard(
     }
 }
 
-// ============================================================
-// Kartu tema Mark — bola inti pratinjau + nama + julukan
-// ============================================================
-
-@Composable
-fun MarkCard(
-    markKey: String,
-    name: String,
-    tagline: String,
-    selected: Boolean,
-    palette: AviPalette = LocalAviPalette.current,
-    modifier: Modifier = Modifier,
-    onSelect: () -> Unit
-) {
-    val markPal = MarkPalettes[markKey] ?: MarkPalettes.getValue("MK1")
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(if (selected) markPal.accent.copy(alpha = 0.10f) else palette.panelLight.copy(alpha = 0.5f))
-            .border(
-                if (selected) 1.5.dp else 1.dp,
-                if (selected) markPal.accent else palette.panelLight,
-                RoundedCornerShape(12.dp)
-            )
-            .clickable { onSelect() }
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            Modifier
-                .size(42.dp)
-                .clip(CircleShape)
-                .background(Brush.radialGradient(listOf(markPal.accent, markPal.gold, markPal.panel)))
-                .border(2.dp, if (selected) markPal.accent else Color.Transparent, CircleShape)
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            name,
-            color = if (selected) palette.accent else palette.text,
-            fontSize = 11.sp,
-            fontFamily = AviHud,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 1.sp
-        )
-        Text(tagline, color = palette.textDim, fontSize = 8.5.sp, fontFamily = AviHud, maxLines = 1)
-    }
-}

@@ -35,17 +35,18 @@ class AviStt(
 
     val available: Boolean get() = recognizer != null
 
-    fun start() {
+    fun start(language: String = "id-ID") {
         val r = recognizer ?: run {
             callbacks.onError("Fitur pengenalan suara tidak tersedia di perangkat ini.")
             return
         }
+        val lang = language.ifBlank { "id-ID" }
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "id-ID")
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "id-ID")
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, lang)
         }
         try {
             r.startListening(intent)

@@ -285,7 +285,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 settingsRepo.markGreeted()
                 speakDirect(greetingText())
             } else {
-                s.start()
+                s.start(_settings.value.sttLanguage)
             }
         }
     }
@@ -525,7 +525,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             viewModelScope.launch {
                 delay(600)
                 if (_conversationActive.value && _state.value == AviState.IDLE) {
-                    stt?.start()
+                    stt?.start(_settings.value.sttLanguage)
                 }
             }
         }
@@ -831,7 +831,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         testCallback = onResult
-        s.start()
+        s.start(_settings.value.sttLanguage)
     }
 
     // ===== Memori =====
@@ -848,6 +848,14 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteMemory(id: String) {
         viewModelScope.launch {
             memoryRepo.remove(id)
+            _memories.value = memoryRepo.current
+        }
+    }
+
+    /** K21 — hapus seluruh ingatan sekaligus (panel Data & Privasi) */
+    fun clearMemories() {
+        viewModelScope.launch {
+            memoryRepo.removeAll()
             _memories.value = memoryRepo.current
         }
     }

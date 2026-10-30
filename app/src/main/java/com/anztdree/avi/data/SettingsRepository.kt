@@ -60,6 +60,8 @@ data class AviSettings(
     // kepribadian & mode
     val style: String = "santai",
     val userName: String = "Pak",
+    // K21 — bahasa pengenalan suara (dengaran) — nyata, disambungkan ke AviStt
+    val sttLanguage: String = "id-ID",
     // runtime-only
     val memoryText: String = "",
     val recap: String = ""
@@ -89,6 +91,7 @@ class SettingsRepository(private val context: Context) {
         val powerSave = booleanPreferencesKey("power_save")
         val style = stringPreferencesKey("style")
         val userName = stringPreferencesKey("user_name")
+        val sttLanguage = stringPreferencesKey("stt_language")
         val usageDate = stringPreferencesKey("usage_date")
         val usageCount = intPreferencesKey("usage_count")
         val lastBriefDate = stringPreferencesKey("last_brief_date")
@@ -119,7 +122,8 @@ class SettingsRepository(private val context: Context) {
         hudFrame = p[Keys.hudFrame] ?: true,
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
-        userName = p[Keys.userName] ?: "Pak"
+        userName = p[Keys.userName] ?: "Pak",
+        sttLanguage = p[Keys.sttLanguage] ?: "id-ID"
     )
 
     val settings: Flow<AviSettings> = context.aviDataStore.data.map { load(it) }
@@ -148,6 +152,7 @@ class SettingsRepository(private val context: Context) {
             p[Keys.powerSave] = next.powerSave
             p[Keys.style] = next.style
             p[Keys.userName] = next.userName.ifBlank { "Pak" }
+            p[Keys.sttLanguage] = next.sttLanguage.ifBlank { "id-ID" }
         }
     }
 

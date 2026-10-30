@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.HomeWork
@@ -108,12 +109,14 @@ import java.util.UUID
 import kotlinx.coroutines.delay
 
 /**
- * K20 — PUSAT KENDALI ROMBAKAN TOTAL (kelas Jarvis):
- *  · Header sinematik: inti plasma hidup + jam markas WIB + strip status 4 petak
- *  · Navigasi 5 tab misi (OTAK · SUARA · GAYA · HUD · SISTEM) dgn indikator meluncur
- *  · Setiap tab = panel misi lengkap; seluruh fungsi lama dipertahankan
- *  · Fitur kaya: kartu inti otak, preset vokal, aksi cepat 6 petak,
- *    ring kuota API, modul antrean SEGERA, kartu tema Mark 2x2
+ * K21 — PUSAT KENDALI BERSIH (arahan pemilik: "yang di pengaturan semua sampah"):
+ *  · Tab TAMPILAN dihapus total (tema Mark + efek HUD — tidak penting)
+ *  · Slider kecepatan/nada bicara + preset cepat dibuang (tidak penting)
+ *  · MEMORI dirombak jadi INGATAN AVI — kartu bertanggal, hapus semua, jelas fungsinya
+ *  · Ring kuota palsu ±1500 REQ dibuang → panel DATA & PRIVASI yang nyata
+ *  · TAMBAHAN nyata: bahasa dengaran (Indonesia/English) tersambung ke mesin STT
+ *  · Navigasi 4 tab misi (OTAK · SUARA · GAYA · SISTEM) dgn indikator meluncur
+ *  · Strip status: OTAK · SUARA · PEMILIK · REQ HARI INI (hitungan asli)
  * Satu keluarga visual dgn layar obrolan: nebula per-Mark + hex grid + bingkai HUD.
  */
 @Composable
@@ -163,6 +166,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
         settings.ocKey.isNotBlank() && settings.ocModel.isNotBlank()
     }
     val panggilanAktif = settings.userName.ifBlank { "Pak" }
+    val usageToday by vm.usageToday.collectAsState()
 
     fun setPanggilan(v: String) {
         inputPanggilan = v
@@ -279,9 +283,9 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     modifier = Modifier.weight(1f)
                 )
                 StatTile(
-                    value = tab.name,
-                    label = "TAB MISI",
-                    active = true,
+                    value = "$usageToday",
+                    label = "REQ HARI INI",
+                    active = usageToday > 0,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -341,7 +345,6 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                             panggilan = inputPanggilan,
                             onPanggilanChange = { v -> setPanggilan(v) }
                         )
-                        HudTab.HUD -> TampilanTab(vm = vm, settings = settings, palette = palette)
                         HudTab.SISTEM -> SistemTab(
                             vm = vm,
                             settings = settings,
@@ -680,7 +683,7 @@ private fun OtakTab(
 }
 
 // ============================================================
-// TAB 2 — SUARA: percakapan, vokal + preset, cloud TTS, tes
+// TAB 2 — SUARA: percakapan, bahasa dengaran, cloud TTS, tes
 // ============================================================
 
 @Composable
@@ -714,46 +717,29 @@ private fun SuaraTab(
         )
         HudDivider(palette)
 
-        PanelTitle("PENGATURAN VOKAL", null, palette)
-        PowerDial(
-            label = "Kecepatan bicara",
-            value = settings.speechRate,
-            valueRange = 0.5f..2.0f,
-            display = String.format(Locale.US, "%.1f x", settings.speechRate),
-            onChange = { v -> vm.updateSettings { it.copy(speechRate = v) } },
-            palette = palette
+        // K21 — BAHASA DENGARAN (nyata: disambungkan ke mesin STT Android)
+        PanelTitle(
+            "BAHASA DENGARAN",
+            if (settings.sttLanguage == "id-ID") "ID" else "EN",
+            palette
         )
-        PowerDial(
-            label = "Nada bicara",
-            value = settings.pitch,
-            valueRange = 0.5f..2.0f,
-            display = String.format(Locale.US, "%.1f x", settings.pitch),
-            onChange = { v -> vm.updateSettings { it.copy(pitch = v) } },
-            palette = palette
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            "PRESET CEPAT",
-            color = palette.textDim,
-            fontSize = 9.sp,
-            fontFamily = AviHud,
-            letterSpacing = 1.sp
-        )
-        Spacer(Modifier.height(5.dp))
+        Spacer(Modifier.height(6.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf(
-                "LEMBUT" to (0.9f to 1.05f),
-                "NORMAL" to (1.0f to 1.0f),
-                "CEPAT" to (1.3f to 1.1f),
-                "DALAM" to (1.0f to 0.8f)
-            ).forEach { pair ->
-                val (label, preset) = pair
-                val sel = settings.speechRate == preset.first && settings.pitch == preset.second
-                HudChip(label, sel, palette) {
-                    vm.updateSettings { it.copy(speechRate = preset.first, pitch = preset.second) }
+            listOf("id-ID" to "INDONESIA", "en-US" to "ENGLISH").forEach { (kode, label) ->
+                HudChip(label, settings.sttLanguage == kode, palette) {
+                    vm.updateSettings { it.copy(sttLanguage = kode) }
                 }
             }
         }
+        Spacer(Modifier.height(5.dp))
+        Text(
+            "Bahasa yang dipakai AVI saat mendengarkan perintah suara Anda — " +
+                "berlaku untuk obrolan maupun tes mendengar.",
+            color = palette.textDim.copy(alpha = 0.75f),
+            fontSize = 10.sp,
+            fontFamily = AviHud,
+            lineHeight = 13.sp
+        )
         HudDivider(palette)
 
         PanelTitle(
@@ -913,7 +899,7 @@ private fun voiceLabel(v: String): String =
     VOICE_DESC[v]?.let { "$v — $it" } ?: "$v — karakter Google"
 
 // ============================================================
-// TAB 3 — GAYA: panggilan custom, gaya bicara, memori, protokol
+// TAB 3 — GAYA: panggilan custom, gaya bicara, ingatan, protokol
 // ============================================================
 
 @Composable
@@ -931,6 +917,10 @@ private fun GayaTab(
     var protoPhrase by remember { mutableStateOf("") }
     var protoSteps by remember { mutableStateOf("") }
     val panggilanAktif = panggilan ?: settings.userName
+    // K21 — format tanggal ingatan (Indonesia)
+    val tglIngatan = remember {
+        SimpleDateFormat("d MMM yyyy · HH:mm", Locale("id", "ID"))
+    }
 
     SystemHeader(name = "GAYA", active = true, palette = palette)
     HoloPanel(palette = palette) {
@@ -991,16 +981,39 @@ private fun GayaTab(
         )
         HudDivider(palette)
 
-        // ---- memori ----
-        PanelTitle("MEMORI AVI", "${memories.size}", palette)
+        // ---- ingatan (K21 — rombak total dr "memori" lama) ----
+        PanelTitle("INGATAN AVI", "${memories.size}", palette)
         Spacer(Modifier.height(4.dp))
         Text(
-            "Fakta yang AVI ingat permanen di setiap obrolan, pak.",
+            "Fakta tentang Anda yang AVI bawa ke setiap obrolan — otomatis, tanpa perlu diulang.",
             color = palette.textDim,
-            fontSize = 11.sp
+            fontSize = 11.sp,
+            lineHeight = 15.sp
         )
         Spacer(Modifier.height(6.dp))
         if (memories.isNotEmpty()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "${memories.size} ingatan tersimpan",
+                    color = palette.textDim,
+                    fontSize = 10.sp,
+                    fontFamily = AviHud,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = { vm.clearMemories() }) {
+                    Text(
+                        "HAPUS SEMUA",
+                        color = palette.danger,
+                        fontSize = 10.sp,
+                        fontFamily = AviHud,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            Spacer(Modifier.height(4.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1009,18 +1022,33 @@ private fun GayaTab(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 memories.forEach { mem ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            "• ${mem.text}",
-                            color = palette.text,
-                            fontSize = 12.sp,
-                            lineHeight = 16.sp,
-                            modifier = Modifier.weight(1f)
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(palette.panelLight.copy(alpha = 0.45f))
+                            .border(1.dp, palette.accent.copy(alpha = 0.22f), RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                mem.text,
+                                color = palette.text,
+                                fontSize = 12.sp,
+                                lineHeight = 16.sp
+                            )
+                            Text(
+                                "tercatat " + tglIngatan.format(Date(mem.createdAt)),
+                                color = palette.textDim.copy(alpha = 0.7f),
+                                fontSize = 9.sp,
+                                fontFamily = AviHud
+                            )
+                        }
                         IconButton(onClick = { vm.deleteMemory(mem.id) }, modifier = Modifier.size(30.dp)) {
                             Icon(
                                 Icons.Default.Delete,
-                                contentDescription = "Hapus memori",
+                                contentDescription = "Hapus ingatan",
                                 tint = palette.danger,
                                 modifier = Modifier.size(16.dp)
                             )
@@ -1030,10 +1058,12 @@ private fun GayaTab(
             }
         } else {
             Text(
-                "Belum ada memori, pak.",
+                "Belum ada ingatan. Coba tulis: \u201CSaya suka kopi hitam\u201D — " +
+                    "AVI akan mengingatnya permanen, pak.",
                 color = palette.textDim,
                 fontSize = 11.sp,
-                fontFamily = AviHud
+                fontFamily = AviHud,
+                lineHeight = 14.sp
             )
         }
         Spacer(Modifier.height(8.dp))
@@ -1177,88 +1207,7 @@ private fun GayaTab(
 }
 
 // ============================================================
-// TAB 4 — HUD: tema mark 2x2 + efek tampilan
-// ============================================================
-
-@Composable
-private fun TampilanTab(vm: AviViewModel, settings: AviSettings, palette: AviPalette) {
-    SystemHeader(name = "TAMPILAN", active = true, palette = palette)
-    HoloPanel(palette = palette) {
-        PanelTitle("TEMA MARK", settings.themeMark, palette)
-        Spacer(Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MarkCard(
-                markKey = "MK1", name = "MK-I", tagline = "Cyan Inti Ark",
-                selected = settings.themeMark == "MK1",
-                onSelect = { vm.updateSettings { it.copy(themeMark = "MK1") } },
-                modifier = Modifier.weight(1f)
-            )
-            MarkCard(
-                markKey = "MK2", name = "MK-II", tagline = "Hot Rod Merah",
-                selected = settings.themeMark == "MK2",
-                onSelect = { vm.updateSettings { it.copy(themeMark = "MK2") } },
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Spacer(Modifier.height(10.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MarkCard(
-                markKey = "MK3", name = "MK-III", tagline = "Aureus Emas",
-                selected = settings.themeMark == "MK3",
-                onSelect = { vm.updateSettings { it.copy(themeMark = "MK3") } },
-                modifier = Modifier.weight(1f)
-            )
-            MarkCard(
-                markKey = "MK4", name = "MK-IV", tagline = "Eidolon Hologram",
-                selected = settings.themeMark == "MK4",
-                onSelect = { vm.updateSettings { it.copy(themeMark = "MK4") } },
-                modifier = Modifier.weight(1f)
-            )
-        }
-        HudDivider(palette)
-        PanelTitle("EFEK HUD", null, palette)
-        ReactorToggle(
-            label = "Boot sequence sinematik",
-            checked = settings.bootEnabled,
-            onChange = { v -> vm.updateSettings { it.copy(bootEnabled = v) } },
-            palette = palette
-        )
-        ReactorToggle(
-            label = "Parallax giroskop",
-            checked = settings.parallaxEnabled,
-            onChange = { v -> vm.updateSettings { it.copy(parallaxEnabled = v) } },
-            palette = palette
-        )
-        ReactorToggle(
-            label = "Getaran khas status",
-            checked = settings.hapticsEnabled,
-            onChange = { v -> vm.updateSettings { it.copy(hapticsEnabled = v) } },
-            palette = palette
-        )
-        ReactorToggle(
-            label = "Diagnostik orbit",
-            checked = settings.diagnosticsOrbit,
-            onChange = { v -> vm.updateSettings { it.copy(diagnosticsOrbit = v) } },
-            palette = palette
-        )
-        // K19 — bingkai HUD kelas Jarvis (bracket sudut + rel + sapuan hologram)
-        ReactorToggle(
-            label = "Bingkai HUD kelas Jarvis",
-            checked = settings.hudFrame,
-            onChange = { v -> vm.updateSettings { it.copy(hudFrame = v) } },
-            palette = palette
-        )
-        ReactorToggle(
-            label = "Mode hemat daya (matikan efek berat)",
-            checked = settings.powerSave,
-            onChange = { v -> vm.updateSettings { it.copy(powerSave = v) } },
-            palette = palette
-        )
-    }
-}
-
-// ============================================================
-// TAB 5 — SISTEM: kuota, aksi cepat, modul antrean, tentang
+// TAB 5 — SISTEM: data & privasi, aksi cepat, modul antrean, tentang
 // ============================================================
 
 @Composable
@@ -1273,49 +1222,45 @@ private fun SistemTab(
     val context = LocalContext.current
     val memories by vm.memories.collectAsState()
     val protocols by vm.protocols.collectAsState()
-    val usageToday by vm.usageToday.collectAsState()
-    val modelTest by vm.modelTest.collectAsState()
-    val models by vm.models.collectAsState()
-    val chatModels = models.filter { it.canChat && it.isPureChat }
-    val siap = modelTest.values.count { it.ok }
+    val messages by vm.messages.collectAsState()
     val versiAvi = remember {
         try {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "?"
         } catch (_: Exception) { "?" }
     }
 
-    // ---- kuota & aktivitas ----
+    // ---- data & privasi (K21 — pengganti ring kuota palsu ±1500) ----
     SystemHeader(name = "SISTEM", active = true, palette = palette)
     HoloPanel(palette = palette) {
-        PanelTitle("KUOTA & AKTIVITAS", null, palette)
-        Spacer(Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            GaugeRing(
-                label = "DARI ±1500",
-                valueText = "$usageToday REQ",
-                progress = usageToday / 1500f,
-                palette = palette
-            )
-            Spacer(Modifier.width(14.dp))
-            Column(Modifier.weight(1f)) {
-                InfoRow("Model siap", if (chatModels.isEmpty()) "-" else "$siap / ${chatModels.size}", palette = palette)
-                InfoRow("Memori tersimpan", "${memories.size}", palette = palette)
-                InfoRow("Protokol", "${protocols.size}", palette = palette)
-                InfoRow(
-                    "Penyedia",
-                    if (settings.provider == AiProvider.GEMINI) "Gemini" else "OpenAI-compat",
-                    palette = palette
-                )
-            }
-        }
-        Spacer(Modifier.height(6.dp))
+        PanelTitle("DATA & PRIVASI", "LOKAL", palette)
+        Spacer(Modifier.height(4.dp))
         Text(
-            "Kuota gratis berubah-ubah mengikut model — angka ini perkiraan hitung lokal.",
-            color = palette.textDim.copy(alpha = 0.7f),
-            fontSize = 9.sp,
-            fontFamily = AviHud,
-            lineHeight = 12.sp
+            "Seluruh data AVI hanya tersimpan di HP Anda — tanpa server, tanpa pelacakan.",
+            color = palette.textDim,
+            fontSize = 10.sp,
+            lineHeight = 14.sp
         )
+        Spacer(Modifier.height(8.dp))
+        InfoRow("Riwayat obrolan", "${messages.size} pesan", palette = palette)
+        InfoRow("Ingatan tersimpan", "${memories.size}", palette = palette)
+        InfoRow("Protokol", "${protocols.size}", palette = palette)
+        Spacer(Modifier.height(10.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            QuickActionButton(
+                icon = Icons.Default.DeleteSweep,
+                label = "HAPUS RIWAYAT",
+                danger = true,
+                onClick = { vm.clearHistory() },
+                modifier = Modifier.weight(1f)
+            )
+            QuickActionButton(
+                icon = Icons.Default.DeleteForever,
+                label = "HAPUS INGATAN",
+                danger = true,
+                onClick = { vm.clearMemories() },
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
     Spacer(Modifier.height(12.dp))
 
@@ -1325,21 +1270,11 @@ private fun SistemTab(
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             QuickActionButton(
-                icon = Icons.Default.DeleteSweep,
-                label = "RIWAYAT",
-                danger = true,
-                onClick = { vm.clearHistory() },
-                modifier = Modifier.weight(1f)
-            )
-            QuickActionButton(
                 icon = Icons.Default.VolumeUp,
                 label = "UJI SUARA",
                 onClick = { vm.speakTest("Hay pak, semua sistem normal. AVI siap membantu.") },
                 modifier = Modifier.weight(1f)
             )
-        }
-        Spacer(Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             QuickActionButton(
                 icon = Icons.Default.Hearing,
                 label = "TES DENGAR",
@@ -1349,6 +1284,9 @@ private fun SistemTab(
                 },
                 modifier = Modifier.weight(1f)
             )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             QuickActionButton(
                 icon = Icons.Default.Troubleshoot,
                 label = "DIAGNOSA",
@@ -1358,9 +1296,6 @@ private fun SistemTab(
                 },
                 modifier = Modifier.weight(1f)
             )
-        }
-        Spacer(Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             QuickActionButton(
                 icon = Icons.Default.Memory,
                 label = "MUAT MODEL",
@@ -1370,13 +1305,14 @@ private fun SistemTab(
                 },
                 modifier = Modifier.weight(1f)
             )
-            QuickActionButton(
-                icon = Icons.Default.OpenInNew,
-                label = "AI STUDIO",
-                onClick = onOpenAiStudio,
-                modifier = Modifier.weight(1f)
-            )
         }
+        Spacer(Modifier.height(8.dp))
+        QuickActionButton(
+            icon = Icons.Default.OpenInNew,
+            label = "AI STUDIO",
+            onClick = onOpenAiStudio,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
     Spacer(Modifier.height(12.dp))
 
