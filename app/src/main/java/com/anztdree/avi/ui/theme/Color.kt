@@ -22,7 +22,8 @@ data class AviPalette(
     val coreGlow: Color
 )
 
-/** 3 tema Mark — MK-I cyan/emas (default), MK-II Hot Rod merah, MK-III Aureus emas */
+/** 4 tema Mark — MK-I cyan/emas (default), MK-II Hot Rod merah, MK-III Aureus emas,
+ *  MK-IV Eidolon hijau-hologram (K19 — kelas lab Jarvis) */
 val MarkPalettes: Map<String, AviPalette> = mapOf(
     "MK1" to AviPalette(
         bg = Color(0xFF070B12),
@@ -74,6 +75,23 @@ val MarkPalettes: Map<String, AviPalette> = mapOf(
         aviBubble = Color(0xFF1F1A06),
         aviBorder = Color(0xFF7A6828),
         coreGlow = Color(0xFFFFE9A8)
+    ),
+    "MK4" to AviPalette(
+        bg = Color(0xFF050A07),
+        panel = Color(0xFF0B1712),
+        panelLight = Color(0xFF12241C),
+        accent = Color(0xFF34D399),
+        accentSoft = Color(0xFF6EE7B7),
+        gold = Color(0xFFB8E356),
+        goldSoft = Color(0xFFDCF5A0),
+        text = Color(0xFFE5F2EA),
+        textDim = Color(0xFF86988D),
+        danger = Color(0xFFF87171),
+        userBubble = Color(0xFF12200A),
+        userBorder = Color(0xFF5F7A2F),
+        aviBubble = Color(0xFF0A2419),
+        aviBorder = Color(0xFF1F5E45),
+        coreGlow = Color(0xFF9DF5C8)
     )
 )
 

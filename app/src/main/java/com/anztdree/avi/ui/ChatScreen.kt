@@ -22,6 +22,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +45,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Send
@@ -65,6 +68,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
@@ -129,6 +133,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     val error by vm.error.collectAsState()
     val diagnostics by vm.diagnostics.collectAsState()
     var inputText by remember { mutableStateOf("") }
+    // K19 — deck modul kelas Jarvis
+    var showDeck by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     // ---- izin mikrofon ----
@@ -197,8 +203,6 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         AviState.SPEAKING -> palette.goldSoft
         AviState.LIVE -> palette.danger
     }
-    val modelChip = settings.geminiModel.removePrefix("models/").ifBlank { "PILIH MODEL" }
-
     val listState = rememberLazyListState()
     LaunchedEffect(messages.size, streamingText) {
         val total = listState.layoutInfo.totalItemsCount
@@ -229,6 +233,12 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             enabled = settings.parallaxEnabled && !settings.powerSave,
             modifier = Modifier.matchParentSize()
         )
+        // ---- K19 — bingkai HUD kelas Jarvis: bracket sudut + rel + sapuan hologram ----
+        HudFrameOverlay(
+            palette = palette,
+            enabled = settings.hudFrame && !settings.powerSave,
+            modifier = Modifier.matchParentSize()
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -237,7 +247,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 .imePadding()
                 .padding(horizontal = 14.dp)
         ) {
-            // ============ BAR ATAS ============
+            // ============ BAR ATAS — gaya bar komando Jarvis ============
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 6.dp)
@@ -248,16 +258,34 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Black,
                     fontFamily = AviDisplay,
-                    letterSpacing = 2.sp
+                    letterSpacing = 2.sp,
+                    style = TextStyle(
+                        shadow = Shadow(
+                            color = palette.accent.copy(alpha = 0.85f),
+                            blurRadius = 16f
+                        )
+                    )
                 )
                 Spacer(Modifier.width(8.dp))
                 StatusChip(text = statusLabel, color = statusColor)
                 Spacer(Modifier.weight(1f))
-                TopBarChip(
-                    label = modelChip,
-                    color = if (settings.geminiModel.isBlank()) palette.textDim else palette.accent,
-                    onClick = onOpenSettings
+                // jam hidup — telemetri klasik HUD
+                Text(
+                    clockText,
+                    color = palette.accent,
+                    fontSize = 12.sp,
+                    fontFamily = AviHud,
+                    letterSpacing = 1.sp
                 )
+                Spacer(Modifier.width(2.dp))
+                IconButton(onClick = { showDeck = true }, modifier = Modifier.size(38.dp)) {
+                    Icon(
+                        Icons.Default.Apps,
+                        contentDescription = "Deck modul",
+                        tint = palette.accent,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
                 IconButton(onClick = onOpenSettings, modifier = Modifier.size(38.dp)) {
                     Icon(
                         Icons.Default.Settings,
@@ -388,6 +416,27 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 Spacer(Modifier.height(6.dp))
             }
 
+            // ============ K19 — CHIP PINTASAN (perintah lokal instan + status otak) ============
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(vertical = 2.dp)
+            ) {
+                TopBarChip(
+                    label = settings.geminiModel.removePrefix("models/").ifBlank { "PILIH MODEL" },
+                    color = if (settings.geminiModel.isBlank()) palette.textDim else palette.accent,
+                    onClick = onOpenSettings
+                )
+                listOf(
+                    "Jam berapa?", "Tanggal berapa?", "Baterai berapa?",
+                    "Kondisi HP", "Sisa penyimpanan"
+                ).forEach { cmd ->
+                    HudCommandChip(text = cmd) { vm.sendText(cmd) }
+                }
+            }
+
             // ============ DOCK INPUT KACA — glow fokus, mic beriak, kirim beranimasi ============
             Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(bottom = 4.dp)) {
                 var focused by remember { mutableStateOf(false) }
@@ -492,6 +541,20 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 }
             }
             Spacer(Modifier.height(6.dp))
+        }
+
+        // ============ K19 — DECK MODUL (panel modul kaya ala markas) ============
+        AnimatedVisibility(
+            visible = showDeck,
+            enter = fadeIn(tween(220)),
+            exit = fadeOut(tween(180))
+        ) {
+            DeckPanel(
+                vm = vm,
+                settings = settings,
+                onDismiss = { showDeck = false },
+                onOpenSettings = onOpenSettings
+            )
         }
     }
 }

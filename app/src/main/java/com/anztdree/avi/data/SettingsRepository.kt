@@ -54,6 +54,8 @@ data class AviSettings(
     val parallaxEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
     val diagnosticsOrbit: Boolean = true,
+    // K19 — bingkai HUD kelas Jarvis (bracket sudut + rel samping + sapuan hologram)
+    val hudFrame: Boolean = true,
     val powerSave: Boolean = false,
     // kepribadian & mode
     val style: String = "santai",
@@ -83,6 +85,7 @@ class SettingsRepository(private val context: Context) {
         val parallaxEnabled = booleanPreferencesKey("parallax_enabled")
         val hapticsEnabled = booleanPreferencesKey("haptics_enabled")
         val diagnosticsOrbit = booleanPreferencesKey("diagnostics_orbit")
+        val hudFrame = booleanPreferencesKey("hud_frame")
         val powerSave = booleanPreferencesKey("power_save")
         val style = stringPreferencesKey("style")
         val userName = stringPreferencesKey("user_name")
@@ -113,6 +116,7 @@ class SettingsRepository(private val context: Context) {
         parallaxEnabled = p[Keys.parallaxEnabled] ?: true,
         hapticsEnabled = p[Keys.hapticsEnabled] ?: true,
         diagnosticsOrbit = p[Keys.diagnosticsOrbit] ?: true,
+        hudFrame = p[Keys.hudFrame] ?: true,
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
         userName = p[Keys.userName] ?: "Pak"
@@ -140,6 +144,7 @@ class SettingsRepository(private val context: Context) {
             p[Keys.parallaxEnabled] = next.parallaxEnabled
             p[Keys.hapticsEnabled] = next.hapticsEnabled
             p[Keys.diagnosticsOrbit] = next.diagnosticsOrbit
+            p[Keys.hudFrame] = next.hudFrame
             p[Keys.powerSave] = next.powerSave
             p[Keys.style] = next.style
             p[Keys.userName] = next.userName.ifBlank { "Pak" }

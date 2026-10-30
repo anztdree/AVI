@@ -687,7 +687,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
             )
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                listOf("MK1" to "MK-I", "MK2" to "MK-II", "MK3" to "MK-III").forEach { pair ->
+                listOf("MK1" to "MK-I", "MK2" to "MK-II", "MK3" to "MK-III", "MK4" to "MK-IV").forEach { pair ->
                     val key = pair.first
                     val label = pair.second
                     val markPal = MarkPalettes[key] ?: MarkPalettes.getValue("MK1")
@@ -740,6 +740,13 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 label = "Diagnostik orbit",
                 checked = settings.diagnosticsOrbit,
                 onChange = { v -> vm.updateSettings { it.copy(diagnosticsOrbit = v) } },
+                palette = palette
+            )
+            // K19 — bingkai HUD kelas Jarvis (bracket sudut + rel + sapuan hologram)
+            ReactorToggle(
+                label = "Bingkai HUD kelas Jarvis",
+                checked = settings.hudFrame,
+                onChange = { v -> vm.updateSettings { it.copy(hudFrame = v) } },
                 palette = palette
             )
             ReactorToggle(

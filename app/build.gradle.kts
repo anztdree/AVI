@@ -13,8 +13,8 @@ android {
         applicationId = "com.anztdree.avi"
         minSdk = 26
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.0.4"
+        versionCode = 10
+        versionName = "1.1.0"
     }
 
     buildTypes {
