@@ -379,24 +379,39 @@ class AgentTools(private val memory: MemoryRepository) {
         }.orEmpty()
 
     // ===== Kalkulator aman — parser rekursif, TANPA eval =====
+    // Sebagai KELAS privat (bukan fungsi lokal) supaya rekursi silang
+    // primer↔tambah boleh (fungsi lokal Kotlin tidak boleh referensi-maju).
 
     private fun hitungEkspresi(raw: String): Double? {
         val s = raw.replace(",", ".")
             .replace("×", "*").replace("÷", "/").replace(" ", "")
         if (s.isEmpty() || s.length > 80) return null
         if (!s.all { it in "0123456789.+-*/%^()" }) return null
-        var pos = 0
+        return try {
+            val p = ParserEkspresi(s)
+            p.utuh()
+        } catch (_: Exception) { null }
+    }
 
-        fun peek(): Char = if (pos < s.length) s[pos] else ' '
+    private class ParserEkspresi(private val s: String) {
+        private var pos = 0
 
-        fun angka(): Double {
+        fun utuh(): Double? {
+            val v = tambah()
+            if (pos != s.length || v.isNaN() || v.isInfinite()) return null
+            return v
+        }
+
+        private fun peek(): Char = if (pos < s.length) s[pos] else ' '
+
+        private fun angka(): Double {
             val start = pos
             while (pos < s.length && (s[pos].isDigit() || s[pos] == '.')) pos++
             if (start == pos) throw IllegalArgumentException("angka")
             return s.substring(start, pos).toDouble()
         }
 
-        fun primer(): Double {
+        private fun primer(): Double {
             when (peek()) {
                 '(' -> {
                     pos++
@@ -410,13 +425,13 @@ class AgentTools(private val memory: MemoryRepository) {
             }
         }
 
-        fun pangkat(): Double {
+        private fun pangkat(): Double {
             var v = primer()
             while (peek() == '^') { pos++; v = Math.pow(v, primer()) }
             return v
         }
 
-        fun kali(): Double {
+        private fun kali(): Double {
             var v = pangkat()
             while (peek() == '*' || peek() == '/' || peek() == '%') {
                 val op = peek(); pos++
@@ -426,7 +441,7 @@ class AgentTools(private val memory: MemoryRepository) {
             return v
         }
 
-        fun tambah(): Double {
+        private fun tambah(): Double {
             var v = kali()
             while (peek() == '+' || peek() == '-') {
                 val op = peek(); pos++
@@ -435,10 +450,5 @@ class AgentTools(private val memory: MemoryRepository) {
             }
             return v
         }
-
-        return try {
-            val v = tambah()
-            if (pos == s.length && !v.isNaN() && !v.isInfinite()) v else null
-        } catch (_: Exception) { null }
     }
 }

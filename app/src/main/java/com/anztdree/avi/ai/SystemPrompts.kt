@@ -69,7 +69,9 @@ object SystemPrompts {
      * Prinsip: obrolan biasa TANPA perkakas (hemat langkah, cepat);
      * aksi nyata perangkat WAJIB lewat perkakas, bukan karangan.
      */
-    fun buildAgent(s: AviSettings): String = build(s) + "\n\n" + """
+    fun buildAgent(s: AviSettings): String {
+        val u = s.userName
+        return build(s) + "\n\n" + """
             MODE AGEN — KAMU PUNYA PERKAKAS (function calling):
             - Obrolan biasa, sapaan, dan pertanyaan pengetahuan: jawab LANGSUNG,
               jangan panggil perkakas.
@@ -84,4 +86,5 @@ object SystemPrompts {
             - Bila perkakas yang diminta tidak tersedia, jujur tidak ada dan
               tawarkan alternatif yang tersedia.
         """.trimIndent()
+    }
 }
