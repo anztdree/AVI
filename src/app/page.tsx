@@ -35,24 +35,6 @@ import {
    Pola diambil dari produk agen nyata (lihat bagian Referensi).
    ============================================================ */
 
-const C = {
-  bg: "#070B12",
-  panel: "#0D141F",
-  panelLight: "#141E2E",
-  accent: "#22D3EE",
-  accentSoft: "#67E8F9",
-  gold: "#F5B54A",
-  goldSoft: "#FFD98A",
-  text: "#E8EEF5",
-  dim: "#8A97A8",
-  danger: "#F87171",
-  userBubble: "#251D0E",
-  userBorder: "#8A6A2F",
-  aviBubble: "#0C2833",
-  aviBorder: "#1B5E70",
-  glow: "#7DF3FF",
-};
-
 /* ---------- primitif kecil ---------- */
 
 function HudLabel({ children }: { children: React.ReactNode }) {
@@ -150,29 +132,141 @@ function AviOrb({ size = 56 }: { size?: number }) {
   );
 }
 
-function Ring({ done, total }: { done: number; total: number }) {
+/* ---------- primitif Jarvis (dari ReactorOrb.kt & HudFrame.kt) ---------- */
+
+function Corners({
+  inset = 8,
+  arm = 14,
+  tone = "cyan",
+}: {
+  inset?: number;
+  arm?: number;
+  tone?: "cyan" | "gold";
+}) {
+  const c = tone === "gold" ? "border-[#F5B54A]/60" : "border-[#22D3EE]/55";
+  const dot = tone === "gold" ? "bg-[#F5B54A]" : "bg-[#67E8F9]";
+  const base = "pointer-events-none absolute";
+  return (
+    <>
+      <span
+        className={`${base} border-l border-t ${c}`}
+        style={{ left: inset, top: inset, width: arm, height: arm }}
+      />
+      <span
+        className={`${base} border-r border-t ${c}`}
+        style={{ right: inset, top: inset, width: arm, height: arm }}
+      />
+      <span
+        className={`${base} border-l border-b ${c}`}
+        style={{ left: inset, bottom: inset, width: arm, height: arm }}
+      />
+      <span
+        className={`${base} border-r border-b ${c}`}
+        style={{ right: inset, bottom: inset, width: arm, height: arm }}
+      />
+      {/* titik sudut emas khas antarmuka Stark */}
+      <span className={`${base} h-1 w-1 rounded-full ${dot}`} style={{ left: inset - 1, top: inset - 1 }} />
+      <span className={`${base} h-1 w-1 rounded-full ${dot}`} style={{ right: inset - 1, top: inset - 1 }} />
+      <span className={`${base} h-1 w-1 rounded-full ${dot}`} style={{ left: inset - 1, bottom: inset - 1 }} />
+      <span className={`${base} h-1 w-1 rounded-full ${dot}`} style={{ right: inset - 1, bottom: inset - 1 }} />
+    </>
+  );
+}
+
+function SideRails() {
+  return (
+    <>
+      <span className="pointer-events-none absolute bottom-12 left-2 top-12 w-px bg-[#22D3EE]/10" />
+      <span className="pointer-events-none absolute bottom-12 right-2 top-12 w-px bg-[#22D3EE]/10" />
+      <span
+        className="avi-rail-tick pointer-events-none absolute left-2 h-5 w-px bg-[#67E8F9]/80"
+        style={{ boxShadow: "0 0 6px rgba(103,232,249,0.8)" }}
+      />
+      <span
+        className="pointer-events-none absolute right-2 h-5 w-px bg-[#67E8F9]/80"
+        style={{
+          boxShadow: "0 0 6px rgba(103,232,249,0.8)",
+          animation: "avi-rail 7.5s linear infinite",
+          animationDelay: "3.75s",
+        }}
+      />
+    </>
+  );
+}
+
+function Telemetry({ state }: { state: string }) {
+  return (
+    <div className="relative z-20 flex items-center justify-between px-6 pb-2.5 font-hud text-[6.5px] tracking-[0.28em] text-[#8A97A8]/75">
+      <span className="avi-flicker">{state}</span>
+      <span>SUARA SIAGA</span>
+    </div>
+  );
+}
+
+/** Inti reaktor berlapis — IDLE berdenyut pelan, WORK cincin orbit cepat, DONE tenang.
+ *  Bila diberi pct, busur progres mengelilingi inti: reaktor = progres tugas. */
+function ReactorCore({
+  state = "idle",
+  size = 64,
+  label,
+  pct,
+}: {
+  state?: "idle" | "work" | "done";
+  size?: number;
+  label?: string;
+  pct?: number;
+}) {
+  const ring = state === "done" ? "#4ADE80" : state === "work" ? "#F5B54A" : "#22D3EE";
   const r = 15;
   const circ = 2 * Math.PI * r;
-  const pct = done / total;
   return (
-    <div className="relative h-12 w-12">
-      <svg viewBox="0 0 40 40" className="h-12 w-12 -rotate-90">
-        <circle cx="20" cy="20" r={r} fill="none" stroke="rgba(138,151,168,0.25)" strokeWidth="3" />
-        <circle
-          cx="20"
-          cy="20"
-          r={r}
-          fill="none"
-          stroke={C.accent}
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeDasharray={circ}
-          strokeDashoffset={circ * (1 - pct)}
+    <div className="relative" style={{ width: size, height: size }}>
+      <div
+        className={`absolute inset-0 rounded-full border border-dashed ${
+          state === "work" ? "avi-orbit-fast" : "avi-orbit"
+        }`}
+        style={{ borderColor: `${ring}66` }}
+      />
+      <div
+        className="absolute inset-[10%] rounded-full border"
+        style={{
+          borderColor: "transparent",
+          borderTopColor: `${ring}99`,
+          borderLeftColor: `${ring}55`,
+          transform: "rotate(-30deg)",
+        }}
+      />
+      {typeof pct === "number" && (
+        <svg viewBox="0 0 40 40" className="absolute inset-0 h-full w-full -rotate-90">
+          <circle cx="20" cy="20" r={r} fill="none" stroke="rgba(138,151,168,0.22)" strokeWidth="2.4" />
+          <circle
+            cx="20"
+            cy="20"
+            r={r}
+            fill="none"
+            stroke={ring}
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={circ * (1 - pct)}
+          />
+        </svg>
+      )}
+      <div
+        className="absolute inset-[30%] rounded-full border"
+        style={{ borderColor: `${ring}88`, background: `${ring}18` }}
+      />
+      {!label && (
+        <div
+          className="avi-breathe absolute inset-[43%] rounded-full"
+          style={{ background: ring, boxShadow: `0 0 14px 4px ${ring}88` }}
         />
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center font-hud text-[9px] text-[#E8EEF5]">
-        {done}/{total}
-      </div>
+      )}
+      {label && (
+        <div className="absolute inset-0 flex items-center justify-center font-hud text-[9px] text-[#E8EEF5]">
+          {label}
+        </div>
+      )}
     </div>
   );
 }
@@ -220,6 +314,9 @@ function Phone({ children }: { children: React.ReactNode }) {
       <div className="avi-nebula relative aspect-[9/19] overflow-hidden rounded-[1.9rem]">
         <div className="avi-stars absolute inset-0 opacity-70" />
         <div className="avi-grid absolute inset-0 opacity-60" />
+        <div className="avi-hex absolute inset-0 opacity-70" />
+        <Corners />
+        <SideRails />
         <div className="relative z-10 flex h-full flex-col">{children}</div>
         <div className="avi-scanline z-20" />
       </div>
@@ -330,12 +427,14 @@ function ScreenObrolan() {
         </div>
         <div className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#22D3EE]/50 bg-[#22D3EE]/10">
           <div className="avi-pulse-dot absolute inset-0 rounded-full border border-[#22D3EE]/30" />
+          <div className="avi-orbit absolute -inset-1 rounded-full border border-dashed border-[#22D3EE]/25" />
           <Mic className="h-4 w-4 text-[#67E8F9]" />
         </div>
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5B54A]/15">
           <Send className="h-4 w-4 text-[#F5B54A]" />
         </div>
       </div>
+      <Telemetry state="REAKTOR: STABIL" />
     </Phone>
   );
 }
@@ -348,7 +447,7 @@ function ScreenAjukan() {
       <StatusBar />
       <div className="flex flex-col items-center px-5 pt-2">
         <div className="avi-float">
-          <AviOrb size={44} />
+          <ReactorCore state="idle" size={50} />
         </div>
         <div className="mt-2 font-orbitron text-[11px] font-bold tracking-[0.4em] text-[#E8EEF5]">
           MODE AGENT
@@ -359,7 +458,8 @@ function ScreenAjukan() {
       </div>
 
       <div className="mt-3 space-y-3 px-4">
-        <div className="rounded-xl border border-[#22D3EE]/20 bg-[#0D141F]/85 p-3">
+        <div className="relative rounded-xl border border-[#22D3EE]/20 bg-[#0D141F]/85 p-3">
+          <Corners inset={5} arm={9} />
           <HudLabel>JUDUL TUGAS</HudLabel>
           <div className="mt-1.5 rounded-lg border border-[#22D3EE]/20 bg-[#141E2E]/70 px-2.5 py-2 font-rajdhani text-[11px] text-[#E8EEF5]">
             Laporan Penjualan Q3 — PDF
@@ -413,6 +513,7 @@ function ScreenAjukan() {
           Setelah diajukan, AVI menyusun rencana dulu — bukan langsung nekat.
         </p>
       </div>
+      <Telemetry state="REAKTOR: SIAGA" />
     </Phone>
   );
 }
@@ -431,7 +532,8 @@ function ScreenRencana() {
     <Phone>
       <StatusBar />
       <div className="px-4 pt-2">
-        <div className="rounded-xl border border-[#F5B54A]/30 bg-[#0D141F]/85 p-3">
+        <div className="relative rounded-xl border border-[#F5B54A]/30 bg-[#0D141F]/85 p-3">
+          <Corners inset={5} arm={9} tone="gold" />
           <div className="flex items-center justify-between">
             <span className="font-hud text-[8px] tracking-[0.3em] text-[#8A97A8]">TUGAS #A-1042</span>
             <StatusBadge tone="gold" pulse>
@@ -482,6 +584,7 @@ function ScreenRencana() {
           MINTA UBAH RENCANA
         </button>
       </div>
+      <Telemetry state="REAKTOR: MENYUSUN RENCANA" />
     </Phone>
   );
 }
@@ -501,7 +604,7 @@ function ScreenEksekusi() {
             EKSEKUSI LIVE · 02:14
           </div>
         </div>
-        <Ring done={3} total={6} />
+        <ReactorCore state="work" pct={0.5} label="3/6" size={54} />
       </div>
 
       <div className="mt-2 flex gap-1.5 px-4">
@@ -603,6 +706,7 @@ function ScreenEksekusi() {
           </div>
         </div>
       </div>
+      <Telemetry state="REAKTOR: MENGERJAKAN" />
     </Phone>
   );
 }
@@ -622,9 +726,12 @@ function ScreenHasil() {
             SELESAI · 4M 12D · 6/6 LANGKAH
           </div>
         </div>
-        <StatusBadge tone="green" pulse>
-          TUNTAS
-        </StatusBadge>
+        <div className="flex items-center gap-2">
+          <ReactorCore state="done" size={34} />
+          <StatusBadge tone="green" pulse>
+            TUNTAS
+          </StatusBadge>
+        </div>
       </div>
 
       <div className="mt-2.5 flex items-center gap-1 overflow-hidden px-4">
@@ -687,6 +794,7 @@ function ScreenHasil() {
           <Send className="h-3.5 w-3.5 text-[#67E8F9]" />
         </div>
       </div>
+      <Telemetry state="REAKTOR: TUNTAS · ARTEFAK SIAP" />
     </Phone>
   );
 }
@@ -787,6 +895,7 @@ function ScreenRiwayat() {
       <div className="px-4 pb-5 text-center font-hud text-[8px] tracking-[0.22em] text-[#8A97A8]">
         KETUK UNTUK MEMBUKA ULANG ARTEFAK
       </div>
+      <Telemetry state="ARSIP · REAKTOR STABIL" />
     </Phone>
   );
 }
@@ -816,7 +925,9 @@ function ScreenKendali() {
               <div
                 key={o.k}
                 className={`flex items-center gap-2 rounded-lg border px-2.5 py-2 ${
-                  o.on ? "border-[#22D3EE]/45 bg-[#22D3EE]/10" : "border-[#8A97A8]/15"
+                  o.on
+                    ? "border-[#22D3EE]/45 bg-[#22D3EE]/10 shadow-[0_0_18px_-4px_rgba(34,211,238,0.55)]"
+                    : "border-[#8A97A8]/15"
                 }`}
               >
                 <span
@@ -870,7 +981,7 @@ function ScreenKendali() {
           </div>
         </div>
       </div>
-      <div className="pb-5" />
+      <Telemetry state="OTORITAS: BAKU · PUSAT KENDALI" />
     </Phone>
   );
 }
@@ -912,7 +1023,7 @@ const FLOW = [
   { no: "01", t: "AJUKAN TUGAS", d: "Dari obrolan atau form Mode Agent" },
   { no: "02", t: "RENCANA DIBUAT", d: "AVI menyusun daftar langkah" },
   { no: "03", t: "PAK MENYETUJUI", d: "Bisa ubah dulu — tidak nekat jalan" },
-  { no: "04", t: "EKSEKUSI LIVE", d: "Linimasa langkah + ruang kerja hidup" },
+  { no: "04", t: "EKSEKUSI LIVE", d: "Reaktor bekerja + linimasa langkah hidup" },
   { no: "05", t: "ARTEFAK", d: "PDF / kode / analisa siap pakai" },
   { no: "06", t: "REVISI / SELESAI", d: "Iterasi lanjutan pada artefak yang sama" },
 ];
@@ -961,12 +1072,16 @@ export default function Page() {
             Laporan PDF, coding, analisa kode — pekerjaan berat yang dikerjakan sampai tuntas,
             bukan sekadar buka aplikasi. Seluruh tampilan di bawah dirancang dari pola produk
             agen nyata — Manus, Devin, ChatGPT Agent, Claude — lalu dijahit ke identitas HUD
-            milik AVI (tema MK1). Tanpa jam, tanpa chip saran, sesuai arahan.
+            milik AVI (tema MK1). Tanpa jam, tanpa chip saran, sesuai arahan — dan nuansa
+            Jarvis tetap utuh: reaktor tetap jantungnya, bingkai Stark tetap rangkanya.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
             <SourceTag>7 LAYAR MOCKUP</SourceTag>
             <SourceTag>SATU KELUARGA VISUAL HUD MK1</SourceTag>
             <SourceTag>SEMUANYA DARI REFERENSI</SourceTag>
+            <span className="rounded-full border border-[#F5B54A]/40 bg-[#F5B54A]/10 px-2.5 py-1 font-hud text-[9px] tracking-wider text-[#F5B54A]">
+              NUANSA JARVIS DIJAGA
+            </span>
           </div>
         </section>
 
@@ -1035,12 +1150,56 @@ export default function Page() {
           </div>
         </section>
 
+        {/* nuansa jarvis */}
+        <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
+            <h2 className="font-orbitron text-sm font-bold tracking-[0.35em] text-[#67E8F9]">
+              02 · NUANSA JARVIS — YANG DIJAGA
+            </h2>
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            {[
+              {
+                t: "REAKTOR = JANTUNG",
+                d: "Dari ReactorOrb asli app: siaga berdenyut, berpikir cincin orbit, bekerja semua ring. Di Mode Agent reaktor ikut bekerja — progres tugas terbaca di cincinnya.",
+              },
+              {
+                t: "BINGKAI STARK",
+                d: "Dari HudFrame asli app: 4 bracket sudut ber-titik emas, rel samping bertick merambat, sapuan hologram melintasi layar.",
+              },
+              {
+                t: "TELEMETRI HIDUP",
+                d: "Baris status mono yang bernafas dan sesekali berkedip di kaki tiap layar — status reaktor, bukan jam.",
+              },
+              {
+                t: "SAPAAN “PAK”",
+                d: "Kepribadian Jarvis tetap dalam bahasa kita: “Siap, Pak.” — sopan, tenang, selalu siaga.",
+              },
+              {
+                t: "CYAN + EMAS",
+                d: "Palet MK1 asli: sian reaktor + emas Stark. Tujuh layar memakai bahasa visual yang sama dengan rumah.",
+              },
+            ].map((c) => (
+              <div key={c.t} className="rounded-2xl border border-[#22D3EE]/15 bg-[#0A0F18]/70 p-4">
+                <div className="font-orbitron text-[11px] font-bold tracking-[0.18em] text-[#67E8F9]">
+                  {c.t}
+                </div>
+                <p className="mt-2 font-rajdhani text-[14px] font-medium leading-snug text-[#B9C4D2]">
+                  {c.d}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* alur tugas */}
         <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
           <div className="mb-6 flex items-center gap-3">
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
             <h2 className="font-orbitron text-sm font-bold tracking-[0.35em] text-[#E8EEF5]">
-              02 · ALUR SATU TUGAS AGENT
+              03 · ALUR SATU TUGAS AGENT
             </h2>
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
           </div>
@@ -1067,7 +1226,7 @@ export default function Page() {
           <div className="mb-8 flex items-center gap-3">
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
             <h2 className="font-orbitron text-sm font-bold tracking-[0.35em] text-[#E8EEF5]">
-              03 · TUJUH LAYAR — KETUK DAN AMATI
+              04 · TUJUH LAYAR — TETAP BERNUANSA JARVIS
             </h2>
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
           </div>
@@ -1118,7 +1277,7 @@ export default function Page() {
               desc="Linimasa langkah hidup gaya HUD: selesai (hijau), aktif (sian berdenyut + baris “berpikir…”), tertunda (redup)."
               sources={["MANUS — step states + computer dock", "CHATGPT AGENT — narasi live"]}
               notes={[
-                "Cincin progres + penghitung langkah + timer di kepala layar.",
+                "Reaktor = progres: cincin berputar cepat + busur emas membaca 3/6 di sekeliling inti.",
                 "Kontrol JEDA / HENTIKAN selalu terjangkau jempol.",
                 "Dock “RUANG KERJA AVI” = versi AVI untuk panel computer Manus: pratinjau hidup + status.",
               ]}
@@ -1172,7 +1331,7 @@ export default function Page() {
           <div className="mb-6 flex items-center gap-3">
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#F5B54A]/50 to-transparent" />
             <h2 className="font-orbitron text-sm font-bold tracking-[0.35em] text-[#F5B54A]">
-              04 · USULAN — HANYA JIKA DESAIN INI DISETUJUI
+              05 · USULAN — HANYA JIKA DESAIN INI DISETUJUI
             </h2>
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#F5B54A]/50 to-transparent" />
           </div>

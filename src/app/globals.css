@@ -192,3 +192,24 @@
   animation: avi-scan 5.5s linear infinite;
   pointer-events: none;
 }
+
+/* anyaman hex halus + rel + telemetri (keluarga HudFrame/HexBackground) */
+.avi-hex {
+  background-image:
+    repeating-linear-gradient(60deg, rgba(103, 232, 249, 0.035) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(-60deg, rgba(103, 232, 249, 0.035) 0 1px, transparent 1px 16px);
+}
+
+@keyframes avi-rail {
+  0% { top: -8%; }
+  100% { top: 106%; }
+}
+@keyframes avi-flicker {
+  0%, 91%, 94%, 98%, 100% { opacity: 1; }
+  92% { opacity: 0.25; }
+  96% { opacity: 0.55; }
+}
+.avi-orbit { animation: avi-spin 9s linear infinite; }
+.avi-orbit-fast { animation: avi-spin 2.4s linear infinite; }
+.avi-rail-tick { animation: avi-rail 7.5s linear infinite; }
+.avi-flicker { animation: avi-flicker 6s linear infinite; }
