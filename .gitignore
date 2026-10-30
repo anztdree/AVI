@@ -55,3 +55,10 @@ server.log
 # artefak alat lokal — bukan sumber AVI
 tool-results/
 worklog.md
+
+# K19-hygiene: duplikat lama & artefak non-AVI — TETAP di luar repo
+/android/
+/docs/
+/log/
+/src/app/api/
+app/src/main/java/com/anztdree/avi/image/
