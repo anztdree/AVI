@@ -19,9 +19,9 @@ const jbMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AVI — Papan Desain Mode Agent v1.4.0 · Riset Ulang",
+  title: "AVI — Asisten dengan Kemampuan Agent · Papan Tampilan HTML v3",
   description:
-    "Papan desain tampilan Mode Agent AVI: tugas berat (laporan PDF, coding, analisa kode). Dibangun ulang dari riset visual 6 sumber — Manus, Devin, ChatGPT Agent, Claude, Replit Agent, Jules — 9 layar mockup, tanpa implementasi.",
+    "AVI adalah ASISTEN pribadi yang punya kemampuan agent untuk tugas berat (laporan PDF, koding, analisa). Papan tampilan HTML: 5 layar, alur 1 tap, tanpa implementasi.",
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },

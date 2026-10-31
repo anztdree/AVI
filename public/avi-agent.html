@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>AVI MK1 · MODE AGENT — Papan Tampilan HTML v2</title>
+<title>AVI MK1 · ASISTEN DENGAN KEMAMPUAN AGENT — Papan Tampilan HTML v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
@@ -75,7 +75,7 @@ input,textarea{font-family:inherit;color:var(--txt);background:none;border:none;
   scrollbar-width:none}
 .jumps::-webkit-scrollbar{display:none}
 .jumps a{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);
-  border:1px solid rgba(140,163,199,.3);border-radius:99px;padding:7px 13px;text-decoration:none;transition:.2s;scroll-margin:0}
+  border:1px solid rgba(140,163,199,.3);border-radius:99px;padding:7px 13px;text-decoration:none;transition:.2s}
 .jumps a b{color:var(--cyan);font-weight:600;margin-right:5px}
 .jumps a.on{color:var(--gold);border-color:rgba(245,181,74,.65);background:rgba(245,181,74,.08);box-shadow:0 0 14px rgba(245,181,74,.15)}
 
@@ -100,6 +100,8 @@ body.satu .screen.on{display:grid;animation:rise .45s ease both}
 .scr-notes li::before{content:"▹";position:absolute;left:0;color:var(--gold)}
 .scr-notes li.warn{color:#FCA5A5}
 .scr-notes li.warn::before{content:"✕";color:var(--red)}
+.scr-notes li.rule{color:var(--gold)}
+.scr-notes li.rule::before{content:"◆";color:var(--gold)}
 .flow-link{display:flex;justify-content:center;gap:10px;align-items:center;padding:6px 0;
   font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--gold);opacity:.85}
 .flow-link::before,.flow-link::after{content:"";width:70px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,181,74,.6))}
@@ -132,18 +134,13 @@ body.satu .flow-link{display:none}
 .scr-body::-webkit-scrollbar-thumb{background:rgba(34,211,238,.35);border-radius:9px}
 .scr-body::-webkit-scrollbar-track{background:transparent}
 
-/* ============ NAV BAWAH + FAB ============ */
+/* ============ NAV BAWAH ============ */
 .bottomnav{display:flex;align-items:center;border-top:1px solid rgba(34,211,238,.14);
   background:rgba(4,8,14,.94);padding:8px 12px calc(10px + env(safe-area-inset-bottom));gap:4px}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim2);
-  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;padding:6px 0;transition:.2s}
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;padding:7px 0;transition:.2s}
 .bn svg{width:19px;height:19px}
 .bn.on{color:var(--cyan);text-shadow:0 0 12px rgba(34,211,238,.6)}
-.fab{flex:0 0 auto;width:52px;height:52px;border-radius:50%;margin:0 6px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:1px;background:linear-gradient(135deg,#F7C56A,#F5B54A 55%,#D9932F);
-  color:#1A1206;font-family:var(--mono);font-size:7.5px;font-weight:600;letter-spacing:.1em;
-  box-shadow:0 0 24px rgba(245,181,74,.45),inset 0 1px 0 rgba(255,255,255,.5);animation:breathe 3.4s ease-in-out infinite}
-.fab svg{width:20px;height:20px}
 
 /* ============ ORB REAKTOR MK1 ============ */
 .orb{width:74px;height:74px;border-radius:50%;position:relative;flex:0 0 auto;
@@ -195,7 +192,6 @@ body.satu .flow-link{display:none}
 .btn-ghost{border:1px solid rgba(140,163,199,.35);color:var(--dim)}
 .btn-ghost:hover{color:var(--txt)}
 .btn.sm{padding:9px 12px;font-size:11.5px;letter-spacing:.08em;width:auto}
-.btn:disabled{opacity:.5;cursor:default}
 
 /* ============ BADGE ============ */
 .badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;
@@ -218,15 +214,11 @@ body.satu .flow-link{display:none}
 .chip svg{width:14px;height:14px}
 .chip.sel{color:var(--cyan);border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.1);
   box-shadow:0 0 14px rgba(34,211,238,.15)}
-.chip:active{transform:scale(.96)}
 
 /* ============ FORM ============ */
 .input,.textarea{width:100%;background:rgba(5,9,16,.7);border:1px solid rgba(140,163,199,.3);
   border-radius:11px;padding:12px 13px;font-size:14.5px;color:var(--txt)}
 .input:focus,.textarea:focus{border-color:rgba(34,211,238,.65);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
-.textarea{min-height:88px;resize:none;line-height:1.5}
-.filechip{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(52,211,153,.4);
-  background:rgba(52,211,153,.07);border-radius:10px;padding:8px 11px;font-family:var(--mono);font-size:10.5px;color:#A7F3D0}
 .auth-card{border:1px solid rgba(140,163,199,.3);border-radius:12px;padding:11px 12px;cursor:pointer;transition:.2s}
 .auth-card .t{font-weight:700;font-size:13.5px;letter-spacing:.08em;display:flex;gap:7px;align-items:center}
 .auth-card .d{font-size:11px;color:var(--dim);margin-top:3px}
@@ -244,7 +236,6 @@ body.satu .flow-link{display:none}
 .msg.me{flex-direction:row-reverse}
 .msg.me .bub{background:rgba(140,163,199,.14);border:1px solid rgba(140,163,199,.3);border-top-right-radius:4px}
 .msg .av{flex:0 0 auto;margin-top:2px}
-.cta-fixed{position:sticky;bottom:0;padding:8px 0 4px;background:linear-gradient(180deg,transparent,rgba(4,7,13,.9) 40%)}
 .composer{display:flex;align-items:center;gap:8px;border-top:1px solid rgba(34,211,238,.14);
   background:rgba(4,8,14,.94);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
 .composer .field{flex:1;display:flex;align-items:center;gap:8px;background:rgba(140,163,199,.1);
@@ -252,7 +243,17 @@ body.satu .flow-link{display:none}
 .composer .field input{flex:1;font-size:14px}
 .composer .field input::placeholder{color:var(--dim2)}
 
-/* ============ LANGKAH RENCANA / TIMELINE ============ */
+/* ============ KARTU RENCANA RINGKAS (1 TAP) ============ */
+.plan{margin-top:10px;background:rgba(7,11,18,.7);border:1px solid rgba(245,181,74,.4);border-radius:12px;padding:12px}
+.plan .pl-t{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.plan ol{list-style:none;display:grid;gap:6px;margin-bottom:10px}
+.plan ol li{display:flex;gap:9px;align-items:center;font-size:13.5px;color:#DCE7F7}
+.plan ol li i{font-style:normal;width:18px;height:18px;border-radius:50%;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;
+  border:1px solid rgba(245,181,74,.55);color:var(--gold)}
+.plan .pl-m{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--dim);margin-bottom:10px}
+
+/* ============ LANGKAH PROSES / TIMELINE ============ */
 .step{display:flex;gap:11px;align-items:flex-start;background:rgba(11,19,34,.8);
   border:1px solid rgba(140,163,199,.22);border-radius:12px;padding:11px 12px;margin-bottom:8px}
 .step .n{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
@@ -266,11 +267,18 @@ body.satu .flow-link{display:none}
 .step .t{font-weight:600;font-size:14px}
 .step .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
+/* ============ IZIN KILAT (1 TAP) ============ */
+.permit{display:flex;gap:10px;align-items:flex-start;background:rgba(245,181,74,.06);
+  border:1px solid rgba(245,181,74,.5);border-radius:12px;padding:11px 12px;margin-bottom:8px}
+.permit .meta{flex:1}
+.permit .t{font-weight:600;font-size:13.5px}
+.permit .d{font-size:11px;color:var(--dim);margin-top:2px}
+
 /* ============ RING PROGRES ============ */
-.ring{position:relative;width:132px;height:132px;flex:0 0 auto}
+.ring{position:relative;width:126px;height:126px;flex:0 0 auto}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .pct b{font-family:var(--disp);font-size:24px;color:var(--cyan);text-shadow:0 0 16px rgba(34,211,238,.6)}
+.ring .pct b{font-family:var(--disp);font-size:23px;color:var(--cyan);text-shadow:0 0 16px rgba(34,211,238,.6)}
 .ring .pct span{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:var(--dim)}
 
 /* ============ DOCK RUANG KERJA ============ */
@@ -402,8 +410,8 @@ footer b{color:var(--gold)}
     <div class="brand">
       <div class="orb orb-sm"><span class="core"></span></div>
       <div>
-        <div class="tt">AVI <em>MK1</em> · MODE AGENT</div>
-        <div class="st">PAPAN TAMPILAN HTML v2 — VISUAL SAJA · FUNGSI DISIMULASI</div>
+        <div class="tt">AVI <em>· ASISTEN PRIBADI</em></div>
+        <div class="st">YANG PUNYA KEMAMPUAN AGENT — PAPAN TAMPILAN HTML v3 · VISUAL SAJA</div>
       </div>
     </div>
     <div class="seg" id="modeSeg">
@@ -412,34 +420,33 @@ footer b{color:var(--gold)}
     </div>
   </div>
   <div class="legend">
-    <span><i>POLA·X</i> = pola diambil dari referensi nyata (Manus / Devin / ChatGPT Agent / Claude)</span>
-    <span><b>COMING SOON</b> = fitur teridentifikasi, belum dibangun</span>
-    <span>v1.3.0(12) → usulan <b>v1.4.0(13)</b> — menunggu persetujuan Pak</span>
+    <span>◆ ATURAN BRAND: <b>ASISTEN DULU</b> — “AGENT” HANYA NAMA KEMAMPUAN DI DALAM</span>
+    <span><i>POLA·X</i> = dari referensi nyata (Manus / Devin / ChatGPT Agent / Claude)</span>
+    <span><b>COMING SOON</b> = teridentifikasi, belum dibangun</span>
+    <span>v1.3.0(12) → usulan <b>v1.4.0(13)</b></span>
   </div>
 </header>
 
 <!-- ================= NAV LOMPAT ================= -->
 <nav class="jumps" id="jumps">
   <a href="#layar-1" data-jump="1" class="on"><b>01</b>OBROLAN</a>
-  <a href="#layar-2" data-jump="2"><b>02</b>AJUKAN</a>
-  <a href="#layar-3" data-jump="3"><b>03</b>RENCANA</a>
-  <a href="#layar-4" data-jump="4"><b>04</b>EKSEKUSI</a>
-  <a href="#layar-5" data-jump="5"><b>05</b>ARTEFAK</a>
-  <a href="#layar-6" data-jump="6"><b>06</b>TUGAS</a>
-  <a href="#layar-7" data-jump="7"><b>07</b>KENDALI</a>
+  <a href="#layar-2" data-jump="2"><b>02</b>PROSES</a>
+  <a href="#layar-3" data-jump="3"><b>03</b>HASIL</a>
+  <a href="#layar-4" data-jump="4"><b>04</b>TUGAS</a>
+  <a href="#layar-5" data-jump="5"><b>05</b>KENDALI</a>
 </nav>
 
 <main class="wrap board">
 
 <!-- ================================================== -->
-<!-- LAYAR 01 · OBROLAN                                  -->
+<!-- LAYAR 01 · OBROLAN — SATU-SATUNYA PINTU MASUK       -->
 <!-- ================================================== -->
 <section class="screen on" id="layar-1" data-n="1">
   <div class="scr-head">
     <span class="scr-num">01</span>
     <div style="flex:1">
-      <div class="scr-tt">OBROLAN — DIBERSIHKAN</div>
-      <div class="scr-sub">Gerbang masuk. Tidak ada jam, tidak ada chip saran. Satu tombol emas menuju Mode Agent.</div>
+      <div class="scr-tt">OBROLAN — SATU-SATUNYA PINTU MASUK</div>
+      <div class="scr-sub">Pak cukup bicara pada asisten. Tidak ada mode, tidak ada form — AVI yang menyesuaikan diri.</div>
     </div>
     <span class="pola">POLA · CHATGPT AGENT</span><span class="pola gd">NUANSA · JARVIS MK1</span>
   </div>
@@ -447,7 +454,7 @@ footer b{color:var(--gold)}
   <div class="phone">
     <span class="punch"></span>
     <div class="statusbar">
-      <span>MK1 · AGENT</span>
+      <span>MK1 · ASISTEN</span>
       <span class="r">
         <svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         <span>5G</span><span class="batt"></span><span class="gr">87%</span>
@@ -457,13 +464,13 @@ footer b{color:var(--gold)}
       <div class="orb orb-sm"><span class="core"></span></div>
       <div>
         <div class="tt">AVI</div>
-        <div class="sb">MODE AGENT · SIAP</div>
+        <div class="sb">ASISTEN PRIBADI · SIAP</div>
       </div>
       <span class="sp"></span>
-      <button class="icon-btn" data-goto="7" title="Pusat Kendali">
+      <button class="icon-btn" data-goto="5" title="Pusat Kendali">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
       </button>
-      <button class="icon-btn" data-goto="6" title="Tugas">
+      <button class="icon-btn" data-goto="4" title="Tugas">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
       </button>
     </div>
@@ -472,9 +479,9 @@ footer b{color:var(--gold)}
       <div class="card hud" style="text-align:center;padding:22px 16px 18px">
         <div class="orb" style="margin:6px auto 14px"><span class="core"></span></div>
         <div class="h">Selamat pagi, <span class="gd">Pak</span>.</div>
-        <div class="sm dim" style="margin-top:5px">Sistem siap. Berikan saya pekerjaan berat hari ini —
-        laporan, kode, atau analisa — saya urus dari awal sampai jadi.</div>
-        <div class="mono xs cy" style="margin-top:13px;letter-spacing:.14em">REAKTOR STABIL · NET AKTIF · 0 TUGAS JALAN</div>
+        <div class="sm dim" style="margin-top:5px">Saya AVI, asisten Pak. Bilang saja apa yang perlu dikerjakan —
+        kalau pekerjaannya berat, saya yang urus sampai jadi.</div>
+        <div class="mono xs cy" style="margin-top:13px;letter-spacing:.14em">REAKTOR STABIL · NET AKTIF · KEMAMPUAN AGENT SIAP</div>
       </div>
 
       <div class="msg me">
@@ -482,19 +489,33 @@ footer b{color:var(--gold)}
       </div>
       <div class="msg avi">
         <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
-        <div class="bub">Siap, Pak. Ini pekerjaan untuk <b class="gd">Tugas Agent</b> — saya baca datanya, analisa,
-        lalu susun PDF-nya. Mau saya susun rencananya dulu?</div>
-      </div>
-      <div class="msg avi">
-        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
-        <div class="bub dim">Sambil menunggu, saya bisa juga disuruh: coding, audit kode, atau analisa data.</div>
+        <div class="bub" style="max-width:88%">
+          Siap, Pak. Ini pekerjaan berat — saya kerjakan untuk Pak.
+          <div class="plan">
+            <div class="pl-t">
+              <span class="k" style="margin:0">RENCANA RINGKAS</span>
+              <span class="badge cyan still">±10 MNT</span>
+            </div>
+            <ol>
+              <li><i>1</i> Baca & olah data_penjualan.xlsx</li>
+              <li><i>2</i> Analisa tren & anomali Q2 vs Q3</li>
+              <li><i>3</i> Susun laporan PDF + grafik</li>
+            </ol>
+            <div class="pl-m">PAK BISA BAIASI KAPAN SAJA · HASIL LANGSUNG KE OBROLAN INI</div>
+            <div class="row" style="gap:8px">
+              <button class="btn btn-gold sm" style="flex:1" data-goto="2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 4l14 8-14 8V4z"/></svg>
+                LANJUTKAN
+              </button>
+              <button class="btn btn-ghost sm" data-sim="UBAH RENCANA">✎ UBAH</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="cta-fixed">
-        <button class="btn btn-gold" data-goto="2">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>
-          AJUKAN SEBAGAI TUGAS AGENT
-        </button>
+      <div class="msg avi">
+        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
+        <div class="bub dim">Atau kalau bukan sekarang, Pak bisa juga bilang “kerjakan nanti sore” — saya antrekan.</div>
       </div>
     </div>
 
@@ -503,7 +524,7 @@ footer b{color:var(--gold)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M12 5v14M5 12h14"/></svg>
       </button>
       <div class="field">
-        <input placeholder="Tulis pesan ke AVI…"/>
+        <input placeholder="Bilang ke AVI apa yang perlu dikerjakan…"/>
       </div>
       <button class="icon-btn" data-sim="MICROPHONE">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
@@ -518,15 +539,11 @@ footer b{color:var(--gold)}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>
         OBROLAN
       </button>
-      <button class="bn" data-goto="6">
+      <button class="bn" data-goto="4">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
         TUGAS
       </button>
-      <button class="fab" data-goto="2">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>
-        AJUKAN
-      </button>
-      <button class="bn" data-goto="7">
+      <button class="bn" data-goto="5">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
         KENDALI
       </button>
@@ -536,299 +553,50 @@ footer b{color:var(--gold)}
   <div class="scr-notes">
     <h4>FITUR DI LAYAR INI</h4>
     <ul>
+      <li class="rule">BRAND: AVI memperkenalkan diri sebagai <b>ASISTEN</b> — kemampuan agent disebut di telemetri, bukan di identitas.</li>
       <li class="warn">JAM & CHIP SARAN — DIHAPUS TOTAL, TANPA PENGGANTI (arah Pak, dipatuhi 100%).</li>
-      <li>Orb reaktor MK1 bernafas + sapaan “Pak” — nuansa Jarvis dipertahankan.</li>
-      <li>Telemetri mono (REAKTOR · NET · TUGAS JALAN) tanpa jam.</li>
-      <li>Tombol emas <b>AJUKAN SEBAGAI TUGAS AGENT</b> — pintu masuk alur 6 langkah.</li>
-      <li>Bottom nav baru: OBROLAN · TUGAS · ⚡ AJUKAN · KENDALI (pola navigasi umum, diadaptasi dari sidebar Manus/Devin).</li>
-      <li>Lampiran, mic, kirim — ikon tersedia di composer.</li>
+      <li>Effisiensi: <b>tidak ada tombol mode, tidak ada form</b> — semua dari satu kotak ketik.</li>
+      <li>AVI membalas dengan kartu <b>RENCANA RINGKAS</b> (3 langkah, ±10 mnt) + tombol emas <b>LANJUTKAN</b> — persetujuan cukup <b>1 tap</b>.</li>
+      <li>“UBAH” kalau Pak ingin mengubah rencana; “kerjakan nanti” = masuk antrean.</li>
+      <li>Bottom nav simpel: OBROLAN · TUGAS · KENDALI.</li>
     </ul>
   </div>
 </section>
 
-<div class="flow-link">PAK MENEKAN “AJUKAN SEBAGAI TUGAS AGENT” ↓</div>
+<div class="flow-link">PAK CUKUP 1 TAP “LANJUTKAN” ↓</div>
 
 <!-- ================================================== -->
-<!-- LAYAR 02 · AJUKAN TUGAS                             -->
+<!-- LAYAR 02 · PROSES — AVI SEDANG BEKERJA              -->
 <!-- ================================================== -->
 <section class="screen" id="layar-2" data-n="2">
   <div class="scr-head">
     <span class="scr-num">02</span>
     <div style="flex:1">
-      <div class="scr-tt">AJUKAN TUGAS BARU</div>
-      <div class="scr-sub">Form satu layar: instruksi, kemampuan opsional, lampiran, otoritas, estimasi.</div>
+      <div class="scr-tt">PROSES — AVI SEDANG BEKERJA</div>
+      <div class="scr-sub">Asisten bekerja di belakang layar; Pak tetap bisa mengawasi, jeda, atau hentikan.</div>
     </div>
-    <span class="pola">POLA · DEVIN SESI</span><span class="pola">POLA · CHATGPT AGENT</span>
+    <span class="pola">POLA · MANUS COMPUTER</span><span class="pola">POLA · CHATGPT NARASI</span>
   </div>
 
   <div class="phone">
     <span class="punch"></span>
     <div class="statusbar">
-      <span>MK1 · AGENT</span>
+      <span>MK1 · ASISTEN</span>
       <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
     </div>
     <div class="appbar">
       <button class="icon-btn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div class="tt">AJUKAN TUGAS</div>
+      <div>
+        <div class="tt">AVI SEDANG BEKERJA</div>
+        <div class="sb">LAPORAN ANALISA PENJUALAN Q3</div>
+      </div>
       <span class="sp"></span>
-      <span class="badge cyan still">DRAFT</span>
+      <span class="badge cyan">PROSES</span>
     </div>
 
     <div class="scr-body">
       <div class="card hud">
-        <span class="k">JUDUL TUGAS</span>
-        <input class="input" value="Laporan Analisa Penjualan Q3"/>
-      </div>
-
-      <div class="card">
-        <span class="k">INSTRUKSI UNTUK AVI</span>
-        <textarea class="textarea">Baca data penjualan terlampir. Bandingkan Q2 vs Q3, cari tren & anomali, susun laporan PDF 10+ halaman lengkap dengan grafik dan rekomendasi.</textarea>
-      </div>
-
-      <div class="card">
-        <div class="between" style="margin-bottom:9px">
-          <span class="k" style="margin:0">KEMAMPUAN</span>
-          <span class="badge gold still">OPSIONAL</span>
-        </div>
-        <div class="chips" id="caps">
-          <button class="chip sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>LAPORAN PDF</button>
-          <button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg>CODING</button>
-          <button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>ANALISA KODE</button>
-          <button class="chip sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>ANALISA DATA</button>
-          <button class="chip sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>RISET WEB</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <span class="k">TEMPLATE CEPAT</span>
-        <div class="chips">
-          <button class="chip" data-sim="TEMPLATE">📄 LAPORAN PDF <span class="soon">COMING SOON</span></button>
-          <button class="chip" data-sim="TEMPLATE">⌨️ AUDIT KODE <span class="soon">COMING SOON</span></button>
-          <button class="chip" data-sim="TEMPLATE">📊 ANALISA DATA <span class="soon">COMING SOON</span></button>
-        </div>
-      </div>
-
-      <div class="card">
-        <span class="k">LAMPIRAN</span>
-        <div class="row" style="flex-wrap:wrap;gap:8px">
-          <span class="filechip">▣ data_penjualan.xlsx · 1.2 MB</span>
-          <button class="icon-btn" data-sim="TAMBAH LAMPIRAN" style="width:32px;height:32px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="card hud">
-        <span class="k">OTORITAS EKSEKUSI</span>
-        <div class="grid2" id="authSel">
-          <div class="auth-card" data-desc="AVI berhenti & minta izin di setiap langkah. Paling terkendali.">
-            <div class="t">◈ AMAN</div>
-            <div class="d">Tanya dulu tiap langkah</div>
-          </div>
-          <div class="auth-card sel" data-desc="AVI bebas bekerja, tapi selalu minta izin untuk login, pembayaran, atau penghapusan.">
-            <div class="t">◈ BAKU</div>
-            <div class="d">Bebas, hal berisiko minta izin</div>
-          </div>
-          <div class="auth-card" data-desc="AVI bebas penuh sampai tugas selesai. Semua aksi tercatat di log.">
-            <div class="t">◈ PENUH</div>
-            <div class="d">Bebas penuh, log sesudahnya</div>
-          </div>
-        </div>
-        <div class="xs dim" id="authDesc" style="margin-top:9px">BAKU: AVI bebas bekerja, tapi selalu minta izin untuk login, pembayaran, atau penghapusan.</div>
-      </div>
-
-      <div class="card">
-        <span class="k">ESTIMASI</span>
-        <div class="mono sm cy" style="letter-spacing:.1em">≈ 18 KREDIT · ± 12 MENIT · 5 LANGKAH</div>
-        <div class="row between" style="margin-top:12px;padding-top:11px;border-top:1px dashed rgba(140,163,199,.2)">
-          <div>
-            <div class="sm" style="font-weight:600">Jadwalkan otomatis</div>
-            <div class="xs dim">Jalankan tugas pada waktu tertentu</div>
-          </div>
-          <span class="soon">COMING SOON</span>
-          <span class="sw"></span>
-        </div>
-      </div>
-
-      <button class="btn btn-gold" data-goto="3">
-        SUSUN RENCANA
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </button>
-      <button class="btn btn-ghost sm" data-sim="SIMPAN TEMPLATE" style="margin-top:8px">SIMPAN SEBAGAI TEMPLATE <span class="soon">COMING SOON</span></button>
-    </div>
-
-    <div class="bottomnav">
-      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
-      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
-    </div>
-  </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li>Judul + instruksi panjang (seperti form sesi Devin).</li>
-      <li>Kemampuan bertanda <b>OPSIONAL</b> — AVI tetap jalan walau tidak dipilih.</li>
-      <li>Lampiran file (xlsx/pdf/zip) tampil sebagai chip.</li>
-      <li>Otoritas AMAN / BAKU / PENUH + deskripsi yang ikut berganti.</li>
-      <li>Estimasi kredit, waktu, jumlah langkah — sebelum setuju.</li>
-      <li>Template cepat & jadwal otomatis = <b>COMING SOON</b>.</li>
-    </ul>
-  </div>
-</section>
-
-<div class="flow-link">PAK MENEKAN “SUSUN RENCANA” ↓</div>
-
-<!-- ================================================== -->
-<!-- LAYAR 03 · RENCANA                                  -->
-<!-- ================================================== -->
-<section class="screen" id="layar-3" data-n="3">
-  <div class="scr-head">
-    <span class="scr-num">03</span>
-    <div style="flex:1">
-      <div class="scr-tt">RENCANA — MENUNGGU PERSETUJUAN</div>
-      <div class="scr-sub">AVI menyusun langkah; Pak yang menyetujui. Tidak ada eksekusi tanpa persetujuan.</div>
-    </div>
-    <span class="pola">POLA · DEVIN PLAN</span><span class="pola">POLA · MANUS TODO</span><span class="pola">POLA · CHATGPT IZIN</span>
-  </div>
-
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · AGENT</span>
-      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
-    </div>
-    <div class="appbar">
-      <button class="icon-btn" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div class="tt">RENCANA TUGAS</div>
-      <span class="sp"></span>
-      <span class="badge gold">MENUNGGU PERSETUJUAN</span>
-    </div>
-
-    <div class="scr-body">
-      <div class="card hud">
-        <div class="between">
-          <div>
-            <div class="h">Laporan Analisa Penjualan Q3</div>
-            <div class="xs dim mono" style="letter-spacing:.1em;margin-top:3px">LAPORAN PDF · ANALISA DATA · RISET WEB</div>
-          </div>
-          <div class="orb orb-sm"><span class="core"></span></div>
-        </div>
-      </div>
-
-      <div class="step">
-        <span class="n">1</span>
-        <div class="meta">
-          <div class="t">Baca & validasi data_penjualan.xlsx</div>
-          <div class="s"><span>≈2 KR</span><span>·</span><span>AKSES FILE</span></div>
-        </div>
-        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-      </div>
-      <div class="step">
-        <span class="n">2</span>
-        <div class="meta">
-          <div class="t">Analisa tren Q2 vs Q3 (Python)</div>
-          <div class="s"><span>≈4 KR</span><span>·</span><span>TERMINAL</span></div>
-        </div>
-        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-      </div>
-      <div class="step">
-        <span class="n">3</span>
-        <div class="meta">
-          <div class="t">Riset pasar pendukung (web)</div>
-          <div class="s"><span>≈3 KR</span><span>·</span><span class="cy">▮ PERLU IZIN</span></div>
-        </div>
-        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-      </div>
-      <div class="step">
-        <span class="n">4</span>
-        <div class="meta">
-          <div class="t">Susun draf laporan + grafik</div>
-          <div class="s"><span>≈4 KR</span><span>·</span><span>EDITOR</span></div>
-        </div>
-        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-      </div>
-      <div class="step">
-        <span class="n">5</span>
-        <div class="meta">
-          <div class="t">Render PDF & QC final</div>
-          <div class="s"><span>≈5 KR</span><span>·</span><span>RENDER</span></div>
-        </div>
-        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-      </div>
-
-      <div class="card" style="border-color:rgba(34,211,238,.4)">
-        <div class="row" style="align-items:flex-start;gap:10px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" width="17" height="17" style="flex:0 0 auto;margin-top:1px"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-          <div class="xs dim">AVI akan <b class="cy">berhenti & minta izin</b> bila menemukan langkah yang perlu login, pembayaran, atau penghapusan — persis seperti aturan otoritas yang Pak pilih.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="mono xs cy between"><span>TOTAL 5 LANGKAH</span><span>≈18 KREDIT · ±12 MNT</span></div>
-      </div>
-
-      <button class="btn btn-gold" data-goto="4">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
-        SETUJUI & MULAI EKSEKUSI
-      </button>
-      <button class="btn btn-cyan" style="margin-top:8px" data-sim="REVISI RENCANA">✎ MINTA REVISI RENCANA</button>
-      <button class="btn btn-ghost" style="margin-top:8px" data-sim="UBAH SENDIRI">UBAH LANGKAH SENDIRI <span class="soon">COMING SOON</span></button>
-    </div>
-
-    <div class="bottomnav">
-      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
-      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
-    </div>
-  </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li>Badge emas berdenyut <b>MENUNGGU PERSETUJUAN</b>.</li>
-      <li>Rencana langkah bernomor + estimasi kredit per langkah (pola todo-list Manus / plan Devin).</li>
-      <li>Langkah berisiko diberi tanda <b>PERLU IZIN</b> (pola izin ChatGPT Agent).</li>
-      <li>Setiap langkah bisa diminta diubah (ikon ✎ — visual).</li>
-      <li>Setuju → eksekusi. Minta revisi → kembali ke percakapan.</li>
-      <li>Editor langkah manual = <b>COMING SOON</b>.</li>
-    </ul>
-  </div>
-</section>
-
-<div class="flow-link">PAK MENYETUJUI RENCANA ↓</div>
-
-<!-- ================================================== -->
-<!-- LAYAR 04 · EKSEKUSI LIVE                            -->
-<!-- ================================================== -->
-<section class="screen" id="layar-4" data-n="4">
-  <div class="scr-head">
-    <span class="scr-num">04</span>
-    <div style="flex:1">
-      <div class="scr-tt">EKSEKUSI LIVE</div>
-      <div class="scr-sub">Narasi langsung, timeline status, ruang kerja AVI, dan kendali penuh di tangan Pak.</div>
-    </div>
-    <span class="pola">POLA · MANUS COMPUTER</span><span class="pola">POLA · CHATGPT NARASI</span><span class="pola">POLA · DEVIN TIMELINE</span>
-  </div>
-
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · AGENT</span>
-      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
-    </div>
-    <div class="appbar">
-      <button class="icon-btn" data-goto="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div class="tt">EKSEKUSI LIVE</div>
-      <span class="sp"></span>
-      <span class="badge cyan">JALAN</span>
-    </div>
-
-    <div class="scr-body">
-      <div class="card hud">
-        <div class="row" style="gap:16px">
+        <div class="row" style="gap:15px">
           <div class="ring">
             <svg viewBox="0 0 120 120">
               <defs>
@@ -838,17 +606,16 @@ footer b{color:var(--gold)}
               </defs>
               <circle cx="60" cy="60" r="52" stroke="rgba(140,163,199,.2)" stroke-width="8" fill="none"/>
               <circle cx="60" cy="60" r="52" stroke="url(#rg)" stroke-width="8" fill="none"
-                stroke-dasharray="326.7" stroke-dashoffset="124" stroke-linecap="round"
+                stroke-dasharray="326.7" stroke-dashoffset="136" stroke-linecap="round"
                 style="filter:drop-shadow(0 0 8px rgba(34,211,238,.6))"/>
             </svg>
-            <div class="pct"><b>62%</b><span>LANGKAH 3/5</span></div>
+            <div class="pct"><b>58%</b><span>LANGKAH 2/3</span></div>
           </div>
           <div style="flex:1;min-width:0">
-            <div class="sm" style="font-weight:600">Analisa tren Q2 vs Q3…</div>
+            <div class="sm" style="font-weight:600">Analisa tren & anomali…</div>
             <div class="mono xs" style="margin-top:9px;display:grid;gap:5px;letter-spacing:.08em">
-              <div class="between"><span class="dim">T+ BERJALAN</span><span class="cy">07:42</span></div>
-              <div class="between"><span class="dim">TOKEN</span><span class="cy">11.2K</span></div>
-              <div class="between"><span class="dim">KREDIT</span><span class="gd">≈9 / 18</span></div>
+              <div class="between"><span class="dim">T+ BERJALAN</span><span class="cy">06:12</span></div>
+              <div class="between"><span class="dim">KREDIT</span><span class="gd">≈7 / 14</span></div>
               <div class="between"><span class="dim">REAKTOR</span><span class="gr">96% STABIL</span></div>
             </div>
           </div>
@@ -856,37 +623,38 @@ footer b{color:var(--gold)}
       </div>
 
       <div class="card" style="border-color:rgba(34,211,238,.45)">
-        <span class="k cy">NARASI LANGSUNG — AVI</span>
-        <div class="sm" id="narr" style="min-height:44px">Sedang menjalankan skrip analisa tren…</div>
-        <div class="xs dim2 mono" style="letter-spacing:.14em;margin-top:6px">SUMBER: PESAN PROGRES OTOMATIS AVI</div>
+        <span class="k cy">CATATAN LANGSUNG — AVI</span>
+        <div class="sm" id="narr" style="min-height:44px">Sedang mengolah 1.204 baris data…</div>
       </div>
 
       <div>
-        <span class="k">TIMELINE STATUS</span>
+        <span class="k">LANGKAH</span>
         <div class="step done">
           <span class="n">✓</span>
-          <div class="meta"><div class="t">Baca & validasi data</div>
+          <div class="meta"><div class="t">Baca & olah data</div>
           <div class="s gr">SELESAI · 1.204 BARIS VALID</div></div>
-        </div>
-        <div class="step done">
-          <span class="n">✓</span>
-          <div class="meta"><div class="t">Analisa tren Q2 vs Q3</div>
-          <div class="s gr">SELESAI · 3 ANOMALI DITEMUKAN</div></div>
         </div>
         <div class="step run">
           <span class="n">●</span>
-          <div class="meta"><div class="t">Riset pasar pendukung</div>
-          <div class="s cy">BERJALAN · MENUNGGU HASIL PENCARIAN</div></div>
+          <div class="meta"><div class="t">Analisa tren & anomali</div>
+          <div class="s cy">BERJALAN · 3 ANOMALI TERDETEKSI</div></div>
         </div>
         <div class="step">
-          <span class="n">4</span>
-          <div class="meta"><div class="t dim">Susun draf laporan + grafik</div>
+          <span class="n">3</span>
+          <div class="meta"><div class="t dim">Susun laporan PDF + grafik</div>
           <div class="s dim2">ANTRE</div></div>
         </div>
-        <div class="step">
-          <span class="n">5</span>
-          <div class="meta"><div class="t dim">Render PDF & QC final</div>
-          <div class="s dim2">ANTRE</div></div>
+      </div>
+
+      <div class="permit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" width="17" height="17" style="flex:0 0 auto;margin-top:2px"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="meta">
+          <div class="t">AVI butuh akses web</div>
+          <div class="d">Untuk membandingkan dengan data pasar terbaru — sesuai aturan Pak.</div>
+          <div class="row" style="gap:8px;margin-top:9px">
+            <button class="btn btn-gold sm" data-sim="IZINKAN AKSES WEB">IZINKAN</button>
+            <button class="btn btn-ghost sm" data-sim="LEWATI">LEWATI</button>
+          </div>
         </div>
       </div>
 
@@ -932,11 +700,11 @@ footer b{color:var(--gold)}
         </div>
         <div class="dock-pane" id="pane-scr" hidden>
           <div class="fakewin" style="background:#0B1322">
-            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">LAYAR AVI · T+07:42</span></div>
+            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">LAYAR AVI · T+06:12</span></div>
             <div class="bd">
               <div class="row" style="gap:6px"><span class="skel" style="width:30%;height:6px"></span><span class="skel" style="width:14%;height:6px"></span></div>
               <div class="minibars" style="height:44px"><i style="height:35%"></i><i style="height:60%"></i><i style="height:45%"></i><i style="height:80%"></i><i style="height:55%"></i><i style="height:92%"></i></div>
-              <div class="mono xs cy" style="letter-spacing:.14em">REKAM LAYAR AGENT · POLA MANUS</div>
+              <div class="mono xs cy" style="letter-spacing:.14em">REKAM LAYAR ASISTEN · POLA MANUS</div>
             </div>
           </div>
         </div>
@@ -950,43 +718,40 @@ footer b{color:var(--gold)}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>HENTIKAN
         </button>
       </div>
-      <button class="btn btn-ghost sm" style="margin-top:8px" data-sim="AMBIL ALIH">🖐 AMBIL ALIH KONTROL <span class="soon">COMING SOON</span></button>
-      <div class="xs dim2 mono" style="letter-spacing:.12em;margin-top:10px;text-align:center">SELESAI NANTI → NOTIFIKASI KE PAK</div>
+      <div class="xs dim2 mono" style="letter-spacing:.12em;margin-top:10px;text-align:center">SELESAI NANTI → HASIL LANGSUNG MUNCUL DI OBROLAN + NOTIFIKASI</div>
     </div>
 
     <div class="bottomnav">
-      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
-      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+      <button class="bn on" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="bn" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
     </div>
   </div>
 
   <div class="scr-notes">
     <h4>FITUR DI LAYAR INI</h4>
     <ul>
-      <li>Ring progres + % + langkah berjalan (pola Manus/Devin).</li>
-      <li>Telemetri mono: T+, token, kredit terpakai, status reaktor — <b>tanpa jam dinding</b>.</li>
-      <li>Narasi langsung ala ChatGPT Agent (teks mengetik sendiri).</li>
-      <li>Timeline status: ✓ selesai · ● berjalan · ○ antre.</li>
-      <li>Dock <b>RUANG KERJA AVI</b>: Terminal / Browser / Editor / Layar — 4 tab bisa diklik (pola “Manus’s Computer”).</li>
-      <li>Kendali: JEDA · HENTIKAN · AMBIL ALIH (ambul alih = COMING SOON).</li>
-      <li>Notifikasi saat tugas selesai.</li>
+      <li>Judul layar = <b>AVI SEDANG BEKERJA</b> — bukan “agent bekerja”; dia asisten Pak yang sedang bertugas.</li>
+      <li>Ring + langkah 2/3 + telemetri T+/kredit/reaktor — <b>tanpa jam dinding</b>.</li>
+      <li>Catatan langsung (mengetik sendiri) — Pak tahu AVI sedang apa.</li>
+      <li>Dock <b>RUANG KERJA AVI</b>: Terminal / Browser / Editor / Layar — 4 tab bisa diklik.</li>
+      <li>Izin muncul <b>saat dibutuhkan</b> di tengah proses, 1 tap IZINKAN/LEWATI (pola ChatGPT Agent) — tidak ditanya di awal.</li>
+      <li>Kendali: JEDA · HENTIKAN (AMBIL ALIH = COMING SOON).</li>
     </ul>
   </div>
 </section>
 
-<div class="flow-link">TUGAS SELESAI → NOTIFIKASI ↓</div>
+<div class="flow-link">SELESAI → HASIL MUNCUL OTOMATIS DI OBROLAN ↓</div>
 
 <!-- ================================================== -->
-<!-- LAYAR 05 · ARTEFAK                                  -->
+<!-- LAYAR 03 · HASIL                                    -->
 <!-- ================================================== -->
-<section class="screen" id="layar-5" data-n="5">
+<section class="screen" id="layar-3" data-n="3">
   <div class="scr-head">
-    <span class="scr-num">05</span>
+    <span class="scr-num">03</span>
     <div style="flex:1">
-      <div class="scr-tt">HASIL & ARTEFAK</div>
-      <div class="scr-sub">PDF jadi, bisa diunduh/dibagikan, dan bisa diminta revisi jadi versi baru.</div>
+      <div class="scr-tt">HASIL — LANGSUNG DARI ASISTEN</div>
+      <div class="scr-sub">PDF jadi muncul di obrolan; layar ini untuk detail lengkap, unduh, dan revisi.</div>
     </div>
     <span class="pola">POLA · CLAUDE ARTEFAK</span><span class="pola">POLA · MANUS FILE</span>
   </div>
@@ -994,35 +759,30 @@ footer b{color:var(--gold)}
   <div class="phone">
     <span class="punch"></span>
     <div class="statusbar">
-      <span>MK1 · AGENT</span>
+      <span>MK1 · ASISTEN</span>
       <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
     </div>
     <div class="appbar">
-      <button class="icon-btn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div class="tt">HASIL TUGAS</div>
+      <button class="icon-btn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="tt">HASIL</div>
       <span class="sp"></span>
       <span class="badge green">SELESAI</span>
     </div>
 
     <div class="scr-body">
-      <div class="card hud">
-        <div class="between">
-          <div>
-            <div class="h">Laporan Analisa Penjualan Q3</div>
-            <div class="mono xs dim" style="letter-spacing:.1em;margin-top:4px">SELESAI T+12:03 · 18 KREDIT TERPAKAI</div>
-          </div>
-          <div class="orb orb-sm"><span class="core"></span></div>
-        </div>
+      <div class="msg avi">
+        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
+        <div class="bub" style="max-width:88%">Selesai, Pak — 14 halaman, 7 grafik. Ringkasan: penjualan naik <b class="gr">+28,8%</b>, ada 3 anomali (terbesar Sep-14).</div>
       </div>
 
-      <div class="card">
+      <div class="card hud">
         <div class="row" style="gap:14px;align-items:flex-start">
           <div class="pdfpage">
             <div class="bar"><b>AVI</b><span>LAPORAN Q3</span></div>
             <h5>ANALISA PENJUALAN<br/>Q2 vs Q3</h5>
             <div class="minibars" style="height:34px;margin:4px 0 8px"><i style="height:45%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:62%"></i></div>
             <div class="ln w80"></div><div class="ln"></div><div class="ln w60"></div>
-            <div class="foot"><span>AVI MK1 · AGENT</span><span>HAL 1/14</span></div>
+            <div class="foot"><span>AVI MK1 · ASISTEN</span><span>HAL 1/14</span></div>
           </div>
           <div style="flex:1;min-width:0">
             <div class="mono sm gd" style="word-break:break-all">LAPORAN_Q3.pdf</div>
@@ -1054,18 +814,18 @@ footer b{color:var(--gold)}
       </div>
 
       <div class="card">
-        <span class="k gd">MINTA REVISI</span>
-        <input class="input" placeholder="cth: tambahkan grafik per region & ringkasan 1 halaman…"/>
-        <button class="btn btn-cyan sm" style="margin-top:10px" data-sim="KIRIM REVISI → v3">KIRIM REVISI → JADI v3</button>
+        <span class="k gd">MINTA AVI UBAH</span>
+        <input class="input" placeholder="cth: tambahkan grafik per region…"/>
+        <button class="btn btn-cyan sm" style="margin-top:10px" data-sim="KIRIM REVISI → v3">KIRIM → JADI v3</button>
       </div>
 
       <div>
-        <span class="k">ARTEFAK LAIN DARI TUGAS INI</span>
+        <span class="k">BERKAS LAIN DARI TUGAS INI</span>
         <div class="task" data-sim="BUKA KODE">
           <span class="ic code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span>
           <div class="meta">
             <div class="t">analisa_tren.py</div>
-            <div class="s"><span>CODING</span><span>·</span><span>2.1 KB</span></div>
+            <div class="s"><span>KODE</span><span>·</span><span>2.1 KB</span></div>
           </div>
           <span class="dim2">›</span>
         </div>
@@ -1073,7 +833,7 @@ footer b{color:var(--gold)}
           <span class="ic data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
           <div class="meta">
             <div class="t">tren.json</div>
-            <div class="s"><span>ANALISA DATA</span><span>·</span><span>184 KB</span></div>
+            <div class="s"><span>DATA</span><span>·</span><span>184 KB</span></div>
           </div>
           <span class="dim2">›</span>
         </div>
@@ -1081,21 +841,19 @@ footer b{color:var(--gold)}
     </div>
 
     <div class="bottomnav">
-      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
-      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+      <button class="bn on" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="bn" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
     </div>
   </div>
 
   <div class="scr-notes">
     <h4>FITUR DI LAYAR INI</h4>
     <ul>
-      <li>Pratinjau halaman PDF digambar langsung (header AVI, grafik, nomor halaman).</li>
-      <li>Metadata: ukuran, halaman, jumlah grafik, status QC.</li>
-      <li>UNDUH · BAGIKAN · BUKA — semua simulasi toast.</li>
-      <li>Versi artefak v1/v2 ala Claude + revisi jadi v3.</li>
-      <li>Multi-artefak per tugas: PDF + kode + data (tugas coding/analisa menghasilkan artefak lain pula).</li>
+      <li>Hasil dibungkus <b>pesan asisten</b> — terasa AVI menyerahkan pekerjaan, bukan sistem melempar file.</li>
+      <li>Pratinjau halaman PDF + metadata (ukuran, halaman, grafik, QC).</li>
+      <li>UNDUH · BAGIKAN · BUKA + revisi cepat “MINTA AVI UBAH → v3” (pola Claude).</li>
+      <li>Berkas lain (kode & data) tersedia untuk tugas coding/analisa.</li>
       <li>Sejarah versi lengkap = <b>COMING SOON</b>.</li>
     </ul>
   </div>
@@ -1104,14 +862,14 @@ footer b{color:var(--gold)}
 <div class="flow-link">PAK MEMBUKA TAB “TUGAS” ↓</div>
 
 <!-- ================================================== -->
-<!-- LAYAR 06 · RIWAYAT / HUB TUGAS                      -->
+<!-- LAYAR 04 · TUGAS — YANG SAYA KERJAKAN               -->
 <!-- ================================================== -->
-<section class="screen" id="layar-6" data-n="6">
+<section class="screen" id="layar-4" data-n="4">
   <div class="scr-head">
-    <span class="scr-num">06</span>
+    <span class="scr-num">04</span>
     <div style="flex:1">
-      <div class="scr-tt">TUGAS — RIWAYAT & ANTREAN</div>
-      <div class="scr-sub">Semua tugas agent: selesai, jalan, antre, dihentikan — satu daftar.</div>
+      <div class="scr-tt">TUGAS — YANG AVI KERJAKAN UNTUK PAK</div>
+      <div class="scr-sub">Daftar tugas berat: selesai, sedang jalan, antre, dihentikan — satu daftar, tanpa keributan.</div>
     </div>
     <span class="pola">POLA · DEVIN SESSIONS</span><span class="pola">POLA · MANUS HISTORY</span>
   </div>
@@ -1119,13 +877,13 @@ footer b{color:var(--gold)}
   <div class="phone">
     <span class="punch"></span>
     <div class="statusbar">
-      <span>MK1 · AGENT</span>
+      <span>MK1 · ASISTEN</span>
       <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
     </div>
     <div class="appbar">
       <div class="tt">TUGAS</div>
       <span class="sp"></span>
-      <button class="icon-btn" data-sim="CARI/ FILTER" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+      <button class="icon-btn" data-sim="CARI / FILTER" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
       <button class="icon-btn" data-sim="BERSIHKAN" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
     </div>
 
@@ -1143,20 +901,20 @@ footer b{color:var(--gold)}
         <span>2 SELESAI · 1 JALAN</span><span>1 ANTRE · 1 DIHENTIKAN</span>
       </div>
 
-      <div class="task" data-goto="5">
+      <div class="task" data-goto="3">
         <span class="ic pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></span>
         <div class="meta">
           <div class="t">Laporan Analisa Penjualan Q3</div>
-          <div class="s"><span class="gr">● SELESAI</span><span>·</span><span>PDF</span><span>·</span><span>18 KR</span><span>·</span><span>KEMARIN</span></div>
+          <div class="s"><span class="gr">● SELESAI</span><span>·</span><span>PDF</span><span>·</span><span>14 KR</span><span>·</span><span>KEMARIN</span></div>
         </div>
         <span class="dim2">›</span>
       </div>
 
-      <div class="task" data-goto="4">
+      <div class="task" data-goto="2">
         <span class="ic code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span>
         <div class="meta">
           <div class="t">Refactor modul autentikasi</div>
-          <div class="s"><span class="cy">● JALAN 62%</span><span>·</span><span>CODING</span><span>·</span><span>EST 24 KR</span></div>
+          <div class="s"><span class="cy">● JALAN 58%</span><span>·</span><span>KODING</span><span>·</span><span>EST 24 KR</span></div>
         </div>
         <span class="dim2">›</span>
       </div>
@@ -1170,11 +928,11 @@ footer b{color:var(--gold)}
         <span class="dim2">›</span>
       </div>
 
-      <div class="task" data-sim="DETAIL ANTRIAN">
+      <div class="task" data-sim="DETAIL ANTREAN">
         <span class="ic pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></span>
         <div class="meta">
           <div class="t">Slide deck rapat direksi</div>
-          <div class="s"><span class="dim">◌ ANTRIAN</span><span>·</span><span>PDF</span><span>·</span><span>EST 9 KR</span></div>
+          <div class="s"><span class="dim">◌ ANTRE</span><span>·</span><span>PDF</span><span>·</span><span>EST 9 KR</span></div>
         </div>
         <span class="dim2">›</span>
       </div>
@@ -1201,35 +959,33 @@ footer b{color:var(--gold)}
 
     <div class="bottomnav">
       <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
-      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+      <button class="bn on" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="bn" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
     </div>
   </div>
 
   <div class="scr-notes">
     <h4>FITUR DI LAYAR INI</h4>
     <ul>
-      <li>Hub TUGAS = riwayat + antrean (pola daftar sesi Devin / history Manus).</li>
-      <li>Status berwarna: SELESAI · JALAN · ANTRE · DIHENTIKAN.</li>
-      <li>Kartu JALAN menampilkan % progres; kartu selesai menyimpan kredit terpakai.</li>
-      <li>Pencarian + filter status.</li>
+      <li>Judul berfokus ke <b>layanan ke Pak</b>: “yang AVI kerjakan untuk Pak”.</li>
+      <li>Status berwarna: SELESAI · JALAN · ANTRE · DIHENTIKAN + kredit terpakai.</li>
+      <li>Pencarian + filter; kartu JALAN menampilkan % progres.</li>
       <li>Replay sesi (pola Manus) = <b>COMING SOON</b>.</li>
     </ul>
   </div>
 </section>
 
-<div class="flow-link">PAK MEMBUKA PUSAT KENDALI ↓</div>
+<div class="flow-link">PAK MENGATUR IZIN DI KENDALI ↓</div>
 
 <!-- ================================================== -->
-<!-- LAYAR 07 · PUSAT KENDALI                            -->
+<!-- LAYAR 05 · PUSAT KENDALI                            -->
 <!-- ================================================== -->
-<section class="screen" id="layar-7" data-n="7">
+<section class="screen" id="layar-5" data-n="5">
   <div class="scr-head">
-    <span class="scr-num">07</span>
+    <span class="scr-num">05</span>
     <div style="flex:1">
-      <div class="scr-tt">PUSAT KENDALI AGENT</div>
-      <div class="scr-sub">Otoritas, perkakas, batas kredit, dan log — Pak pegang kendali penuh.</div>
+      <div class="scr-tt">PUSAT KENDALI — IZIN & KEMAMPUAN</div>
+      <div class="scr-sub">Diatur sekali di sini; setelah itu AVI tidak menanya-nanya lagi di setiap tugas.</div>
     </div>
     <span class="pola">POLA · DEVIN SETTINGS</span><span class="pola">POLA · CHATGPT IZIN</span>
   </div>
@@ -1237,7 +993,7 @@ footer b{color:var(--gold)}
   <div class="phone">
     <span class="punch"></span>
     <div class="statusbar">
-      <span>MK1 · AGENT</span>
+      <span>MK1 · ASISTEN</span>
       <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
     </div>
     <div class="appbar">
@@ -1248,7 +1004,7 @@ footer b{color:var(--gold)}
 
     <div class="scr-body">
       <div class="card hud">
-        <span class="k">OTORITAS GLOBAL</span>
+        <span class="k">OTORITAS KERJA (DEFAULT SEMUA TUGAS)</span>
         <div class="grid2" id="authG">
           <div class="auth-card" data-desc="AMAN: AVI berhenti & minta izin di setiap langkah.">
             <div class="t">◈ AMAN</div><div class="d">Izin tiap langkah</div>
@@ -1261,10 +1017,11 @@ footer b{color:var(--gold)}
           </div>
         </div>
         <div class="xs dim" id="authGDesc" style="margin-top:9px">BAKU: bebas bekerja; login/pembayaran/penghapusan selalu minta izin.</div>
+        <div class="xs cy" style="margin-top:6px">✓ Diatur sekali — AVI memakai nilai ini otomatis, tanpa menanya di setiap tugas.</div>
       </div>
 
       <div class="card">
-        <span class="k">PERKAKAS AGENT</span>
+        <span class="k">KEMAMPUAN AGENT</span>
         <div class="toolrow">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></span>
           <div class="meta"><div class="t">Riset Web</div><div class="d">Pencarian & baca halaman</div></div>
@@ -1272,7 +1029,7 @@ footer b{color:var(--gold)}
         </div>
         <div class="toolrow">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
-          <div class="meta"><div class="t">Terminal & Kode</div><div class="d">Jalankan skrip, tulis & ubah kode</div></div>
+          <div class="meta"><div class="t">Terminal & Koding</div><div class="d">Jalankan skrip, tulis & ubah kode</div></div>
           <span class="sw on"></span>
         </div>
         <div class="toolrow">
@@ -1282,7 +1039,7 @@ footer b{color:var(--gold)}
         </div>
         <div class="toolrow">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>
-          <div class="meta"><div class="t">Akses File</div><div class="d">Baca & simpan artefak</div></div>
+          <div class="meta"><div class="t">Akses Berkas</div><div class="d">Baca & simpan hasil kerja</div></div>
           <span class="sw on"></span>
         </div>
         <div class="toolrow">
@@ -1303,7 +1060,7 @@ footer b{color:var(--gold)}
         </div>
         <div class="toolrow">
           <span class="ic" style="color:var(--dim2);border-color:rgba(140,163,199,.3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
-          <div class="meta"><div class="t dim">Jadwal Otomatis (rutin)</div><div class="d">cth: laporan tiap Senin pagi</div></div>
+          <div class="meta"><div class="t dim">Tugas Rutin Terjadwal</div><div class="d">cth: laporan tiap Senin pagi</div></div>
           <span class="soon">COMING SOON</span>
           <span class="sw"></span>
         </div>
@@ -1318,13 +1075,13 @@ footer b{color:var(--gold)}
       <div class="card">
         <span class="k">LOG AKTIVITAS — TUGAS TERAKHIR</span>
         <div class="log">
-          <div><span class="t">[T+00:00]</span> tugas dibuat · otoritas BAKU</div>
-          <div><span class="t">[T+00:04]</span> <span class="cy">rencana disetujui oleh PAK</span></div>
-          <div><span class="t">[T+00:09]</span> baca data_penjualan.xlsx · 1.204 baris</div>
-          <div><span class="t">[T+02:31]</span> skrip analisa selesai · 3 anomali</div>
-          <div><span class="t">[T+04:10]</span> <span class="wr">izin diminta: riset web → disetujui</span></div>
-          <div><span class="t">[T+07:42]</span> riset pasar · 6 sumber terkumpul</div>
-          <div><span class="t">[T+12:03]</span> <span class="ok">LAPORAN_Q3.pdf selesai · 2.4 MB</span></div>
+          <div><span class="t">[T+00:00]</span> tugas diterima · otoritas BAKU</div>
+          <div><span class="t">[T+00:03]</span> <span class="cy">rencana dilanjutkan oleh PAK (1 tap)</span></div>
+          <div><span class="t">[T+00:08]</span> baca data_penjualan.xlsx · 1.204 baris</div>
+          <div><span class="t">[T+02:31]</span> analisa selesai · 3 anomali</div>
+          <div><span class="t">[T+04:10]</span> <span class="wr">izin akses web diminta → diizinkan</span></div>
+          <div><span class="t">[T+06:12]</span> riset pasar · 6 sumber terkumpul</div>
+          <div><span class="t">[T+09:40]</span> <span class="ok">LAPORAN_Q3.pdf selesai · 2.4 MB</span></div>
         </div>
       </div>
 
@@ -1333,46 +1090,44 @@ footer b{color:var(--gold)}
 
     <div class="bottomnav">
       <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
-      <button class="bn on" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+      <button class="bn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="bn on" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
     </div>
   </div>
 
   <div class="scr-notes">
     <h4>FITUR DI LAYAR INI</h4>
     <ul>
-      <li>Otoritas global AMAN / BAKU / PENUH + deskripsi berganti ikut pilihan.</li>
-      <li>Saklar perkakas: Web, Terminal, Browser, File, Notifikasi.</li>
-      <li>Pembayaran & otentikasi: <b>terkunci SELALU MINTA IZIN</b> (pola izin ChatGPT Agent).</li>
-      <li>Memori jangka panjang & jadwal rutin = <b>COMING SOON</b>.</li>
-      <li>Batas kredit per tugas (slider 5–60).</li>
-      <li>Log aktivitas mono bergaya telemetri MK1.</li>
-      <li>Zona merah: hapus semua riwayat.</li>
+      <li>Otoritas = <b>default untuk semua tugas</b>, diatur sekali (efisiensi — tidak ada pilihan otoritas di setiap tugas).</li>
+      <li>Saklar <b>KEMAMPUAN AGENT</b>: Web, Terminal & Koding, Browser, Berkas, Notifikasi.</li>
+      <li>Pembayaran & otentikasi: <b>terkunci SELALU MINTA IZIN</b>.</li>
+      <li>Memori jangka panjang & tugas rutin = <b>COMING SOON</b>.</li>
+      <li>Batas kredit per tugas (slider 5–60) + log aktivitas mono MK1.</li>
     </ul>
   </div>
 </section>
 
 <!-- ================= CATATAN KEPUTUSAN ================= -->
 <section class="decisions">
-  <h3>STATUS & CATATAN UNTUK PAK</h3>
+  <h3>STATUS & CATATAN UNTUK PAK — REVISI v3</h3>
   <ul>
-    <li>Ini <b class="gd">papan tampilan HTML</b> — semua aksi hanya simulasi/toast; tidak ada fungsi nyata, tidak ada implementasi app.</li>
-    <li>7 layar memakai pola dari referensi nyata: Manus (todo, dock computer, artefak, replay), Devin (sesi, rencana, riwayat, settings), ChatGPT Agent (narasi live, izin, ambil alih), Claude (artefak + versi/revisi) — masing-masing bertanda <span class="pola" style="font-size:9px">POLA · X</span>.</li>
-    <li>Fitur yang teridentifikasi tapi belum disetujui dibangun diberi badge <b class="gd">COMING SOON</b>: template cepat, jadwal otomatis, editor langkah manual, ambil alih kontrol, sejarah versi lengkap, replay sesi, memori jangka panjang.</li>
-    <li>JAM & chip saran di Obrolan: <b class="rd">tetap dihapus total, tanpa pengganti</b> — sesuai arahan Pak.</li>
-    <li>Nuansa Jarvis MK1 dipertahankan & diperkuat: orb reaktor bernafas, sian/emas, scanline, telemetri mono, sapaan “Pak”.</li>
-    <li>Setelah Pak menyetujui tampilan ini → baru usulkan implementasi ke Jetpack Compose sebagai <b class="gd">v1.4.0(13)</b>. Belum ada commit apa pun.</li>
+    <li><b class="gd">ATURAN BRAND BARU (dari Pak):</b> AVI adalah <b>ASISTEN yang punya kemampuan agent</b>. Kata “agent” hanya muncul sebagai nama kemampuan (telemetri, saklar, izin) — tidak lagi sebagai identitas, mode, atau tombol.</li>
+    <li><b class="gd">EFISIENSI (dari review Pak):</b> 7 layar dipangkas jadi <b>5</b>; form panjang & pilihan otoritas per-tugas <b>dihapus</b>; persetujuan cukup <b>1 tap “LANJUTKAN”</b> di kartu rencana ringkas; izin hanya muncul <b>saat dibutuhkan</b>.</li>
+    <li>Alur sekarang: bicara → AVI tawarkan rencana ringkas → 1 tap → AVI bekerja → hasil muncul otomatis di obrolan.</li>
+    <li>Pola referensi tetap dilacak: Manus (dock, todo), Devin (riwayat, settings), ChatGPT Agent (narasi, izin), Claude (artefak + versi) — bertanda <span class="pola" style="font-size:9px">POLA · X</span>.</li>
+    <li>COMING SOON: ubah rencana manual, ambil alih kontrol, sejarah versi lengkap, replay sesi, memori jangka panjang, tugas rutin terjadwal.</li>
+    <li>JAM & chip saran: tetap <b class="rd">dihapus total</b>. Nuansa Jarvis MK1 (orb, sian/emas, scanline, sapaan “Pak”, telemetri) tetap utuh.</li>
+    <li>Ini papan tampilan — semua aksi hanya simulasi. Belum ada implementasi app, belum ada commit. Setelah Pak setuju → penerjemahan ke Jetpack Compose sebagai <b class="gd">v1.4.0(13)</b>.</li>
   </ul>
 </section>
 
 <footer>
-  AVI MK1 · MODE AGENT — PAPAN TAMPILAN VISUAL · FUNGSI DISIMULASI · <b>DIBUAT UNTUK PENILAIAN PAK</b>
+  AVI MK1 · ASISTEN PRIBADI DENGAN KEMAMPUAN AGENT — PAPAN TAMPILAN VISUAL · FUNGSI DISIMULASI · <b>DIBUAT UNTUK PENILAIAN PAK</b>
 </footer>
 
 </main>
 
-<div class="satu-pos" id="satuPos"><b>01</b> / 07 — OBROLAN</div>
+<div class="satu-pos" id="satuPos"><b>01</b> / 05 — OBROLAN</div>
 <div class="satu-ctl">
   <button id="prevBtn" title="Layar sebelumnya">←</button>
   <button id="nextBtn" title="Layar berikutnya">→</button>
@@ -1382,9 +1137,9 @@ footer b{color:var(--gold)}
 <script>
 (function(){
   "use strict";
-  var body=document.body, cur=1;
+  var body=document.body, cur=1, TOTAL=5;
   var screens=[].slice.call(document.querySelectorAll(".screen"));
-  var names={1:"OBROLAN",2:"AJUKAN",3:"RENCANA",4:"EKSEKUSI",5:"ARTEFAK",6:"TUGAS",7:"KENDALI"};
+  var names={1:"OBROLAN",2:"PROSES",3:"HASIL",4:"TUGAS",5:"KENDALI"};
 
   function pad(n){return (n<10?"0":"")+n}
   function toast(msg){
@@ -1398,10 +1153,10 @@ footer b{color:var(--gold)}
       a.classList.toggle("on", +a.getAttribute("data-jump")===cur);
     });
     var p=document.getElementById("satuPos");
-    if(p) p.innerHTML="<b>"+pad(cur)+"</b> / 07 — "+names[cur];
+    if(p) p.innerHTML="<b>"+pad(cur)+"</b> / "+pad(TOTAL)+" — "+names[cur];
   }
   function goto(n){
-    if(n<1||n>7) return;
+    if(n<1||n>TOTAL) return;
     cur=n;
     if(body.classList.contains("satu")){
       screens.forEach(function(s){s.classList.toggle("on", +s.getAttribute("data-n")===n)});
@@ -1413,7 +1168,6 @@ footer b{color:var(--gold)}
     updateJumps();
   }
 
-  /* Semua elemen data-goto */
   document.addEventListener("click",function(e){
     var g=e.target.closest("[data-goto]");
     if(g){ goto(+g.getAttribute("data-goto")); return; }
@@ -1421,7 +1175,6 @@ footer b{color:var(--gold)}
     if(sim){ toast(sim.getAttribute("data-sim")+" — fungsi menyusul"); return; }
   });
 
-  /* Mode tampilan */
   var seg=document.getElementById("modeSeg");
   seg.addEventListener("click",function(e){
     var b=e.target.closest("button"); if(!b) return;
@@ -1432,13 +1185,11 @@ footer b{color:var(--gold)}
     if(m==="satu") goto(cur); else updateJumps();
   });
 
-  /* Nav lompat (anchor) — jangan navigasi bawaan di mode satu */
   document.getElementById("jumps").addEventListener("click",function(e){
     var a=e.target.closest("[data-jump]");
     if(a){ e.preventDefault(); goto(+a.getAttribute("data-jump")); }
   });
 
-  /* Panah satu layar + keyboard */
   document.getElementById("prevBtn").addEventListener("click",function(){goto(cur-1)});
   document.getElementById("nextBtn").addEventListener("click",function(){goto(cur+1)});
   document.addEventListener("keydown",function(e){
@@ -1447,7 +1198,6 @@ footer b{color:var(--gold)}
     if(e.key==="ArrowLeft") goto(cur-1);
   });
 
-  /* Sorot nav lompat saat scroll (mode alur) */
   if("IntersectionObserver" in window){
     var io=new IntersectionObserver(function(es){
       es.forEach(function(en){
@@ -1459,31 +1209,22 @@ footer b{color:var(--gold)}
     screens.forEach(function(s){io.observe(s)});
   }
 
-  /* Chips pilihan (kemampuan, filter) */
-  document.querySelectorAll("#caps .chip, #filters .chip").forEach(function(c){
+  document.querySelectorAll("#filters .chip").forEach(function(c){
     c.addEventListener("click",function(){c.classList.toggle("sel")});
   });
 
-  /* Kartu otoritas (form + kendali) */
-  function wireAuth(selId,descId){
-    var box=document.getElementById(selId); if(!box) return;
-    box.addEventListener("click",function(e){
-      var card=e.target.closest(".auth-card"); if(!card) return;
-      [].slice.call(box.querySelectorAll(".auth-card")).forEach(function(x){x.classList.toggle("sel",x===card)});
-      var d=document.getElementById(descId);
-      if(d) d.textContent=card.getAttribute("data-desc");
-      toast("OTORITAS: "+card.querySelector(".t").textContent.trim()+" (simulasi)");
-    });
-  }
-  wireAuth("authSel","authDesc");
-  wireAuth("authG","authGDesc");
+  var authBox=document.getElementById("authG");
+  authBox.addEventListener("click",function(e){
+    var card=e.target.closest(".auth-card"); if(!card) return;
+    [].slice.call(authBox.querySelectorAll(".auth-card")).forEach(function(x){x.classList.toggle("sel",x===card)});
+    document.getElementById("authGDesc").textContent=card.getAttribute("data-desc");
+    toast("OTORITAS: "+card.querySelector(".t").textContent.trim()+" (simulasi)");
+  });
 
-  /* Saklar */
   document.querySelectorAll(".sw").forEach(function(s){
     s.addEventListener("click",function(){s.classList.toggle("on")});
   });
 
-  /* Dock tab */
   var tabs=document.getElementById("dockTabs");
   if(tabs){
     tabs.addEventListener("click",function(e){
@@ -1495,7 +1236,6 @@ footer b{color:var(--gold)}
     });
   }
 
-  /* Slider kredit */
   var kr=document.getElementById("kr"), kv=document.getElementById("krVal");
   if(kr){
     function upd(){kv.textContent=kr.value+" KR";
@@ -1504,7 +1244,6 @@ footer b{color:var(--gold)}
     kr.addEventListener("input",upd); upd();
   }
 
-  /* Versi artefak */
   document.querySelectorAll(".vchip").forEach(function(v){
     v.addEventListener("click",function(){
       document.querySelectorAll(".vchip").forEach(function(x){x.classList.remove("on")});
@@ -1513,12 +1252,11 @@ footer b{color:var(--gold)}
     });
   });
 
-  /* Narasi mengetik sendiri */
   var lines=[
-    "Sedang menjalankan skrip analisa tren…",
-    "Menemukan 3 anomali — yang terbesar Sep-14, +312%…",
-    "Sekarang mencari 6 sumber pasar pendukung, Pak…",
-    "Draf laporan mulai disusun, grafik Q2 vs Q3 siap."
+    "Sedang mengolah 1.204 baris data…",
+    "Menemukan 3 anomali — terbesar Sep-14, +312%…",
+    "Membandingkan dengan data pasar terbaru…",
+    "Draf laporan mulai disusun, Pak."
   ];
   var narr=document.getElementById("narr");
   if(narr){
