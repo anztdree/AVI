@@ -213,3 +213,10 @@
 .avi-orbit-fast { animation: avi-spin 2.4s linear infinite; }
 .avi-rail-tick { animation: avi-rail 7.5s linear infinite; }
 .avi-flicker { animation: avi-flicker 6s linear infinite; }
+
+/* kursor narasi mono hidup (pola ChatGPT Agent — narasi langkah) */
+@keyframes avi-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.08; }
+}
+.avi-blink { animation: avi-blink 1.1s steps(1) infinite; }

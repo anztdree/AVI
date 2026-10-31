@@ -27,6 +27,18 @@ import {
   Square,
   Wifi,
   X,
+  Bell,
+  CalendarClock,
+  FastForward,
+  Gauge,
+  GitBranch,
+  MessageSquare,
+  Play,
+  Plug,
+  Sparkles,
+  Terminal,
+  Users,
+  Video,
 } from "lucide-react";
 
 /* ============================================================
@@ -97,6 +109,14 @@ function DeleteMark({ label }: { label: string }) {
         ✕ {label} — DIHAPUS
       </span>
     </div>
+  );
+}
+
+function NewTag({ label = "BARU" }: { label?: string }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-[#F5B54A]/50 bg-[#F5B54A]/15 px-2 py-0.5 font-hud text-[8px] tracking-[0.25em] text-[#F5B54A]">
+      <Sparkles className="h-2.5 w-2.5" /> {label}
+    </span>
   );
 }
 
@@ -503,6 +523,29 @@ function ScreenAjukan() {
           </div>
         </div>
 
+        <div className="rounded-xl border border-[#22D3EE]/15 bg-[#0D141F]/85 p-2.5">
+          <div className="flex items-center justify-between">
+            <HudLabel>ESTIMASI AWAL</HudLabel>
+            <span className="font-hud text-[7px] tracking-[0.2em] text-[#F5B54A]">POLA · MANUS</span>
+          </div>
+          <div className="mt-1.5 flex items-center gap-2 font-hud text-[8.5px] tracking-[0.14em] text-[#67E8F9]">
+            <Gauge className="h-3 w-3 text-[#F5B54A]" />
+            <span>±12 LANGKAH · ±40K TOKEN · 3–5 MENIT</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 px-1">
+          <Plug className="h-3 w-3 text-[#8A97A8]" />
+          {["BERKAS", "KALENDER", "NOTIFIKASI"].map((c) => (
+            <span
+              key={c}
+              className="rounded-full border border-[#22D3EE]/20 px-2 py-1 font-hud text-[7.5px] tracking-[0.18em] text-[#8A97A8]"
+            >
+              {c}
+            </span>
+          ))}
+        </div>
+
         <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#F5B54A]/60 bg-[#F5B54A]/15 px-3 py-3 shadow-[0_0_24px_-6px_rgba(245,181,74,0.5)]">
           <Brain className="h-3.5 w-3.5 text-[#F5B54A]" />
           <span className="font-orbitron text-[10px] font-bold tracking-[0.3em] text-[#F5B54A]">
@@ -607,6 +650,12 @@ function ScreenEksekusi() {
         <ReactorCore state="work" pct={0.5} label="3/6" size={54} />
       </div>
 
+      <div className="mx-4 mt-1.5 rounded-lg border border-[#22D3EE]/15 bg-[#05080D]/80 px-3 py-1.5 font-hud text-[8px] leading-relaxed tracking-wide text-[#67E8F9]/90">
+        <div>› membuka data_penjualan.csv…</div>
+        <div>› menghitung tren margin Q3…</div>
+        <div className="avi-blink text-[#F5B54A]">▌</div>
+      </div>
+
       <div className="mt-2 flex gap-1.5 px-4">
         <span className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-[#22D3EE]/35 bg-[#22D3EE]/10 py-1.5">
           <Pause className="h-3 w-3 text-[#67E8F9]" />
@@ -706,6 +755,19 @@ function ScreenEksekusi() {
           </div>
         </div>
       </div>
+      <div className="mx-4 mb-2.5 space-y-1.5">
+        <div className="flex items-center gap-2 rounded-full border border-[#22D3EE]/25 bg-[#0D141F]/90 px-3 py-1.5">
+          <span className="flex-1 font-rajdhani text-[9.5px] text-[#8A97A8]">
+            Sisip instruksi cepat — tanpa menghentikan tugas…
+          </span>
+          <Send className="h-3 w-3 text-[#67E8F9]" />
+        </div>
+        <div className="flex items-center gap-2 font-hud text-[7px] tracking-[0.2em] text-[#8A97A8]">
+          <MessageSquare className="h-2.5 w-2.5 text-[#67E8F9]" />
+          <span>/BTW — TANYA SAMPING, TUGAS TETAP JALAN</span>
+          <span className="ml-auto text-[#F5B54A]">POLA · DEVIN</span>
+        </div>
+      </div>
       <Telemetry state="REAKTOR: MENGERJAKAN" />
     </Phone>
   );
@@ -743,7 +805,23 @@ function ScreenHasil() {
       </div>
 
       <div className="mt-3 flex-1 px-4">
-        <HudLabel>ARTEFAK HASIL</HudLabel>
+        <div className="flex items-center justify-between">
+          <HudLabel>ARTEFAK HASIL</HudLabel>
+          <div className="flex items-center gap-1">
+            {["v3", "v2", "v1"].map((v, i) => (
+              <span
+                key={v}
+                className={`rounded-full border px-1.5 py-0.5 font-hud text-[7.5px] tracking-wider ${
+                  i === 0
+                    ? "border-[#F5B54A]/60 bg-[#F5B54A]/15 text-[#F5B54A]"
+                    : "border-[#8A97A8]/30 text-[#8A97A8]"
+                }`}
+              >
+                {v}
+              </span>
+            ))}
+          </div>
+        </div>
         <div className="mt-2 rounded-xl border border-[#F5B54A]/35 bg-[#0D141F]/90 p-3 shadow-[0_0_30px_-10px_rgba(245,181,74,0.4)]">
           <div className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#F5B54A]/40 bg-[#F5B54A]/10">
@@ -783,6 +861,18 @@ function ScreenHasil() {
               <span className="font-hud text-[8px] tracking-[0.18em] text-[#67E8F9]">BUKA</span>
             </span>
           </div>
+          <div className="mt-2 space-y-1 border-t border-[#22D3EE]/10 pt-2">
+            <div className="flex items-center gap-1.5 font-hud text-[7.5px] tracking-[0.16em] text-[#8A97A8]">
+              <Video className="h-3 w-3 text-[#4ADE80]" />
+              <span className="text-[#4ADE80]">QA OTOMATIS LULUS</span>
+              <span>· 12/12 HALAMAN TERVERIFIKASI</span>
+            </div>
+            <div className="flex items-center gap-1.5 font-hud text-[7.5px] tracking-[0.16em] text-[#8A97A8]">
+              <Users className="h-3 w-3 text-[#67E8F9]" />
+              <span>AKSES: HANYA PAK · DAPAT LIHAT</span>
+              <span className="ml-auto text-[#F5B54A]">v3 TERBARU</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -799,7 +889,143 @@ function ScreenHasil() {
   );
 }
 
-/* ---------- layar 6 : RIWAYAT TUGAS ---------- */
+/* ---------- layar 5 : RUANG KERJA AVI (computer AVI) — BARU ---------- */
+
+function ScreenRuangKerja() {
+  const cmds = [
+    { t: "14:02:11", c: "clean_csv penjualan_q3.csv", s: "OK · 1.204 baris", done: true },
+    { t: "14:02:39", c: "hitung_tren --margin --bulanan", s: "OK · +23,4%", done: true },
+    { t: "14:03:05", c: "render_grafik bab2", s: "berjalan…", done: true },
+    { t: "▒▒:▒▒:▒▒", c: "susun_narasi laporan", s: "belum jalan", done: false },
+  ];
+  return (
+    <Phone>
+      <StatusBar />
+      <div className="flex items-center justify-between px-4 pt-1.5">
+        <div className="flex items-center gap-2">
+          <Terminal className="h-3.5 w-3.5 text-[#67E8F9]" />
+          <span className="font-orbitron text-[10px] font-bold tracking-[0.3em] text-[#E8EEF5]">
+            RUANG KERJA AVI
+          </span>
+        </div>
+        <span className="flex items-center gap-1 font-hud text-[7px] tracking-[0.2em] text-[#4ADE80]">
+          <span className="avi-pulse-dot h-1.5 w-1.5 rounded-full bg-[#4ADE80]" /> LIVE
+        </span>
+      </div>
+
+      <div className="mt-2 flex gap-1 px-4">
+        {["SHELL", "BERKAS", "PRATINJAU"].map((t, i) => (
+          <span
+            key={t}
+            className={`flex-1 rounded-t-md border px-1 py-1 text-center font-hud text-[7.5px] tracking-[0.18em] ${
+              i === 0
+                ? "border-[#22D3EE]/45 bg-[#22D3EE]/10 text-[#67E8F9]"
+                : "border-[#22D3EE]/10 text-[#8A97A8]"
+            }`}
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+
+      <div className="mx-4 flex-1 rounded-b-lg border border-t-0 border-[#22D3EE]/20 bg-[#05080D]/85 p-2.5">
+        <HudLabel>RIWAYAT PERINTAH · LOMPAT WAKTU</HudLabel>
+        <div className="mt-1.5 space-y-1 font-hud text-[8px]">
+          {cmds.map((c) => (
+            <div
+              key={c.c}
+              className={`rounded border px-1.5 py-1 ${
+                c.done
+                  ? "border-[#22D3EE]/12 bg-[#0D141F]/70"
+                  : "border-dashed border-[#8A97A8]/25 text-[#8A97A8]/50"
+              }`}
+            >
+              <div className="flex justify-between gap-1">
+                <span className="text-[#8A97A8]">{c.t}</span>
+                <span className={c.done ? "text-[#4ADE80]" : ""}>{c.s}</span>
+              </div>
+              <div className={c.done ? "text-[#E8EEF5]" : ""}>$ {c.c}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-2 rounded border border-dashed border-[#8A97A8]/25 px-1.5 py-1 font-hud text-[7px] tracking-[0.16em] text-[#8A97A8]/60">
+          KETUK PERINTAH LAMA = LOMPAT KE MOMEN ITU
+        </div>
+        <div className="mt-2 flex items-center gap-1.5">
+          {["CSV", "PNG", "MD"].map((f) => (
+            <span
+              key={f}
+              className="rounded border border-[#22D3EE]/20 bg-[#0D141F] px-1.5 py-0.5 font-hud text-[7px] tracking-widest text-[#67E8F9]"
+            >
+              {f}
+            </span>
+          ))}
+          <span className="ml-auto font-hud text-[7px] tracking-widest text-[#8A97A8]">3 BERKAS DIBUAT</span>
+        </div>
+      </div>
+
+      <div className="mx-4 mt-2 rounded-lg border border-[#22D3EE]/20 bg-[#0D141F]/90 px-3 py-2">
+        <div className="flex items-center gap-2">
+          <Play className="h-3 w-3 text-[#F5B54A]" />
+          <div className="relative h-1 flex-1 rounded-full bg-[#22D3EE]/15">
+            <div className="absolute left-0 top-0 h-full w-2/3 rounded-full bg-[#22D3EE]/50" />
+            <span className="absolute left-2/3 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#7DF3FF] shadow-[0_0_8px_rgba(125,243,255,0.9)]" />
+          </div>
+          <span className="flex items-center gap-1 font-hud text-[7px] tracking-[0.2em] text-[#F5B54A]">
+            <FastForward className="h-2.5 w-2.5" /> KE LIVE
+          </span>
+        </div>
+      </div>
+      <Telemetry state="AVI MENGOPERASIKAN KOMPUTERNYA SENDIRI" />
+    </Phone>
+  );
+}
+
+/* ---------- layar 8 : IZIN & INTERVENSI — BARU ---------- */
+
+function ScreenIzin() {
+  return (
+    <Phone>
+      <StatusBar />
+      <div className="flex-1 px-4 pt-3">
+        <div className="relative rounded-xl border border-[#F5B54A]/40 bg-[#0D141F]/95 p-3.5 shadow-[0_0_40px_-10px_rgba(245,181,74,0.5)]">
+          <Corners inset={5} arm={9} tone="gold" />
+          <div className="flex items-center justify-between">
+            <StatusBadge tone="gold" pulse>AVI MEMINTA IZIN</StatusBadge>
+            <Bell className="h-3.5 w-3.5 text-[#F5B54A]" />
+          </div>
+          <div className="mt-2.5 font-hud text-[8px] tracking-[0.2em] text-[#8A97A8]">AKSI DIMINTA</div>
+          <div className="mt-1 rounded-lg border border-[#22D3EE]/15 bg-[#05080D]/80 px-2.5 py-2 font-hud text-[8.5px] leading-relaxed text-[#E8EEF5]">
+            baca_berkas_eksternal
+            <div className="mt-0.5 text-[#67E8F9]">→ /Download/penjualan_q3.xlsx</div>
+          </div>
+          <p className="mt-2 font-rajdhani text-[10.5px] leading-snug text-[#B9C4D2]">
+            Aksi ini di luar tingkat otoritas <span className="text-[#F5B54A]">BAKU</span>, Pak. Tanpa izin,
+            langkah ini dilewati dan tugas menyesuaikan jalannya sendiri.
+          </p>
+          <div className="mt-3 space-y-1.5">
+            <div className="w-full rounded-lg border border-[#22D3EE]/50 bg-[#22D3EE]/15 px-3 py-2 text-center font-hud text-[8.5px] tracking-[0.22em] text-[#67E8F9]">
+              IZINKAN SEKALI
+            </div>
+            <div className="w-full rounded-lg border border-[#22D3EE]/25 px-3 py-2 text-center font-hud text-[8.5px] tracking-[0.22em] text-[#B9C4D2]">
+              IZINKAN SELAMA TUGAS INI
+            </div>
+            <div className="w-full rounded-lg border border-[#F87171]/40 px-3 py-2 text-center font-hud text-[8.5px] tracking-[0.22em] text-[#F87171]">
+              TOLAK
+            </div>
+          </div>
+        </div>
+        <div className="mt-2.5 flex items-center justify-between rounded-lg border border-[#22D3EE]/15 bg-[#0D141F]/70 px-3 py-1.5 font-hud text-[7.5px] tracking-[0.18em] text-[#8A97A8]">
+          <span>ANTREAN: 1 PERMINTAAN LAIN</span>
+          <span className="text-[#F5B54A]">POLA · CHATGPT AGENT + REPLIT</span>
+        </div>
+      </div>
+      <Telemetry state="OTORITAS: TANGAN PAK" />
+    </Phone>
+  );
+}
+
+/* ---------- layar 7 : RIWAYAT TUGAS ---------- */
 
 function ScreenRiwayat() {
   return (
@@ -822,13 +1048,13 @@ function ScreenRiwayat() {
             {[
               {
                 icon: FileText,
-                t: "Laporan Penjualan Q3 — PDF",
+                t: "📄 Laporan Penjualan Q3 — PDF",
                 badge: <StatusBadge tone="green">SELESAI</StatusBadge>,
                 meta: "13.42 · PDF",
               },
               {
                 icon: Code2,
-                t: "Refactor Modul Login",
+                t: "🧩 Refactor Modul Login",
                 badge: <StatusBadge tone="cyan" pulse>JALAN</StatusBadge>,
                 meta: "11.20",
               },
@@ -853,19 +1079,31 @@ function ScreenRiwayat() {
             })}
           </div>
         </div>
+        <div className="rounded-lg border border-[#F5B54A]/25 bg-[#0D141F]/70 px-2.5 py-2">
+          <div className="flex items-center gap-2">
+            <GitBranch className="h-3 w-3 text-[#F5B54A]" />
+            <span className="font-hud text-[8px] tracking-[0.18em] text-[#F5B54A]">
+              CHECKPOINT 3 · SEBELUM REVISI GRAFIK
+            </span>
+          </div>
+          <div className="mt-1 flex items-center justify-between font-hud text-[7.5px] tracking-[0.16em] text-[#8A97A8]">
+            <span>SESI Q3 BISA DIPULIHKAN KE TITIK INI</span>
+            <span className="rounded border border-[#F5B54A]/45 px-1.5 py-0.5 text-[#F5B54A]">PULIHKAN</span>
+          </div>
+        </div>
         <div>
           <HudLabel>KEMARIN</HudLabel>
           <div className="mt-1.5 space-y-1.5">
             {[
               {
                 icon: ScanSearch,
-                t: "Audit Kode Pembayaran",
+                t: "🔍 Audit Kode Pembayaran",
                 badge: <StatusBadge tone="green">SELESAI</StatusBadge>,
                 meta: "21.05",
               },
               {
                 icon: BarChart3,
-                t: "Analisa Stok Gudang",
+                t: "📊 Analisa Stok Gudang",
                 badge: <StatusBadge tone="red">DIHENTIKAN</StatusBadge>,
                 meta: "16.48",
               },
@@ -892,6 +1130,18 @@ function ScreenRiwayat() {
         </div>
       </div>
 
+      <div className="mx-4 mb-2 flex items-center gap-2 rounded-lg border border-dashed border-[#22D3EE]/30 bg-[#0D141F]/60 px-2.5 py-2">
+        <CalendarClock className="h-3.5 w-3.5 shrink-0 text-[#67E8F9]" />
+        <div className="min-w-0 flex-1">
+          <div className="font-rajdhani text-[10px] font-semibold text-[#E8EEF5]">
+            Terjadwal · Laporan QC Mingguan
+          </div>
+          <div className="font-hud text-[7.5px] tracking-[0.16em] text-[#8A97A8]">
+            OTOMATIS TIAP SENIN · OPSIONAL
+          </div>
+        </div>
+        <Switch on={true} />
+      </div>
       <div className="px-4 pb-5 text-center font-hud text-[8px] tracking-[0.22em] text-[#8A97A8]">
         KETUK UNTUK MEMBUKA ULANG ARTEFAK
       </div>
@@ -947,6 +1197,38 @@ function ScreenKendali() {
         </div>
 
         <div className="rounded-xl border border-[#22D3EE]/15 bg-[#0D141F]/85 p-3">
+          <div className="flex items-center justify-between">
+            <HudLabel>MODE MESIN</HudLabel>
+            <span className="font-hud text-[7px] tracking-[0.2em] text-[#F5B54A]">POLA · MANUS × DEVIN</span>
+          </div>
+          <div className="mt-2 flex gap-1">
+            {["HEMAT", "BAKU", "MAKSIMAL"].map((m, i) => (
+              <span
+                key={m}
+                className={`flex-1 rounded-md border px-1 py-1.5 text-center font-hud text-[7.5px] tracking-[0.15em] ${
+                  i === 2
+                    ? "border-[#F5B54A]/55 bg-[#F5B54A]/10 text-[#F5B54A]"
+                    : "border-[#8A97A8]/20 text-[#8A97A8]"
+                }`}
+              >
+                {m}
+              </span>
+            ))}
+          </div>
+          <div className="mt-2">
+            <div className="flex items-center justify-between font-hud text-[7.5px] tracking-[0.18em] text-[#8A97A8]">
+              <span className="flex items-center gap-1">
+                <Sparkles className="h-2.5 w-2.5 text-[#F5B54A]" /> JATAH TUGAS BERAT
+              </span>
+              <span className="text-[#F5B54A]">34K / 50K TOKEN</span>
+            </div>
+            <div className="mt-1 h-1 rounded-full bg-[#F5B54A]/15">
+              <div className="h-full w-[68%] rounded-full bg-[#F5B54A]/60" />
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-[#22D3EE]/15 bg-[#0D141F]/85 p-3">
           <HudLabel>PERKAKAS TUGAS BERAT</HudLabel>
           <div className="mt-2 space-y-2">
             {[
@@ -974,9 +1256,9 @@ function ScreenKendali() {
               <span>13.39 · analisa_tren</span>
               <span className="text-[#4ADE80]">OK</span>
             </div>
-            <div className="flex justify-between text-[#8A97A8]">
-              <span>13.36 · baca_file</span>
-              <span className="text-[#4ADE80]">OK</span>
+            <div className="mt-1.5 flex items-center justify-between rounded border border-[#F5B54A]/30 bg-[#F5B54A]/5 px-2 py-1 font-hud text-[7.5px] tracking-[0.18em] text-[#F5B54A]">
+              <span>1 IZIN MENUNGGU KEPUTUSAN</span>
+              <span>LAYAR 8 →</span>
             </div>
           </div>
         </div>
@@ -992,31 +1274,64 @@ const REFERENCES = [
   {
     name: "MANUS",
     url: "https://manus.im",
-    source: "manus.im · panduan desain UI Manus (rincian komponen terverifikasi)",
+    source: "manus.im · gist sistem desain UI Manus · blog 2.0 — riset ulang, terverifikasi",
     points:
-      "Rencana berupa todo nyata; langkah ber-status (tertunda → aktif berdenyut → selesai); ikon aktivitas per alat; dock “computer” dengan thumbnail hidup + penghitung langkah + timer; kartu artefak (pratinjau, unduh, bagikan).",
+      "Dock computer: thumbnail hidup + status berdenyut + penghitung langkah + timer. Linimasa bisa diputar ulang seperti video — mundur, scrub, “Jump to live”. Meteran kredit ber-ikon kilau, emoji otomatis per tugas, kartu berkas (pratinjau/unduh/bagikan), tugas terjadwal (automations).",
   },
   {
     name: "DEVIN",
-    url: "https://cognition.com/blog/introducing-devin-2-2",
-    source: "cognition.com — antarmuka sesi Devin",
+    url: "https://docs.devin.ai",
+    source: "docs.devin.ai · 7 halaman produk — riset ulang, terverifikasi",
     points:
-      "Satu tugas = satu sesi dengan linimasa sendiri; rencana ditinjau pengguna sebelum eksekusi; status agregat berbadge; riwayat sesi yang bisa dibuka ulang.",
+      "Sesi = Shell / IDE / Browser + tab Progress terpadu. Riwayat shell bisa diklik untuk melompat waktu (perintah masa depan tampak suram). Checkpoint & pulihkan, bukti uji berupa video, obrolan samping “/btw” tanpa memutus kerja, pemilih mesin Lite→Ultra.",
   },
   {
     name: "CHATGPT AGENT",
     url: "https://openai.com/index/introducing-chatgpt-agent",
-    source: "openai.com — pengantar ChatGPT agent",
+    source: "openai.com — parsial: halaman resmi menolak akses sandbox (belum terverifikasi penuh)",
     points:
-      "Narasi langkah hidup di dalam obrolan (“mencari…”, “membaca file…”); pemakai bisa menyisip/mengintervensi kapan pun; kontrol jeda–hentikan; izin untuk aksi sensitif.",
+      "Narasi langkah hidup di obrolan; pengguna bisa menyisip instruksi kapan pun; izin untuk aksi sensitif; komputer virtual yang terlihat berjalan. Pola inti dikonfirmasi lewat dokumentasi sekunder.",
   },
   {
     name: "CLAUDE ARTIFACTS",
-    url: "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them",
-    source: "support.claude.com — artikel artifacts",
+    url: "https://support.claude.com",
+    source: "support.claude.com · 2 artikel resmi — riset ulang, terverifikasi",
     points:
-      "Hasil kerja disajikan sebagai artefak dengan pratinjau tersendiri; iterasi/revisi dilanjutkan langsung pada artefak yang sama.",
+      "Artefak dibuka di panel tersendiri; riwayat versi; menu Ekspor (PDF/Word/Markdown); lembaga akses “Who has access” (lihat/komentar/ubah); tombol “Try fixing with Claude” saat artefak error; galeri templat Docs–Slides–Design–Dashboard.",
   },
+  {
+    name: "REPLIT AGENT",
+    url: "https://docs.replit.com/replitai/agent",
+    source: "docs.replit.com · Agent 3 — BARU, terverifikasi",
+    points:
+      "Persetujuan rencana: “Accept tasks / Revise plan”, lalu bangun di depan vs di latar. Checkpoint kembali ke keadaan sebelumnya; papan tugas Drafts/Active/Ready/Done; slider usaha (effort); persetujuan “Allow once” untuk aksi berbayar.",
+  },
+  {
+    name: "JULES",
+    url: "https://jules.google/docs",
+    source: "jules.google/docs · Google — BARU, terverifikasi",
+    points:
+      "Pilih repo + cabang → “Give me a plan” → tinjau & setujui sebelum kode disentuh. Linimasa aktivitas dengan diff, tugas terjadwal, notifikasi saat tuntas atau butuh masukan.",
+  },
+];
+
+const MISSED = [
+  { f: "Linimasa putar-ulang + tombol “Ke Live”", s: "MANUS", l: "Layar 5 · Ruang Kerja" },
+  { f: "Riwayat perintah shell — ketuk untuk lompat waktu", s: "DEVIN", l: "Layar 5 · Ruang Kerja" },
+  { f: "Tab sesi: Shell / Berkas / Pratinjau", s: "DEVIN", l: "Layar 5 · Ruang Kerja" },
+  { f: "Thumbnail hidup + hitungan langkah + timer di dock", s: "MANUS", l: "Layar 4 · Eksekusi" },
+  { f: "Narasi langkah hidup + sisip instruksi cepat", s: "CHATGPT AGENT", l: "Layar 4 · Eksekusi" },
+  { f: "Tanya samping “/btw” tanpa memutus tugas", s: "DEVIN", l: "Layar 4 · Eksekusi" },
+  { f: "Estimasi langkah & token sebelum jalan", s: "MANUS", l: "Layar 2 · Ajukan" },
+  { f: "Konektor opsional (berkas, kalender, notifikasi)", s: "MANUS", l: "Layar 2 · Ajukan" },
+  { f: "Versi artefak v1 → v3 + pindah versi", s: "CLAUDE", l: "Layar 6 · Hasil" },
+  { f: "Akses berbagi berjenjang: lihat / komentar / ubah", s: "CLAUDE", l: "Layar 6 · Hasil" },
+  { f: "Bukti QA otomatis pada kartu hasil", s: "DEVIN", l: "Layar 6 · Hasil" },
+  { f: "Checkpoint & “PULIHKAN” per sesi", s: "DEVIN", l: "Layar 7 · Riwayat" },
+  { f: "Emoji otomatis per tugas di riwayat", s: "MANUS", l: "Layar 7 · Riwayat" },
+  { f: "Tugas terjadwal / otomatisasi (opsional)", s: "MANUS · JULES", l: "Layar 7 · Riwayat" },
+  { f: "Antrean izin + “Izinkan sekali”", s: "CHATGPT AGENT · REPLIT", l: "Layar 8 · Izin — BARU" },
+  { f: "Meteran jatah token + mode mesin HEMAT→MAKSIMAL", s: "MANUS · DEVIN · REPLIT", l: "Layar 9 · Kendali" },
 ];
 
 const FLOW = [
@@ -1025,7 +1340,7 @@ const FLOW = [
   { no: "03", t: "PAK MENYETUJUI", d: "Bisa ubah dulu — tidak nekat jalan" },
   { no: "04", t: "EKSEKUSI LIVE", d: "Reaktor bekerja + linimasa langkah hidup" },
   { no: "05", t: "ARTEFAK", d: "PDF / kode / analisa siap pakai" },
-  { no: "06", t: "REVISI / SELESAI", d: "Iterasi lanjutan pada artefak yang sama" },
+  { no: "06", t: "REVISI / SELESAI", d: "Iterasi pada artefak yang sama — checkpoint tersimpan" },
 ];
 
 /* ---------- halaman ---------- */
@@ -1046,7 +1361,7 @@ export default function Page() {
                 AVI <span className="text-[#22D3EE]">⌁</span> PROPOSAL DESAIN
               </div>
               <div className="font-hud text-[9px] tracking-[0.3em] text-[#8A97A8]">
-                MODE AGENT — TUGAS BERAT · v1.4.0(13)
+                MODE AGENT — TUGAS BERAT · v1.4.0(13) · RISET ULANG
               </div>
             </div>
           </div>
@@ -1070,15 +1385,17 @@ export default function Page() {
           </h1>
           <p className="mx-auto mt-5 max-w-3xl font-rajdhani text-lg font-medium leading-relaxed text-[#B9C4D2] sm:text-xl">
             Laporan PDF, coding, analisa kode — pekerjaan berat yang dikerjakan sampai tuntas,
-            bukan sekadar buka aplikasi. Seluruh tampilan di bawah dirancang dari pola produk
-            agen nyata — Manus, Devin, ChatGPT Agent, Claude — lalu dijahit ke identitas HUD
-            milik AVI (tema MK1). Tanpa jam, tanpa chip saran, sesuai arahan — dan nuansa
-            Jarvis tetap utuh: reaktor tetap jantungnya, bingkai Stark tetap rangkanya.
+            bukan sekadar buka aplikasi. Papan ini dibangun ulang setelah riset visual ulang ke
+            enam produk agen nyata — Manus, Devin, ChatGPT Agent, Claude, Replit Agent, Jules —
+            lalu dijahit ke identitas HUD milik AVI (tema MK1). Tanpa jam, tanpa chip saran,
+            sesuai arahan — dan nuansa Jarvis tetap utuh: reaktor tetap jantungnya, bingkai
+            Stark tetap rangkanya.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
-            <SourceTag>7 LAYAR MOCKUP</SourceTag>
+            <SourceTag>9 LAYAR MOCKUP</SourceTag>
+            <SourceTag>RISET ULANG · 6 SUMBER</SourceTag>
+            <SourceTag>16 FITUR TERLEWAT DITEMUKAN</SourceTag>
             <SourceTag>SATU KELUARGA VISUAL HUD MK1</SourceTag>
-            <SourceTag>SEMUANYA DARI REFERENSI</SourceTag>
             <span className="rounded-full border border-[#F5B54A]/40 bg-[#F5B54A]/10 px-2.5 py-1 font-hud text-[9px] tracking-wider text-[#F5B54A]">
               NUANSA JARVIS DIJAGA
             </span>
@@ -1150,6 +1467,39 @@ export default function Page() {
           </div>
         </section>
 
+        {/* fitur riset ulang yang terlewat */}
+        <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6">
+          <div className="mb-2 flex items-center gap-3">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#F5B54A]/50 to-transparent" />
+            <h2 className="font-orbitron text-sm font-bold tracking-[0.35em] text-[#F5B54A]">
+              01B · FITUR DARI RISET ULANG — YANG SEBELUMNYA TERLEWAT
+            </h2>
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#F5B54A]/50 to-transparent" />
+          </div>
+          <p className="mx-auto mb-6 max-w-3xl text-center font-rajdhani text-[15px] font-medium leading-relaxed text-[#8A97A8]">
+            Papan lama memakai 4 sumber. Kali ini saya pelajari ulang lebih dalam — 6 produk,
+            termasuk Replit Agent &amp; Jules — dan menemukan 16 fitur yang ternyata lolos.
+            Semuanya sudah dijahit ke layar-layar di bawah.
+          </p>
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+            {MISSED.map((m) => (
+              <div
+                key={m.f}
+                className="flex items-start gap-2.5 rounded-xl border border-[#22D3EE]/12 bg-[#0A0F18]/70 px-3.5 py-2.5"
+              >
+                <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-[#F5B54A]" />
+                <div className="min-w-0">
+                  <div className="font-rajdhani text-[13.5px] font-semibold leading-snug text-[#E8EEF5]">
+                    {m.f}
+                  </div>
+                  <div className="mt-0.5 font-hud text-[8px] tracking-[0.16em] text-[#67E8F9]">{m.s}</div>
+                  <div className="font-hud text-[8px] tracking-[0.16em] text-[#8A97A8]">→ {m.l}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* nuansa jarvis */}
         <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6">
           <div className="mb-6 flex items-center gap-3">
@@ -1179,7 +1529,7 @@ export default function Page() {
               },
               {
                 t: "CYAN + EMAS",
-                d: "Palet MK1 asli: sian reaktor + emas Stark. Tujuh layar memakai bahasa visual yang sama dengan rumah.",
+                d: "Palet MK1 asli: sian reaktor + emas Stark. Sembilan layar memakai bahasa visual yang sama dengan rumah.",
               },
             ].map((c) => (
               <div key={c.t} className="rounded-2xl border border-[#22D3EE]/15 bg-[#0A0F18]/70 p-4">
@@ -1226,7 +1576,7 @@ export default function Page() {
           <div className="mb-8 flex items-center gap-3">
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
             <h2 className="font-orbitron text-sm font-bold tracking-[0.35em] text-[#E8EEF5]">
-              04 · TUJUH LAYAR — TETAP BERNUANSA JARVIS
+              04 · SEMBILAN LAYAR — TETAP BERNUANSA JARVIS
             </h2>
             <span className="h-px flex-1 bg-gradient-to-r from-transparent via-[#22D3EE]/40 to-transparent" />
           </div>
@@ -1275,9 +1625,14 @@ export default function Page() {
               no="LAYAR 4"
               label="EKSEKUSI LIVE"
               desc="Linimasa langkah hidup gaya HUD: selesai (hijau), aktif (sian berdenyut + baris “berpikir…”), tertunda (redup)."
-              sources={["MANUS — step states + computer dock", "CHATGPT AGENT — narasi live"]}
+              sources={[
+                "MANUS — step states + computer dock",
+                "CHATGPT AGENT — narasi live + intervensi",
+                "DEVIN — /btw",
+              ]}
               notes={[
                 "Reaktor = progres: cincin berputar cepat + busur emas membaca 3/6 di sekeliling inti.",
+                "Baru: strip narasi mono “› membuka…”, kolom sisip instruksi cepat, jalur /btw tanya-samping.",
                 "Kontrol JEDA / HENTIKAN selalu terjangkau jempol.",
                 "Dock “RUANG KERJA AVI” = versi AVI untuk panel computer Manus: pratinjau hidup + status.",
               ]}
@@ -1287,11 +1642,26 @@ export default function Page() {
 
             <PhoneCard
               no="LAYAR 5"
+              label="RUANG KERJA AVI — KOMPUTER AVI"
+              desc="Jendela ke “komputer” yang dioperasikan AVI: shell, berkas, pratinjau — plus linimasa yang bisa diputar ulang."
+              sources={["MANUS — computer dock & replay", "DEVIN — shell/ide/browser + progress"]}
+              notes={[
+                "Baru dari riset ulang: riwayat perintah yang bisa diklik untuk melompat waktu — yang belum jalan tampil suram.",
+                "Bar putar-ulang gaya Manus: mundur ke momen mana pun, satu tombol “KE LIVE”.",
+                "Ini pelengkap dock mini di Layar 4 — dock = sekilas, layar ini = seluruhnya.",
+              ]}
+            >
+              <ScreenRuangKerja />
+            </PhoneCard>
+
+            <PhoneCard
+              no="LAYAR 6"
               label="HASIL — ARTEFAK"
-              desc="Hasil kerja diserahkan sebagai artefak: PDF dengan pratinjau, ukuran, jumlah halaman — plus pintu revisi."
-              sources={["CLAUDE — artifacts", "MANUS — file cards"]}
+              desc="Hasil kerja diserahkan sebagai artefak: PDF ber-versi v1→v3, pratinjau, QA otomatis, dan pintu revisi."
+              sources={["CLAUDE — versions & sharing", "MANUS — file cards", "DEVIN — bukti uji"]}
               notes={[
                 "Pratinjau dokumen + grafik dirender langsung di kartu.",
+                "Baru: pil versi v1→v3 (gaya Claude), akses berbagi berjenjang, status QA otomatis.",
                 "Iterasi lanjutan lewat kolom “Minta revisi…” pada artefak yang sama.",
               ]}
             >
@@ -1299,25 +1669,40 @@ export default function Page() {
             </PhoneCard>
 
             <PhoneCard
-              no="LAYAR 6"
+              no="LAYAR 7"
               label="RIWAYAT TUGAS"
-              desc="Semua tugas tersimpan sebagai sesi: selesai, jalan, dihentikan — bisa dibuka ulang beserta artefaknya."
-              sources={["DEVIN — sessions", "MANUS — task grid"]}
+              desc="Semua tugas tersimpan sebagai sesi — lengkap dengan checkpoint yang bisa dipulihkan."
+              sources={["DEVIN — sessions + checkpoints", "MANUS — task grid + emoji", "JULES — scheduled"]}
               notes={[
                 "Kelompok HARI INI / KEMARIN, badge status per tugas.",
-                "Tugas yang sedang jalan berdenyut sian.",
+                "Baru: kartu CHECKPOINT + PULIHKAN (gaya Devin), emoji otomatis per tugas (gaya Manus).",
+                "Baris tugas terjadwal ditandai OPSIONAL — bisa dibuang jika dianggap sampah.",
               ]}
             >
               <ScreenRiwayat />
             </PhoneCard>
 
             <PhoneCard
-              no="LAYAR 7"
+              no="LAYAR 8"
+              label="IZIN & INTERVENSI"
+              desc="Saat aksi menyentuh area sensitif, AVI berhenti sejenak dan meminta izin — Pak tetap satu-satunya pemberi kunci."
+              sources={["CHATGPT AGENT — permission", "REPLIT — allow once"]}
+              notes={[
+                "Baru dari riset ulang: kartu izin eksplisit — Izinkan sekali / selama tugas ini / Tolak.",
+                "Antrean permintaan terlihat; tanpa izin, AVI menyesuaikan jalan sendiri — tidak nekat.",
+              ]}
+            >
+              <ScreenIzin />
+            </PhoneCard>
+
+            <PhoneCard
+              no="LAYAR 9"
               label="PUSAT KENDALI AGENT"
-              desc="Satu rumah untuk otoritas AMAN/BAKU/PENUH, saklar per-perkakas tugas berat, dan log aksi."
-              sources={["CHATGPT AGENT — izin aksi", "DISKUSI SEBELUMNYA — kendali"]}
+              desc="Satu rumah untuk otoritas AMAN/BAKU/PENUH, mode mesin, jatah tugas, saklar per-perkakas, dan log aksi."
+              sources={["CHATGPT AGENT — izin aksi", "MANUS — credits meter", "REPLIT — effort"]}
               notes={[
                 "Tingkat otoritas lanjut dari skema yang sudah jalan di K22.",
+                "Baru: MODE MESIN (HEMAT–MAKSIMAL) + meteran JATAH TUGAS BERAT + baris antrean izin.",
                 "Log aksi format mono gaya telemetri HUD.",
               ]}
             >
@@ -1343,7 +1728,7 @@ export default function Page() {
               },
               {
                 t: "B · LAPISAN TAMPILAN",
-                d: "Tujuh layar di atas dipindahkan ke Jetpack Compose — satu keluarga visual HUD MK, tanpa elemen asing.",
+                d: "Sembilan layar di atas dipindahkan ke Jetpack Compose — satu keluarga visual HUD MK1, tanpa elemen asing.",
               },
               {
                 t: "C · KENDALI & KEAMANAN",
@@ -1384,7 +1769,7 @@ export default function Page() {
             AVI · PAPAN KONSULTASI DESAIN · MODE AGENT v1.4.0
           </div>
           <div className="font-hud text-[9px] tracking-[0.2em] text-[#67E8F9]">
-            REFERENSI: manus.im · cognition.com · openai.com · support.claude.com
+            REFERENSI: manus.im · docs.devin.ai · openai.com · support.claude.com · docs.replit.com · jules.google
           </div>
         </div>
       </footer>
