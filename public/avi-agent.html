@@ -3,412 +3,371 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v6</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ============ DASAR ============ */
+/* ============ DASAR — tema efisien: 1 latar, warna disiplin, teks terbaca ============ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#070B12; --panel:#0B1322; --panel2:#0E1728; --line:rgba(34,211,238,.16);
-  --cyan:#22D3EE; --gold:#F5B54A; --red:#F87171; --green:#34D399;
-  --txt:#E6F1FF; --dim:#8CA3C7; --dim2:#5B7099;
+  --bg:#070B12; --pan:#0C1424; --pan2:#101A2E;
+  --line:rgba(148,178,220,.13); --line2:rgba(148,178,220,.24);
+  --cyan:#22D3EE; --gold:#F5B54A; --green:#34D399; --red:#F87171;
+  --txt:#E8F2FF; --dim:#94A8CB; --dim2:#5F7398;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Orbitron',sans-serif; --ui:'Rajdhani',sans-serif;
 }
 html,body{height:100%}
-body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:15px;line-height:1.45;overflow:hidden}
-::selection{background:rgba(245,181,74,.35)}
+body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.45;overflow:hidden}
+::selection{background:rgba(245,181,74,.3)}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input,textarea{font-family:inherit;color:var(--txt);background:none;border:none;outline:none}
-.scr{scrollbar-width:thin;scrollbar-color:rgba(34,211,238,.35) transparent}
+.scr{scrollbar-width:thin;scrollbar-color:rgba(148,178,220,.3) transparent}
 .scr::-webkit-scrollbar{width:5px;height:5px}
-.scr::-webkit-scrollbar-thumb{background:rgba(34,211,238,.3);border-radius:4px}
+.scr::-webkit-scrollbar-thumb{background:rgba(148,178,220,.28);border-radius:4px}
 .scr::-webkit-scrollbar-track{background:transparent}
 
-/* ============ LATAR MK1 ============ */
-.fx{position:fixed;inset:0;pointer-events:none;z-index:0}
-.fx-nebula{background:
-  radial-gradient(900px 520px at 14% -8%, rgba(34,211,238,.15), transparent 60%),
-  radial-gradient(820px 500px at 90% 8%, rgba(245,181,74,.09), transparent 60%),
-  radial-gradient(1000px 700px at 50% 115%, rgba(34,211,238,.07), transparent 65%);
-  animation:drift 26s ease-in-out infinite alternate}
-@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,-24px,0) scale(1.04)}}
-.fx-grid{background-image:
-  linear-gradient(rgba(34,211,238,.045) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(34,211,238,.045) 1px,transparent 1px);
-  background-size:44px 44px;
-  -webkit-mask-image:radial-gradient(70% 60% at 50% 34%,#000 30%,transparent 100%);
-          mask-image:radial-gradient(70% 60% at 50% 34%,#000 30%,transparent 100%)}
-.fx-scan{background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(255,255,255,.012) 3px 4px)}
-.fx-sweep{background:linear-gradient(180deg,transparent,rgba(34,211,238,.05),transparent);
-  height:130px;width:100%;animation:sweep 9s linear infinite;opacity:.5}
-@keyframes sweep{from{transform:translateY(-140px)}to{transform:translateY(110vh)}}
+/* ============ LATAR — SATU lapis statis (efisiensi: tanpa nebula+grid+stars+scan+sweep) ============ */
+.fx{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(760px 460px at 16% -6%, rgba(34,211,238,.09), transparent 62%),
+    radial-gradient(700px 420px at 88% 4%, rgba(245,181,74,.05), transparent 60%)}
+.fx::after{content:'';position:absolute;inset:0;background-image:
+  linear-gradient(rgba(148,178,220,.045) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(148,178,220,.045) 1px,transparent 1px);
+  background-size:42px 42px;
+  -webkit-mask-image:radial-gradient(64% 52% at 50% 28%,#000 22%,transparent 100%);
+          mask-image:radial-gradient(64% 52% at 50% 28%,#000 22%,transparent 100%)}
 
-/* ============ PANGGUNG & BINGKAI APLIKASI ============ */
+/* ============ PANGGUNG & BINGKAI ============ */
 .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;z-index:2}
 .app{position:relative;width:min(430px,100%);height:min(880px,100%);display:flex;flex-direction:column;
-  background:linear-gradient(180deg,rgba(14,23,40,.94),rgba(8,14,26,.96));
-  border:1px solid rgba(34,211,238,.22);border-radius:26px;overflow:hidden;
-  box-shadow:0 0 0 1px rgba(34,211,238,.08),0 0 60px rgba(34,211,238,.10),0 30px 80px rgba(0,0,0,.55),inset 0 0 80px rgba(34,211,238,.03)}
+  background:rgba(9,15,27,.97);border:1px solid var(--line2);border-radius:24px;overflow:hidden;transform:translateZ(0);
+  box-shadow:0 24px 70px rgba(0,0,0,.55)}
 @media (max-width:520px){
   .stage{padding:0}
   .app{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}
   .note{display:none}
 }
-.note{position:fixed;left:0;right:0;bottom:5px;text-align:center;font:400 10px/1.4 var(--mono);color:var(--dim2);letter-spacing:.08em;z-index:1}
+.note{position:fixed;left:0;right:0;bottom:5px;text-align:center;font:400 10px/1.4 var(--mono);color:var(--dim2);letter-spacing:.06em;z-index:1}
 
-/* ============ ORB REAKTOR ============ */
+/* ============ ORB REAKTOR — nuansa Jarvis: tenang, bukan berkedip ============ */
 .orb{position:relative;border-radius:50%;flex:none;
   background:radial-gradient(circle at 35% 32%, #c4f4ff 0%, #22d3ee 30%, #0e7490 56%, #062b36 80%, #02141b 100%);
-  box-shadow:0 0 16px rgba(34,211,238,.5), inset 0 0 10px rgba(255,255,255,.22)}
+  box-shadow:0 0 14px rgba(34,211,238,.4), inset 0 0 9px rgba(255,255,255,.2)}
 .orb::after{content:'';position:absolute;inset:20%;border-radius:50%;
-  background:radial-gradient(circle at 40% 38%, #ffe9b8, #f5b54a 46%, #a86d18 78%, transparent 79%);
-  opacity:.92;animation:corePulse 3.4s ease-in-out infinite}
-@keyframes corePulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+  background:radial-gradient(circle at 40% 38%, #ffe9b8, #f5b54a 46%, #a86d18 78%, transparent 79%);opacity:.9}
 .orb.ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;
-  border:1px solid rgba(34,211,238,.3);border-top-color:rgba(245,181,74,.75);animation:spin 7s linear infinite}
+  border:1px solid rgba(34,211,238,.25);border-top-color:rgba(245,181,74,.7);animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.orb.work{box-shadow:0 0 22px rgba(245,181,74,.45), inset 0 0 10px rgba(255,255,255,.25)}
-.orb.work::before{animation-duration:2.2s}
+.orb.work{box-shadow:0 0 18px rgba(245,181,74,.45), inset 0 0 9px rgba(255,255,255,.22)}
+.orb.work::before{animation-duration:2.6s}
 
-/* ============ HEADER APLIKASI ============ */
-header{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);flex:none;
-  background:linear-gradient(180deg,rgba(34,211,238,.05),transparent)}
-.hd-name{font:700 17px var(--disp);letter-spacing:.14em;color:var(--txt)}
-.hd-sub{font:600 9.5px var(--mono);letter-spacing:.22em;color:var(--dim);margin-top:2px}
-.pill{margin-left:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;
-  font:600 10px var(--mono);letter-spacing:.14em;color:var(--dim);background:rgba(11,19,34,.7)}
-.pill i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2.6s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+/* ============ HEADER ============ */
+header{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line);flex:none}
+.hd-name{font:700 16px var(--disp);letter-spacing:.12em;color:var(--txt)}
+.hd-sub{font:600 8.5px var(--mono);letter-spacing:.18em;color:var(--dim2);margin-top:2px}
+.pill{margin-left:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line2);border-radius:999px;
+  font:600 10px var(--mono);letter-spacing:.1em;color:var(--dim);background:rgba(12,20,36,.7)}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green)}
 .pill.work{border-color:rgba(245,181,74,.45);color:var(--gold)}
-.pill.work i{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.pill.work i{background:var(--gold);box-shadow:0 0 7px var(--gold)}
 .pill.done{border-color:rgba(52,211,153,.45);color:var(--green)}
-.pill.done i{background:var(--green);box-shadow:0 0 8px var(--green)}
+.pill.done i{background:var(--green);box-shadow:0 0 7px var(--green)}
 
-/* ============ VIEW & NAV BAWAH ============ */
+/* ============ STRIP KENDALI — sekali pandang, satu tempat (Snapshot + Raycast) ============ */
+.strip{display:none;align-items:center;gap:9px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--line);
+  background:rgba(34,211,238,.055);flex:none}
+.strip.on{display:flex}
+.strip.ok{background:rgba(52,211,153,.07)}
+.strip.bad{background:rgba(248,113,113,.07)}
+.sjump{display:flex;align-items:center;gap:9px;flex:1;min-width:0;text-align:left}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:sd 1.6s ease-in-out infinite;flex:none}
+@keyframes sd{0%,100%{opacity:1}50%{opacity:.35}}
+.strip.ok .sdot{background:var(--green);box-shadow:0 0 8px var(--green);animation:none}
+.strip.bad .sdot{background:var(--red);box-shadow:0 0 8px var(--red);animation:none}
+.snm{font:600 11.5px var(--mono);letter-spacing:.04em;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spct{font:700 12px var(--mono);color:var(--cyan);flex:none}
+.strip.ok .spct{color:var(--green)}
+.strip.bad .spct{color:var(--red)}
+.sbar{flex:1;min-width:26px;height:4px;border-radius:4px;background:rgba(148,178,220,.16);overflow:hidden}
+.sbar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:4px;transition:width .4s}
+.sbtn{font:700 10px var(--mono);letter-spacing:.08em;padding:7px 11px;border:1px solid var(--line2);border-radius:9px;color:var(--dim);flex:none}
+.sbtn:hover{color:var(--txt);border-color:var(--cyan)}
+.sbtn.red{color:var(--red);border-color:rgba(248,113,113,.4)}
+.sbtn.red:hover{background:rgba(248,113,113,.08)}
+.strip.ok .sbtn,.strip.bad .sbtn{display:none}
+
+/* ============ VIEW & NAV ============ */
 .view{display:none;flex:1;min-height:0;flex-direction:column}
 .view.on{display:flex}
-.scroll{flex:1;min-height:0;overflow-y:auto;padding:14px 14px 18px}
-nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14,26,.9);backdrop-filter:blur(6px);
-  padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
-.navbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border-radius:12px;color:var(--dim2);position:relative}
-.navbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.navbtn span{font:600 9px var(--mono);letter-spacing:.18em}
+.scroll{flex:1;min-height:0;overflow-y:auto;padding:13px 13px 16px}
+nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,13,24,.92);backdrop-filter:blur(6px);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+.navbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border-radius:12px;color:var(--dim2)}
+.navbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.navbtn span{font:600 9px var(--mono);letter-spacing:.16em}
 .navbtn.on{color:var(--cyan);background:rgba(34,211,238,.07)}
-.navbtn .dot{position:absolute;top:5px;right:calc(50% - 16px);width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 7px var(--gold);animation:blink 1.8s infinite;display:none}
+.navbtn .dot{position:absolute;top:5px;right:calc(50% - 17px);width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 7px var(--gold);animation:sd 1.8s infinite;display:none}
+.navbtn{position:relative}
 .navbtn .dot.show{display:block}
+.pill{cursor:pointer}
 
 /* ============ OBROLAN ============ */
-.thread{display:flex;flex-direction:column;gap:12px}
+.thread{display:flex;flex-direction:column;gap:11px}
 .row{display:flex;gap:9px;max-width:100%}
 .row.me{justify-content:flex-end}
-.av{width:26px;height:26px;flex:none;margin-top:2px}
-.bub{padding:10px 13px;border-radius:14px;max-width:82%}
-.row.me .bub{background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.20);border-bottom-right-radius:4px;color:var(--txt)}
-.row.avi .bub{background:rgba(14,23,40,.85);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--txt)}
-.bub .who{font:600 8.5px var(--mono);letter-spacing:.2em;color:var(--dim2);margin-bottom:4px}
-.attach{display:inline-flex;align-items:center;gap:6px;margin-top:7px;padding:4px 9px;border:1px solid var(--line);border-radius:8px;
-  font:600 10px var(--mono);color:var(--cyan);background:rgba(34,211,238,.06)}
-.salam{position:relative;overflow:hidden;text-align:center;padding:20px 16px 18px;border:1px solid var(--line);border-radius:16px;
-  background:radial-gradient(120% 100% at 50% 0%, rgba(34,211,238,.10), rgba(11,19,34,.6) 60%)}
-.salam::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.8}
-.salam h1{font:700 15px var(--disp);letter-spacing:.1em;margin:10px 0 6px}
-.salam h1 b{color:var(--gold)}
-.salam p{font-size:13px;color:var(--dim);max-width:300px;margin:0 auto}
-.tele{margin-top:11px;font:600 9px var(--mono);letter-spacing:.2em;color:var(--cyan);opacity:.85}
+.av{width:24px;height:24px;flex:none;margin-top:2px}
+.bub{padding:9px 12px;border-radius:14px;max-width:84%;font-size:13.5px}
+.row.me .bub{background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.2);border-bottom-right-radius:4px}
+.row.avi .bub{background:rgba(14,22,38,.85);border:1px solid var(--line);border-bottom-left-radius:4px}
+.bub .who{font:600 8.5px var(--mono);letter-spacing:.18em;color:var(--dim2);margin-bottom:4px}
+.attach{display:inline-flex;align-items:center;gap:6px;margin-top:7px;padding:4px 9px;border:1px solid var(--line2);border-radius:8px;
+  font:600 10px var(--mono);color:var(--cyan)}
+/* sapaan ringkas — tanpa orb besar (orb sudah di header) */
+.hai{position:relative;padding:13px 14px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(12,20,36,.6)}
+.hai::before{content:'';position:absolute;top:-1px;left:14px;right:14px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(245,181,74,.6),transparent)}
+.hai h1{font:600 15.5px var(--ui)}
+.hai h1 b{color:var(--gold)}
+.hai p{font-size:12.5px;color:var(--dim);margin-top:3px}
+.tele{margin-top:7px;font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--cyan);opacity:.9}
 
 /* ---- kartu tugas (kemampuan agent) ---- */
-.card{border:1px solid rgba(34,211,238,.22);border-radius:16px;background:linear-gradient(180deg,rgba(14,23,40,.92),rgba(9,15,28,.94));
-  overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.3)}
-.card .ch{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--line);
-  font:600 9px var(--mono);letter-spacing:.22em;color:var(--dim)}
-.card .ch .r{margin-left:auto;color:var(--cyan)}
+.card{border:1px solid var(--line2);border-radius:14px;background:var(--pan);overflow:hidden}
+.card .ch{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);
+  font:600 9px var(--mono);letter-spacing:.18em;color:var(--dim)}
+.card .ch .r{margin-left:auto;color:var(--cyan);letter-spacing:.06em}
 .card.gold{border-color:rgba(245,181,74,.4)}
 .card.ok{border-color:rgba(52,211,153,.35)}
-.card.stop{border-color:rgba(248,113,113,.4)}
-.cb{padding:12px 13px}
-.ttl{font:700 14.5px var(--ui);letter-spacing:.03em}
-.mut{font-size:12px;color:var(--dim);margin-top:3px}
-.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
-.st{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid rgba(34,211,238,.12);border-radius:10px;background:rgba(11,19,34,.5)}
-.st i{width:18px;height:18px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font:600 9px var(--mono);border:1px solid var(--dim2);color:var(--dim2)}
-.st.done i{border-color:var(--green);color:var(--green);background:rgba(52,211,153,.1)}
-.st.run{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.06)}
-.st.run i{border-color:var(--cyan);color:var(--cyan);animation:blink 1.4s infinite}
-.st .t{font-size:13px;font-weight:600}
-.st .s{margin-left:auto;font:600 8.5px var(--mono);letter-spacing:.12em;color:var(--dim2)}
-.st.done .s{color:var(--green)}
-.st.run .s{color:var(--cyan)}
-.kr{font:600 8.5px var(--mono);color:var(--gold);letter-spacing:.05em;flex:none;margin-left:6px}
-.foot{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line);background:rgba(8,14,26,.5)}
-.btn{padding:9px 14px;border-radius:10px;font:700 11.5px var(--ui);letter-spacing:.1em;border:1px solid var(--line);color:var(--dim)}
-.btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.btn.gold{background:linear-gradient(180deg,#F7C25C,#E9A93B);color:#1A1206;border:none;box-shadow:0 4px 18px rgba(245,181,74,.3);letter-spacing:.12em}
-.btn.gold:hover{filter:brightness(1.08)}
-.btn.red{color:var(--red);border-color:rgba(248,113,113,.3)}
-.btn.red:hover{border-color:var(--red)}
-.btn.soon{opacity:.55}
-.btn.block{flex:1}
-.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;border:1px dashed rgba(245,181,74,.4);
-  font:600 8.5px var(--mono);letter-spacing:.14em;color:var(--gold)}
-
-/* kartu live */
-.live{display:flex;gap:13px;align-items:center}
-.ringw{position:relative;width:74px;height:74px;flex:none}
-.ringw svg{transform:rotate(-90deg)}
-.ringw .bgc{fill:none;stroke:rgba(34,211,238,.14);stroke-width:6}
-.ringw .fgc{fill:none;stroke:url(#gr);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .3s}
-.ringv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ringv b{font:700 15px var(--disp);color:var(--txt)}
-.ringv span{font:600 7.5px var(--mono);letter-spacing:.14em;color:var(--dim2)}
-.lmeta{flex:1;min-width:0}
-.lstep{font:700 14px var(--ui)}
-.lstep .dotc{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);margin-right:7px;animation:blink 1.2s infinite}
-.teler{display:flex;gap:12px;margin-top:7px;font:600 9px var(--mono);letter-spacing:.1em;color:var(--dim)}
-.teler b{color:var(--cyan);font-weight:600}
-.bar{height:4px;border-radius:3px;background:rgba(34,211,238,.12);overflow:hidden;margin-top:10px}
-.bar i{display:block;height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--gold));transition:width .3s}
-.gate{display:none;margin-top:11px;padding:10px 11px;border:1px solid rgba(245,181,74,.5);border-radius:11px;background:rgba(245,181,74,.07);gap:10px;align-items:center}
-.gate.show{display:flex}
-.gate .gt{flex:1;font-size:12.5px;color:var(--txt)}
-.gate .gt b{color:var(--gold)}
-.gate .btn{padding:7px 11px;font-size:10.5px}
-.exp{display:none;margin-top:11px;border-top:1px dashed rgba(34,211,238,.25);padding-top:9px}
-.exp.open{display:block}
-.log{font:400 10px/1.75 var(--mono);color:var(--dim);white-space:pre-wrap}
-.log b{color:var(--cyan);font-weight:400}
-.log em{color:var(--gold);font-style:normal}
-
-/* kartu hasil */
-.file{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid var(--line);border-radius:12px;background:rgba(11,19,34,.6)}
-.fic{width:40px;height:40px;flex:none;border-radius:9px;background:rgba(245,181,74,.12);border:1px solid rgba(245,181,74,.35);
-  display:flex;align-items:center;justify-content:center;font:700 8px var(--mono);color:var(--gold);letter-spacing:.05em}
-.fmeta{flex:1;min-width:0}
-.fname{font:700 13px var(--ui);letter-spacing:.02em}
-.fsub{font:600 9px var(--mono);letter-spacing:.1em;color:var(--dim2);margin-top:2px}
-.versi{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
-.vc{padding:3px 10px;border-radius:7px;border:1px solid var(--line);font:600 9.5px var(--mono);color:var(--dim);letter-spacing:.08em}
-.vc.on{border-color:var(--gold);color:var(--gold);background:rgba(245,181,74,.08)}
+.cb{padding:11px 12px}
+.ttl{font:600 14px var(--ui)}
+.mut{font-size:12px;color:var(--dim);margin-top:2px}
 .sum{font-size:13px;color:var(--txt)}
-.sum b{color:var(--green)}
-.sum em{color:var(--gold);font-style:normal}
+.sum b{color:var(--gold)}
+.sum em{color:var(--cyan);font-style:normal}
+.steps{margin-top:9px;display:flex;flex-direction:column}
+.st{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.st:first-child{border-top:none}
+.st i{width:16px;height:16px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:50%;
+  font:600 9px var(--mono);border:1px solid var(--line2);color:var(--dim2);font-style:normal}
+.st.done i{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:var(--green)}
+.st.run i{border-color:var(--cyan);color:var(--cyan)}
+.st .t{flex:1;font-size:12.5px;color:var(--txt)}
+.st .s{font:600 8.5px var(--mono);letter-spacing:.1em;color:var(--dim2)}
+.st.run .s{color:var(--cyan)}
+.st.done .s{color:var(--green)}
+.st .kr{font:600 9px var(--mono);color:var(--dim2)}
+.bar{height:4px;border-radius:4px;background:rgba(148,178,220,.16);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:4px;transition:width .4s}
+/* live */
+.live{display:flex;gap:11px;align-items:center}
+.ringw{position:relative;flex:none;width:62px;height:62px}
+.ringw svg{transform:rotate(-90deg)}
+.ringw .bgc{fill:none;stroke:rgba(148,178,220,.15);stroke-width:5}
+.ringw .fgc{fill:none;stroke:var(--cyan);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .4s}
+.ringv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ringv b{font:700 13px var(--mono);color:var(--txt)}
+.ringv span{font:600 6.5px var(--mono);letter-spacing:.14em;color:var(--dim2)}
+.lmeta{flex:1;min-width:0}
+.lstep{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--txt)}
+.dotc{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 7px var(--cyan);flex:none;animation:sd 1.4s infinite}
+.teler{display:flex;gap:10px;margin-top:5px;font:600 9px var(--mono);letter-spacing:.06em;color:var(--dim2)}
+.teler b{color:var(--cyan)}
+.lmeta .bar{margin-top:7px}
+/* gate izin */
+.gate{display:none;margin-top:10px;padding:9px 11px;border:1px solid rgba(245,181,74,.45);border-radius:11px;background:rgba(245,181,74,.07);gap:8px;flex-wrap:wrap;align-items:center}
+.gate.show{display:flex}
+.gate .gt{flex:1;min-width:150px;font-size:12px;color:var(--txt)}
+.gate .gt b{color:var(--gold)}
+.btn{padding:7px 13px;border:1px solid var(--line2);border-radius:9px;font:700 10px var(--mono);letter-spacing:.08em;color:var(--dim)}
+.btn:hover{color:var(--txt);border-color:var(--cyan)}
+.btn.gold{color:#10131c;background:var(--gold);border-color:var(--gold)}
+.btn.gold:hover{background:#ffcb70;color:#10131c}
+.btn.red{color:var(--red);border-color:rgba(248,113,113,.4)}
+.btn.red:hover{background:rgba(248,113,113,.08)}
+.btn.block{flex:1;padding:8px 6px;text-align:center}
+.foot{display:flex;gap:8px;padding:9px 10px;border-top:1px solid var(--line)}
+/* log proses */
+.exp{display:none;margin-top:10px;max-height:118px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;
+  background:rgba(5,9,17,.8);padding:8px 10px;font:400 10.5px/1.7 var(--mono);color:var(--dim)}
+.exp.open{display:block}
+.exp em{color:var(--gold);font-style:normal}
+.exp b{color:var(--cyan);font-weight:600}
+/* berkas */
+.file{display:flex;align-items:center;gap:10px}
+.fic{width:34px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:9px;
+  border:1px solid rgba(245,181,74,.4);color:var(--gold);font:700 9px var(--mono);background:rgba(245,181,74,.07)}
+.fmeta{flex:1;min-width:0}
+.fname{font:700 12.5px var(--mono);letter-spacing:.02em}
+.fsub{font:600 8.5px var(--mono);letter-spacing:.08em;color:var(--dim2);margin-top:2px}
+.versi{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line)}
+.vc{padding:3px 8px;border-radius:7px;border:1px solid var(--line2);font:600 9px var(--mono);color:var(--dim2)}
+.vc.on{border-color:rgba(52,211,153,.5);color:var(--green);background:rgba(52,211,153,.07)}
+.tag{padding:2.5px 8px;border-radius:6px;border:1px dashed rgba(245,181,74,.4);color:var(--gold);font:600 8.5px var(--mono);letter-spacing:.08em;white-space:nowrap}
+/* antre */
+.qrow{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan)}
 
 /* ============ COMPOSER ============ */
-.composer{flex:none;display:flex;align-items:center;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom)*0);
-  border-top:1px solid var(--line);background:rgba(8,14,26,.85)}
-.cbtn{width:38px;height:38px;flex:none;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.composer{display:flex;align-items:center;gap:7px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(9,14,25,.9);flex:none}
+.cbtn{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:11px;border:1px solid var(--line2);color:var(--dim)}
 .cbtn:hover{color:var(--cyan);border-color:var(--cyan)}
-.cbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.cin{flex:1;display:flex;align-items:center;min-height:40px;padding:0 14px;border:1px solid rgba(34,211,238,.2);border-radius:999px;background:rgba(11,19,34,.8)}
-.cin input{flex:1;font-size:13.5px}
-.cin input::placeholder{color:var(--dim2)}
-.cbtn.send{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.4);color:var(--cyan)}
-
-/* ============ TUGAS ============ */
-.h2{font:700 13px var(--disp);letter-spacing:.14em;margin-bottom:2px}
-.sub2{font:600 9px var(--mono);letter-spacing:.16em;color:var(--dim2);margin-bottom:13px}
-.search{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:11px;background:rgba(11,19,34,.6);margin-bottom:10px}
-.search svg{width:15px;height:15px;stroke:var(--dim2);fill:none;stroke-width:1.7;stroke-linecap:round}
-.search input{flex:1;font-size:13px}
-.search input::placeholder{color:var(--dim2)}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.chip{padding:5px 12px;border:1px solid var(--line);border-radius:999px;font:600 10px var(--mono);letter-spacing:.1em;color:var(--dim)}
-.chip.on{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.08)}
-.tlist{display:flex;flex-direction:column;gap:8px}
-.titem{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid rgba(34,211,238,.14);border-radius:13px;background:rgba(11,19,34,.55)}
-.titem:hover{border-color:rgba(34,211,238,.4)}
-.tico{width:36px;height:36px;flex:none;border-radius:10px;display:flex;align-items:center;justify-content:center;font:700 9px var(--mono)}
-.tico.cy{background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cyan)}
-.tico.gd{background:rgba(245,181,74,.1);border:1px solid rgba(245,181,74,.3);color:var(--gold)}
-.tbody{flex:1;min-width:0}
-.tname{font:700 13.5px var(--ui)}
-.tsub{font:600 9px var(--mono);letter-spacing:.1em;color:var(--dim2);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
-.sst{display:inline-flex;align-items:center;gap:5px}
-.sst::before{content:'';width:6px;height:6px;border-radius:50%}
-.sst.ok{color:var(--green)}.sst.ok::before{background:var(--green)}
-.sst.run{color:var(--cyan)}.sst.run::before{background:var(--cyan);animation:blink 1.2s infinite}
-.sst.q{color:var(--dim)}.sst.q::before{background:var(--dim2)}
-.sst.st{color:var(--red)}.sst.st::before{background:var(--red)}
-.titem .arr{color:var(--dim2);font-size:16px}
-.moret{margin-top:12px;text-align:center}
+.cbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cbtn.send{color:#10131c;background:var(--cyan);border-color:var(--cyan)}
+.cin{flex:1;display:flex;align-items:center;height:38px;padding:0 12px;border:1px solid var(--line2);border-radius:11px;background:rgba(12,20,36,.6)}
+.cin input{width:100%;font-size:13.5px}
 
 /* ============ KENDALI ============ */
+.h2{font:700 13px var(--ui);letter-spacing:.14em}
+.sub2{font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--dim2);margin:3px 0 12px}
 .sect{margin-bottom:14px}
-.sect h3{font:600 9px var(--mono);letter-spacing:.22em;color:var(--dim2);margin-bottom:8px}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.opt{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(11,19,34,.55);text-align:left}
-.opt b{display:flex;align-items:center;gap:6px;font:700 13px var(--ui);letter-spacing:.04em}
-.opt small{display:block;margin-top:3px;font-size:11px;color:var(--dim2)}
-.opt.on{border-color:var(--gold);background:rgba(245,181,74,.07);box-shadow:0 0 18px rgba(245,181,74,.08)}
-.opt.on b{color:var(--gold)}
-.note1{margin-top:9px;font-size:11.5px;color:var(--dim)}
-.note1 b{color:var(--cyan);font-weight:600}
-.sw{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid rgba(34,211,238,.12);border-radius:12px;background:rgba(11,19,34,.5)}
-.sw+.sw{margin-top:7px}
-.swic{width:34px;height:34px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);color:var(--cyan)}
-.swic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.swb{flex:1}
-.swb b{font:700 13px var(--ui)}
-.swb small{display:block;font-size:10.5px;color:var(--dim2);margin-top:1px}
-.tg{width:42px;height:24px;flex:none;border-radius:999px;border:1px solid var(--line);position:relative;background:rgba(11,19,34,.8);transition:.2s}
-.tg i{position:absolute;top:2.5px;left:3px;width:17px;height:17px;border-radius:50%;background:var(--dim2);transition:.2s}
-.tg.on{background:rgba(34,211,238,.25);border-color:var(--cyan)}
-.tg.on i{left:20px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-.sw.lock{border-color:rgba(245,181,74,.3)}
-.tg.lock{opacity:.5}
-.slider{display:flex;align-items:center;gap:12px;padding:4px 2px}
-.slider input{flex:1;accent-color:#F5B54A;height:3px}
-.krd{font:700 13px var(--mono);color:var(--gold);min-width:52px;text-align:right}
-.logbox{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(7,11,18,.8);max-height:120px;overflow-y:auto;font:400 10px/1.8 var(--mono);color:var(--dim)}
-.logbox b{color:var(--cyan);font-weight:400}
+.sect h3{font:700 10.5px var(--ui);letter-spacing:.14em;color:var(--dim);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.opt{padding:9px 11px;border:1px solid var(--line2);border-radius:11px;text-align:left;background:var(--pan)}
+.opt b{display:block;font:700 11px var(--mono);letter-spacing:.06em}
+.opt small{font-size:11px;color:var(--dim2)}
+.opt.on{border-color:var(--cyan);background:rgba(34,211,238,.07)}
+.opt.on b{color:var(--cyan)}
+.note1{margin-top:7px;font-size:11.5px;color:var(--dim2)}
+.note1 b{color:var(--dim)}
+.sw{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan);margin-bottom:6px}
+.swic{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:8px;
+  border:1px solid var(--line2);color:var(--cyan);background:rgba(34,211,238,.05)}
+.swic svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.swb{flex:1;min-width:0}
+.swb b{font-size:13px;display:block}
+.swb small{font-size:11px;color:var(--dim2)}
+.tg{width:38px;height:22px;flex:none;border-radius:99px;border:1px solid var(--line2);position:relative;background:rgba(148,178,220,.12)}
+.tg i{position:absolute;top:2.5px;left:3px;width:15px;height:15px;border-radius:50%;background:var(--dim2);transition:.2s}
+.tg.on{border-color:var(--cyan);background:rgba(34,211,238,.14)}
+.tg.on i{left:18px;background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.6)}
+.tg.lock{opacity:.55}
+.slider{display:flex;align-items:center;gap:12px}
+input[type=range]{flex:1;appearance:none;height:4px;border-radius:4px;background:rgba(148,178,220,.18);outline:none}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.55);cursor:pointer}
+.krd{font:700 13px var(--mono);color:var(--cyan);min-width:52px;text-align:right}
+.nseg{display:flex;gap:7px}
+.qc{flex:1;padding:8px 6px;border:1px solid var(--line2);border-radius:10px;font:600 10px var(--mono);letter-spacing:.06em;color:var(--dim);background:var(--pan)}
+.qc.on{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.07)}
+.logbox{max-height:112px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;background:rgba(5,9,17,.8);
+  padding:8px 10px;font:400 10.5px/1.75 var(--mono);color:var(--dim)}
+.logbox b{color:var(--cyan);font-weight:600}
 .logbox em{color:var(--gold);font-style:normal}
-.soonrow{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px dashed rgba(90,112,153,.4);border-radius:12px;opacity:.75}
-.soonrow+.soonrow{margin-top:7px}
-.soonrow .swb b{color:var(--dim)}
+.soon{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.soon .cell{padding:9px 10px;border:1px dashed var(--line2);border-radius:11px}
+.soon .cell b{display:block;font-size:12.5px}
+.soon .cell small{display:block;font-size:10.5px;color:var(--dim2);margin:2px 0 6px}
 
-/* ============ TOMBOL TUGAS & SHEET (pola ChatGPT Tasks · Gemini Scheduled Actions) ============ */
-.ico-tasks{position:relative;width:36px;height:36px;flex:none;border-radius:11px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim)}
-.ico-tasks:hover{color:var(--cyan);border-color:var(--cyan)}
-.ico-tasks svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.hdot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:blink 1.6s infinite;display:none}
-.hdot.show{display:block}
-.sheet{position:absolute;inset:0;z-index:8;display:none}
-.sheet.open{display:block}
-.shbg{position:absolute;inset:0;background:rgba(4,8,15,.62);backdrop-filter:blur(3px)}
-.shpanel{position:absolute;left:0;right:0;bottom:0;max-height:80%;display:flex;flex-direction:column;
-  background:linear-gradient(180deg,#101B30,#0A1220);border:1px solid rgba(34,211,238,.25);border-bottom:none;
-  border-radius:22px 22px 0 0;box-shadow:0 -18px 50px rgba(0,0,0,.5);animation:shUp .28s ease}
-@keyframes shUp{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
-.shgrip{padding:9px 0 3px;display:flex;justify-content:center;flex:none}
-.shgrip span{width:44px;height:4px;border-radius:3px;background:rgba(34,211,238,.3)}
-.shhead{display:flex;align-items:flex-start;gap:10px;padding:5px 16px 11px;border-bottom:1px solid var(--line);flex:none}
-.shh2{font:700 13px var(--disp);letter-spacing:.12em}
-.shsub{font:600 8.5px var(--mono);letter-spacing:.18em;color:var(--dim2);margin-top:3px}
-.shx{margin-left:auto;width:30px;height:30px;flex:none;border-radius:9px;border:1px solid var(--line);color:var(--dim)}
-.shx:hover{color:var(--red);border-color:var(--red)}
-.shscroll{overflow-y:auto;padding:13px 16px calc(16px + env(safe-area-inset-bottom))}
-.shrun{padding:11px 12px;border:1px solid rgba(34,211,238,.35);border-radius:13px;background:rgba(34,211,238,.05)}
-.shrun.stopped{border-color:rgba(248,113,113,.4)}
-.shrun.ok{border-color:rgba(52,211,153,.4)}
-.shstep{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12.5px;color:var(--txt)}
-.shstep .dotc{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 1.2s infinite;flex:none}
-.shbtns{display:flex;gap:7px;margin-top:11px}
-.shbtns .btn{padding:7px 10px;font-size:10.5px}
-.srow{display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid rgba(34,211,238,.12);border-radius:12px;background:rgba(11,19,34,.5)}
-.srow+.srow{margin-top:7px}
+/* ============ SHEET TUGAS ============ */
+.sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;visibility:hidden}
+.sheet.open{visibility:visible}
+.shbg{position:absolute;inset:0;background:rgba(3,6,12,.6);opacity:0;transition:.22s}
+.sheet.open .shbg{opacity:1}
+.shpanel{position:relative;width:100%;max-height:82%;display:flex;flex-direction:column;
+  background:#0A1220;border:1px solid var(--line2);border-bottom:none;border-radius:20px 20px 0 0;transform:translateY(102%);transition:transform .26s}
+.sheet.open .shpanel{transform:none}
+.shgrip{padding:7px 0 3px;display:flex;justify-content:center}
+.shgrip span{width:38px;height:4px;border-radius:4px;background:rgba(148,178,220,.25)}
+.shhead{display:flex;align-items:center;gap:10px;padding:5px 14px 9px;border-bottom:1px solid var(--line)}
+.shh2{font:700 13px var(--ui);letter-spacing:.12em}
+.shsub{font:600 8px var(--mono);letter-spacing:.16em;color:var(--dim2);margin-top:2px}
+.shx{margin-left:auto;width:30px;height:30px;border-radius:9px;border:1px solid var(--line2);color:var(--dim);font-size:12px}
+.shscroll{flex:1;min-height:0;overflow-y:auto;padding:12px 13px 16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:13px}
+.stat{padding:8px 4px;text-align:center;border:1px solid var(--line);border-radius:11px;background:var(--pan)}
+.stat b{display:block;font:700 15px var(--mono)}
+.stat span{font:600 8px var(--mono);letter-spacing:.12em;color:var(--dim2)}
+.stat b.k{color:var(--green)} .stat b.g{color:var(--gold)}
+.shrun{padding:10px 11px;border:1px solid rgba(245,181,74,.4);border-radius:12px;background:rgba(245,181,74,.05)}
+.shrtop{display:flex;align-items:center;gap:8px}
+.shrtop b{font-size:13.5px;flex:1}
+.shrtop .spct{font:700 12px var(--mono);color:var(--gold)}
+.shstep{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px;color:var(--dim)}
+.shrun .shbtns{display:flex;gap:8px;margin-top:9px}
+.shrun.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.05)}
+.shrun.ok .spct{color:var(--green)}
+.shrun.stopped{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.05)}
+.ghead{font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--dim2);margin:9px 0 5px}
+.srow{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan);margin-bottom:6px}
 .srow.act{cursor:pointer}
-.srow.act:hover{border-color:rgba(34,211,238,.4)}
-.srow .arr{color:var(--dim2);font-size:16px;margin-left:auto;flex:none}
+.srow.act:hover{border-color:var(--cyan)}
+.srow .swb b{font-size:12.5px;display:block}
+.srow .swb small{font-size:10.5px;color:var(--dim2)}
+.arr{margin-left:auto;color:var(--dim2);font-size:14px}
+.sst{font:600 9px var(--mono);letter-spacing:.08em}
+.sst.ok{color:var(--green)} .sst.run{color:var(--gold)} .sst.st{color:var(--red)}
+.jrow{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan);margin-bottom:6px}
+.jrow .swb b{font-size:12.5px;display:block}
+.jrow .swb small{font-size:10.5px;color:var(--dim2)}
 
-/* ============ v6 · STRIP HARI INI (pola Google Assistant Snapshot) ============ */
-.stats{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;margin-bottom:13px;
-  border:1px solid rgba(34,211,238,.2);border-radius:12px;background:rgba(11,19,34,.55);
-  font:600 9.5px var(--mono);letter-spacing:.1em;color:var(--dim2)}
-.stats span{display:flex;align-items:center;gap:6px}
-.stats b{color:var(--cyan);font-weight:700}
-.stats b.k{color:var(--green)}
-.stats b.g{color:var(--gold)}
-/* MULAI CEPAT — pola Devin Template Gallery */
-.qwrap{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:9px}
-.qwrap::-webkit-scrollbar{height:0}
-.qc{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;
-  font:600 10px var(--mono);letter-spacing:.08em;color:var(--dim);background:rgba(11,19,34,.5);white-space:nowrap}
-.qc:hover{border-color:var(--gold);color:var(--gold)}
-.qc i{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
-.qc.on{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.08)}
-.qc.on i{background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
-/* JADWAL — pola Manus Automations · Devin Automations · Bixby Routines */
-.jrow{padding:11px 12px;border:1px solid rgba(34,211,238,.14);border-radius:13px;background:rgba(11,19,34,.5)}
-.jrow+.jrow{margin-top:7px}
-.jtop{display:flex;align-items:center;gap:10px}
-.jmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
-.trig{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;border:1px solid rgba(34,211,238,.3);
-  background:rgba(34,211,238,.06);font:600 8.5px var(--mono);letter-spacing:.1em;color:var(--cyan)}
-.trig.gd{border-color:rgba(245,181,74,.35);background:rgba(245,181,74,.07);color:var(--gold)}
-.next{font:600 9px var(--mono);letter-spacing:.08em;color:var(--dim2)}
-.cal{display:flex;gap:5px;margin-top:10px}
-.cald{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 0 6px;border:1px solid rgba(34,211,238,.1);
-  border-radius:9px;background:rgba(7,11,18,.5);cursor:pointer}
-.cald span{font:600 7.5px var(--mono);letter-spacing:.1em;color:var(--dim2)}
-.cald b{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
-.cald.today{border-color:rgba(34,211,238,.5)}
-.cald.today span{color:var(--cyan)}
-/* RIWAYAT digroup per tanggal — pola Manus "Updates" */
-.ghead{margin:11px 0 6px;font:600 8.5px var(--mono);letter-spacing:.2em;color:var(--dim2)}
-/* ============ v6 · MODE SUARA (pola Agora · Gemini Live · Sara) ============ */
-.liveov{position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(120% 90% at 50% 30%, rgba(13,28,46,.97), rgba(4,8,15,.99));
-  backdrop-filter:blur(8px);padding:24px;text-align:center}
-.liveov.open{display:flex}
-.lvtop{position:absolute;top:18px;left:20px;right:20px;display:flex;align-items:center;gap:10px}
-.lvstag{margin-left:auto}
-.lvorb{width:150px;height:150px;flex:none;animation:breathe 3.6s ease-in-out infinite}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-.lvstate{margin-top:22px;font:700 11px var(--disp);letter-spacing:.3em;color:var(--cyan);min-height:14px}
-.wave{display:flex;align-items:center;gap:3.5px;height:46px;margin-top:14px}
-.wave i{width:3.5px;border-radius:3px;background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.55);animation:wv 1.05s ease-in-out infinite}
-.wave i.g{background:var(--gold);box-shadow:0 0 8px rgba(245,181,74,.55)}
-@keyframes wv{0%,100%{height:7px;opacity:.45}50%{height:38px;opacity:1}}
-.lvlog{width:100%;max-width:340px;margin-top:20px;display:flex;flex-direction:column;gap:9px}
-.lvln{display:none;padding:9px 13px;border-radius:12px;font-size:13.5px;text-align:left;animation:shUp .3s ease}
-.lvln .lw{font:600 8px var(--mono);letter-spacing:.2em;color:var(--dim2);margin-bottom:3px}
-.lvln.me{align-self:flex-end;background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.2);border-bottom-right-radius:4px}
-.lvln.avi{align-self:flex-start;background:rgba(14,23,40,.9);border:1px solid var(--line);border-bottom-left-radius:4px}
-.lvln.show{display:block}
-.lvfoot{position:absolute;bottom:22px;left:20px;right:20px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.lvtele{font:600 9px var(--mono);letter-spacing:.16em;color:var(--dim)}
-.lvtele b{color:var(--cyan);font-weight:600}
+/* ============ MODE SUARA — pola Sesame: orb + transkrip, tanpa chrome ============ */
+.liveov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;
+  background:radial-gradient(90% 70% at 50% 30%, rgba(8,14,26,.94), rgba(4,7,13,.98));opacity:0;visibility:hidden;transition:.25s;padding:0 18px calc(22px + env(safe-area-inset-bottom))}
+.liveov.open{opacity:1;visibility:visible}
+.lvtop{position:absolute;top:16px;left:18px;right:18px;display:flex;align-items:center;gap:10px}
+.lvorb{width:104px;height:104px;margin-bottom:4px}
+.lvstate{font:600 10px var(--mono);letter-spacing:.2em;color:var(--cyan)}
+.wave{display:flex;align-items:center;gap:3px;height:34px}
+.wave i{width:3px;border-radius:3px;background:var(--cyan);opacity:.75;animation:wv 1s ease-in-out infinite}
+.wave i.g{background:var(--gold)}
+@keyframes wv{0%,100%{height:6px}50%{height:26px}}
+.lvlog{width:100%;max-width:380px;max-height:30vh;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
+.lvln{opacity:0;transform:translateY(6px);transition:.3s;padding:8px 11px;border-radius:12px;font-size:13px}
+.lvln.show{opacity:1;transform:none}
+.lvln.me{align-self:flex-end;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.2)}
+.lvln.avi{align-self:flex-start;background:rgba(14,22,38,.85);border:1px solid var(--line)}
+.lvln .lw{font:600 8px var(--mono);letter-spacing:.16em;color:var(--dim2);margin-bottom:3px}
+.lvfoot{display:flex;flex-direction:column;align-items:center;gap:11px}
+.lvtele{font:600 8.5px var(--mono);letter-spacing:.14em;color:var(--dim2)}
+.lvtele b{color:var(--cyan)}
 
 /* ============ TOAST ============ */
-.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:9;opacity:0;pointer-events:none;
-  padding:10px 18px;border-radius:12px;border:1px solid rgba(245,181,74,.45);background:rgba(11,19,34,.95);
-  font:600 11px var(--mono);letter-spacing:.1em;color:var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.5);transition:.25s;max-width:86%;text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,14px);z-index:80;max-width:86%;
+  padding:9px 15px;border:1px solid var(--line2);border-radius:11px;background:rgba(10,16,29,.96);
+  font:600 11.5px var(--mono);letter-spacing:.02em;color:var(--txt);opacity:0;visibility:hidden;transition:.24s;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
 
-<!-- latar MK1 -->
-<div class="fx fx-nebula"></div>
-<div class="fx fx-grid"></div>
-<div class="fx fx-stars"></div>
-<div class="fx fx-scan"></div>
-<div class="fx" style="overflow:hidden"><div class="fx-sweep"></div></div>
-
-<svg width="0" height="0" style="position:absolute"><defs>
-<linearGradient id="gr" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#F5B54A"/>
-</linearGradient>
-</defs></svg>
+<!-- latar MK1 — satu lapis -->
+<div class="fx"></div>
 
 <div class="stage">
   <div class="app">
 
     <!-- ===== HEADER ASISTEN ===== -->
     <header>
-      <div class="orb ring work" id="hdOrb" style="width:40px;height:40px"></div>
+      <div class="orb ring work" id="hdOrb" style="width:36px;height:36px"></div>
       <div>
         <div class="hd-name">AVI</div>
         <div class="hd-sub">ASISTEN PRIBADI · MK1</div>
       </div>
-      <div class="pill" id="hdPill"><i></i><span id="hdPillTx">SIAP</span></div>
-      <button class="ico-tasks" id="btnTasks" aria-label="Tugas dan antrean"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><i class="hdot show" id="hdDot"></i></button>
+      <div class="pill work" id="hdPill" role="button" tabindex="0" aria-label="Buka tugas dan antrean"><i></i><span id="hdPillTx">BEKERJA · 34%</span></div>
     </header>
+
+    <!-- ===== STRIP KENDALI — JEDA/STOP hanya di sini, selalu terjangkau ===== -->
+    <div class="strip on" id="strip">
+      <button class="sjump" id="stripJump" aria-label="Lompat ke tugas yang berjalan">
+        <span class="sdot"></span>
+        <span class="snm">AUDIT BILLING</span>
+        <b class="spct" id="stPct">34%</b>
+        <span class="sbar"><i id="stBar" style="width:34%"></i></span>
+      </button>
+      <button class="sbtn" id="btnSPause">JEDA</button>
+      <button class="sbtn red" id="btnSStop">STOP</button>
+    </div>
 
     <!-- ================= VIEW 1 · OBROLAN ================= -->
     <section class="view on" id="v-obrolan">
       <div class="scroll scr" id="threadScroll">
         <div class="thread">
 
-          <div class="salam">
-            <div class="orb ring" style="width:84px;height:84px;margin:0 auto"></div>
+          <div class="hai">
             <h1>Selamat pagi, <b>Pak</b>.</h1>
-            <p>Saya AVI, asisten Pak. Bilang saja apa yang perlu dikerjakan — kalau pekerjaannya berat, saya urus sampai jadi.</p>
-            <div class="tele">REAKTOR STABIL · NET AKTIF · SIAP MELAYANI</div>
+            <p>Saya AVI, asisten Pak. Bilang saja yang perlu dikerjakan — kalau pekerjaannya berat, saya urus sampai jadi.</p>
+            <div class="tele">REAKTOR STABIL · NET AKTIF · 1 TUGAS BERJALAN</div>
           </div>
 
           <!-- obrolan biasa: asisten dulu -->
@@ -454,7 +413,6 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
                     </div>
                   </div>
                   <div class="versi">
-                    <span style="font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--dim2)">VERSI</span>
                     <span class="vc">v1</span><span class="vc on">v2 · TERBARU</span>
                     <span class="tag">SEJARAH VERSI — COMING SOON</span>
                   </div>
@@ -492,12 +450,12 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
                     <div class="lmeta">
                       <div class="lstep"><span class="dotc"></span><span id="stepTx">Telusuri celah &amp; duplikasi…</span></div>
                       <div class="teler"><span>T+<b id="tTx">01:12</b></span><span><b id="krTx">5</b>/9 KR</span><span>REAKTOR <b id="rxTx">96%</b></span></div>
-                      <div class="bar"><i id="barTx"></i></div>
+                      <div class="bar"><i id="barTx" style="width:34%"></i></div>
                     </div>
                   </div>
 
                   <div class="gate" id="gate">
-                    <div class="gt"><b>Butuh izin, Pak</b> — mengakses berkas log billing untuk melengkapi audit.</div>
+                    <div class="gt"><b>Butuh izin, Pak</b> — akses berkas log billing untuk melengkapi audit.</div>
                     <button class="btn gold" id="gateOk">IZINKAN</button>
                     <button class="btn" id="gateSkip">LEWATI</button>
                   </div>
@@ -507,21 +465,18 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
 <b>›</b> dependensi: 23 terpakai, 4 tidak terpakai
 <em>› anomali: double-charge pada retry() …</em>
 <b>›</b> telusuri jalur pembayaran — 3 cabang
-<b>›</b> gulir tabel transaksi — 4 layar diperiksa
 <b>›</b> ketuk "Ekspor log billing" — antarmuka app
 <b>›</b> menunggu izin berkas log…</div>
                   </div>
 
-                  <div class="steps" style="margin-top:11px">
+                  <div class="steps" style="margin-top:10px">
                     <div class="st done"><i>✓</i><span class="t">Pindai modul &amp; dependensi</span><span class="s">SELESAI</span></div>
                     <div class="st run"><i>2</i><span class="t">Telusuri celah &amp; duplikasi</span><span class="s">BERJALAN</span></div>
                     <div class="st"><i>3</i><span class="t">Susun temuan + rekomendasi</span><span class="s">ANTRE</span><span class="kr">9 KR TOTAL</span></div>
                   </div>
                 </div>
-                <div class="foot" id="liveFoot">
+                <div class="foot">
                   <button class="btn block" id="btnExp">LIHAT PROSES</button>
-                  <button class="btn block" id="btnPause">JEDA</button>
-                  <button class="btn red block" id="btnStop">HENTIKAN</button>
                 </div>
               </div>
 
@@ -556,36 +511,35 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         </div>
       </div>
 
-      <!-- composer: tanpa mode, tanpa chip -->
+      <!-- composer -->
       <div class="composer">
-        <button class="cbtn" data-toast="Lampir berkas — simulasi tampilan">
+        <button class="cbtn" data-toast="Lampir berkas — simulasi tampilan" aria-label="Lampir berkas">
           <svg viewBox="0 0 24 24"><path d="M21.4 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66L9.4 17.4a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
         </button>
         <div class="cin"><input id="cin" placeholder="Tulis ke AVI…" aria-label="Tulis pesan"/></div>
         <button class="cbtn" id="btnMic" aria-label="Mode suara AVI">
           <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3"/></svg>
         </button>
-        <button class="cbtn send" id="btnSend" data-toast="Simulasi tampilan — kirim pesan menyusul">
+        <button class="cbtn send" id="btnSend" data-toast="Simulasi tampilan — kirim pesan menyusul" aria-label="Kirim">
           <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </button>
       </div>
     </section>
 
-
-    <!-- ================= VIEW 3 · KENDALI ================= -->
+    <!-- ================= VIEW 2 · KENDALI ================= -->
     <section class="view" id="v-kendali">
       <div class="scroll scr">
         <div class="h2">PUSAT KENDALI</div>
-        <div class="sub2">ATUR SEKALI · AVI TIDAK MENANYA-NYANYA LAGI</div>
+        <div class="sub2">ATUR SEKALI · AVI PAKAI OTOMATIS</div>
 
         <div class="sect">
           <h3>OTORITAS KERJA — DEFAULT SEMUA TUGAS</h3>
           <div class="opts">
-            <button class="opt" data-a="AMAN"><b>◆ AMAN</b><small>Izin tiap langkah</small></button>
-            <button class="opt on" data-a="BAKU"><b>◆ BAKU</b><small>Bebas + izin sensitif</small></button>
-            <button class="opt" data-a="PENUH" style="grid-column:1/-1"><b>◆ PENUH</b><small>Bebas penuh, tercatat — tidak disarankan</small></button>
+            <button class="opt" data-a="AMAN"><b>AMAN</b><small>Izin tiap langkah</small></button>
+            <button class="opt on" data-a="BAKU"><b>BAKU</b><small>Bebas + izin sensitif</small></button>
+            <button class="opt" data-a="PENUH" style="grid-column:1/-1"><b>PENUH</b><small>Bebas penuh, tercatat — tidak disarankan</small></button>
           </div>
-          <div class="note1">BAKU: bebas bekerja; <b>login, pembayaran, penghapusan</b> selalu minta izin. Diatur sekali — AVI memakai nilai ini otomatis.</div>
+          <div class="note1">BAKU: bebas bekerja; <b>login, pembayaran, penghapusan</b> selalu minta izin.</div>
         </div>
 
         <div class="sect">
@@ -600,9 +554,9 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
             <div class="swb"><b>Akses Berkas</b><small>Baca &amp; simpan hasil kerja</small></div><button class="tg on" aria-label="Akses Berkas"><i></i></button></div>
           <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></div>
             <div class="swb"><b>Notifikasi Selesai</b><small>Kabar saat tugas tuntas</small></div><button class="tg on" aria-label="Notifikasi Selesai"><i></i></button></div>
-          <div class="sw lock"><div class="swic" style="color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
-            <div class="swb"><b>Pembayaran</b><small>Transaksi uang &amp; checkout</small></div><button class="tg lock" aria-label="Pembayaran terkunci"><i></i></button></div>
-          <div class="note1" style="display:flex;align-items:center;gap:8px"><span class="tag">SELALU MINTA IZIN — TERKUNCI</span></div>
+          <div class="sw"><div class="swic" style="color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+            <div class="swb"><b>Pembayaran</b><small>Transaksi uang &amp; checkout</small></div><button class="tg lock on" aria-label="Pembayaran terkunci"><i></i></button></div>
+          <div class="note1"><span class="tag">PEMBAYARAN — SELALU MINTA IZIN, TERKUNCI</span></div>
         </div>
 
         <div class="sect">
@@ -611,7 +565,7 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
             <input type="range" min="5" max="60" value="20" id="krSlider" aria-label="Batas kredit"/>
             <div class="krd" id="krOut">20 KR</div>
           </div>
-          <div class="note1">Kalau tugas melebihi batas, AVI berhenti dan meminta izin, Pak.</div>
+          <div class="note1">Melebihi batas → AVI berhenti dan meminta izin, Pak.</div>
         </div>
 
         <div class="sect">
@@ -621,7 +575,7 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
             <button class="qc on" data-n="HANYA SELESAI">HANYA SELESAI</button>
             <button class="qc" data-n="HANYA GAGAL">HANYA GAGAL</button>
           </div>
-          <div class="note1">Kabar ke HP Pak — diatur sekali untuk semua tugas. Pola: Devin (notification granularity).</div>
+          <div class="note1">Kabar ke HP Pak — diatur sekali untuk semua tugas. Pola: Devin.</div>
         </div>
 
         <div class="sect">
@@ -634,19 +588,17 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         </div>
 
         <div class="sect">
-          <h3>BELUM TERSEDIA</h3>
-          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
-            <div class="swb"><b>Jadwal otomatis</b><small>Tugas rutin mingguan</small></div><span class="tag">COMING SOON</span></div>
-          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-            <div class="swb"><b>Template tugas</b><small>Pola kerja simpanan</small></div><span class="tag">COMING SOON</span></div>
-          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 014 4c2.5.5 4 2.4 4 5a5 5 0 01-5 5H9a5 5 0 01-5-5c0-2.6 1.5-4.5 4-5a4 4 0 014-4z"/></svg></div>
-            <div class="swb"><b>Memori jangka panjang</b><small>Ingat preferensi antar sesi</small></div><span class="tag">COMING SOON</span></div>
-          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M7 14h6"/></svg></div>
-            <div class="swb"><b>Layar hasil dari AVI</b><small>AVI bikinkan tampilan sendiri per hasil — bukan cuma balon chat</small></div><span class="tag">COMING SOON</span></div>
+          <h3>NANTI</h3>
+          <div class="soon">
+            <div class="cell"><b>Memori jangka panjang</b><small>Ingat preferensi antar sesi</small><span class="tag">COMING SOON</span></div>
+            <div class="cell"><b>Template tugas</b><small>Pola kerja simpanan</small><span class="tag">COMING SOON</span></div>
+            <div class="cell"><b>Briefing pagi</b><small>Rekap siap-putar tiap pagi — pola Snapshot · Kai 9000</small><span class="tag">COMING SOON</span></div>
+            <div class="cell"><b>Layar hasil dari AVI</b><small>AVI bikinkan tampilan per hasil</small><span class="tag">COMING SOON</span></div>
+          </div>
         </div>
 
         <div class="sect">
-          <button class="btn red" style="width:100%" data-toast="Simulasi tampilan — riwayat tetap utuh">HAPUS RIWAYAT TUGAS</button>
+          <button class="btn red" style="width:100%;padding:9px" data-toast="Simulasi tampilan — riwayat tetap utuh">HAPUS RIWAYAT TUGAS</button>
         </div>
       </div>
     </section>
@@ -657,13 +609,18 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z"/></svg>
         <span>OBROLAN</span>
       </button>
+      <button class="navbtn" data-sheet="1" aria-label="Buka tugas dan antrean">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span>TUGAS</span>
+        <i class="dot show" id="navDot"></i>
+      </button>
       <button class="navbtn" data-v="kendali">
         <svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
         <span>KENDALI</span>
       </button>
     </nav>
 
-    <!-- ===== SHEET TUGAS & ANTREAN — pola: ChatGPT Tasks · Gemini Scheduled Actions ===== -->
+    <!-- ===== SHEET TUGAS & ANTREAN — padat, muat sekali gulir (ChatGPT Tasks · Gemini Scheduled) ===== -->
     <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Tugas dan antrean">
       <div class="shbg" id="shBg"></div>
       <div class="shpanel">
@@ -671,31 +628,26 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         <div class="shhead">
           <div>
             <div class="shh2">TUGAS &amp; ANTREAN</div>
-            <div class="shsub">SEKALI PANDANG: JALAN · ANTRE · JADWAL · HASIL</div>
+            <div class="shsub">JALAN · ANTRE · JADWAL · RIWAYAT</div>
           </div>
           <button class="shx" id="shClose" aria-label="Tutup">✕</button>
         </div>
         <div class="shscroll scr">
 
           <div class="stats">
-            <span>BERJALAN <b id="stRun">1</b></span>
-            <span>ANTRE <b id="stQueue">1</b></span>
-            <span>SELESAI <b class="k" id="stDone">2</b></span>
-            <span>KR PAKAI <b class="g" id="stKr">14</b></span>
+            <div class="stat"><b id="stRun">1</b><span>JALAN</span></div>
+            <div class="stat"><b id="stQueue">1</b><span>ANTRE</span></div>
+            <div class="stat"><b class="k" id="stDone">2</b><span>SELESAI</span></div>
+            <div class="stat"><b class="g" id="stKr">14</b><span>KR PAKAI</span></div>
           </div>
 
           <div class="sect">
             <h3>SEDANG BERJALAN</h3>
             <div class="shrun" id="shRun">
-              <div class="tname">Audit kode modul billing</div>
+              <div class="shrtop"><b>Audit kode modul billing</b><span class="spct" id="shPctTx">34%</span></div>
               <div class="shstep"><span class="dotc"></span><span id="shStepTx">Telusuri celah &amp; duplikasi…</span></div>
-              <div class="bar" style="margin-top:9px"><i id="shBarTx" style="width:34%"></i></div>
-              <div class="tsub" style="margin-top:7px"><span class="sst run">JALAN <b id="shPctTx">34%</b></span><span>KODING</span><span>9 KR</span></div>
-              <div class="shbtns">
-                <button class="btn gold" id="shLihat">LIHAT</button>
-                <button class="btn" id="shPause">JEDA</button>
-                <button class="btn red" id="shStop">STOP</button>
-              </div>
+              <div class="bar" style="margin-top:8px"><i id="shBarTx" style="width:34%"></i></div>
+              <div class="shbtns"><button class="btn" id="shLihat">LIHAT DI OBROLAN</button></div>
             </div>
           </div>
 
@@ -703,99 +655,66 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
             <h3>ANTREAN OTOMATIS</h3>
             <div id="queueList">
               <div class="srow">
-                <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
+                <div class="swic" style="font:700 8px var(--mono)">&lt;/&gt;</div>
                 <div class="swb"><b>Audit modul autentikasi</b><small>Masuk sendiri lewat obrolan — urutan diatur AVI</small></div>
-                <button class="btn red qcancel" style="padding:6px 10px;font-size:10px">BATAL</button>
+                <button class="btn red qcancel" style="padding:5px 9px;font-size:9.5px">BATAL</button>
               </div>
             </div>
           </div>
 
           <div class="sect">
             <h3>MULAI CEPAT — SATU KETUK</h3>
-            <div class="qwrap">
-              <button class="qc qadd" data-t="Laporan PDF mingguan"><i></i>LAPORAN PDF MINGGUAN</button>
-              <button class="qc qadd" data-t="Audit keamanan repo"><i></i>AUDIT KEAMANAN REPO</button>
-              <button class="qc qadd" data-t="Analisa data CSV"><i></i>ANALISA DATA CSV</button>
-              <button class="qc qadd" data-t="Pantau harga kompetitor"><i></i>PANTAU HARGA</button>
+            <div class="opts">
+              <button class="opt qadd" data-t="Laporan PDF mingguan"><b style="color:var(--txt)">LAPORAN PDF</b><small>Mingguan, siap unduh</small></button>
+              <button class="opt qadd" data-t="Audit keamanan repo"><b style="color:var(--txt)">AUDIT REPO</b><small>Keamanan &amp; kerapian</small></button>
+              <button class="opt qadd" data-t="Analisa data CSV"><b style="color:var(--txt)">ANALISA DATA</b><small>CSV / spreadsheet</small></button>
+              <button class="opt qadd" data-t="Pantau harga kompetitor"><b style="color:var(--txt)">PANTAU HARGA</b><small>Rutin via web</small></button>
             </div>
-            <div class="note1">Pola kerja siap pakai — ketuk sekali, AVI yang susun langkah dan urutannya, Pak.</div>
           </div>
 
           <div class="sect">
-            <h3>JADWAL OTOMATIS <span class="tag" style="margin-left:6px">COMING SOON</span></h3>
+            <h3>JADWAL OTOMATIS <span class="tag">COMING SOON</span></h3>
             <div class="jrow">
-              <div class="jtop">
-                <div class="swic" style="width:30px;height:30px;color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-                <div class="swb"><b>Laporan pengguna harian</b><small>Dibuat lewat percakapan — AVI catat sendiri</small></div>
-                <button class="tg on jtg" aria-label="Jeda jadwal harian"><i></i></button>
-              </div>
-              <div class="jmeta">
-                <span class="trig"><svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>SETIAP HARI · 07.00</span>
-                <span class="next">BERIKUTNYA: BESOK 07.00</span>
-              </div>
-              <div class="jmeta"><span class="next">NOTIF: <b style="color:var(--cyan);font-weight:600">SAAT SELESAI</b></span>
-                <button class="btn jtest" style="padding:5px 10px;font-size:9.5px">TEST RUN</button></div>
+              <div class="swic" style="color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+              <div class="swb"><b>Laporan pengguna harian</b><small>Setiap hari · 07.00 — dibuat lewat percakapan</small></div>
+              <button class="tg on jtg" aria-label="Jeda jadwal harian"><i></i></button>
             </div>
             <div class="jrow">
-              <div class="jtop">
-                <div class="swic" style="width:30px;height:30px;color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></div>
-                <div class="swb"><b>Ringkasan pasar mingguan</b><small>Hasil dikirim lewat notifikasi</small></div>
-                <button class="tg on jtg" aria-label="Jeda jadwal mingguan"><i></i></button>
-              </div>
-              <div class="jmeta">
-                <span class="trig gd">SETIAP SENIN · 09.00</span>
-                <span class="next">BERIKUTNYA: SENIN 09.00</span>
-              </div>
-              <div class="jmeta"><span class="next">NOTIF: <b style="color:var(--gold);font-weight:600">HANYA SAAT GAGAL</b></span>
-                <button class="btn jtest" style="padding:5px 10px;font-size:9.5px">TEST RUN</button></div>
+              <div class="swic" style="color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></div>
+              <div class="swb"><b>Ringkasan pasar mingguan</b><small>Setiap Senin · 09.00 — hasil lewat notifikasi</small></div>
+              <button class="tg on jtg" aria-label="Jeda jadwal mingguan"><i></i></button>
             </div>
-            <div class="cal" id="calWeek" aria-label="Kalender jadwal minggu ini">
-              <div class="cald"><span>SEN</span><b></b></div>
-              <div class="cald today"><span>SEL</span><b></b></div>
-              <div class="cald"><span>RAB</span><b></b></div>
-              <div class="cald"><span>KAM</span><b></b></div>
-              <div class="cald"><span>JUM</span><b></b></div>
-              <div class="cald"><span>SAB</span><b></b></div>
-              <div class="cald"><span>MIN</span><b></b></div>
-            </div>
-            <div class="note1" style="margin-top:8px">Cukup bilang, Pak — <b>“jalankan tiap Senin pagi”</b>. AVI yang mencatat. Pola: ChatGPT Tasks · Gemini Scheduled Actions · Manus &amp; Devin Automations · Bixby Routines.</div>
-          </div>
-
-          <div class="sect">
-            <h3>BRIEFING PAGI</h3>
-            <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></div>
-              <div class="swb"><b>Rekap pagi dari AVI</b><small>Tugas semalam · jadwal hari ini · yang menunggu izin Pak</small></div><span class="tag">COMING SOON</span></div>
-            <div class="note1" style="margin-top:8px">Setiap pagi AVI menyapa dengan ringkasan siap-putar — Pak tinggal dengar. Pola: Google Assistant Snapshot · “denyut” Kai 9000.</div>
+            <div class="note1">Cukup bilang: <b>"jalankan tiap Senin pagi"</b> — AVI yang mencatat. Pola: ChatGPT Tasks · Gemini Scheduled Actions · Bixby Routines.</div>
           </div>
 
           <div class="sect">
             <h3>RIWAYAT</h3>
             <div class="ghead">HARI INI</div>
             <div class="srow act" id="shResRow">
-              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">DOC</div>
+              <div class="swic" style="font:700 8px var(--mono)">DOC</div>
               <div class="swb"><b>Laporan analisa penjualan Q3</b><small><span class="sst ok">SELESAI</span> · PDF · 14 HAL · 14 KR</small></div>
               <span class="arr">›</span>
             </div>
             <div class="ghead">KEMARIN</div>
             <div class="srow">
-              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
-              <div class="swb"><b>Rapikan gaya kode DeckPanel</b><small><span class="sst ok">SELESAI</span> · 2 HARI LALU</small></div>
+              <div class="swic" style="font:700 8px var(--mono)">&lt;/&gt;</div>
+              <div class="swb"><b>Rapikan gaya kode DeckPanel</b><small><span class="sst ok">SELESAI</span> · 2 KR</small></div>
               <span class="arr">›</span>
             </div>
             <div class="ghead">MINGGU INI</div>
             <div class="srow">
-              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono);color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)">WEB</div>
-              <div class="swb"><b>Pantau harga kompetitor</b><small><span class="sst st">DIHENTIKAN OLEH PAK</span> · 4 KR</small></div>
+              <div class="swic" style="font:700 8px var(--mono);color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)">WEB</div>
+              <div class="swb"><b>Pantau harga kompetitor</b><small><span class="sst st">DIHENTIKAN</span> · 4 KR</small></div>
               <span class="arr">›</span>
             </div>
-            <div class="note1" style="margin-top:8px">Riwayat lengkap tinggal gulir obrolan, Pak — tidak perlu dua tempat.</div>
+            <div class="note1">Riwayat lengkap tinggal gulir obrolan, Pak — satu tempat, tidak diduplikasi.</div>
           </div>
 
         </div>
       </div>
     </div>
 
-    <!-- ===== MODE SUARA LIVE — pola: Gemini Live · Agora Conversational AI · Sara ===== -->
+    <!-- ===== MODE SUARA — pola: Sesame Maya · Gemini Live · Agora · Sara ===== -->
     <div class="liveov" id="liveov" role="dialog" aria-modal="true" aria-label="Mode suara AVI">
       <div class="lvtop">
         <div class="shsub" style="margin:0">MODE SUARA</div>
@@ -818,7 +737,7 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
   </div>
 </div>
 
-<div class="note">v6 · SATU APLIKASI UTUH — ASISTEN PRIBADI · POLA: MANUS · DEVIN · CHATGPT TASKS · GEMINI · GOOGLE ASSISTANT · SARA · AGORA · MOBILE-AGENT · KAI 9000 · BIXBY</div>
+<div class="note">v7 · SATU APLIKASI UTUH · SEKALI PANDANG, SATU KETUK — POLA: GOOGLE ASSISTANT SNAPSHOT · RAYCAST · LINEAR · CHATGPT TASKS · SESAME · MANUS · DEVIN</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -830,10 +749,12 @@ $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toa
 
 /* ---- navigasi bawah ---- */
 $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
+  if(b.dataset.sheet){openSheet();return}
   $$('.navbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-'+b.dataset.v).classList.add('on');
 }));
+$('#hdPill').addEventListener('click',openSheet);
 
 /* ---- obrolan: kirim dummy ---- */
 $('#btnSend').addEventListener('click',()=>{const i=$('#cin');if(i.value.trim()){toast('Simulasi tampilan — balasan menyusul di aplikasi');i.value=''}else toast('Tulis dulu, Pak')});
@@ -843,31 +764,29 @@ $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click(
 const sheet=$('#sheet');
 function openSheet(){sheet.classList.add('open')}
 function closeSheet(){sheet.classList.remove('open')}
-$('#btnTasks').addEventListener('click',openSheet);
 $('#shClose').addEventListener('click',closeSheet);
 $('#shBg').addEventListener('click',closeSheet);
-function focusCard(sel){
+function jump(sel){
   closeSheet();
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-obrolan').classList.add('on');
   $$('.navbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='obrolan'));
   const el=$(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
 }
-$('#shLihat').addEventListener('click',()=>focusCard(done?'#doneCard':'#liveCard'));
-$('#shResRow').addEventListener('click',()=>focusCard('#resCard'));
+$('#shResRow').addEventListener('click',()=>jump('#resCard'));
 
-/* ---- kendali: otoritas ---- */
-$$('.opt').forEach(o=>o.addEventListener('click',()=>{
+/* ---- kendali: otoritas / saklar / slider / penghumasan ---- */
+$$('.opt:not(.qadd)').forEach(o=>o.addEventListener('click',()=>{
   $$('.opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');
   toast('Otoritas: '+o.dataset.a+' — dipakai untuk semua tugas');
 }));
-/* ---- kendali: saklar ---- */
-$$('.tg').forEach(t=>t.addEventListener('click',()=>{
-  if(t.classList.contains('lock')){toast('PEMBAYARAN — SELALU MINTA IZIN (terkunci)');return}
-  t.classList.toggle('on');
-}));
-/* ---- kendali: slider kredit ---- */
+$$('.tg:not(.lock):not(.jtg)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
+$$('.tg.lock').forEach(t=>t.addEventListener('click',()=>toast('PEMBAYARAN — SELALU MINTA IZIN (terkunci)')));
 const ks=$('#krSlider');ks.addEventListener('input',()=>$('#krOut').textContent=ks.value+' KR');
+$$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
+  $$('#nseg .qc').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  toast('Penghumasan: '+b.dataset.n);
+}));
 
 /* ================= MESIN CONTOH: ASISTEN BEKERJA ================= */
 const C=2*Math.PI*31; let pct=34,sec=72,kr=5,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false;
@@ -879,14 +798,17 @@ function render(){
   $('#ringFg').setAttribute('stroke-dashoffset',off.toFixed(1));
   $('#pctTx').textContent=Math.round(pct)+'%';
   $('#barTx').style.width=pct+'%';
+  $('#stPct').textContent=Math.round(pct)+'%';
+  $('#stBar').style.width=pct+'%';
   $('#tTx').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
   $('#krTx').textContent=kr;$('#rxTx').textContent=(94+Math.round(Math.random()*4))+'%';
-  $('#stepTx').textContent=stepNames[pct<33?0:pct<66?1:2];
+  const step=stepNames[pct<33?0:pct<66?1:2];
+  $('#stepTx').textContent=step;
   $('#liveHdr').textContent='LANGKAH '+(pct<33?1:pct<66?2:3)+'/3';
   const sp=$('#shPctTx');if(sp)sp.textContent=Math.round(pct)+'%';
   const sb2=$('#shBarTx');if(sb2)sb2.style.width=pct+'%';
-  const ss2=$('#shStepTx');if(ss2&&!stopped&&!done)ss2.textContent=stepNames[pct<33?0:pct<66?1:2];
-  const hd=$('#hdDot');if(hd)hd.classList.toggle('show',!stopped&&!done);
+  const ss2=$('#shStepTx');if(ss2&&!stopped&&!done)ss2.textContent=step;
+  const nd=$('#navDot');if(nd)nd.classList.toggle('show',!stopped&&!done);
   pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'BEKERJA · '+Math.round(pct)+'%');
 }
 function finish(){
@@ -896,21 +818,26 @@ function finish(){
   const sk=$('#stKr');if(sk)sk.textContent=String(+sk.textContent+9);
   const sr=$('#stRun');if(sr)sr.textContent='0';
   const nw=document.createElement('div');
-  nw.innerHTML='<div class="srow"><div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">DOC</div><div class="swb"><b>Audit kode modul billing</b><small><span class="sst ok">SELESAI</span> · PDF · 9 KR</small></div><span class="arr">›</span></div>';
+  nw.innerHTML='<div class="srow"><div class="swic" style="font:700 8px var(--mono)">DOC</div><div class="swb"><b>Audit kode modul billing</b><small><span class="sst ok">SELESAI</span> · PDF · 9 KR</small></div><span class="arr">›</span></div>';
   const refEl=$('#shResRow');if(refEl&&refEl.parentNode)refEl.parentNode.insertBefore(nw.firstChild,refEl);
   $('#doneCard').style.display='block';
-  const nd=$('#navDot');if(nd)nd.classList.remove('show');
-  const hd2=$('#hdDot');if(hd2)hd2.classList.remove('show');
   $('#hdOrb').classList.remove('work');
+  const nd=$('#navDot');if(nd)nd.classList.remove('show');
+  /* strip: status selesai sekali pandang, lalu senyap (tanpa chrome permanen) */
+  const st=$('#strip');st.classList.add('ok');
+  $('#stPct').textContent='SELESAI';
+  const lb=$('#btnSPause');lb.textContent='JEDA';
+  setTimeout(()=>{st.classList.remove('on')},4000);
+  /* baris jalan di sheet */
   const sh=$('#shRun');
-  if(sh){sh.classList.add('ok');$('#shStepTx').textContent='Tuntas — 3 temuan, 1 kritis. Hasil di obrolan.';$('#shPause').style.display='none';$('#shStop').style.display='none';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
+  if(sh){sh.classList.add('ok');$('#shStepTx').textContent='Tuntas — 3 temuan, 1 kritis. Hasil di obrolan.';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
   toast('Tugas selesai, Pak — hasil masuk di obrolan');
   setTimeout(()=>{pill('','SIAP')},3500);
 }
 setInterval(()=>{
   if(paused||stopped||fin||gateUp||done)return;
   pct+=0.55;sec+=1;
-  if(pct>=45&&kr<9)kr=Math.min(9,Math.round(pct/100*9)+ (pct>55?1:0));
+  if(pct>=45&&kr<9)kr=Math.min(9,Math.round(pct/100*9)+(pct>55?1:0));
   if(pct>=60&&!gateDone){pct=60;gateUp=true;$('#gate').classList.add('show');toast('AVI butuh izin berkas, Pak')}
   if(pct>=100){pct=100;render();finish();return}
   stepEls.forEach((el,i)=>{const th=[0,33,66][i];
@@ -924,58 +851,55 @@ setInterval(()=>{
   render();
 },420);
 
+/* ---- gate izin ---- */
 $('#gateOk').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Diizinkan — AVI lanjut bekerja')});
 $('#gateSkip').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Dilewati — AVI pakai data alternatif')});
-function setPaused(v){paused=v;const lb=v?'LANJUT':'JEDA';['#btnPause','#shPause'].forEach(s=>{const b=$(s);if(b)b.textContent=lb});toast(v?'Dijeda, Pak':'Lanjut bekerja, Pak')}
-['#btnPause','#shPause'].forEach(s=>{const b=$(s);if(b)b.addEventListener('click',()=>{if(stopped||fin)return;setPaused(!paused)})});
+
+/* ---- JEDA/STOP: satu tempat — strip kendali ---- */
+function setPaused(v){paused=v;$('#btnSPause').textContent=v?'LANJUT':'JEDA';toast(v?'Dijeda, Pak':'Lanjut bekerja, Pak')}
+$('#btnSPause').addEventListener('click',()=>{if(stopped||fin)return;setPaused(!paused)});
 function doStop(){
   if(fin)return;
   stopped=true;paused=false;render();
   const sr=$('#stRun');if(sr)sr.textContent='0';
   $('#liveCard').classList.add('stop');
   $('#liveHdr').textContent='DIHENTIKAN';
-  const nd=$('#navDot');if(nd)nd.classList.remove('show');
-  const hd=$('#hdDot');if(hd)hd.classList.remove('show');
   $('#hdOrb').classList.remove('work');
+  const nd2=$('#navDot');if(nd2)nd2.classList.remove('show');
   $('#stepTx').innerHTML='<span style="color:var(--red)">Dihentikan oleh Pak — 4 KR terpakai.</span>';
-  ['#btnPause','#shStop'].forEach(s=>{const b=$(s);if(b)b.style.display='none'});
+  const st=$('#strip');st.classList.add('bad');$('#stPct').textContent='STOP';
+  setTimeout(()=>{st.classList.remove('on')},3800);
   const sh=$('#shRun');
-  if(sh){sh.classList.add('stopped');$('#shStepTx').textContent='Dihentikan oleh Pak — 4 KR terpakai.';$('#shPause').style.display='none';$('#shStop').style.display='none'}
+  if(sh){sh.classList.add('stopped');$('#shStepTx').textContent='Dihentikan oleh Pak — 4 KR terpakai.'}
   toast('Tugas dihentikan, Pak');
 }
-$('#btnStop').addEventListener('click',doStop);
-$('#shStop').addEventListener('click',doStop);
+$('#btnSStop').addEventListener('click',doStop);
+
+/* ---- log proses di kartu live ---- */
 $('#btnExp').addEventListener('click',e=>{
   const ex=$('#exp');ex.classList.toggle('open');
   e.target.textContent=ex.classList.contains('open')?'TUTUP PROSES':'LIHAT PROSES';
 });
 
-/* ================= v6: MULAI CEPAT · JADWAL · KALENDER · PENGHUMASAN ================= */
-/* mulai cepat → antre (pola Devin Template Gallery) */
+/* ---- strip & sheet: lompat ke kartu ---- */
+$('#stripJump').addEventListener('click',()=>jump(done?'#doneCard':'#liveCard'));
+$('#shLihat').addEventListener('click',()=>jump(done?'#doneCard':'#liveCard'));
+
+/* ---- antre: tambah dari mulai cepat, batal ---- */
 function bindCancel(btn){if(!btn)return;btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.srow').remove();const st=$('#stQueue');if(st)st.textContent=Math.max(0,+st.textContent-1);toast('Antrean dibatalkan, Pak')})}
 $$('.qcancel').forEach(bindCancel);
 $$('.qadd').forEach(b=>b.addEventListener('click',()=>{
   const row=document.createElement('div');row.className='srow';
-  row.innerHTML='<div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">★</div>'+
+  row.innerHTML='<div class="swic" style="font:700 8px var(--mono)">★</div>'+
     '<div class="swb"><b>'+b.dataset.t+'</b><small>Mulai cepat — urutan diatur AVI</small></div>'+
-    '<button class="btn red qcancel" style="padding:6px 10px;font-size:10px">BATAL</button>';
+    '<button class="btn red qcancel" style="padding:5px 9px;font-size:9.5px">BATAL</button>';
   $('#queueList').appendChild(row);bindCancel(row.querySelector('.qcancel'));
   const st=$('#stQueue');if(st)st.textContent=String(+st.textContent+1);
   toast('Masuk antre, Pak — '+b.dataset.t);
 }));
-/* jadwal: jeda & test run (pola Manus/Devin Automations) */
-$$('.jtg').forEach(t=>t.addEventListener('click',()=>{
-  toast(t.classList.contains('on')?'Jadwal aktif — COMING SOON':'Jadwal dijeda — COMING SOON');
-}));
-$$('.jtest').forEach(b=>b.addEventListener('click',()=>toast('Test run jadwal — COMING SOON')));
-$$('#calWeek .cald').forEach(c=>c.addEventListener('click',()=>toast('Kalender jadwal — COMING SOON')));
-/* penghumasan (pola Devin: tiap run / hanya gagal / hanya sukses) */
-$$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
-  $$('#nseg .qc').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-  toast('Penghumasan: '+b.dataset.n);
-}));
+$$('.jtg').forEach(t=>t.addEventListener('click',()=>toast('Jadwal — COMING SOON')));
 
-/* ================= MODE SUARA LIVE (pola: Gemini Live · Agora · Sara) ================= */
+/* ================= MODE SUARA (pola: Sesame · Gemini Live · Agora · Sara) ================= */
 const lv=$('#liveov');let lvT=[];
 function lvBars(){const w=$('#wave');if(!w||w.children.length)return;
   for(let i=0;i<23;i++){const b=document.createElement('i');
@@ -990,7 +914,7 @@ function lvOpen(){lvBars();lv.classList.add('open');
   lvT.push(setTimeout(()=>{L[0].classList.add('show')},900));
   lvT.push(setTimeout(()=>{st.textContent='MERANCANG JAWAB…'},1900));
   lvT.push(setTimeout(()=>{L[1].classList.add('show')},2600));
-  lvT.push(setTimeout(()=>{L[2].classList.add('show');st.textContent='PAK MENYELING · DILAYANI'},4200));
+  lvT.push(setTimeout(()=>{L[2].classList.add('show');st.textContent='PAK MENYELA · DILAYANI'},4200));
   lvT.push(setTimeout(()=>{st.textContent='MENDENGARKAN…'},5800));
 }
 function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[]}
