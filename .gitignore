@@ -84,3 +84,7 @@ app/src/main/java/com/anztdree/avi/image/
 /public/logo.svg
 /public/robots.txt
 /.github/workflows/diag-*.yml
+# symlink wrapper preview (bukan modul Android)
+/app/layout.tsx
+/app/page.tsx
+/app/globals.css
