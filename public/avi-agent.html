@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v9</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v10</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v9 — BERADA BERSAMA ASISTEN
+   AVI v10 — ORB + OBROLAN SAAT INI
+   · Arahan Pak: orb DISSETUJUI — dipertahankan.
+     Yang tampil hanya ORB + OBROLAN SAAT INI.
+     Riwayat chat TERSEMBUNYI DI ATAS: afordansi tipis di
+     puncak → panel melorot dari atas, lama tak mengganggu.
    · Kaya & hidup: latar berlapis, orb kehadiran besar, detail
      holografik — bukan minimalis.
    · Orb = AVI. Lingkungan = ruang AVI. Pak berada DI DALAMNYA.
@@ -207,6 +211,33 @@ main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:0 16px 10px}
 .brief small{display:block;color:var(--dim);font-size:11.5px;font-weight:400;line-height:1.35}
 .brief .cap{font-size:10.5px;color:var(--dim2);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
 
+/* riwayat chat — TERSEMBUNYI DI ATAS (arahan Pak v10) */
+#histBar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% + 32px);margin:0 -16px;padding:9px 0 7px;
+  font:700 8.5px var(--mono);letter-spacing:2px;color:var(--dim2);background:linear-gradient(180deg,var(--bg) 45%,transparent);transition:color .2s}
+#histBar:hover{color:var(--cyan)}
+#histBar .ch{display:inline-block;transition:transform .3s;font-size:10px}
+#histBar.open .ch{transform:rotate(180deg)}
+#histBg{position:absolute;inset:0;z-index:54;background:rgba(3,6,11,.52);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}
+#histBg.open{opacity:1;pointer-events:auto}
+html[data-theme="siang"] #histBg{background:rgba(90,110,140,.28)}
+#histPanel{position:absolute;top:60px;left:10px;right:10px;z-index:55;max-height:calc(100% - 240px);overflow-y:auto;
+  background:var(--pan);border:1px solid var(--line2);border-radius:18px;padding:14px 14px 12px;backdrop-filter:blur(14px);
+  box-shadow:0 18px 50px rgba(0,0,0,.5);opacity:0;transform:translateY(-12px) scale(.985);pointer-events:none;transition:.32s cubic-bezier(.32,.72,.24,1)}
+#histPanel.open{opacity:1;transform:none;pointer-events:auto}
+html[data-theme="siang"] #histPanel{box-shadow:0 18px 50px rgba(40,60,90,.25)}
+.hhd{display:flex;align-items:center;gap:9px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.hhd b{font-size:11.5px;font-weight:700;letter-spacing:2.5px}
+.hhd small{color:var(--dim2);font-size:10px;font-weight:500}
+.hhd .shx{margin-left:auto}
+.hrow{display:flex;align-items:center;gap:10px;padding:9px 4px;border-top:1px solid var(--line);cursor:pointer;transition:.2s;border-radius:8px}
+.hrow:hover{background:var(--cyanSoft)}
+.hrow .hic{width:28px;height:28px;border-radius:9px;background:var(--cyanSoft);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.hrow .htx{flex:1;min-width:0}
+.hrow b{font-size:12.5px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hrow small{color:var(--dim);font-size:10px}
+.hrow .arr{margin-left:auto;color:var(--dim2);flex:none}
+.hcap{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);color:var(--dim2);font-size:10.5px;flex-wrap:wrap}
+
 /* obrolan */
 .msg{display:flex;gap:9px;margin-top:14px;align-items:flex-end}
 .msg .mav{width:24px;height:24px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 32%,#BDF3FF 0%,var(--cyan) 45%,#0B5E75 100%);box-shadow:0 0 10px var(--glow);animation:nafas 3.6s ease-in-out infinite}
@@ -371,6 +402,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <!-- ================= OBROLAN ================= -->
     <section class="view on" id="v-obrolan">
 
+      <!-- riwayat chat: tersembunyi di atas — hanya obrolan saat ini yang tampil -->
+      <button id="histBar" aria-label="Buka riwayat obrolan"><span class="ch">⌃</span> RIWAYAT OBROLAN TERSEMBUNYI · <span id="histCount">6</span></button>
+
       <!-- STAGE PRESENSI: berada bersama AVI -->
       <div id="stage">
         <div class="stgTop">
@@ -525,6 +559,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     </section>
   </main>
 
+  <!-- RIWAYAT CHAT: tersembunyi di atas, melorot saat dipanggil -->
+  <div id="histBg"></div>
+  <div id="histPanel" class="scr">
+    <div class="hhd"><b>RIWAYAT OBROLAN</b><small>hanya obrolan saat ini yang tampil</small><button class="shx" id="histX">✕</button></div>
+    <div class="daylab" style="margin-top:10px">HARI INI</div>
+    <div id="histToday"><div class="empty">Masih berlangsung di bawah, Pak — jadwal & tugas hari ini.</div></div>
+    <div class="daylab">KEMARIN</div>
+    <div class="hrow"><span class="hic">✉</span><div class="htx"><b>Draf email ke Bu Sari</b><small>Tuntas · terkirim setelah izin Pak</small></div><span class="arr">›</span></div>
+    <div class="hrow"><span class="hic">◔</span><div class="htx"><b>Riset harga tiket Surabaya–Bali</b><small>Tuntas · 3 opsi termurah</small></div><span class="arr">›</span></div>
+    <div class="daylab">SENIN</div>
+    <div class="hrow"><span class="hic">▤</span><div class="htx"><b>Rekap pengeluaran mingguan</b><small>Tuntas · PDF 1 halaman</small></div><span class="arr">›</span></div>
+    <div class="daylab">MINGGU LALU</div>
+    <div class="hrow"><span class="hic">✦</span><div class="htx"><b>Ide nama produk baru</b><small>Tuntas · 12 opsi + alasan</small></div><span class="arr">›</span></div>
+    <div class="hrow"><span class="hic">✉</span><div class="htx"><b>Balasan penawaran PT Sinar</b><small>Draf · menunggu tinjauan Pak</small></div><span class="arr">›</span></div>
+    <div class="hrow"><span class="hic">▤</span><div class="htx"><b>Cek stok gudang</b><small>Tuntas · tabel rapi</small></div><span class="arr">›</span></div>
+    <div class="hcap">Semua tersimpan aman, Pak — muncul saat dibutuhkan.<span class="vtag soon">BUKA PENUH — COMING SOON</span></div>
+  </div>
+
   <!-- komposer: TANPA LAMPIRAN -->
   <div class="composer">
     <div class="cinWrap"><input id="cin" placeholder="Tulis apa saja, Pak…"/></div>
@@ -610,7 +662,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   </div>
 </div>
 
-<div class="note">v9 · BERADA BERSAMA ASISTEN — AGENT HIDUP DI DALAM AVI · JARVIS REACTOR · SIRI GLOW · SNAPSHOT · PI · SESAME</div>
+<div class="note">v10 · ORB + OBROLAN SAAT INI · RIWAYAT TERSEMBUNYI DI ATAS · AGENT HIDUP DI DALAM AVI · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -648,6 +700,15 @@ $('#hdPill').addEventListener('click',openSheet);
 /* ---- obrolan ---- */
 $('#btnSend').addEventListener('click',()=>{const i=$('#cin');if(i.value.trim()){toast('Baik, Pak — saya catat. Balasan penuh di aplikasi');i.value=''}else toast('Tulis dulu, Pak')});
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
+
+/* ---- riwayat chat: tersembunyi di atas ---- */
+const hBar=$('#histBar'),hPan=$('#histPanel'),hBg=$('#histBg');
+function hOpen(){hPan.classList.add('open');hBg.classList.add('open');hBar.classList.add('open');hPan.scrollTop=0}
+function hCloseS(){hPan.classList.remove('open');hBg.classList.remove('open');hBar.classList.remove('open')}
+hBar.addEventListener('click',()=>hPan.classList.contains('open')?hCloseS():hOpen());
+$('#histX').addEventListener('click',hCloseS);
+hBg.addEventListener('click',hCloseS);
+hPan.addEventListener('click',e=>{const r=e.target.closest('.hrow');if(r)toast('Percakapan lama — pratinjau penuh COMING SOON, Pak')});
 
 /* ---- sheet ---- */
 const sheet=$('#sheet');
@@ -742,6 +803,9 @@ function finish(){
   setTimeout(()=>{st.classList.remove('on')},4000);
   const sh=$('#shRun');
   if(sh){sh.classList.add('ok');const s2=$('#shStepTx');if(s2)s2.textContent='Tuntas — 2 halaman, angka sudah saya cek ulang.';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
+  const ht=$('#histToday');
+  if(ht){ht.innerHTML='<div class="hrow"><span class="hic">▤</span><div class="htx"><b>Laporan pengeluaran bulan ini</b><small>Baru saja · PDF jadi</small></div><span class="arr">›</span></div>'}
+  const hc=$('#histCount');if(hc)hc.textContent=String(+hc.textContent+1);
   setTimeout(()=>{collapseWork();ob.classList.remove('done');state('','SIAP MENEMANI')},3200);
   toast('Tuntas, Pak — laporannya menunggu di obrolan');
   setTimeout(()=>{pill('','SIAP, PAK')},3500);
