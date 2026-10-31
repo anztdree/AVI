@@ -2,13 +2,13 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>AVI MK1 · ASISTEN DENGAN KEMAMPUAN AGENT — Papan Tampilan HTML v3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
-/* ============ DASAR & VARIABEL ============ */
+/* ============ DASAR ============ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#070B12; --panel:#0B1322; --panel2:#0E1728; --line:rgba(34,211,238,.16);
@@ -17,1259 +17,721 @@
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Orbitron',sans-serif; --ui:'Rajdhani',sans-serif;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:16px;line-height:1.45;min-height:100vh;overflow-x:hidden}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:15px;line-height:1.45;overflow:hidden}
 ::selection{background:rgba(245,181,74,.35)}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input,textarea{font-family:inherit;color:var(--txt);background:none;border:none;outline:none}
+.scr{scrollbar-width:thin;scrollbar-color:rgba(34,211,238,.35) transparent}
+.scr::-webkit-scrollbar{width:5px;height:5px}
+.scr::-webkit-scrollbar-thumb{background:rgba(34,211,238,.3);border-radius:4px}
+.scr::-webkit-scrollbar-track{background:transparent}
 
-/* ============ LAPISAN EFEK LATAR (HUD) ============ */
+/* ============ LATAR MK1 ============ */
 .fx{position:fixed;inset:0;pointer-events:none;z-index:0}
 .fx-nebula{background:
-  radial-gradient(900px 500px at 12% -8%, rgba(34,211,238,.16), transparent 60%),
-  radial-gradient(800px 480px at 92% 6%, rgba(245,181,74,.10), transparent 60%),
-  radial-gradient(1000px 700px at 50% 115%, rgba(34,211,238,.08), transparent 65%);
+  radial-gradient(900px 520px at 14% -8%, rgba(34,211,238,.15), transparent 60%),
+  radial-gradient(820px 500px at 90% 8%, rgba(245,181,74,.09), transparent 60%),
+  radial-gradient(1000px 700px at 50% 115%, rgba(34,211,238,.07), transparent 65%);
   animation:drift 26s ease-in-out infinite alternate}
-@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,-26px,0) scale(1.04)}}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,-24px,0) scale(1.04)}}
 .fx-grid{background-image:
-  linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);
+  linear-gradient(rgba(34,211,238,.045) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(34,211,238,.045) 1px,transparent 1px);
   background-size:44px 44px;
-  -webkit-mask-image:radial-gradient(75% 62% at 50% 30%,#000 30%,transparent 100%);
-          mask-image:radial-gradient(75% 62% at 50% 30%,#000 30%,transparent 100%)}
-.fx-stars{background-image:
-  radial-gradient(1.2px 1.2px at 18% 22%,rgba(255,255,255,.75),transparent 55%),
-  radial-gradient(1px 1px at 64% 12%,rgba(165,243,252,.8),transparent 55%),
-  radial-gradient(1.4px 1.4px at 84% 34%,rgba(255,255,255,.5),transparent 55%),
-  radial-gradient(1px 1px at 36% 58%,rgba(245,181,74,.6),transparent 55%),
-  radial-gradient(1.2px 1.2px at 8% 74%,rgba(255,255,255,.45),transparent 55%),
-  radial-gradient(1px 1px at 72% 82%,rgba(165,243,252,.55),transparent 55%);
-  animation:twinkle 5.5s ease-in-out infinite alternate}
-@keyframes twinkle{from{opacity:.45}to{opacity:1}}
-.fx-scan{background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
-.fx-scan::after{content:"";position:absolute;left:0;right:0;height:120px;top:-120px;
-  background:linear-gradient(180deg,transparent,rgba(34,211,238,.06),transparent);
-  animation:scanmove 9s linear infinite}
-@keyframes scanmove{0%{top:-120px}60%,100%{top:110%}}
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 34%,#000 30%,transparent 100%);
+          mask-image:radial-gradient(70% 60% at 50% 34%,#000 30%,transparent 100%)}
+.fx-scan{background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(255,255,255,.012) 3px 4px)}
+.fx-sweep{background:linear-gradient(180deg,transparent,rgba(34,211,238,.05),transparent);
+  height:130px;width:100%;animation:sweep 9s linear infinite;opacity:.5}
+@keyframes sweep{from{transform:translateY(-140px)}to{transform:translateY(110vh)}}
 
-/* ============ HEADER PAPAN ============ */
-.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 18px}
-.topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 0 12px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand .tt{font-family:var(--disp);font-weight:900;font-size:19px;letter-spacing:.14em}
-.brand .tt em{font-style:normal;color:var(--cyan)}
-.brand .st{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--dim)}
-.ver-chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold);
-  border:1px dashed rgba(245,181,74,.55);border-radius:8px;padding:6px 10px;background:rgba(245,181,74,.06)}
-.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-left:auto}
-.seg button{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;padding:9px 14px;color:var(--dim);transition:.2s}
-.seg button.on{background:rgba(34,211,238,.14);color:var(--cyan);box-shadow:inset 0 0 18px rgba(34,211,238,.12)}
-.legend{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0 14px}
-.legend span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--dim);border:1px solid rgba(140,163,199,.25);border-radius:99px;padding:4px 10px}
-.legend span b{color:var(--gold);font-weight:600}
-.legend span i{color:var(--cyan);font-style:normal}
+/* ============ PANGGUNG & BINGKAI APLIKASI ============ */
+.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;z-index:2}
+.app{position:relative;width:min(430px,100%);height:min(880px,100%);display:flex;flex-direction:column;
+  background:linear-gradient(180deg,rgba(14,23,40,.94),rgba(8,14,26,.96));
+  border:1px solid rgba(34,211,238,.22);border-radius:26px;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(34,211,238,.08),0 0 60px rgba(34,211,238,.10),0 30px 80px rgba(0,0,0,.55),inset 0 0 80px rgba(34,211,238,.03)}
+@media (max-width:520px){
+  .stage{padding:0}
+  .app{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}
+  .note{display:none}
+}
+.note{position:fixed;left:0;right:0;bottom:5px;text-align:center;font:400 10px/1.4 var(--mono);color:var(--dim2);letter-spacing:.08em;z-index:1}
 
-/* ============ NAV LOMPAT LAYAR ============ */
-.jumps{position:sticky;top:0;z-index:40;display:flex;gap:8px;overflow-x:auto;padding:10px 2px;
-  background:rgba(7,11,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid rgba(34,211,238,.12);
-  scrollbar-width:none}
-.jumps::-webkit-scrollbar{display:none}
-.jumps a{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);
-  border:1px solid rgba(140,163,199,.3);border-radius:99px;padding:7px 13px;text-decoration:none;transition:.2s}
-.jumps a b{color:var(--cyan);font-weight:600;margin-right:5px}
-.jumps a.on{color:var(--gold);border-color:rgba(245,181,74,.65);background:rgba(245,181,74,.08);box-shadow:0 0 14px rgba(245,181,74,.15)}
-
-/* ============ PAPAN & LAYAR ============ */
-.board{padding:26px 0 10px}
-.screen{display:grid;grid-template-columns:minmax(0,412px) minmax(280px,470px);gap:30px;justify-content:center;
-  align-items:start;scroll-margin-top:130px;padding:18px 0 26px;animation:rise .7s ease both}
-@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-body.satu .screen{display:none}
-body.satu .screen.on{display:grid;animation:rise .45s ease both}
-.scr-head{grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.scr-num{font-family:var(--disp);font-weight:900;font-size:26px;color:var(--cyan);text-shadow:0 0 18px rgba(34,211,238,.5)}
-.scr-tt{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.16em}
-.scr-sub{font-size:13.5px;color:var(--dim)}
-.pola{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--cyan);
-  border:1px solid rgba(34,211,238,.4);border-radius:6px;padding:3px 8px;background:rgba(34,211,238,.07)}
-.pola.gd{color:var(--gold);border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.07)}
-.scr-notes{background:rgba(11,19,34,.75);border:1px solid rgba(140,163,199,.2);border-radius:14px;padding:16px 18px}
-.scr-notes h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--cyan);margin-bottom:10px}
-.scr-notes ul{list-style:none;display:grid;gap:7px}
-.scr-notes li{font-size:13.5px;color:#C7D6EE;padding-left:16px;position:relative}
-.scr-notes li::before{content:"▹";position:absolute;left:0;color:var(--gold)}
-.scr-notes li.warn{color:#FCA5A5}
-.scr-notes li.warn::before{content:"✕";color:var(--red)}
-.scr-notes li.rule{color:var(--gold)}
-.scr-notes li.rule::before{content:"◆";color:var(--gold)}
-.flow-link{display:flex;justify-content:center;gap:10px;align-items:center;padding:6px 0;
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--gold);opacity:.85}
-.flow-link::before,.flow-link::after{content:"";width:70px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,181,74,.6))}
-.flow-link::after{background:linear-gradient(90deg,rgba(245,181,74,.6),transparent)}
-body.satu .flow-link{display:none}
-
-/* ============ BINGKAI PONSEL ============ */
-.phone{width:412px;max-width:100%;height:846px;border-radius:36px;position:relative;
-  background:#04070D;border:1px solid rgba(34,211,238,.35);
-  box-shadow:0 0 0 7px #0A101C,0 0 0 8px rgba(34,211,238,.25),0 24px 70px rgba(0,0,0,.65),0 0 60px rgba(34,211,238,.10);
-  display:flex;flex-direction:column;overflow:hidden;margin:0 auto}
-.punch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:15px;height:15px;border-radius:50%;
-  background:#01030a;border:1px solid #16233B;z-index:60;box-shadow:inset 0 0 4px rgba(34,211,238,.4)}
-.statusbar{display:flex;justify-content:space-between;align-items:center;padding:13px 24px 6px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim)}
-.statusbar .r{display:flex;align-items:center;gap:7px}
-.batt{width:20px;height:10px;border:1px solid var(--dim2);border-radius:3px;position:relative;padding:1.5px}
-.batt::before{content:"";display:block;height:100%;width:87%;background:var(--green);border-radius:1px}
-.batt::after{content:"";position:absolute;right:-3.5px;top:2.5px;width:2px;height:5px;background:var(--dim2)}
-.appbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(34,211,238,.12);
-  background:rgba(5,9,16,.7);position:relative;z-index:5}
-.appbar .tt{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.18em}
-.appbar .sb{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim)}
-.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid rgba(140,163,199,.3);display:flex;
-  align-items:center;justify-content:center;color:var(--dim);transition:.2s;flex:0 0 auto}
-.icon-btn:hover{color:var(--cyan);border-color:rgba(34,211,238,.5)}
-.appbar .sp{margin-left:auto}
-.scr-body{flex:1;overflow-y:auto;padding:14px 14px 20px;position:relative}
-.scr-body::-webkit-scrollbar{width:4px}
-.scr-body::-webkit-scrollbar-thumb{background:rgba(34,211,238,.35);border-radius:9px}
-.scr-body::-webkit-scrollbar-track{background:transparent}
-
-/* ============ NAV BAWAH ============ */
-.bottomnav{display:flex;align-items:center;border-top:1px solid rgba(34,211,238,.14);
-  background:rgba(4,8,14,.94);padding:8px 12px calc(10px + env(safe-area-inset-bottom));gap:4px}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim2);
-  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;padding:7px 0;transition:.2s}
-.bn svg{width:19px;height:19px}
-.bn.on{color:var(--cyan);text-shadow:0 0 12px rgba(34,211,238,.6)}
-
-/* ============ ORB REAKTOR MK1 ============ */
-.orb{width:74px;height:74px;border-radius:50%;position:relative;flex:0 0 auto;
-  background:radial-gradient(circle at 35% 30%,#CFFAFE 0%,#67E8F9 22%,#22D3EE 45%,#0E7490 72%,#062A33 100%);
-  box-shadow:0 0 34px rgba(34,211,238,.75),0 0 90px rgba(34,211,238,.3),inset -8px -10px 22px rgba(0,0,0,.55);
-  animation:breathe 3.2s ease-in-out infinite}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
-.orb::before{content:"";position:absolute;inset:-8px;border-radius:50%;
-  border:1.5px solid transparent;border-top-color:var(--cyan);border-right-color:rgba(34,211,238,.4);
-  animation:spin 5.5s linear infinite;filter:drop-shadow(0 0 6px rgba(34,211,238,.8))}
-.orb::after{content:"";position:absolute;inset:-16px;border-radius:50%;
-  border:1px dashed rgba(245,181,74,.4);animation:spin 15s linear infinite reverse}
+/* ============ ORB REAKTOR ============ */
+.orb{position:relative;border-radius:50%;flex:none;
+  background:radial-gradient(circle at 35% 32%, #c4f4ff 0%, #22d3ee 30%, #0e7490 56%, #062b36 80%, #02141b 100%);
+  box-shadow:0 0 16px rgba(34,211,238,.5), inset 0 0 10px rgba(255,255,255,.22)}
+.orb::after{content:'';position:absolute;inset:20%;border-radius:50%;
+  background:radial-gradient(circle at 40% 38%, #ffe9b8, #f5b54a 46%, #a86d18 78%, transparent 79%);
+  opacity:.92;animation:corePulse 3.4s ease-in-out infinite}
+@keyframes corePulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.12);opacity:1}}
+.orb.ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;
+  border:1px solid rgba(34,211,238,.3);border-top-color:rgba(245,181,74,.75);animation:spin 7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.orb .core{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle,#FFFBEB,rgba(245,181,74,.7) 60%,transparent);
-  filter:blur(2px);animation:pulse 2.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
-.orb-sm{width:34px;height:34px;box-shadow:0 0 14px rgba(34,211,238,.6),inset -3px -4px 9px rgba(0,0,0,.5)}
-.orb-sm::before{inset:-4px;border-width:1px}
-.orb-sm::after{inset:-8px}
+.orb.work{box-shadow:0 0 22px rgba(245,181,74,.45), inset 0 0 10px rgba(255,255,255,.25)}
+.orb.work::before{animation-duration:2.2s}
 
-/* ============ KARTU / PANEL / TEKS ============ */
-.card{background:linear-gradient(180deg,rgba(14,23,40,.92),rgba(9,15,28,.92));
-  border:1px solid rgba(140,163,199,.22);border-radius:14px;padding:14px;position:relative;margin-bottom:10px}
-.card.hud::before{content:"";position:absolute;top:-1px;left:-1px;width:16px;height:16px;
-  border-top:2px solid var(--gold);border-left:2px solid var(--gold);border-top-left-radius:14px}
-.card.hud::after{content:"";position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;
-  border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);border-bottom-right-radius:14px}
-.k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--dim);display:block;margin-bottom:6px}
-.mono{font-family:var(--mono)}
-.dim{color:var(--dim)}.dim2{color:var(--dim2)}
-.cy{color:var(--cyan)}.gd{color:var(--gold)}.gr{color:var(--green)}.rd{color:var(--red)}
-.h{font-weight:700;font-size:16.5px;letter-spacing:.02em}
-.sm{font-size:13px}
-.xs{font-size:11.5px}
-.row{display:flex;align-items:center;gap:10px}
-.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* ============ HEADER APLIKASI ============ */
+header{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);flex:none;
+  background:linear-gradient(180deg,rgba(34,211,238,.05),transparent)}
+.hd-name{font:700 17px var(--disp);letter-spacing:.14em;color:var(--txt)}
+.hd-sub{font:600 9.5px var(--mono);letter-spacing:.22em;color:var(--dim);margin-top:2px}
+.pill{margin-left:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line);border-radius:999px;
+  font:600 10px var(--mono);letter-spacing:.14em;color:var(--dim);background:rgba(11,19,34,.7)}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.pill.work{border-color:rgba(245,181,74,.45);color:var(--gold)}
+.pill.work i{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.pill.done{border-color:rgba(52,211,153,.45);color:var(--green)}
+.pill.done i{background:var(--green);box-shadow:0 0 8px var(--green)}
 
-/* ============ TOMBOL ============ */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;
-  border-radius:12px;font-weight:700;font-size:14px;letter-spacing:.1em;transition:.2s;position:relative}
-.btn svg{width:17px;height:17px}
-.btn-gold{background:linear-gradient(135deg,#F7C56A,#F5B54A 50%,#D9932F);color:#1A1206;
-  box-shadow:0 8px 26px rgba(245,181,74,.35),inset 0 1px 0 rgba(255,255,255,.55)}
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(245,181,74,.5)}
-.btn-cyan{border:1px solid rgba(34,211,238,.6);color:var(--cyan);background:rgba(34,211,238,.08)}
-.btn-cyan:hover{background:rgba(34,211,238,.16)}
-.btn-red{border:1px solid rgba(248,113,113,.55);color:var(--red);background:rgba(248,113,113,.06)}
-.btn-ghost{border:1px solid rgba(140,163,199,.35);color:var(--dim)}
-.btn-ghost:hover{color:var(--txt)}
-.btn.sm{padding:9px 12px;font-size:11.5px;letter-spacing:.08em;width:auto}
-
-/* ============ BADGE ============ */
-.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;
-  letter-spacing:.16em;border-radius:6px;padding:4px 8px;border:1px solid}
-.badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite}
-.badge.gold{color:var(--gold);border-color:rgba(245,181,74,.55);background:rgba(245,181,74,.09)}
-.badge.cyan{color:var(--cyan);border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.09)}
-.badge.green{color:var(--green);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.08)}
-.badge.red{color:var(--red);border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.08)}
-.badge.dim{color:var(--dim2);border-color:rgba(91,112,153,.5);background:rgba(91,112,153,.08)}
-.badge.still::before{animation:none}
-.soon{display:inline-flex;align-items:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
-  color:var(--gold);border:1px dashed rgba(245,181,74,.6);border-radius:6px;padding:3px 7px;
-  background:rgba(245,181,74,.05);white-space:nowrap}
-
-/* ============ CHIP ============ */
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;letter-spacing:.04em;
-  border:1px solid rgba(140,163,199,.35);border-radius:99px;padding:7px 13px;color:var(--dim);transition:.2s}
-.chip svg{width:14px;height:14px}
-.chip.sel{color:var(--cyan);border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.1);
-  box-shadow:0 0 14px rgba(34,211,238,.15)}
-
-/* ============ FORM ============ */
-.input,.textarea{width:100%;background:rgba(5,9,16,.7);border:1px solid rgba(140,163,199,.3);
-  border-radius:11px;padding:12px 13px;font-size:14.5px;color:var(--txt)}
-.input:focus,.textarea:focus{border-color:rgba(34,211,238,.65);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
-.auth-card{border:1px solid rgba(140,163,199,.3);border-radius:12px;padding:11px 12px;cursor:pointer;transition:.2s}
-.auth-card .t{font-weight:700;font-size:13.5px;letter-spacing:.08em;display:flex;gap:7px;align-items:center}
-.auth-card .d{font-size:11px;color:var(--dim);margin-top:3px}
-.auth-card.sel{border-color:rgba(245,181,74,.7);background:rgba(245,181,74,.08);box-shadow:0 0 18px rgba(245,181,74,.12)}
-.auth-card.sel .t{color:var(--gold)}
-.slider{-webkit-appearance:none;width:100%;height:4px;border-radius:9px;outline:none;margin:14px 0 6px;
-  background:linear-gradient(90deg,var(--cyan) 0 64%,rgba(140,163,199,.3) 64%)}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
-  background:var(--gold);border:2px solid #1A1206;box-shadow:0 0 12px rgba(245,181,74,.8);cursor:pointer}
+/* ============ VIEW & NAV BAWAH ============ */
+.view{display:none;flex:1;min-height:0;flex-direction:column}
+.view.on{display:flex}
+.scroll{flex:1;min-height:0;overflow-y:auto;padding:14px 14px 18px}
+nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14,26,.9);backdrop-filter:blur(6px);
+  padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
+.navbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border-radius:12px;color:var(--dim2);position:relative}
+.navbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.navbtn span{font:600 9px var(--mono);letter-spacing:.18em}
+.navbtn.on{color:var(--cyan);background:rgba(34,211,238,.07)}
+.navbtn .dot{position:absolute;top:5px;right:calc(50% - 16px);width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 7px var(--gold);animation:blink 1.8s infinite;display:none}
+.navbtn .dot.show{display:block}
 
 /* ============ OBROLAN ============ */
-.msg{display:flex;gap:9px;margin-bottom:12px}
-.msg .bub{max-width:82%;border-radius:14px;padding:10px 13px;font-size:14.5px;line-height:1.5}
-.msg.avi .bub{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);border-top-left-radius:4px}
-.msg.me{flex-direction:row-reverse}
-.msg.me .bub{background:rgba(140,163,199,.14);border:1px solid rgba(140,163,199,.3);border-top-right-radius:4px}
-.msg .av{flex:0 0 auto;margin-top:2px}
-.composer{display:flex;align-items:center;gap:8px;border-top:1px solid rgba(34,211,238,.14);
-  background:rgba(4,8,14,.94);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
-.composer .field{flex:1;display:flex;align-items:center;gap:8px;background:rgba(140,163,199,.1);
-  border:1px solid rgba(140,163,199,.28);border-radius:99px;padding:9px 15px}
-.composer .field input{flex:1;font-size:14px}
-.composer .field input::placeholder{color:var(--dim2)}
+.thread{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:9px;max-width:100%}
+.row.me{justify-content:flex-end}
+.av{width:26px;height:26px;flex:none;margin-top:2px}
+.bub{padding:10px 13px;border-radius:14px;max-width:82%}
+.row.me .bub{background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.20);border-bottom-right-radius:4px;color:var(--txt)}
+.row.avi .bub{background:rgba(14,23,40,.85);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--txt)}
+.bub .who{font:600 8.5px var(--mono);letter-spacing:.2em;color:var(--dim2);margin-bottom:4px}
+.attach{display:inline-flex;align-items:center;gap:6px;margin-top:7px;padding:4px 9px;border:1px solid var(--line);border-radius:8px;
+  font:600 10px var(--mono);color:var(--cyan);background:rgba(34,211,238,.06)}
+.salam{position:relative;overflow:hidden;text-align:center;padding:20px 16px 18px;border:1px solid var(--line);border-radius:16px;
+  background:radial-gradient(120% 100% at 50% 0%, rgba(34,211,238,.10), rgba(11,19,34,.6) 60%)}
+.salam::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.8}
+.salam h1{font:700 15px var(--disp);letter-spacing:.1em;margin:10px 0 6px}
+.salam h1 b{color:var(--gold)}
+.salam p{font-size:13px;color:var(--dim);max-width:300px;margin:0 auto}
+.tele{margin-top:11px;font:600 9px var(--mono);letter-spacing:.2em;color:var(--cyan);opacity:.85}
 
-/* ============ KARTU RENCANA RINGKAS (1 TAP) ============ */
-.plan{margin-top:10px;background:rgba(7,11,18,.7);border:1px solid rgba(245,181,74,.4);border-radius:12px;padding:12px}
-.plan .pl-t{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-.plan ol{list-style:none;display:grid;gap:6px;margin-bottom:10px}
-.plan ol li{display:flex;gap:9px;align-items:center;font-size:13.5px;color:#DCE7F7}
-.plan ol li i{font-style:normal;width:18px;height:18px;border-radius:50%;flex:0 0 auto;
-  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;
-  border:1px solid rgba(245,181,74,.55);color:var(--gold)}
-.plan .pl-m{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--dim);margin-bottom:10px}
+/* ---- kartu tugas (kemampuan agent) ---- */
+.card{border:1px solid rgba(34,211,238,.22);border-radius:16px;background:linear-gradient(180deg,rgba(14,23,40,.92),rgba(9,15,28,.94));
+  overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.card .ch{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--line);
+  font:600 9px var(--mono);letter-spacing:.22em;color:var(--dim)}
+.card .ch .r{margin-left:auto;color:var(--cyan)}
+.card.gold{border-color:rgba(245,181,74,.4)}
+.card.ok{border-color:rgba(52,211,153,.35)}
+.card.stop{border-color:rgba(248,113,113,.4)}
+.cb{padding:12px 13px}
+.ttl{font:700 14.5px var(--ui);letter-spacing:.03em}
+.mut{font-size:12px;color:var(--dim);margin-top:3px}
+.steps{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.st{display:flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid rgba(34,211,238,.12);border-radius:10px;background:rgba(11,19,34,.5)}
+.st i{width:18px;height:18px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font:600 9px var(--mono);border:1px solid var(--dim2);color:var(--dim2)}
+.st.done i{border-color:var(--green);color:var(--green);background:rgba(52,211,153,.1)}
+.st.run{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.06)}
+.st.run i{border-color:var(--cyan);color:var(--cyan);animation:blink 1.4s infinite}
+.st .t{font-size:13px;font-weight:600}
+.st .s{margin-left:auto;font:600 8.5px var(--mono);letter-spacing:.12em;color:var(--dim2)}
+.st.done .s{color:var(--green)}
+.st.run .s{color:var(--cyan)}
+.kr{font:600 8.5px var(--mono);color:var(--gold);letter-spacing:.05em;flex:none;margin-left:6px}
+.foot{display:flex;align-items:center;gap:8px;padding:9px 13px;border-top:1px solid var(--line);background:rgba(8,14,26,.5)}
+.btn{padding:9px 14px;border-radius:10px;font:700 11.5px var(--ui);letter-spacing:.1em;border:1px solid var(--line);color:var(--dim)}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn.gold{background:linear-gradient(180deg,#F7C25C,#E9A93B);color:#1A1206;border:none;box-shadow:0 4px 18px rgba(245,181,74,.3);letter-spacing:.12em}
+.btn.gold:hover{filter:brightness(1.08)}
+.btn.red{color:var(--red);border-color:rgba(248,113,113,.3)}
+.btn.red:hover{border-color:var(--red)}
+.btn.soon{opacity:.55}
+.btn.block{flex:1}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;border:1px dashed rgba(245,181,74,.4);
+  font:600 8.5px var(--mono);letter-spacing:.14em;color:var(--gold)}
 
-/* ============ LANGKAH PROSES / TIMELINE ============ */
-.step{display:flex;gap:11px;align-items:flex-start;background:rgba(11,19,34,.8);
-  border:1px solid rgba(140,163,199,.22);border-radius:12px;padding:11px 12px;margin-bottom:8px}
-.step .n{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:10.5px;border:1px solid rgba(140,163,199,.45);color:var(--dim)}
-.step.done{border-color:rgba(52,211,153,.4)}
-.step.done .n{background:rgba(52,211,153,.15);border-color:var(--green);color:var(--green)}
-.step.run{border-color:rgba(34,211,238,.65);box-shadow:0 0 18px rgba(34,211,238,.14);animation:glowcy 2s infinite}
-.step.run .n{background:rgba(34,211,238,.15);border-color:var(--cyan);color:var(--cyan)}
-@keyframes glowcy{0%,100%{box-shadow:0 0 8px rgba(34,211,238,.08)}50%{box-shadow:0 0 22px rgba(34,211,238,.28)}}
-.step .meta{flex:1}
-.step .t{font-weight:600;font-size:14px}
-.step .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* kartu live */
+.live{display:flex;gap:13px;align-items:center}
+.ringw{position:relative;width:74px;height:74px;flex:none}
+.ringw svg{transform:rotate(-90deg)}
+.ringw .bgc{fill:none;stroke:rgba(34,211,238,.14);stroke-width:6}
+.ringw .fgc{fill:none;stroke:url(#gr);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .3s}
+.ringv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ringv b{font:700 15px var(--disp);color:var(--txt)}
+.ringv span{font:600 7.5px var(--mono);letter-spacing:.14em;color:var(--dim2)}
+.lmeta{flex:1;min-width:0}
+.lstep{font:700 14px var(--ui)}
+.lstep .dotc{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);margin-right:7px;animation:blink 1.2s infinite}
+.teler{display:flex;gap:12px;margin-top:7px;font:600 9px var(--mono);letter-spacing:.1em;color:var(--dim)}
+.teler b{color:var(--cyan);font-weight:600}
+.bar{height:4px;border-radius:3px;background:rgba(34,211,238,.12);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--gold));transition:width .3s}
+.gate{display:none;margin-top:11px;padding:10px 11px;border:1px solid rgba(245,181,74,.5);border-radius:11px;background:rgba(245,181,74,.07);gap:10px;align-items:center}
+.gate.show{display:flex}
+.gate .gt{flex:1;font-size:12.5px;color:var(--txt)}
+.gate .gt b{color:var(--gold)}
+.gate .btn{padding:7px 11px;font-size:10.5px}
+.exp{display:none;margin-top:11px;border-top:1px dashed rgba(34,211,238,.25);padding-top:9px}
+.exp.open{display:block}
+.log{font:400 10px/1.75 var(--mono);color:var(--dim);white-space:pre-wrap}
+.log b{color:var(--cyan);font-weight:400}
+.log em{color:var(--gold);font-style:normal}
 
-/* ============ IZIN KILAT (1 TAP) ============ */
-.permit{display:flex;gap:10px;align-items:flex-start;background:rgba(245,181,74,.06);
-  border:1px solid rgba(245,181,74,.5);border-radius:12px;padding:11px 12px;margin-bottom:8px}
-.permit .meta{flex:1}
-.permit .t{font-weight:600;font-size:13.5px}
-.permit .d{font-size:11px;color:var(--dim);margin-top:2px}
+/* kartu hasil */
+.file{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid var(--line);border-radius:12px;background:rgba(11,19,34,.6)}
+.fic{width:40px;height:40px;flex:none;border-radius:9px;background:rgba(245,181,74,.12);border:1px solid rgba(245,181,74,.35);
+  display:flex;align-items:center;justify-content:center;font:700 8px var(--mono);color:var(--gold);letter-spacing:.05em}
+.fmeta{flex:1;min-width:0}
+.fname{font:700 13px var(--ui);letter-spacing:.02em}
+.fsub{font:600 9px var(--mono);letter-spacing:.1em;color:var(--dim2);margin-top:2px}
+.versi{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
+.vc{padding:3px 10px;border-radius:7px;border:1px solid var(--line);font:600 9.5px var(--mono);color:var(--dim);letter-spacing:.08em}
+.vc.on{border-color:var(--gold);color:var(--gold);background:rgba(245,181,74,.08)}
+.sum{font-size:13px;color:var(--txt)}
+.sum b{color:var(--green)}
+.sum em{color:var(--gold);font-style:normal}
 
-/* ============ RING PROGRES ============ */
-.ring{position:relative;width:126px;height:126px;flex:0 0 auto}
-.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-.ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .pct b{font-family:var(--disp);font-size:23px;color:var(--cyan);text-shadow:0 0 16px rgba(34,211,238,.6)}
-.ring .pct span{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:var(--dim)}
+/* ============ COMPOSER ============ */
+.composer{flex:none;display:flex;align-items:center;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom)*0);
+  border-top:1px solid var(--line);background:rgba(8,14,26,.85)}
+.cbtn{width:38px;height:38px;flex:none;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.cbtn:hover{color:var(--cyan);border-color:var(--cyan)}
+.cbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.cin{flex:1;display:flex;align-items:center;min-height:40px;padding:0 14px;border:1px solid rgba(34,211,238,.2);border-radius:999px;background:rgba(11,19,34,.8)}
+.cin input{flex:1;font-size:13.5px}
+.cin input::placeholder{color:var(--dim2)}
+.cbtn.send{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.4);color:var(--cyan)}
 
-/* ============ DOCK RUANG KERJA ============ */
-.dock{border:1px solid rgba(245,181,74,.35);border-radius:14px;overflow:hidden;background:rgba(9,14,26,.95)}
-.dock-tabs{display:flex;border-bottom:1px solid rgba(245,181,74,.25);background:rgba(245,181,74,.05)}
-.dock-tabs button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.14em;padding:9px 4px;color:var(--dim);transition:.2s}
-.dock-tabs button.on{color:var(--gold);background:rgba(245,181,74,.12);box-shadow:inset 0 -2px 0 var(--gold)}
-.dock-pane{padding:11px;min-height:148px}
-.term{font-family:var(--mono);font-size:10.8px;line-height:1.75;color:#BBF7D0}
-.term .c{color:var(--dim2)}
-.term .y{color:var(--gold)}
-.term .b{color:var(--cyan)}
-.cursor{display:inline-block;width:7px;height:13px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.fakewin{border:1px solid rgba(140,163,199,.3);border-radius:8px;overflow:hidden}
-.fakewin .bar{display:flex;gap:5px;align-items:center;padding:6px 9px;background:rgba(140,163,199,.1);
-  font-family:var(--mono);font-size:9px;color:var(--dim)}
-.fakewin .bar i{width:7px;height:7px;border-radius:50%;background:var(--dim2)}
-.fakewin .bar i:first-child{background:var(--red)}
-.fakewin .bd{padding:10px;display:grid;gap:7px}
-.skel{height:8px;border-radius:4px;background:rgba(140,163,199,.18)}
-.minibars{display:flex;align-items:flex-end;gap:5px;height:56px;padding:4px 2px}
-.minibars i{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.25))}
-.minibars i:nth-child(2n){background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.25))}
+/* ============ TUGAS ============ */
+.h2{font:700 13px var(--disp);letter-spacing:.14em;margin-bottom:2px}
+.sub2{font:600 9px var(--mono);letter-spacing:.16em;color:var(--dim2);margin-bottom:13px}
+.search{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:11px;background:rgba(11,19,34,.6);margin-bottom:10px}
+.search svg{width:15px;height:15px;stroke:var(--dim2);fill:none;stroke-width:1.7;stroke-linecap:round}
+.search input{flex:1;font-size:13px}
+.search input::placeholder{color:var(--dim2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:5px 12px;border:1px solid var(--line);border-radius:999px;font:600 10px var(--mono);letter-spacing:.1em;color:var(--dim)}
+.chip.on{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.08)}
+.tlist{display:flex;flex-direction:column;gap:8px}
+.titem{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid rgba(34,211,238,.14);border-radius:13px;background:rgba(11,19,34,.55)}
+.titem:hover{border-color:rgba(34,211,238,.4)}
+.tico{width:36px;height:36px;flex:none;border-radius:10px;display:flex;align-items:center;justify-content:center;font:700 9px var(--mono)}
+.tico.cy{background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:var(--cyan)}
+.tico.gd{background:rgba(245,181,74,.1);border:1px solid rgba(245,181,74,.3);color:var(--gold)}
+.tbody{flex:1;min-width:0}
+.tname{font:700 13.5px var(--ui)}
+.tsub{font:600 9px var(--mono);letter-spacing:.1em;color:var(--dim2);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.sst{display:inline-flex;align-items:center;gap:5px}
+.sst::before{content:'';width:6px;height:6px;border-radius:50%}
+.sst.ok{color:var(--green)}.sst.ok::before{background:var(--green)}
+.sst.run{color:var(--cyan)}.sst.run::before{background:var(--cyan);animation:blink 1.2s infinite}
+.sst.q{color:var(--dim)}.sst.q::before{background:var(--dim2)}
+.sst.st{color:var(--red)}.sst.st::before{background:var(--red)}
+.titem .arr{color:var(--dim2);font-size:16px}
+.moret{margin-top:12px;text-align:center}
 
-/* ============ ARTEFAK PDF ============ */
-.pdfpage{width:158px;border-radius:6px;background:#F5F7FA;color:#0F172A;padding:11px 11px 8px;flex:0 0 auto;
-  box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.25);position:relative;overflow:hidden}
-.pdfpage .bar{display:flex;justify-content:space-between;font-family:var(--mono);font-size:6.5px;
-  letter-spacing:.12em;color:#B45309;border-bottom:1.5px solid #F5B54A;padding-bottom:4px;margin-bottom:7px;font-weight:600}
-.pdfpage .bar b{color:#0E7490}
-.pdfpage h5{font-size:9px;font-weight:700;color:#0F172A;margin-bottom:6px;line-height:1.3}
-.pdfpage .ln{height:4px;border-radius:2px;background:#CBD5E1;margin-bottom:4px}
-.pdfpage .ln.w60{width:60%}.pdfpage .ln.w80{width:80%}
-.pdfpage .foot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:6px;color:#64748B;margin-top:8px;border-top:1px solid #E2E8F0;padding-top:4px}
-.vchip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;border:1px solid rgba(140,163,199,.35);
-  color:var(--dim);border-radius:8px;padding:6px 12px}
-.vchip.on{color:var(--gold);border-color:rgba(245,181,74,.65);background:rgba(245,181,74,.09)}
+/* ============ KENDALI ============ */
+.sect{margin-bottom:14px}
+.sect h3{font:600 9px var(--mono);letter-spacing:.22em;color:var(--dim2);margin-bottom:8px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(11,19,34,.55);text-align:left}
+.opt b{display:flex;align-items:center;gap:6px;font:700 13px var(--ui);letter-spacing:.04em}
+.opt small{display:block;margin-top:3px;font-size:11px;color:var(--dim2)}
+.opt.on{border-color:var(--gold);background:rgba(245,181,74,.07);box-shadow:0 0 18px rgba(245,181,74,.08)}
+.opt.on b{color:var(--gold)}
+.note1{margin-top:9px;font-size:11.5px;color:var(--dim)}
+.note1 b{color:var(--cyan);font-weight:600}
+.sw{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid rgba(34,211,238,.12);border-radius:12px;background:rgba(11,19,34,.5)}
+.sw+.sw{margin-top:7px}
+.swic{width:34px;height:34px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);color:var(--cyan)}
+.swic svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.swb{flex:1}
+.swb b{font:700 13px var(--ui)}
+.swb small{display:block;font-size:10.5px;color:var(--dim2);margin-top:1px}
+.tg{width:42px;height:24px;flex:none;border-radius:999px;border:1px solid var(--line);position:relative;background:rgba(11,19,34,.8);transition:.2s}
+.tg i{position:absolute;top:2.5px;left:3px;width:17px;height:17px;border-radius:50%;background:var(--dim2);transition:.2s}
+.tg.on{background:rgba(34,211,238,.25);border-color:var(--cyan)}
+.tg.on i{left:20px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.sw.lock{border-color:rgba(245,181,74,.3)}
+.tg.lock{opacity:.5}
+.slider{display:flex;align-items:center;gap:12px;padding:4px 2px}
+.slider input{flex:1;accent-color:#F5B54A;height:3px}
+.krd{font:700 13px var(--mono);color:var(--gold);min-width:52px;text-align:right}
+.logbox{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(7,11,18,.8);max-height:120px;overflow-y:auto;font:400 10px/1.8 var(--mono);color:var(--dim)}
+.logbox b{color:var(--cyan);font-weight:400}
+.logbox em{color:var(--gold);font-style:normal}
+.soonrow{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px dashed rgba(90,112,153,.4);border-radius:12px;opacity:.75}
+.soonrow+.soonrow{margin-top:7px}
+.soonrow .swb b{color:var(--dim)}
 
-/* ============ RIWAYAT ============ */
-.task{display:flex;gap:11px;align-items:center;background:rgba(11,19,34,.8);
-  border:1px solid rgba(140,163,199,.22);border-radius:13px;padding:12px;margin-bottom:9px;transition:.2s;cursor:pointer}
-.task:hover{border-color:rgba(34,211,238,.55)}
-.task .ic{width:38px;height:38px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;border:1px solid}
-.task .ic svg{width:17px;height:17px}
-.task .ic.pdf{color:var(--gold);border-color:rgba(245,181,74,.4);background:rgba(245,181,74,.08)}
-.task .ic.code{color:var(--cyan);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.08)}
-.task .ic.data{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
-.task .ic.web{color:#F0ABFC;border-color:rgba(240,171,252,.4);background:rgba(240,171,252,.08)}
-.task .meta{flex:1;min-width:0}
-.task .t{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.task .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim);margin-top:3px;display:flex;gap:9px;flex-wrap:wrap}
-
-/* ============ SAKLAR ============ */
-.sw{width:42px;height:23px;border-radius:99px;background:#1B2740;border:1px solid rgba(140,163,199,.4);
-  position:relative;transition:.25s;flex:0 0 auto}
-.sw::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
-  background:#5B7099;transition:.25s}
-.sw.on{background:rgba(34,211,238,.22);border-color:var(--cyan)}
-.sw.on::after{left:21px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
-.toolrow{display:flex;align-items:center;gap:11px;padding:11px 2px;border-bottom:1px dashed rgba(140,163,199,.18)}
-.toolrow:last-child{border-bottom:none}
-.toolrow .ic{width:32px;height:32px;border-radius:9px;border:1px solid rgba(34,211,238,.35);
-  color:var(--cyan);display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:rgba(34,211,238,.06)}
-.toolrow .ic svg{width:15px;height:15px}
-.toolrow .meta{flex:1}
-.toolrow .t{font-weight:600;font-size:14px}
-.toolrow .d{font-size:11px;color:var(--dim)}
-
-/* ============ LOG ============ */
-.log{font-family:var(--mono);font-size:10.3px;line-height:1.9;background:rgba(4,8,14,.85);
-  border:1px solid rgba(140,163,199,.25);border-radius:11px;padding:12px;max-height:180px;overflow-y:auto}
-.log::-webkit-scrollbar{width:4px}
-.log::-webkit-scrollbar-thumb{background:rgba(34,211,238,.35);border-radius:9px}
-.log .t{color:var(--dim2)}
-.log .ok{color:var(--green)}
-.log .wr{color:var(--gold)}
-.log .cy{color:var(--cyan)}
-
-/* ============ TOAST + KONTROL SATU LAYAR ============ */
-#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);z-index:90;
-  font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--cyan);
-  background:rgba(7,11,18,.95);border:1px solid rgba(34,211,238,.55);border-radius:10px;
-  padding:11px 18px;box-shadow:0 0 30px rgba(34,211,238,.25);transition:.3s;opacity:0;max-width:88vw;text-align:center}
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-#toast b{color:var(--gold)}
-.satu-ctl{position:fixed;right:22px;bottom:22px;z-index:50;display:none;gap:10px}
-body.satu .satu-ctl{display:flex}
-.satu-ctl button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(245,181,74,.55);
-  background:rgba(7,11,18,.9);color:var(--gold);font-size:19px;box-shadow:0 0 20px rgba(245,181,74,.2);transition:.2s}
-.satu-ctl button:hover{background:rgba(245,181,74,.15)}
-.satu-pos{position:fixed;left:22px;bottom:33px;z-index:50;display:none;font-family:var(--mono);
-  font-size:10.5px;letter-spacing:.2em;color:var(--dim)}
-body.satu .satu-pos{display:block}
-body.satu .satu-pos b{color:var(--gold)}
-
-/* ============ KEPUTUSAN & FOOTER ============ */
-.decisions{margin:30px 0 0;border:1px dashed rgba(245,181,74,.5);border-radius:16px;
-  background:rgba(245,181,74,.04);padding:20px 22px}
-.decisions h3{font-family:var(--disp);font-size:13px;letter-spacing:.2em;color:var(--gold);margin-bottom:12px}
-.decisions ul{list-style:none;display:grid;gap:8px}
-.decisions li{font-size:14px;color:#DCE7F7;padding-left:20px;position:relative}
-.decisions li::before{content:"◆";position:absolute;left:0;color:var(--cyan);font-size:10px;top:5px}
-footer{margin-top:34px;border-top:1px solid rgba(34,211,238,.15);padding:20px 0 30px;text-align:center;
-  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim2)}
-footer b{color:var(--gold)}
-
-/* ============ RESPONSIF ============ */
-@media (max-width:960px){
-  .screen{grid-template-columns:minmax(0,1fr)}
-  .seg{margin-left:0}
-}
-@media (max-width:460px){
-  .phone{width:100%;height:800px;border-radius:28px}
-  .scr-num{font-size:21px}
-}
+/* ============ TOAST ============ */
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:9;opacity:0;pointer-events:none;
+  padding:10px 18px;border-radius:12px;border:1px solid rgba(245,181,74,.45);background:rgba(11,19,34,.95);
+  font:600 11px var(--mono);letter-spacing:.1em;color:var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.5);transition:.25s;max-width:86%;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
-<body class="alur">
+<body>
 
+<!-- latar MK1 -->
 <div class="fx fx-nebula"></div>
 <div class="fx fx-grid"></div>
 <div class="fx fx-stars"></div>
 <div class="fx fx-scan"></div>
+<div class="fx" style="overflow:hidden"><div class="fx-sweep"></div></div>
 
-<!-- ================= HEADER ================= -->
-<header class="wrap">
-  <div class="topbar">
-    <div class="brand">
-      <div class="orb orb-sm"><span class="core"></span></div>
+<svg width="0" height="0" style="position:absolute"><defs>
+<linearGradient id="gr" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#F5B54A"/>
+</linearGradient>
+</defs></svg>
+
+<div class="stage">
+  <div class="app">
+
+    <!-- ===== HEADER ASISTEN ===== -->
+    <header>
+      <div class="orb ring work" id="hdOrb" style="width:40px;height:40px"></div>
       <div>
-        <div class="tt">AVI <em>· ASISTEN PRIBADI</em></div>
-        <div class="st">YANG PUNYA KEMAMPUAN AGENT — PAPAN TAMPILAN HTML v3 · VISUAL SAJA</div>
+        <div class="hd-name">AVI</div>
+        <div class="hd-sub">ASISTEN PRIBADI · MK1</div>
       </div>
-    </div>
-    <div class="seg" id="modeSeg">
-      <button class="on" data-mode="alur">▣ ALUR PENUH</button>
-      <button data-mode="satu">▢ SATU LAYAR</button>
-    </div>
-  </div>
-  <div class="legend">
-    <span>◆ ATURAN BRAND: <b>ASISTEN DULU</b> — “AGENT” HANYA NAMA KEMAMPUAN DI DALAM</span>
-    <span><i>POLA·X</i> = dari referensi nyata (Manus / Devin / ChatGPT Agent / Claude)</span>
-    <span><b>COMING SOON</b> = teridentifikasi, belum dibangun</span>
-    <span>v1.3.0(12) → usulan <b>v1.4.0(13)</b></span>
-  </div>
-</header>
+      <div class="pill" id="hdPill"><i></i><span id="hdPillTx">SIAP</span></div>
+    </header>
 
-<!-- ================= NAV LOMPAT ================= -->
-<nav class="jumps" id="jumps">
-  <a href="#layar-1" data-jump="1" class="on"><b>01</b>OBROLAN</a>
-  <a href="#layar-2" data-jump="2"><b>02</b>PROSES</a>
-  <a href="#layar-3" data-jump="3"><b>03</b>HASIL</a>
-  <a href="#layar-4" data-jump="4"><b>04</b>TUGAS</a>
-  <a href="#layar-5" data-jump="5"><b>05</b>KENDALI</a>
-</nav>
+    <!-- ================= VIEW 1 · OBROLAN ================= -->
+    <section class="view on" id="v-obrolan">
+      <div class="scroll scr" id="threadScroll">
+        <div class="thread">
 
-<main class="wrap board">
+          <div class="salam">
+            <div class="orb ring" style="width:84px;height:84px;margin:0 auto"></div>
+            <h1>Selamat pagi, <b>Pak</b>.</h1>
+            <p>Saya AVI, asisten Pak. Bilang saja apa yang perlu dikerjakan — kalau pekerjaannya berat, saya urus sampai jadi.</p>
+            <div class="tele">REAKTOR STABIL · NET AKTIF · SIAP MELAYANI</div>
+          </div>
 
-<!-- ================================================== -->
-<!-- LAYAR 01 · OBROLAN — SATU-SATUNYA PINTU MASUK       -->
-<!-- ================================================== -->
-<section class="screen on" id="layar-1" data-n="1">
-  <div class="scr-head">
-    <span class="scr-num">01</span>
-    <div style="flex:1">
-      <div class="scr-tt">OBROLAN — SATU-SATUNYA PINTU MASUK</div>
-      <div class="scr-sub">Pak cukup bicara pada asisten. Tidak ada mode, tidak ada form — AVI yang menyesuaikan diri.</div>
-    </div>
-    <span class="pola">POLA · CHATGPT AGENT</span><span class="pola gd">NUANSA · JARVIS MK1</span>
-  </div>
+          <!-- obrolan biasa: asisten dulu -->
+          <div class="row me"><div class="bub">Rekap rapat direksi kemarin, singkat saja.</div></div>
+          <div class="row avi">
+            <div class="orb av"></div>
+            <div class="bub"><div class="who">AVI · ASISTEN</div>Siap, Pak. Lima poin: target Q4 disetujui, anggaran pemasaran naik 12%, dua rekrutmen baru, migrasi server minggu depan, dan evaluasi vendor logistik.</div>
+          </div>
 
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · ASISTEN</span>
-      <span class="r">
-        <svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        <span>5G</span><span class="batt"></span><span class="gr">87%</span>
-      </span>
-    </div>
-    <div class="appbar">
-      <div class="orb orb-sm"><span class="core"></span></div>
-      <div>
-        <div class="tt">AVI</div>
-        <div class="sb">ASISTEN PRIBADI · SIAP</div>
-      </div>
-      <span class="sp"></span>
-      <button class="icon-btn" data-goto="5" title="Pusat Kendali">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
-      </button>
-      <button class="icon-btn" data-goto="4" title="Tugas">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
-      </button>
-    </div>
-
-    <div class="scr-body">
-      <div class="card hud" style="text-align:center;padding:22px 16px 18px">
-        <div class="orb" style="margin:6px auto 14px"><span class="core"></span></div>
-        <div class="h">Selamat pagi, <span class="gd">Pak</span>.</div>
-        <div class="sm dim" style="margin-top:5px">Saya AVI, asisten Pak. Bilang saja apa yang perlu dikerjakan —
-        kalau pekerjaannya berat, saya yang urus sampai jadi.</div>
-        <div class="mono xs cy" style="margin-top:13px;letter-spacing:.14em">REAKTOR STABIL · NET AKTIF · KEMAMPUAN AGENT SIAP</div>
-      </div>
-
-      <div class="msg me">
-        <div class="bub">Bandingkan penjualan Q2 vs Q3 dari data yang saya lampirkan, jadikan laporan PDF yang rapi.</div>
-      </div>
-      <div class="msg avi">
-        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
-        <div class="bub" style="max-width:88%">
-          Siap, Pak. Ini pekerjaan berat — saya kerjakan untuk Pak.
-          <div class="plan">
-            <div class="pl-t">
-              <span class="k" style="margin:0">RENCANA RINGKAS</span>
-              <span class="badge cyan still">±10 MNT</span>
-            </div>
-            <ol>
-              <li><i>1</i> Baca & olah data_penjualan.xlsx</li>
-              <li><i>2</i> Analisa tren & anomali Q2 vs Q3</li>
-              <li><i>3</i> Susun laporan PDF + grafik</li>
-            </ol>
-            <div class="pl-m">PAK BISA BAIASI KAPAN SAJA · HASIL LANGSUNG KE OBROLAN INI</div>
-            <div class="row" style="gap:8px">
-              <button class="btn btn-gold sm" style="flex:1" data-goto="2">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 4l14 8-14 8V4z"/></svg>
-                LANJUTKAN
-              </button>
-              <button class="btn btn-ghost sm" data-sim="UBAH RENCANA">✎ UBAH</button>
+          <!-- permintaan berat -->
+          <div class="row me"><div class="bub">Bandingkan penjualan Q2 vs Q3 dari data terlampir, jadikan laporan PDF yang rapi.
+            <div class="attach">⎘ data_penjualan.xlsx</div></div></div>
+          <div class="row avi">
+            <div class="orb av"></div>
+            <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
+              <div class="card ok">
+                <div class="ch">RENCANA RINGKAS <span class="r" style="color:var(--green)">✓ SELESAI · 14 KR · 6 MNT</span></div>
+                <div class="cb">
+                  <div class="ttl">Laporan Analisa Penjualan Q3</div>
+                  <div class="mut">Disetujui Pak — dieksekusi tadi siang.</div>
+                  <div class="steps">
+                    <div class="st done"><i>✓</i><span class="t">Baca &amp; olah data</span><span class="s">SELESAI</span><span class="kr">3 KR</span></div>
+                    <div class="st done"><i>✓</i><span class="t">Analisa tren &amp; anomali</span><span class="s">SELESAI</span><span class="kr">4 KR</span></div>
+                    <div class="st done"><i>✓</i><span class="t">Susun PDF + grafik</span><span class="s">SELESAI</span><span class="kr">7 KR</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="msg avi">
-        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
-        <div class="bub dim">Atau kalau bukan sekarang, Pak bisa juga bilang “kerjakan nanti sore” — saya antrekan.</div>
-      </div>
-    </div>
-
-    <div class="composer">
-      <button class="icon-btn" data-sim="LAMPIR FILE">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
-      <div class="field">
-        <input placeholder="Bilang ke AVI apa yang perlu dikerjakan…"/>
-      </div>
-      <button class="icon-btn" data-sim="MICROPHONE">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-      </button>
-      <button class="icon-btn" data-sim="KIRIM PESAN" style="color:var(--gold);border-color:rgba(245,181,74,.5)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M22 2L11 13M22 2l-7 20-4-7-7-4 20-9z"/></svg>
-      </button>
-    </div>
-
-    <div class="bottomnav">
-      <button class="bn on" data-goto="1">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>
-        OBROLAN
-      </button>
-      <button class="bn" data-goto="4">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
-        TUGAS
-      </button>
-      <button class="bn" data-goto="5">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
-        KENDALI
-      </button>
-    </div>
-  </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li class="rule">BRAND: AVI memperkenalkan diri sebagai <b>ASISTEN</b> — kemampuan agent disebut di telemetri, bukan di identitas.</li>
-      <li class="warn">JAM & CHIP SARAN — DIHAPUS TOTAL, TANPA PENGGANTI (arah Pak, dipatuhi 100%).</li>
-      <li>Effisiensi: <b>tidak ada tombol mode, tidak ada form</b> — semua dari satu kotak ketik.</li>
-      <li>AVI membalas dengan kartu <b>RENCANA RINGKAS</b> (3 langkah, ±10 mnt) + tombol emas <b>LANJUTKAN</b> — persetujuan cukup <b>1 tap</b>.</li>
-      <li>“UBAH” kalau Pak ingin mengubah rencana; “kerjakan nanti” = masuk antrean.</li>
-      <li>Bottom nav simpel: OBROLAN · TUGAS · KENDALI.</li>
-    </ul>
-  </div>
-</section>
-
-<div class="flow-link">PAK CUKUP 1 TAP “LANJUTKAN” ↓</div>
-
-<!-- ================================================== -->
-<!-- LAYAR 02 · PROSES — AVI SEDANG BEKERJA              -->
-<!-- ================================================== -->
-<section class="screen" id="layar-2" data-n="2">
-  <div class="scr-head">
-    <span class="scr-num">02</span>
-    <div style="flex:1">
-      <div class="scr-tt">PROSES — AVI SEDANG BEKERJA</div>
-      <div class="scr-sub">Asisten bekerja di belakang layar; Pak tetap bisa mengawasi, jeda, atau hentikan.</div>
-    </div>
-    <span class="pola">POLA · MANUS COMPUTER</span><span class="pola">POLA · CHATGPT NARASI</span>
-  </div>
-
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · ASISTEN</span>
-      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
-    </div>
-    <div class="appbar">
-      <button class="icon-btn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div>
-        <div class="tt">AVI SEDANG BEKERJA</div>
-        <div class="sb">LAPORAN ANALISA PENJUALAN Q3</div>
-      </div>
-      <span class="sp"></span>
-      <span class="badge cyan">PROSES</span>
-    </div>
-
-    <div class="scr-body">
-      <div class="card hud">
-        <div class="row" style="gap:15px">
-          <div class="ring">
-            <svg viewBox="0 0 120 120">
-              <defs>
-                <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#F5B54A"/>
-                </linearGradient>
-              </defs>
-              <circle cx="60" cy="60" r="52" stroke="rgba(140,163,199,.2)" stroke-width="8" fill="none"/>
-              <circle cx="60" cy="60" r="52" stroke="url(#rg)" stroke-width="8" fill="none"
-                stroke-dasharray="326.7" stroke-dashoffset="136" stroke-linecap="round"
-                style="filter:drop-shadow(0 0 8px rgba(34,211,238,.6))"/>
-            </svg>
-            <div class="pct"><b>58%</b><span>LANGKAH 2/3</span></div>
-          </div>
-          <div style="flex:1;min-width:0">
-            <div class="sm" style="font-weight:600">Analisa tren & anomali…</div>
-            <div class="mono xs" style="margin-top:9px;display:grid;gap:5px;letter-spacing:.08em">
-              <div class="between"><span class="dim">T+ BERJALAN</span><span class="cy">06:12</span></div>
-              <div class="between"><span class="dim">KREDIT</span><span class="gd">≈7 / 14</span></div>
-              <div class="between"><span class="dim">REAKTOR</span><span class="gr">96% STABIL</span></div>
+          <!-- hasil langsung dari asisten -->
+          <div class="row avi">
+            <div class="orb av"></div>
+            <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
+              <div class="bub sum" style="border:1px solid var(--line);border-radius:14px;margin-bottom:9px">Selesai, Pak — 14 halaman, 7 grafik. Penjualan naik <b>+28.6%</b>, ada 3 anomali (terbesar <em>Sep-14</em>).</div>
+              <div class="card">
+                <div class="cb">
+                  <div class="file">
+                    <div class="fic">PDF</div>
+                    <div class="fmeta">
+                      <div class="fname">LAPORAN_Q3.pdf</div>
+                      <div class="fsub">2.4 MB · 14 HAL · 7 GRAFIK · QC LOLOS</div>
+                    </div>
+                  </div>
+                  <div class="versi">
+                    <span style="font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--dim2)">VERSI</span>
+                    <span class="vc">v1</span><span class="vc on">v2 · TERBARU</span>
+                    <span class="tag">SEJARAH VERSI — COMING SOON</span>
+                  </div>
+                </div>
+                <div class="foot">
+                  <button class="btn gold block" data-toast="Simulasi tampilan — unduh menyusul di aplikasi">⭳ UNDUH</button>
+                  <button class="btn block" data-toast="Simulasi tampilan — bagikan menyusul di aplikasi">⇪ BAGIKAN</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="card" style="border-color:rgba(34,211,238,.45)">
-        <span class="k cy">CATATAN LANGSUNG — AVI</span>
-        <div class="sm" id="narr" style="min-height:44px">Sedang mengolah 1.204 baris data…</div>
-      </div>
-
-      <div>
-        <span class="k">LANGKAH</span>
-        <div class="step done">
-          <span class="n">✓</span>
-          <div class="meta"><div class="t">Baca & olah data</div>
-          <div class="s gr">SELESAI · 1.204 BARIS VALID</div></div>
-        </div>
-        <div class="step run">
-          <span class="n">●</span>
-          <div class="meta"><div class="t">Analisa tren & anomali</div>
-          <div class="s cy">BERJALAN · 3 ANOMALI TERDETEKSI</div></div>
-        </div>
-        <div class="step">
-          <span class="n">3</span>
-          <div class="meta"><div class="t dim">Susun laporan PDF + grafik</div>
-          <div class="s dim2">ANTRE</div></div>
-        </div>
-      </div>
-
-      <div class="permit">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" width="17" height="17" style="flex:0 0 auto;margin-top:2px"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
-        <div class="meta">
-          <div class="t">AVI butuh akses web</div>
-          <div class="d">Untuk membandingkan dengan data pasar terbaru — sesuai aturan Pak.</div>
-          <div class="row" style="gap:8px;margin-top:9px">
-            <button class="btn btn-gold sm" data-sim="IZINKAN AKSES WEB">IZINKAN</button>
-            <button class="btn btn-ghost sm" data-sim="LEWATI">LEWATI</button>
+          <!-- revisi lewat obrolan biasa -->
+          <div class="row me"><div class="bub">Bagus. Grafiknya ganti ke emas ya.</div></div>
+          <div class="row avi">
+            <div class="orb av"></div>
+            <div class="bub"><div class="who">AVI · ASISTEN</div>Siap, Pak — v2 sudah saya render ulang dengan aksen emas, isinya sama.</div>
           </div>
-        </div>
-      </div>
 
-      <div class="dock">
-        <div class="dock-tabs" id="dockTabs">
-          <button class="on" data-pane="term">TERMINAL</button>
-          <button data-pane="web">BROWSER</button>
-          <button data-pane="edit">EDITOR</button>
-          <button data-pane="scr">LAYAR</button>
-        </div>
-        <div class="dock-pane" id="pane-term">
-          <div class="term">
-            <div>$ python analisa_tren.py</div>
-            <div class="c">&gt; memuat 1.204 baris … <span class="ok" style="color:var(--green)">OK</span></div>
-            <div class="c">&gt; Q2 rata-rata: 412 · Q3: 531 (+28.8%)</div>
-            <div class="y">&gt; anomali: Sep-14 · +312%</div>
-            <div class="b">&gt; menyimpan tren.json … selesai</div>
-            <div>$ <span class="cursor"></span></div>
-          </div>
-        </div>
-        <div class="dock-pane" id="pane-web" hidden>
-          <div class="fakewin">
-            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">intranet.data.local/q3-tren</span></div>
-            <div class="bd">
-              <div class="skel" style="width:52%"></div>
-              <div class="minibars"><i style="height:40%"></i><i style="height:65%"></i><i style="height:52%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:95%"></i></div>
-              <div class="skel" style="width:78%"></div>
-              <div class="skel" style="width:64%"></div>
+          <!-- SEDANG BEKERJA: kartu live di dalam obrolan -->
+          <div class="row avi">
+            <div class="orb av" id="avOrb"></div>
+            <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
+              <div class="card" id="liveCard">
+                <div class="ch">AVI SEDANG BEKERJA <span class="r" id="liveHdr">LANGKAH 2/3</span></div>
+                <div class="cb">
+                  <div class="live">
+                    <div class="ringw">
+                      <svg viewBox="0 0 74 74" width="74" height="74">
+                        <circle class="bgc" cx="37" cy="37" r="31"/>
+                        <circle class="fgc" id="ringFg" cx="37" cy="37" r="31" stroke-dasharray="194.8" stroke-dashoffset="128"/>
+                      </svg>
+                      <div class="ringv"><b id="pctTx">34%</b><span>PROSES</span></div>
+                    </div>
+                    <div class="lmeta">
+                      <div class="lstep"><span class="dotc"></span><span id="stepTx">Telusuri celah &amp; duplikasi…</span></div>
+                      <div class="teler"><span>T+<b id="tTx">01:12</b></span><span><b id="krTx">5</b>/9 KR</span><span>REAKTOR <b id="rxTx">96%</b></span></div>
+                      <div class="bar"><i id="barTx"></i></div>
+                    </div>
+                  </div>
+
+                  <div class="gate" id="gate">
+                    <div class="gt"><b>Butuh izin, Pak</b> — mengakses berkas log billing untuk melengkapi audit.</div>
+                    <button class="btn gold" id="gateOk">IZINKAN</button>
+                    <button class="btn" id="gateSkip">LEWATI</button>
+                  </div>
+
+                  <div class="exp" id="exp">
+                    <div class="log"><b>›</b> pindai billing/*.kt … 14 modul
+<b>›</b> dependensi: 23 terpakai, 4 tidak terpakai
+<em>› anomali: double-charge pada retry() …</em>
+<b>›</b> telusuri jalur pembayaran — 3 cabang
+<b>›</b> menunggu izin berkas log…</div>
+                  </div>
+
+                  <div class="steps" style="margin-top:11px">
+                    <div class="st done"><i>✓</i><span class="t">Pindai modul &amp; dependensi</span><span class="s">SELESAI</span></div>
+                    <div class="st run"><i>2</i><span class="t">Telusuri celah &amp; duplikasi</span><span class="s">BERJALAN</span></div>
+                    <div class="st"><i>3</i><span class="t">Susun temuan + rekomendasi</span><span class="s">ANTRE</span><span class="kr">9 KR TOTAL</span></div>
+                  </div>
+                </div>
+                <div class="foot" id="liveFoot">
+                  <button class="btn block" id="btnExp">LIHAT PROSES</button>
+                  <button class="btn block" id="btnPause">JEDA</button>
+                  <button class="btn red block" id="btnStop">HENTIKAN</button>
+                </div>
+              </div>
+
+              <!-- selesai: hasil audit -->
+              <div class="card ok" id="doneCard" style="display:none">
+                <div class="ch">SELESAI <span class="r" style="color:var(--green)">9 KR · 7 MNT</span></div>
+                <div class="cb">
+                  <div class="sum">Audit billing tuntas, Pak — <b>3 temuan</b>, 1 kritis (double-charge saat retry).</div>
+                  <div class="file" style="margin-top:10px">
+                    <div class="fic">PDF</div>
+                    <div class="fmeta">
+                      <div class="fname">AUDIT_BILLING.pdf</div>
+                      <div class="fsub">0.8 MB · 6 HAL · 9 TEMUAN DIPERIKSA</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="foot">
+                  <button class="btn gold block" data-toast="Simulasi tampilan — unduh menyusul di aplikasi">⭳ UNDUH</button>
+                  <button class="btn block" data-toast="Simulasi tampilan — bagikan menyusul di aplikasi">⇪ BAGIKAN</button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="dock-pane" id="pane-edit" hidden>
-          <div class="fakewin">
-            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">analisa_tren.py</span></div>
-            <div class="bd term" style="font-size:10px">
-              <div><span class="c">1</span>&nbsp;&nbsp;<span class="b">import</span> pandas <span class="b">as</span> pd</div>
-              <div><span class="c">2</span>&nbsp;&nbsp;df = pd.read_excel(<span class="y">"data.xlsx"</span>)</div>
-              <div><span class="c">3</span>&nbsp;&nbsp;tren = df.groupby(<span class="y">"bulan"</span>)</div>
-              <div><span class="c">4</span>&nbsp;&nbsp;<span class="b">print</span>(tren.mean())</div>
-              <div><span class="c">5</span>&nbsp;&nbsp;<span class="cursor"></span></div>
-            </div>
+
+          <!-- antre tanpa form -->
+          <div class="row me"><div class="bub">Kalau sudah selesai, audit juga modul auth-nya ya.</div></div>
+          <div class="row avi">
+            <div class="orb av"></div>
+            <div class="bub"><div class="who">AVI · ASISTEN</div>Siap, Pak — sudah saya catat, masuk antre setelah audit billing. Tidak perlu atur apa-apa lagi.</div>
           </div>
-        </div>
-        <div class="dock-pane" id="pane-scr" hidden>
-          <div class="fakewin" style="background:#0B1322">
-            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">LAYAR AVI · T+06:12</span></div>
-            <div class="bd">
-              <div class="row" style="gap:6px"><span class="skel" style="width:30%;height:6px"></span><span class="skel" style="width:14%;height:6px"></span></div>
-              <div class="minibars" style="height:44px"><i style="height:35%"></i><i style="height:60%"></i><i style="height:45%"></i><i style="height:80%"></i><i style="height:55%"></i><i style="height:92%"></i></div>
-              <div class="mono xs cy" style="letter-spacing:.14em">REKAM LAYAR ASISTEN · POLA MANUS</div>
-            </div>
-          </div>
+
         </div>
       </div>
 
-      <div class="grid2" style="margin-top:12px">
-        <button class="btn btn-cyan sm" data-sim="JEDA">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5v14M15 5v14"/></svg>JEDA
+      <!-- composer: tanpa mode, tanpa chip -->
+      <div class="composer">
+        <button class="cbtn" data-toast="Lampir berkas — simulasi tampilan">
+          <svg viewBox="0 0 24 24"><path d="M21.4 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66L9.4 17.4a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
         </button>
-        <button class="btn btn-red sm" data-sim="HENTIKAN">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>HENTIKAN
+        <div class="cin"><input id="cin" placeholder="Tulis ke AVI…" aria-label="Tulis pesan"/></div>
+        <button class="cbtn" data-toast="Bicara langsung — simulasi tampilan">
+          <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3"/></svg>
+        </button>
+        <button class="cbtn send" id="btnSend" data-toast="Simulasi tampilan — kirim pesan menyusul">
+          <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         </button>
       </div>
-      <div class="xs dim2 mono" style="letter-spacing:.12em;margin-top:10px;text-align:center">SELESAI NANTI → HASIL LANGSUNG MUNCUL DI OBROLAN + NOTIFIKASI</div>
-    </div>
+    </section>
 
-    <div class="bottomnav">
-      <button class="bn on" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="bn" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
-    </div>
-  </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li>Judul layar = <b>AVI SEDANG BEKERJA</b> — bukan “agent bekerja”; dia asisten Pak yang sedang bertugas.</li>
-      <li>Ring + langkah 2/3 + telemetri T+/kredit/reaktor — <b>tanpa jam dinding</b>.</li>
-      <li>Catatan langsung (mengetik sendiri) — Pak tahu AVI sedang apa.</li>
-      <li>Dock <b>RUANG KERJA AVI</b>: Terminal / Browser / Editor / Layar — 4 tab bisa diklik.</li>
-      <li>Izin muncul <b>saat dibutuhkan</b> di tengah proses, 1 tap IZINKAN/LEWATI (pola ChatGPT Agent) — tidak ditanya di awal.</li>
-      <li>Kendali: JEDA · HENTIKAN (AMBIL ALIH = COMING SOON).</li>
-    </ul>
-  </div>
-</section>
-
-<div class="flow-link">SELESAI → HASIL MUNCUL OTOMATIS DI OBROLAN ↓</div>
-
-<!-- ================================================== -->
-<!-- LAYAR 03 · HASIL                                    -->
-<!-- ================================================== -->
-<section class="screen" id="layar-3" data-n="3">
-  <div class="scr-head">
-    <span class="scr-num">03</span>
-    <div style="flex:1">
-      <div class="scr-tt">HASIL — LANGSUNG DARI ASISTEN</div>
-      <div class="scr-sub">PDF jadi muncul di obrolan; layar ini untuk detail lengkap, unduh, dan revisi.</div>
-    </div>
-    <span class="pola">POLA · CLAUDE ARTEFAK</span><span class="pola">POLA · MANUS FILE</span>
-  </div>
-
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · ASISTEN</span>
-      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
-    </div>
-    <div class="appbar">
-      <button class="icon-btn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <div class="tt">HASIL</div>
-      <span class="sp"></span>
-      <span class="badge green">SELESAI</span>
-    </div>
-
-    <div class="scr-body">
-      <div class="msg avi">
-        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
-        <div class="bub" style="max-width:88%">Selesai, Pak — 14 halaman, 7 grafik. Ringkasan: penjualan naik <b class="gr">+28,8%</b>, ada 3 anomali (terbesar Sep-14).</div>
-      </div>
-
-      <div class="card hud">
-        <div class="row" style="gap:14px;align-items:flex-start">
-          <div class="pdfpage">
-            <div class="bar"><b>AVI</b><span>LAPORAN Q3</span></div>
-            <h5>ANALISA PENJUALAN<br/>Q2 vs Q3</h5>
-            <div class="minibars" style="height:34px;margin:4px 0 8px"><i style="height:45%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:62%"></i></div>
-            <div class="ln w80"></div><div class="ln"></div><div class="ln w60"></div>
-            <div class="foot"><span>AVI MK1 · ASISTEN</span><span>HAL 1/14</span></div>
-          </div>
-          <div style="flex:1;min-width:0">
-            <div class="mono sm gd" style="word-break:break-all">LAPORAN_Q3.pdf</div>
-            <div class="mono xs dim" style="margin-top:6px;display:grid;gap:4px;letter-spacing:.08em">
-              <div class="between"><span>UKURAN</span><span class="cy">2.4 MB</span></div>
-              <div class="between"><span>HALAMAN</span><span class="cy">14</span></div>
-              <div class="between"><span>GRAFIK</span><span class="cy">7</span></div>
-              <div class="between"><span>QC</span><span class="gr">LOLOS</span></div>
+    <!-- ================= VIEW 2 · TUGAS ================= -->
+    <section class="view" id="v-tugas">
+      <div class="scroll scr">
+        <div class="h2">TUGAS</div>
+        <div class="sub2">YANG AVI KERJAKAN UNTUK PAK · SATU DAFTAR</div>
+        <div class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input placeholder="Cari tugas…" aria-label="Cari tugas"/>
+        </div>
+        <div class="chips">
+          <button class="chip on" data-f="SEMUA">SEMUA</button>
+          <button class="chip" data-f="SELESAI">SELESAI</button>
+          <button class="chip" data-f="JALAN">JALAN</button>
+          <button class="chip" data-f="ANTRE">ANTRE</button>
+          <button class="chip" data-f="DIHENTIKAN">DIHENTIKAN</button>
+        </div>
+        <div class="tlist">
+          <div class="titem">
+            <div class="tico gd">&lt;/&gt;</div>
+            <div class="tbody">
+              <div class="tname">Audit kode modul billing</div>
+              <div class="tsub"><span class="sst run">JALAN <span id="tPct">34%</span></span><span>KODING</span><span>9 KR</span></div>
             </div>
+            <span class="arr">›</span>
+          </div>
+          <div class="titem">
+            <div class="tico gd">DOC</div>
+            <div class="tbody">
+              <div class="tname">Audit modul autentikasi</div>
+              <div class="tsub"><span class="sst q">ANTRE</span><span>KODING</span><span>± 9 KR</span></div>
+            </div>
+            <span class="arr">›</span>
+          </div>
+          <div class="titem">
+            <div class="tico cy">DOC</div>
+            <div class="tbody">
+              <div class="tname">Laporan analisa penjualan Q3</div>
+              <div class="tsub"><span class="sst ok">SELESAI</span><span>PDF · 14 HAL</span><span>14 KR</span></div>
+            </div>
+            <span class="arr">›</span>
+          </div>
+          <div class="titem">
+            <div class="tico cy">&lt;/&gt;</div>
+            <div class="tbody">
+              <div class="tname">Rapikan gaya kode DeckPanel</div>
+              <div class="tsub"><span class="sst ok">SELESAI</span><span>KODING</span><span>2 HARI LALU</span></div>
+            </div>
+            <span class="arr">›</span>
+          </div>
+          <div class="titem">
+            <div class="tico cy">WEB</div>
+            <div class="tbody">
+              <div class="tname">Pantau harga kompetitor</div>
+              <div class="tsub"><span class="sst st">DIHENTIKAN OLEH PAK</span><span>4 KR TERPAKAI</span></div>
+            </div>
+            <span class="arr">›</span>
           </div>
         </div>
-
-        <div class="row" style="margin-top:13px;gap:8px;flex-wrap:wrap">
-          <span class="k" style="margin:0">VERSI</span>
-          <button class="vchip">v1</button>
-          <button class="vchip on">v2 · TERBARU</button>
-          <span class="soon" style="margin-left:auto">SEJARAH LENGKAP · COMING SOON</span>
-        </div>
-
-        <div class="grid2" style="margin-top:13px">
-          <button class="btn btn-gold sm" data-sim="UNDUH">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>UNDUH
-          </button>
-          <button class="btn btn-cyan sm" data-sim="BAGIKAN">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M8 7l4-4 4 4"/></svg>BAGIKAN
-          </button>
-        </div>
-        <button class="btn btn-ghost sm" style="margin-top:8px" data-sim="BUKA">⤢ BUKA PRATINJAU PENUH</button>
+        <div class="moret"><span class="tag">REPLAY SESI — COMING SOON</span></div>
       </div>
+    </section>
 
-      <div class="card">
-        <span class="k gd">MINTA AVI UBAH</span>
-        <input class="input" placeholder="cth: tambahkan grafik per region…"/>
-        <button class="btn btn-cyan sm" style="margin-top:10px" data-sim="KIRIM REVISI → v3">KIRIM → JADI v3</button>
-      </div>
+    <!-- ================= VIEW 3 · KENDALI ================= -->
+    <section class="view" id="v-kendali">
+      <div class="scroll scr">
+        <div class="h2">PUSAT KENDALI</div>
+        <div class="sub2">ATUR SEKALI · AVI TIDAK MENANYA-NYANYA LAGI</div>
 
-      <div>
-        <span class="k">BERKAS LAIN DARI TUGAS INI</span>
-        <div class="task" data-sim="BUKA KODE">
-          <span class="ic code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span>
-          <div class="meta">
-            <div class="t">analisa_tren.py</div>
-            <div class="s"><span>KODE</span><span>·</span><span>2.1 KB</span></div>
+        <div class="sect">
+          <h3>OTORITAS KERJA — DEFAULT SEMUA TUGAS</h3>
+          <div class="opts">
+            <button class="opt" data-a="AMAN"><b>◆ AMAN</b><small>Izin tiap langkah</small></button>
+            <button class="opt on" data-a="BAKU"><b>◆ BAKU</b><small>Bebas + izin sensitif</small></button>
+            <button class="opt" data-a="PENUH" style="grid-column:1/-1"><b>◆ PENUH</b><small>Bebas penuh, tercatat — tidak disarankan</small></button>
           </div>
-          <span class="dim2">›</span>
+          <div class="note1">BAKU: bebas bekerja; <b>login, pembayaran, penghapusan</b> selalu minta izin. Diatur sekali — AVI memakai nilai ini otomatis.</div>
         </div>
-        <div class="task" data-sim="BUKA DATA">
-          <span class="ic data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
-          <div class="meta">
-            <div class="t">tren.json</div>
-            <div class="s"><span>DATA</span><span>·</span><span>184 KB</span></div>
+
+        <div class="sect">
+          <h3>KEMAMPUAN AGENT (ALAT KERJA AVI)</h3>
+          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg></div>
+            <div class="swb"><b>Riset Web</b><small>Pencarian &amp; baca halaman</small></div><button class="tg on" aria-label="Riset Web"><i></i></button></div>
+          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M4 17l6-5-6-5M12 19h8"/></svg></div>
+            <div class="swb"><b>Terminal &amp; Koding</b><small>Jalankan skrip, tulis &amp; ubah kode</small></div><button class="tg on" aria-label="Terminal dan Koding"><i></i></button></div>
+          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
+            <div class="swb"><b>Browser Virtual</b><small>Buka situs, isi form, ambil layar</small></div><button class="tg on" aria-label="Browser Virtual"><i></i></button></div>
+          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+            <div class="swb"><b>Akses Berkas</b><small>Baca &amp; simpan hasil kerja</small></div><button class="tg on" aria-label="Akses Berkas"><i></i></button></div>
+          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></div>
+            <div class="swb"><b>Notifikasi Selesai</b><small>Kabar saat tugas tuntas</small></div><button class="tg on" aria-label="Notifikasi Selesai"><i></i></button></div>
+          <div class="sw lock"><div class="swic" style="color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+            <div class="swb"><b>Pembayaran</b><small>Transaksi uang &amp; checkout</small></div><button class="tg lock" aria-label="Pembayaran terkunci"><i></i></button></div>
+          <div class="note1" style="display:flex;align-items:center;gap:8px"><span class="tag">SELALU MINTA IZIN — TERKUNCI</span></div>
+        </div>
+
+        <div class="sect">
+          <h3>BATAS KREDIT PER TUGAS</h3>
+          <div class="slider">
+            <input type="range" min="5" max="60" value="20" id="krSlider" aria-label="Batas kredit"/>
+            <div class="krd" id="krOut">20 KR</div>
           </div>
-          <span class="dim2">›</span>
+          <div class="note1">Kalau tugas melebihi batas, AVI berhenti dan meminta izin, Pak.</div>
+        </div>
+
+        <div class="sect">
+          <h3>LOG AKTIVITAS</h3>
+          <div class="logbox scr"><b>›</b> otoritas BAKU aktif
+<b>›</b> laporan Q3 selesai — 14 KR
+<em>› audit billing berjalan — langkah 2/3</em>
+<b>›</b> audit auth masuk antre
+<b>›</b> izin berkas diminta — menunggu Pak</div>
+        </div>
+
+        <div class="sect">
+          <h3>BELUM TERSEDIA</h3>
+          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+            <div class="swb"><b>Jadwal otomatis</b><small>Tugas rutin mingguan</small></div><span class="tag">COMING SOON</span></div>
+          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+            <div class="swb"><b>Template tugas</b><small>Pola kerja simpanan</small></div><span class="tag">COMING SOON</span></div>
+          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 014 4c2.5.5 4 2.4 4 5a5 5 0 01-5 5H9a5 5 0 01-5-5c0-2.6 1.5-4.5 4-5a4 4 0 014-4z"/></svg></div>
+            <div class="swb"><b>Memori jangka panjang</b><small>Ingat preferensi antar sesi</small></div><span class="tag">COMING SOON</span></div>
+        </div>
+
+        <div class="sect">
+          <button class="btn red" style="width:100%" data-toast="Simulasi tampilan — riwayat tetap utuh">HAPUS RIWAYAT TUGAS</button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="bottomnav">
-      <button class="bn on" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="bn" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
-    </div>
+    <!-- ===== NAV BAWAH ===== -->
+    <nav>
+      <button class="navbtn on" data-v="obrolan">
+        <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z"/></svg>
+        <span>OBROLAN</span>
+      </button>
+      <button class="navbtn" data-v="tugas">
+        <span class="dot show" id="navDot"></span>
+        <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>
+        <span>TUGAS</span>
+      </button>
+      <button class="navbtn" data-v="kendali">
+        <svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+        <span>KENDALI</span>
+      </button>
+    </nav>
+
   </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li>Hasil dibungkus <b>pesan asisten</b> — terasa AVI menyerahkan pekerjaan, bukan sistem melempar file.</li>
-      <li>Pratinjau halaman PDF + metadata (ukuran, halaman, grafik, QC).</li>
-      <li>UNDUH · BAGIKAN · BUKA + revisi cepat “MINTA AVI UBAH → v3” (pola Claude).</li>
-      <li>Berkas lain (kode & data) tersedia untuk tugas coding/analisa.</li>
-      <li>Sejarah versi lengkap = <b>COMING SOON</b>.</li>
-    </ul>
-  </div>
-</section>
-
-<div class="flow-link">PAK MEMBUKA TAB “TUGAS” ↓</div>
-
-<!-- ================================================== -->
-<!-- LAYAR 04 · TUGAS — YANG SAYA KERJAKAN               -->
-<!-- ================================================== -->
-<section class="screen" id="layar-4" data-n="4">
-  <div class="scr-head">
-    <span class="scr-num">04</span>
-    <div style="flex:1">
-      <div class="scr-tt">TUGAS — YANG AVI KERJAKAN UNTUK PAK</div>
-      <div class="scr-sub">Daftar tugas berat: selesai, sedang jalan, antre, dihentikan — satu daftar, tanpa keributan.</div>
-    </div>
-    <span class="pola">POLA · DEVIN SESSIONS</span><span class="pola">POLA · MANUS HISTORY</span>
-  </div>
-
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · ASISTEN</span>
-      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
-    </div>
-    <div class="appbar">
-      <div class="tt">TUGAS</div>
-      <span class="sp"></span>
-      <button class="icon-btn" data-sim="CARI / FILTER" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
-      <button class="icon-btn" data-sim="BERSIHKAN" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
-    </div>
-
-    <div class="scr-body">
-      <input class="input" placeholder="Cari tugas…" style="margin-bottom:10px"/>
-      <div class="chips" id="filters" style="margin-bottom:12px">
-        <button class="chip sel">SEMUA</button>
-        <button class="chip">SELESAI</button>
-        <button class="chip">JALAN</button>
-        <button class="chip">ANTRE</button>
-        <button class="chip">DIHENTIKAN</button>
-      </div>
-
-      <div class="mono xs dim2 between" style="letter-spacing:.12em;margin-bottom:10px">
-        <span>2 SELESAI · 1 JALAN</span><span>1 ANTRE · 1 DIHENTIKAN</span>
-      </div>
-
-      <div class="task" data-goto="3">
-        <span class="ic pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></span>
-        <div class="meta">
-          <div class="t">Laporan Analisa Penjualan Q3</div>
-          <div class="s"><span class="gr">● SELESAI</span><span>·</span><span>PDF</span><span>·</span><span>14 KR</span><span>·</span><span>KEMARIN</span></div>
-        </div>
-        <span class="dim2">›</span>
-      </div>
-
-      <div class="task" data-goto="2">
-        <span class="ic code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span>
-        <div class="meta">
-          <div class="t">Refactor modul autentikasi</div>
-          <div class="s"><span class="cy">● JALAN 58%</span><span>·</span><span>KODING</span><span>·</span><span>EST 24 KR</span></div>
-        </div>
-        <span class="dim2">›</span>
-      </div>
-
-      <div class="task" data-sim="DETAIL TUGAS SELESAI">
-        <span class="ic data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
-        <div class="meta">
-          <div class="t">Audit kode modul billing</div>
-          <div class="s"><span class="gr">● SELESAI</span><span>·</span><span>ANALISA KODE</span><span>·</span><span>11 KR</span><span>·</span><span>2 HARI LALU</span></div>
-        </div>
-        <span class="dim2">›</span>
-      </div>
-
-      <div class="task" data-sim="DETAIL ANTREAN">
-        <span class="ic pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></span>
-        <div class="meta">
-          <div class="t">Slide deck rapat direksi</div>
-          <div class="s"><span class="dim">◌ ANTRE</span><span>·</span><span>PDF</span><span>·</span><span>EST 9 KR</span></div>
-        </div>
-        <span class="dim2">›</span>
-      </div>
-
-      <div class="task" data-sim="DETAIL DIHENTIKAN">
-        <span class="ic web"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></span>
-        <div class="meta">
-          <div class="t">Pemantauan harga kompetitor</div>
-          <div class="s"><span class="rd">● DIHENTIKAN OLEH PAK</span><span>·</span><span>WEB</span><span>·</span><span>4 KR TERPAKAI</span></div>
-        </div>
-        <span class="dim2">›</span>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <div class="between">
-          <div>
-            <div class="sm" style="font-weight:600">Putar ulang sesi kerja</div>
-            <div class="xs dim">Tonton langkah AVI seperti rekaman</div>
-          </div>
-          <span class="soon">COMING SOON</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="bottomnav">
-      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn on" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="bn" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
-    </div>
-  </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li>Judul berfokus ke <b>layanan ke Pak</b>: “yang AVI kerjakan untuk Pak”.</li>
-      <li>Status berwarna: SELESAI · JALAN · ANTRE · DIHENTIKAN + kredit terpakai.</li>
-      <li>Pencarian + filter; kartu JALAN menampilkan % progres.</li>
-      <li>Replay sesi (pola Manus) = <b>COMING SOON</b>.</li>
-    </ul>
-  </div>
-</section>
-
-<div class="flow-link">PAK MENGATUR IZIN DI KENDALI ↓</div>
-
-<!-- ================================================== -->
-<!-- LAYAR 05 · PUSAT KENDALI                            -->
-<!-- ================================================== -->
-<section class="screen" id="layar-5" data-n="5">
-  <div class="scr-head">
-    <span class="scr-num">05</span>
-    <div style="flex:1">
-      <div class="scr-tt">PUSAT KENDALI — IZIN & KEMAMPUAN</div>
-      <div class="scr-sub">Diatur sekali di sini; setelah itu AVI tidak menanya-nanya lagi di setiap tugas.</div>
-    </div>
-    <span class="pola">POLA · DEVIN SETTINGS</span><span class="pola">POLA · CHATGPT IZIN</span>
-  </div>
-
-  <div class="phone">
-    <span class="punch"></span>
-    <div class="statusbar">
-      <span>MK1 · ASISTEN</span>
-      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
-    </div>
-    <div class="appbar">
-      <div class="tt">PUSAT KENDALI</div>
-      <span class="sp"></span>
-      <div class="orb orb-sm"><span class="core"></span></div>
-    </div>
-
-    <div class="scr-body">
-      <div class="card hud">
-        <span class="k">OTORITAS KERJA (DEFAULT SEMUA TUGAS)</span>
-        <div class="grid2" id="authG">
-          <div class="auth-card" data-desc="AMAN: AVI berhenti & minta izin di setiap langkah.">
-            <div class="t">◈ AMAN</div><div class="d">Izin tiap langkah</div>
-          </div>
-          <div class="auth-card sel" data-desc="BAKU: bebas bekerja; login/pembayaran/penghapusan selalu minta izin.">
-            <div class="t">◈ BAKU</div><div class="d">Bebas + izin berisiko</div>
-          </div>
-          <div class="auth-card" data-desc="PENUH: bebas penuh sampai selesai; semua aksi tercatat di log.">
-            <div class="t">◈ PENUH</div><div class="d">Bebas penuh, tercatat</div>
-          </div>
-        </div>
-        <div class="xs dim" id="authGDesc" style="margin-top:9px">BAKU: bebas bekerja; login/pembayaran/penghapusan selalu minta izin.</div>
-        <div class="xs cy" style="margin-top:6px">✓ Diatur sekali — AVI memakai nilai ini otomatis, tanpa menanya di setiap tugas.</div>
-      </div>
-
-      <div class="card">
-        <span class="k">KEMAMPUAN AGENT</span>
-        <div class="toolrow">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></span>
-          <div class="meta"><div class="t">Riset Web</div><div class="d">Pencarian & baca halaman</div></div>
-          <span class="sw on"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
-          <div class="meta"><div class="t">Terminal & Koding</div><div class="d">Jalankan skrip, tulis & ubah kode</div></div>
-          <span class="sw on"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/></svg></span>
-          <div class="meta"><div class="t">Browser Virtual</div><div class="d">Buka situs, isi form, ambil layar</div></div>
-          <span class="sw on"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>
-          <div class="meta"><div class="t">Akses Berkas</div><div class="d">Baca & simpan hasil kerja</div></div>
-          <span class="sw on"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7M10 20a2 2 0 0 0 4 0"/></svg></span>
-          <div class="meta"><div class="t">Notifikasi Selesai</div><div class="d">Kabari Pak saat tugas tuntas</div></div>
-          <span class="sw on"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic" style="color:var(--gold);border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.06)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
-          <div class="meta"><div class="t">Pembayaran & Otentikasi</div><div class="d cy xs">SELALU MINTA IZIN — TIDAK BISA MATI</div></div>
-          <span class="sw"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic" style="color:var(--dim2);border-color:rgba(140,163,199,.3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a6 6 0 0 1 6 6c0 2.2-1.2 3.6-2.4 4.8-.8.8-1.6 1.7-1.6 3.2h-4c0-1.5-.8-2.4-1.6-3.2C7.2 12.6 6 11.2 6 9a6 6 0 0 1 6-6zM10 21h4"/></svg></span>
-          <div class="meta"><div class="t dim">Memori Jangka Panjang</div><div class="d">AVI mengingat gaya & preferensi Pak</div></div>
-          <span class="soon">COMING SOON</span>
-          <span class="sw"></span>
-        </div>
-        <div class="toolrow">
-          <span class="ic" style="color:var(--dim2);border-color:rgba(140,163,199,.3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
-          <div class="meta"><div class="t dim">Tugas Rutin Terjadwal</div><div class="d">cth: laporan tiap Senin pagi</div></div>
-          <span class="soon">COMING SOON</span>
-          <span class="sw"></span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="between"><span class="k" style="margin:0">BATAS KREDIT PER TUGAS</span><span class="mono sm gd" id="krVal">25 KR</span></div>
-        <input type="range" class="slider" min="5" max="60" value="25" id="kr"/>
-        <div class="mono xs dim2 between"><span>5</span><span>MAKS 60</span></div>
-      </div>
-
-      <div class="card">
-        <span class="k">LOG AKTIVITAS — TUGAS TERAKHIR</span>
-        <div class="log">
-          <div><span class="t">[T+00:00]</span> tugas diterima · otoritas BAKU</div>
-          <div><span class="t">[T+00:03]</span> <span class="cy">rencana dilanjutkan oleh PAK (1 tap)</span></div>
-          <div><span class="t">[T+00:08]</span> baca data_penjualan.xlsx · 1.204 baris</div>
-          <div><span class="t">[T+02:31]</span> analisa selesai · 3 anomali</div>
-          <div><span class="t">[T+04:10]</span> <span class="wr">izin akses web diminta → diizinkan</span></div>
-          <div><span class="t">[T+06:12]</span> riset pasar · 6 sumber terkumpul</div>
-          <div><span class="t">[T+09:40]</span> <span class="ok">LAPORAN_Q3.pdf selesai · 2.4 MB</span></div>
-        </div>
-      </div>
-
-      <button class="btn btn-red sm" data-sim="HAPUS RIWAYAT">HAPUS SEMUA RIWAYAT TUGAS</button>
-    </div>
-
-    <div class="bottomnav">
-      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
-      <button class="bn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
-      <button class="bn on" data-goto="5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
-    </div>
-  </div>
-
-  <div class="scr-notes">
-    <h4>FITUR DI LAYAR INI</h4>
-    <ul>
-      <li>Otoritas = <b>default untuk semua tugas</b>, diatur sekali (efisiensi — tidak ada pilihan otoritas di setiap tugas).</li>
-      <li>Saklar <b>KEMAMPUAN AGENT</b>: Web, Terminal & Koding, Browser, Berkas, Notifikasi.</li>
-      <li>Pembayaran & otentikasi: <b>terkunci SELALU MINTA IZIN</b>.</li>
-      <li>Memori jangka panjang & tugas rutin = <b>COMING SOON</b>.</li>
-      <li>Batas kredit per tugas (slider 5–60) + log aktivitas mono MK1.</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ================= CATATAN KEPUTUSAN ================= -->
-<section class="decisions">
-  <h3>STATUS & CATATAN UNTUK PAK — REVISI v3</h3>
-  <ul>
-    <li><b class="gd">ATURAN BRAND BARU (dari Pak):</b> AVI adalah <b>ASISTEN yang punya kemampuan agent</b>. Kata “agent” hanya muncul sebagai nama kemampuan (telemetri, saklar, izin) — tidak lagi sebagai identitas, mode, atau tombol.</li>
-    <li><b class="gd">EFISIENSI (dari review Pak):</b> 7 layar dipangkas jadi <b>5</b>; form panjang & pilihan otoritas per-tugas <b>dihapus</b>; persetujuan cukup <b>1 tap “LANJUTKAN”</b> di kartu rencana ringkas; izin hanya muncul <b>saat dibutuhkan</b>.</li>
-    <li>Alur sekarang: bicara → AVI tawarkan rencana ringkas → 1 tap → AVI bekerja → hasil muncul otomatis di obrolan.</li>
-    <li>Pola referensi tetap dilacak: Manus (dock, todo), Devin (riwayat, settings), ChatGPT Agent (narasi, izin), Claude (artefak + versi) — bertanda <span class="pola" style="font-size:9px">POLA · X</span>.</li>
-    <li>COMING SOON: ubah rencana manual, ambil alih kontrol, sejarah versi lengkap, replay sesi, memori jangka panjang, tugas rutin terjadwal.</li>
-    <li>JAM & chip saran: tetap <b class="rd">dihapus total</b>. Nuansa Jarvis MK1 (orb, sian/emas, scanline, sapaan “Pak”, telemetri) tetap utuh.</li>
-    <li>Ini papan tampilan — semua aksi hanya simulasi. Belum ada implementasi app, belum ada commit. Setelah Pak setuju → penerjemahan ke Jetpack Compose sebagai <b class="gd">v1.4.0(13)</b>.</li>
-  </ul>
-</section>
-
-<footer>
-  AVI MK1 · ASISTEN PRIBADI DENGAN KEMAMPUAN AGENT — PAPAN TAMPILAN VISUAL · FUNGSI DISIMULASI · <b>DIBUAT UNTUK PENILAIAN PAK</b>
-</footer>
-
-</main>
-
-<div class="satu-pos" id="satuPos"><b>01</b> / 05 — OBROLAN</div>
-<div class="satu-ctl">
-  <button id="prevBtn" title="Layar sebelumnya">←</button>
-  <button id="nextBtn" title="Layar berikutnya">→</button>
 </div>
-<div id="toast"></div>
+
+<div class="note">v4 · TAMPILAN UTUH — SATU APLIKASI, TANPA PEMBAGIAN · DASAR POLA: MANUS · DEVIN · CHATGPT AGENT · CLAUDE</div>
+<div class="toast" id="toast"></div>
 
 <script>
-(function(){
-  "use strict";
-  var body=document.body, cur=1, TOTAL=5;
-  var screens=[].slice.call(document.querySelectorAll(".screen"));
-  var names={1:"OBROLAN",2:"PROSES",3:"HASIL",4:"TUGAS",5:"KENDALI"};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
-  function pad(n){return (n<10?"0":"")+n}
-  function toast(msg){
-    var t=document.getElementById("toast");
-    t.innerHTML="<b>SIMULASI</b> · "+msg;
-    t.classList.add("show");
-    clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove("show")},1900);
-  }
-  function updateJumps(){
-    [].slice.call(document.querySelectorAll("[data-jump]")).forEach(function(a){
-      a.classList.toggle("on", +a.getAttribute("data-jump")===cur);
-    });
-    var p=document.getElementById("satuPos");
-    if(p) p.innerHTML="<b>"+pad(cur)+"</b> / "+pad(TOTAL)+" — "+names[cur];
-  }
-  function goto(n){
-    if(n<1||n>TOTAL) return;
-    cur=n;
-    if(body.classList.contains("satu")){
-      screens.forEach(function(s){s.classList.toggle("on", +s.getAttribute("data-n")===n)});
-      window.scrollTo({top:0,behavior:"smooth"});
-    }else{
-      var el=document.getElementById("layar-"+n);
-      if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
-    }
-    updateJumps();
-  }
+/* ---- toast ---- */
+let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
+$$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
 
-  document.addEventListener("click",function(e){
-    var g=e.target.closest("[data-goto]");
-    if(g){ goto(+g.getAttribute("data-goto")); return; }
-    var sim=e.target.closest("[data-sim]");
-    if(sim){ toast(sim.getAttribute("data-sim")+" — fungsi menyusul"); return; }
+/* ---- navigasi bawah ---- */
+$$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
+  $$('.navbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  $$('.view').forEach(v=>v.classList.remove('on'));
+  $('#v-'+b.dataset.v).classList.add('on');
+}));
+
+/* ---- obrolan: kirim dummy ---- */
+$('#btnSend').addEventListener('click',()=>{const i=$('#cin');if(i.value.trim()){toast('Simulasi tampilan — balasan menyusul di aplikasi');i.value=''}else toast('Tulis dulu, Pak')});
+$('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
+
+/* ---- tugas: filter ---- */
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{
+  $$('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+  toast('Filter: '+c.dataset.f+' — simulasi tampilan');
+}));
+
+/* ---- kendali: otoritas ---- */
+$$('.opt').forEach(o=>o.addEventListener('click',()=>{
+  $$('.opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');
+  toast('Otoritas: '+o.dataset.a+' — dipakai untuk semua tugas');
+}));
+/* ---- kendali: saklar ---- */
+$$('.tg').forEach(t=>t.addEventListener('click',()=>{
+  if(t.classList.contains('lock')){toast('PEMBAYARAN — SELALU MINTA IZIN (terkunci)');return}
+  t.classList.toggle('on');
+}));
+/* ---- kendali: slider kredit ---- */
+const ks=$('#krSlider');ks.addEventListener('input',()=>$('#krOut').textContent=ks.value+' KR');
+
+/* ================= MESIN CONTOH: ASISTEN BEKERJA ================= */
+const C=2*Math.PI*31; let pct=34,sec=72,kr=5,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false;
+const stepNames=['Pindai modul & dependensi…','Telusuri celah & duplikasi…','Menyusun temuan + rekomendasi…'];
+const stepEls=$$('#liveCard .steps .st');
+function pill(cls,tx){const p=$('#hdPill');p.className='pill'+(cls?' '+cls:'');$('#hdPillTx').textContent=tx}
+function render(){
+  const off=C*(1-pct/100);
+  $('#ringFg').setAttribute('stroke-dashoffset',off.toFixed(1));
+  $('#pctTx').textContent=Math.round(pct)+'%';
+  $('#barTx').style.width=pct+'%';
+  $('#tTx').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
+  $('#krTx').textContent=kr;$('#rxTx').textContent=(94+Math.round(Math.random()*4))+'%';
+  $('#stepTx').textContent=stepNames[pct<33?0:pct<66?1:2];
+  $('#liveHdr').textContent='LANGKAH '+(pct<33?1:pct<66?2:3)+'/3';
+  const tp=$('#tPct');if(tp)tp.textContent=Math.round(pct)+'%';
+  pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'BEKERJA · '+Math.round(pct)+'%');
+}
+function finish(){
+  fin=true;done=true;render();
+  $('#liveCard').style.display='none';
+  $('#doneCard').style.display='block';
+  $('#navDot').classList.remove('show');
+  $('#hdOrb').classList.remove('work');
+  toast('Tugas selesai, Pak — hasil masuk di obrolan');
+  setTimeout(()=>{pill('','SIAP')},3500);
+}
+setInterval(()=>{
+  if(paused||stopped||fin||gateUp||done)return;
+  pct+=0.55;sec+=1;
+  if(pct>=45&&kr<9)kr=Math.min(9,Math.round(pct/100*9)+ (pct>55?1:0));
+  if(pct>=60&&!gateDone){pct=60;gateUp=true;$('#gate').classList.add('show');toast('AVI butuh izin berkas, Pak')}
+  if(pct>=100){pct=100;render();finish();return}
+  stepEls.forEach((el,i)=>{const th=[0,33,66][i];
+    el.classList.toggle('done',pct>th+27);
+    el.classList.toggle('run',!stopped&&pct>th&&pct<=th+27);
+    const s=el.querySelector('.s');
+    if(el.classList.contains('done'))s.textContent='SELESAI',s.style.color='';
+    else if(el.classList.contains('run'))s.textContent='BERJALAN',s.style.color='';
+    else s.textContent='ANTRE';
   });
+  render();
+},420);
 
-  var seg=document.getElementById("modeSeg");
-  seg.addEventListener("click",function(e){
-    var b=e.target.closest("button"); if(!b) return;
-    [].slice.call(seg.children).forEach(function(x){x.classList.toggle("on",x===b)});
-    var m=b.getAttribute("data-mode");
-    body.classList.toggle("satu",m==="satu");
-    body.classList.toggle("alur",m==="alur");
-    if(m==="satu") goto(cur); else updateJumps();
-  });
+$('#gateOk').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Diizinkan — AVI lanjut bekerja')});
+$('#gateSkip').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Dilewati — AVI pakai data alternatif')});
+$('#btnPause').addEventListener('click',e=>{
+  if(stopped||fin)return;
+  paused=!paused;e.target.textContent=paused?'LANJUT':'JEDA';
+  toast(paused?'Dijeda, Pak':'Lanjut bekerja, Pak');
+});
+$('#btnStop').addEventListener('click',()=>{
+  if(fin)return;
+  stopped=true;paused=false;render();
+  $('#liveCard').classList.add('stop');
+  $('#liveHdr').textContent='DIHENTIKAN';
+  $('#navDot').classList.remove('show');
+  $('#hdOrb').classList.remove('work');
+  $('#stepTx').innerHTML='<span style="color:var(--red)">Dihentikan oleh Pak — 4 KR terpakai.</span>';
+  $('#btnPause').style.display='none';$('#btnStop').style.display='none';
+  toast('Tugas dihentikan, Pak');
+});
+$('#btnExp').addEventListener('click',e=>{
+  const ex=$('#exp');ex.classList.toggle('open');
+  e.target.textContent=ex.classList.contains('open')?'TUTUP PROSES':'LIHAT PROSES';
+});
 
-  document.getElementById("jumps").addEventListener("click",function(e){
-    var a=e.target.closest("[data-jump]");
-    if(a){ e.preventDefault(); goto(+a.getAttribute("data-jump")); }
-  });
-
-  document.getElementById("prevBtn").addEventListener("click",function(){goto(cur-1)});
-  document.getElementById("nextBtn").addEventListener("click",function(){goto(cur+1)});
-  document.addEventListener("keydown",function(e){
-    if(!body.classList.contains("satu")) return;
-    if(e.key==="ArrowRight") goto(cur+1);
-    if(e.key==="ArrowLeft") goto(cur-1);
-  });
-
-  if("IntersectionObserver" in window){
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(en){
-        if(en.isIntersecting && body.classList.contains("alur")){
-          cur=+en.target.getAttribute("data-n"); updateJumps();
-        }
-      });
-    },{rootMargin:"-40% 0px -55% 0px"});
-    screens.forEach(function(s){io.observe(s)});
-  }
-
-  document.querySelectorAll("#filters .chip").forEach(function(c){
-    c.addEventListener("click",function(){c.classList.toggle("sel")});
-  });
-
-  var authBox=document.getElementById("authG");
-  authBox.addEventListener("click",function(e){
-    var card=e.target.closest(".auth-card"); if(!card) return;
-    [].slice.call(authBox.querySelectorAll(".auth-card")).forEach(function(x){x.classList.toggle("sel",x===card)});
-    document.getElementById("authGDesc").textContent=card.getAttribute("data-desc");
-    toast("OTORITAS: "+card.querySelector(".t").textContent.trim()+" (simulasi)");
-  });
-
-  document.querySelectorAll(".sw").forEach(function(s){
-    s.addEventListener("click",function(){s.classList.toggle("on")});
-  });
-
-  var tabs=document.getElementById("dockTabs");
-  if(tabs){
-    tabs.addEventListener("click",function(e){
-      var b=e.target.closest("button"); if(!b) return;
-      [].slice.call(tabs.children).forEach(function(x){x.classList.toggle("on",x===b)});
-      ["term","web","edit","scr"].forEach(function(p){
-        document.getElementById("pane-"+p).hidden=(p!==b.getAttribute("data-pane"));
-      });
-    });
-  }
-
-  var kr=document.getElementById("kr"), kv=document.getElementById("krVal");
-  if(kr){
-    function upd(){kv.textContent=kr.value+" KR";
-      var pct=((kr.value-kr.min)/(kr.max-kr.min))*100;
-      kr.style.background="linear-gradient(90deg,var(--cyan) 0 "+pct+"%,rgba(140,163,199,.3) "+pct+"%)";}
-    kr.addEventListener("input",upd); upd();
-  }
-
-  document.querySelectorAll(".vchip").forEach(function(v){
-    v.addEventListener("click",function(){
-      document.querySelectorAll(".vchip").forEach(function(x){x.classList.remove("on")});
-      v.classList.add("on");
-      toast("PRATINJAU "+v.textContent.trim()+" (simulasi)");
-    });
-  });
-
-  var lines=[
-    "Sedang mengolah 1.204 baris data…",
-    "Menemukan 3 anomali — terbesar Sep-14, +312%…",
-    "Membandingkan dengan data pasar terbaru…",
-    "Draf laporan mulai disusun, Pak."
-  ];
-  var narr=document.getElementById("narr");
-  if(narr){
-    var li=0,ci=0,del=false;
-    (function type(){
-      var s=lines[li];
-      narr.textContent=s.slice(0,ci);
-      if(!del){ ci++; if(ci>s.length){del=true;setTimeout(type,2100);return;} }
-      else { ci--; if(ci===0){del=false;li=(li+1)%lines.length;} }
-      setTimeout(type,del?18:46);
-    })();
-  }
-})();
+/* mulai */
+render();
 </script>
 </body>
 </html>
