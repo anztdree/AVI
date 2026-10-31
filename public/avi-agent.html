@@ -1,743 +1,542 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="malam">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v7</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ============ DASAR — tema efisien: 1 latar, warna disiplin, teks terbaca ============ */
+/* ============================================================
+   AVI v8 — ASISTEN PRIBADI
+   Prinsip: hangat di depan, tangguh di balik.
+   Bahasa manusia di permukaan; telemetri mono hanya di KENDALI
+   dan satu bisikan kecil. Rujukan: Google Assistant Snapshot
+   (brief harian), Siri edge-glow (kehadiran), Pi (bahasa hangat),
+   Sesame (mode suara minimal), Aumi (sapaan + langkah jelas).
+   ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#070B12; --pan:#0C1424; --pan2:#101A2E;
-  --line:rgba(148,178,220,.13); --line2:rgba(148,178,220,.24);
+  --bg:#0B1017; --pan:#121A26; --pan2:#18222F;
+  --line:rgba(165,190,220,.11); --line2:rgba(165,190,220,.22);
   --cyan:#22D3EE; --gold:#F5B54A; --green:#34D399; --red:#F87171;
-  --txt:#E8F2FF; --dim:#94A8CB; --dim2:#5F7398;
+  --goldSoft:rgba(245,181,74,.12); --cyanSoft:rgba(34,211,238,.10);
+  --glow:rgba(34,211,238,.15);
+  --txt:#ECF3FB; --dim:#9AAAC6; --dim2:#64779B;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Orbitron',sans-serif; --ui:'Rajdhani',sans-serif;
 }
+html[data-theme="siang"]{
+  --bg:#F1F3F7; --pan:#FFFFFF; --pan2:#F6F8FB;
+  --line:rgba(24,33,47,.08); --line2:rgba(24,33,47,.17);
+  --cyan:#0E7490; --gold:#B26E0D; --green:#0E9F6E; --red:#DE4E4E;
+  --goldSoft:rgba(178,110,13,.10); --cyanSoft:rgba(14,116,144,.08);
+  --glow:rgba(14,116,144,.13);
+  --txt:#1A2331; --dim:#57677F; --dim2:#93A1B7;
+}
 html,body{height:100%}
-body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.45;overflow:hidden}
-::selection{background:rgba(245,181,74,.3)}
+body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.5;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;transition:background .35s}
+::selection{background:var(--goldSoft)}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input,textarea{font-family:inherit;color:var(--txt);background:none;border:none;outline:none}
-.scr{scrollbar-width:thin;scrollbar-color:rgba(148,178,220,.3) transparent}
+.scr{scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
 .scr::-webkit-scrollbar{width:5px;height:5px}
-.scr::-webkit-scrollbar-thumb{background:rgba(148,178,220,.28);border-radius:4px}
+.scr::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
 .scr::-webkit-scrollbar-track{background:transparent}
 
-/* ============ LATAR — SATU lapis statis (efisiensi: tanpa nebula+grid+stars+scan+sweep) ============ */
-.fx{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(760px 460px at 16% -6%, rgba(34,211,238,.09), transparent 62%),
-    radial-gradient(700px 420px at 88% 4%, rgba(245,181,74,.05), transparent 60%)}
-.fx::after{content:'';position:absolute;inset:0;background-image:
-  linear-gradient(rgba(148,178,220,.045) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(148,178,220,.045) 1px,transparent 1px);
-  background-size:42px 42px;
-  -webkit-mask-image:radial-gradient(64% 52% at 50% 28%,#000 22%,transparent 100%);
-          mask-image:radial-gradient(64% 52% at 50% 28%,#000 22%,transparent 100%)}
+/* ---------- bingkai aplikasi: satu wadah, kehadiran lewat cahaya tepi (Siri) ---------- */
+.app{position:relative;width:min(420px,100vw);height:min(880px,100vh);
+  background:var(--bg);display:flex;flex-direction:column;overflow:hidden;
+  transform:translateZ(0); /* jadikan containing block untuk sheet/liveov di desktop */
+  transition:background .35s, box-shadow .6s}
+@media(min-width:460px){.app{border-radius:24px;border:1px solid var(--line2);height:min(880px,calc(100vh - 32px))}}
+.app.live{box-shadow:0 0 0 1px var(--line2),0 0 42px var(--glow)}
 
-/* ============ PANGGUNG & BINGKAI ============ */
-.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;z-index:2}
-.app{position:relative;width:min(430px,100%);height:min(880px,100%);display:flex;flex-direction:column;
-  background:rgba(9,15,27,.97);border:1px solid var(--line2);border-radius:24px;overflow:hidden;transform:translateZ(0);
-  box-shadow:0 24px 70px rgba(0,0,0,.55)}
-@media (max-width:520px){
-  .stage{padding:0}
-  .app{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}
-  .note{display:none}
-}
-.note{position:fixed;left:0;right:0;bottom:5px;text-align:center;font:400 10px/1.4 var(--mono);color:var(--dim2);letter-spacing:.06em;z-index:1}
+/* ---------- header ---------- */
+header{display:flex;align-items:center;gap:10px;padding:12px 14px 10px;border-bottom:1px solid var(--line);flex:none}
+.orb{position:relative;width:34px;height:34px;border-radius:50%;flex:none;
+  background:radial-gradient(circle at 35% 32%,#BDF3FF 0%,var(--cyan) 42%,#0E7490 100%);
+  box-shadow:0 0 14px var(--glow),inset 0 0 6px rgba(255,255,255,.35);
+  animation:nafas 3.6s ease-in-out infinite}
+html[data-theme="siang"] .orb{background:radial-gradient(circle at 35% 32%,#DFF6FF 0%,#3FB6D9 45%,#0E7490 100%)}
+.orb.work{animation:nafas 1.1s ease-in-out infinite}
+@keyframes nafas{0%,100%{transform:scale(1);box-shadow:0 0 10px var(--glow),inset 0 0 6px rgba(255,255,255,.3)}50%{transform:scale(1.07);box-shadow:0 0 22px var(--glow),inset 0 0 8px rgba(255,255,255,.45)}}
+.brand b{font-family:var(--disp);font-size:15px;letter-spacing:3px;font-weight:900;display:block;line-height:1.1}
+.brand small{font-size:10.5px;color:var(--dim);letter-spacing:2.5px;font-weight:600}
+.hdR{margin-left:auto;display:flex;align-items:center;gap:8px}
+.themeBtn{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:14px;transition:.2s}
+.themeBtn:hover{color:var(--gold);border-color:var(--line2)}
+.pill{border:1px solid var(--line2);border-radius:999px;padding:6px 12px;font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--dim);display:flex;align-items:center;gap:6px;transition:.25s}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--dim2);flex:none}
+.pill.work{border-color:var(--cyan);color:var(--cyan)} .pill.work i{background:var(--cyan);animation:blink 1s infinite}
+.pill.done{border-color:var(--green);color:var(--green)} .pill.done i{background:var(--green)}
+@keyframes blink{50%{opacity:.25}}
 
-/* ============ ORB REAKTOR — nuansa Jarvis: tenang, bukan berkedip ============ */
-.orb{position:relative;border-radius:50%;flex:none;
-  background:radial-gradient(circle at 35% 32%, #c4f4ff 0%, #22d3ee 30%, #0e7490 56%, #062b36 80%, #02141b 100%);
-  box-shadow:0 0 14px rgba(34,211,238,.4), inset 0 0 9px rgba(255,255,255,.2)}
-.orb::after{content:'';position:absolute;inset:20%;border-radius:50%;
-  background:radial-gradient(circle at 40% 38%, #ffe9b8, #f5b54a 46%, #a86d18 78%, transparent 79%);opacity:.9}
-.orb.ring::before{content:'';position:absolute;inset:-5px;border-radius:50%;
-  border:1px solid rgba(34,211,238,.25);border-top-color:rgba(245,181,74,.7);animation:spin 8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.orb.work{box-shadow:0 0 18px rgba(245,181,74,.45), inset 0 0 9px rgba(255,255,255,.22)}
-.orb.work::before{animation-duration:2.6s}
+/* ---------- strip kendali: satu-satunya tempat JEDA/STOP ---------- */
+#strip{display:none;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--pan);flex:none}
+#strip.on{display:flex}
+#strip .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 1s infinite;flex:none}
+#strip .nm{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+#strip .pc{font:700 10.5px var(--mono);color:var(--cyan);flex:none}
+#strip .bar{flex:1;height:4px;border-radius:4px;background:var(--pan2);overflow:hidden}
+#strip .bar b{display:block;height:100%;background:var(--cyan);border-radius:4px;transition:width .4s}
+#strip .sbtn{font-size:10px;font-weight:700;letter-spacing:1px;border:1px solid var(--line2);border-radius:8px;padding:4px 9px;color:var(--dim)}
+#strip .sbtn:hover{color:var(--txt);border-color:var(--cyan)}
+#strip.ok .dot{background:var(--green);animation:none}
+#strip.ok .pc,#strip.ok .bar b{color:var(--green);background:var(--green)}
+#strip.bad .dot{background:var(--red);animation:none}
+#strip.bad .pc,#strip.bad .bar b{color:var(--red);background:var(--red)}
 
-/* ============ HEADER ============ */
-header{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line);flex:none}
-.hd-name{font:700 16px var(--disp);letter-spacing:.12em;color:var(--txt)}
-.hd-sub{font:600 8.5px var(--mono);letter-spacing:.18em;color:var(--dim2);margin-top:2px}
-.pill{margin-left:auto;display:flex;align-items:center;gap:7px;padding:5px 11px;border:1px solid var(--line2);border-radius:999px;
-  font:600 10px var(--mono);letter-spacing:.1em;color:var(--dim);background:rgba(12,20,36,.7)}
-.pill i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green)}
-.pill.work{border-color:rgba(245,181,74,.45);color:var(--gold)}
-.pill.work i{background:var(--gold);box-shadow:0 0 7px var(--gold)}
-.pill.done{border-color:rgba(52,211,153,.45);color:var(--green)}
-.pill.done i{background:var(--green);box-shadow:0 0 7px var(--green)}
+/* ---------- area utama ---------- */
+main{flex:1;overflow-y:auto;padding:16px 16px 10px}
+.view{display:none}
+.view.on{display:block}
 
-/* ============ STRIP KENDALI — sekali pandang, satu tempat (Snapshot + Raycast) ============ */
-.strip{display:none;align-items:center;gap:9px;padding:8px 10px 8px 14px;border-bottom:1px solid var(--line);
-  background:rgba(34,211,238,.055);flex:none}
-.strip.on{display:flex}
-.strip.ok{background:rgba(52,211,153,.07)}
-.strip.bad{background:rgba(248,113,113,.07)}
-.sjump{display:flex;align-items:center;gap:9px;flex:1;min-width:0;text-align:left}
-.sdot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:sd 1.6s ease-in-out infinite;flex:none}
-@keyframes sd{0%,100%{opacity:1}50%{opacity:.35}}
-.strip.ok .sdot{background:var(--green);box-shadow:0 0 8px var(--green);animation:none}
-.strip.bad .sdot{background:var(--red);box-shadow:0 0 8px var(--red);animation:none}
-.snm{font:600 11.5px var(--mono);letter-spacing:.04em;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.spct{font:700 12px var(--mono);color:var(--cyan);flex:none}
-.strip.ok .spct{color:var(--green)}
-.strip.bad .spct{color:var(--red)}
-.sbar{flex:1;min-width:26px;height:4px;border-radius:4px;background:rgba(148,178,220,.16);overflow:hidden}
-.sbar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:4px;transition:width .4s}
-.sbtn{font:700 10px var(--mono);letter-spacing:.08em;padding:7px 11px;border:1px solid var(--line2);border-radius:9px;color:var(--dim);flex:none}
-.sbtn:hover{color:var(--txt);border-color:var(--cyan)}
-.sbtn.red{color:var(--red);border-color:rgba(248,113,113,.4)}
-.sbtn.red:hover{background:rgba(248,113,113,.08)}
-.strip.ok .sbtn,.strip.bad .sbtn{display:none}
+/* sapaan */
+.greet h1{font-size:25px;font-weight:700;line-height:1.2}
+.greet h1 em{font-style:normal;color:var(--gold)}
+.greet p{color:var(--dim);font-size:14px;margin-top:2px}
+.whisp{font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim2);margin-top:6px}
 
-/* ============ VIEW & NAV ============ */
-.view{display:none;flex:1;min-height:0;flex-direction:column}
-.view.on{display:flex}
-.scroll{flex:1;min-height:0;overflow-y:auto;padding:13px 13px 16px}
-nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,13,24,.92);backdrop-filter:blur(6px);
-  padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
-.navbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;border-radius:12px;color:var(--dim2)}
-.navbtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.navbtn span{font:600 9px var(--mono);letter-spacing:.16em}
-.navbtn.on{color:var(--cyan);background:rgba(34,211,238,.07)}
-.navbtn .dot{position:absolute;top:5px;right:calc(50% - 17px);width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 7px var(--gold);animation:sd 1.8s infinite;display:none}
-.navbtn{position:relative}
-.navbtn .dot.show{display:block}
-.pill{cursor:pointer}
+/* kartu umum */
+.card{background:var(--pan);border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-top:12px;transition:background .35s}
+.clab{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.clab .tg2{margin-left:auto;font:700 8.5px var(--mono);letter-spacing:1px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:6px;padding:2.5px 7px}
 
-/* ============ OBROLAN ============ */
-.thread{display:flex;flex-direction:column;gap:11px}
-.row{display:flex;gap:9px;max-width:100%}
-.row.me{justify-content:flex-end}
-.av{width:24px;height:24px;flex:none;margin-top:2px}
-.bub{padding:9px 12px;border-radius:14px;max-width:84%;font-size:13.5px}
-.row.me .bub{background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.2);border-bottom-right-radius:4px}
-.row.avi .bub{background:rgba(14,22,38,.85);border:1px solid var(--line);border-bottom-left-radius:4px}
-.bub .who{font:600 8.5px var(--mono);letter-spacing:.18em;color:var(--dim2);margin-bottom:4px}
-.attach{display:inline-flex;align-items:center;gap:6px;margin-top:7px;padding:4px 9px;border:1px solid var(--line2);border-radius:8px;
-  font:600 10px var(--mono);color:var(--cyan)}
-/* sapaan ringkas — tanpa orb besar (orb sudah di header) */
-.hai{position:relative;padding:13px 14px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(12,20,36,.6)}
-.hai::before{content:'';position:absolute;top:-1px;left:14px;right:14px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(245,181,74,.6),transparent)}
-.hai h1{font:600 15.5px var(--ui)}
-.hai h1 b{color:var(--gold)}
-.hai p{font-size:12.5px;color:var(--dim);margin-top:3px}
-.tele{margin-top:7px;font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--cyan);opacity:.9}
+/* brief harian (pola Snapshot) */
+.brief .brow{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px;font-weight:500}
+.brief .brow:first-of-type{border-top:none}
+.brief .bic{width:30px;height:30px;border-radius:10px;background:var(--cyanSoft);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.brief b{font-weight:600}
+.brief small{display:block;color:var(--dim);font-size:11.5px;font-weight:400;line-height:1.35}
+.brief .cap{font-size:10.5px;color:var(--dim2);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
 
-/* ---- kartu tugas (kemampuan agent) ---- */
-.card{border:1px solid var(--line2);border-radius:14px;background:var(--pan);overflow:hidden}
-.card .ch{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);
-  font:600 9px var(--mono);letter-spacing:.18em;color:var(--dim)}
-.card .ch .r{margin-left:auto;color:var(--cyan);letter-spacing:.06em}
-.card.gold{border-color:rgba(245,181,74,.4)}
-.card.ok{border-color:rgba(52,211,153,.35)}
-.cb{padding:11px 12px}
-.ttl{font:600 14px var(--ui)}
-.mut{font-size:12px;color:var(--dim);margin-top:2px}
-.sum{font-size:13px;color:var(--txt)}
-.sum b{color:var(--gold)}
-.sum em{color:var(--cyan);font-style:normal}
-.steps{margin-top:9px;display:flex;flex-direction:column}
-.st{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
-.st:first-child{border-top:none}
-.st i{width:16px;height:16px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:50%;
-  font:600 9px var(--mono);border:1px solid var(--line2);color:var(--dim2);font-style:normal}
-.st.done i{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:var(--green)}
-.st.run i{border-color:var(--cyan);color:var(--cyan)}
-.st .t{flex:1;font-size:12.5px;color:var(--txt)}
-.st .s{font:600 8.5px var(--mono);letter-spacing:.1em;color:var(--dim2)}
-.st.run .s{color:var(--cyan)}
-.st.done .s{color:var(--green)}
-.st .kr{font:600 9px var(--mono);color:var(--dim2)}
-.bar{height:4px;border-radius:4px;background:rgba(148,178,220,.16);overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:4px;transition:width .4s}
-/* live */
-.live{display:flex;gap:11px;align-items:center}
-.ringw{position:relative;flex:none;width:62px;height:62px}
-.ringw svg{transform:rotate(-90deg)}
-.ringw .bgc{fill:none;stroke:rgba(148,178,220,.15);stroke-width:5}
-.ringw .fgc{fill:none;stroke:var(--cyan);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .4s}
-.ringv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ringv b{font:700 13px var(--mono);color:var(--txt)}
-.ringv span{font:600 6.5px var(--mono);letter-spacing:.14em;color:var(--dim2)}
-.lmeta{flex:1;min-width:0}
-.lstep{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--txt)}
-.dotc{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 7px var(--cyan);flex:none;animation:sd 1.4s infinite}
-.teler{display:flex;gap:10px;margin-top:5px;font:600 9px var(--mono);letter-spacing:.06em;color:var(--dim2)}
-.teler b{color:var(--cyan)}
-.lmeta .bar{margin-top:7px}
+/* obrolan */
+.msg{display:flex;gap:9px;margin-top:14px;align-items:flex-end}
+.msg .mav{width:24px;height:24px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 32%,#BDF3FF 0%,var(--cyan) 45%,#0E7490 100%);box-shadow:0 0 8px var(--glow)}
+.msg .bub{background:var(--pan);border:1px solid var(--line);border-radius:5px 16px 16px 16px;padding:10px 13px;font-size:14px;max-width:82%}
+.msg.me{justify-content:flex-end}
+.msg.me .bub{background:var(--goldSoft);border-color:transparent;border-radius:16px 5px 16px 16px}
+
+/* rencana */
+.steps .st{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;font-weight:500}
+.steps .st:first-child{border-top:none}
+.steps .st i{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-style:normal;color:var(--dim2);flex:none;font-family:var(--mono)}
+.steps .st .s{margin-left:auto;font:700 9px var(--mono);letter-spacing:1px;color:var(--dim2);flex:none}
+.steps .st.run i{border-color:var(--cyan);color:var(--cyan)}
+.steps .st.run .s{color:var(--cyan)}
+.steps .st.done i{border-color:var(--green);color:var(--green);background:var(--cyanSoft)}
+.steps .st.done .s{color:var(--green)}
+
+/* kartu live: pekerjaan berjalan */
+#liveCard .lrow{display:flex;gap:13px;align-items:center}
+.ring{position:relative;width:68px;height:68px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .pctx{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 13px var(--mono);color:var(--cyan)}
+#liveCard .linfo{flex:1;min-width:0}
+#liveCard .linfo b{font-size:13.5px;font-weight:600;display:block}
+#liveCard .lmeta{display:flex;gap:10px;font:600 10px var(--mono);color:var(--dim2);margin-top:4px;letter-spacing:.5px}
+#liveCard .lmeta b{color:var(--gold);font-weight:700}
+#liveCard .lmeta .lt{display:flex;align-items:center;gap:4px}
+.lhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.lhdr b{font-size:11px;font-weight:700;letter-spacing:1.8px;color:var(--dim)}
+.lhdr span{font:700 9.5px var(--mono);color:var(--cyan);letter-spacing:1px}
+
 /* gate izin */
-.gate{display:none;margin-top:10px;padding:9px 11px;border:1px solid rgba(245,181,74,.45);border-radius:11px;background:rgba(245,181,74,.07);gap:8px;flex-wrap:wrap;align-items:center}
-.gate.show{display:flex}
-.gate .gt{flex:1;min-width:150px;font-size:12px;color:var(--txt)}
-.gate .gt b{color:var(--gold)}
-.btn{padding:7px 13px;border:1px solid var(--line2);border-radius:9px;font:700 10px var(--mono);letter-spacing:.08em;color:var(--dim)}
-.btn:hover{color:var(--txt);border-color:var(--cyan)}
-.btn.gold{color:#10131c;background:var(--gold);border-color:var(--gold)}
-.btn.gold:hover{background:#ffcb70;color:#10131c}
-.btn.red{color:var(--red);border-color:rgba(248,113,113,.4)}
-.btn.red:hover{background:rgba(248,113,113,.08)}
-.btn.block{flex:1;padding:8px 6px;text-align:center}
-.foot{display:flex;gap:8px;padding:9px 10px;border-top:1px solid var(--line)}
+#gate{display:none;margin-top:11px;background:var(--goldSoft);border:1px solid var(--gold);border-radius:12px;padding:10px 12px}
+#gate.show{display:block}
+#gate b{font-size:12.5px;font-weight:600;display:block}
+#gate small{color:var(--dim);font-size:11px;display:block;margin-top:1px}
+#gate .gbtns{display:flex;gap:8px;margin-top:9px}
+.btn{border:1px solid var(--line2);border-radius:10px;padding:8px 13px;font-size:11.5px;font-weight:700;letter-spacing:1px;color:var(--txt);transition:.2s;text-align:center}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#131313}
+.btn.gold:hover{filter:brightness(1.08);color:#131313}
+.btn.red{border-color:rgba(248,113,113,.4);color:var(--red)}
+.btn.red:hover{border-color:var(--red);color:var(--red)}
+
 /* log proses */
-.exp{display:none;margin-top:10px;max-height:118px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;
-  background:rgba(5,9,17,.8);padding:8px 10px;font:400 10.5px/1.7 var(--mono);color:var(--dim)}
-.exp.open{display:block}
-.exp em{color:var(--gold);font-style:normal}
-.exp b{color:var(--cyan);font-weight:600}
-/* berkas */
-.file{display:flex;align-items:center;gap:10px}
-.fic{width:34px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:9px;
-  border:1px solid rgba(245,181,74,.4);color:var(--gold);font:700 9px var(--mono);background:rgba(245,181,74,.07)}
-.fmeta{flex:1;min-width:0}
-.fname{font:700 12.5px var(--mono);letter-spacing:.02em}
-.fsub{font:600 8.5px var(--mono);letter-spacing:.08em;color:var(--dim2);margin-top:2px}
-.versi{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line)}
-.vc{padding:3px 8px;border-radius:7px;border:1px solid var(--line2);font:600 9px var(--mono);color:var(--dim2)}
-.vc.on{border-color:rgba(52,211,153,.5);color:var(--green);background:rgba(52,211,153,.07)}
-.tag{padding:2.5px 8px;border-radius:6px;border:1px dashed rgba(245,181,74,.4);color:var(--gold);font:600 8.5px var(--mono);letter-spacing:.08em;white-space:nowrap}
-/* antre */
-.qrow{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan)}
+#exp{display:none;margin-top:10px;background:var(--pan2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:500 10px var(--mono);color:var(--dim);line-height:1.8}
+#exp.open{display:block}
 
-/* ============ COMPOSER ============ */
-.composer{display:flex;align-items:center;gap:7px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(9,14,25,.9);flex:none}
-.cbtn{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:11px;border:1px solid var(--line2);color:var(--dim)}
+/* hasil */
+#doneCard{display:none;border-color:var(--green)}
+#doneCard .dlab{color:var(--green)}
+.file{display:flex;align-items:center;gap:12px;background:var(--pan2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:4px}
+.file .fic{width:38px;height:38px;border-radius:11px;background:var(--goldSoft);color:var(--gold);display:flex;align-items:center;justify-content:center;font:700 9px var(--mono);flex:none}
+.file b{font-size:13.5px;font-weight:600;display:block;word-break:break-all}
+.file small{color:var(--dim);font-size:11px}
+.vers{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.vtag{font:700 8.5px var(--mono);letter-spacing:1px;padding:3px 8px;border-radius:6px;border:1px solid var(--line2);color:var(--dim)}
+.vtag.new{border-color:var(--green);color:var(--green)}
+.vtag.soon{border-color:var(--goldSoft);background:var(--goldSoft);color:var(--gold)}
+.dbtns{display:flex;gap:8px;margin-top:10px}
+.dbtns .btn{flex:1}
+
+/* komposer — tanpa lampiran */
+.composer{flex:none;display:flex;gap:8px;padding:10px 14px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--bg);transition:background .35s}
+.cinWrap{flex:1;display:flex;align-items:center;background:var(--pan);border:1px solid var(--line2);border-radius:999px;padding:9px 16px}
+.cinWrap input{flex:1;font-size:14px;font-weight:500}
+.cinWrap input::placeholder{color:var(--dim2)}
+.cbtn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--line);color:var(--dim);transition:.2s}
 .cbtn:hover{color:var(--cyan);border-color:var(--cyan)}
-.cbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cbtn.send{color:#10131c;background:var(--cyan);border-color:var(--cyan)}
-.cin{flex:1;display:flex;align-items:center;height:38px;padding:0 12px;border:1px solid var(--line2);border-radius:11px;background:rgba(12,20,36,.6)}
-.cin input{width:100%;font-size:13.5px}
+.cbtn.send{background:var(--cyan);border-color:var(--cyan);color:#06202A}
+.cbtn.send:hover{filter:brightness(1.1);color:#06202A}
 
-/* ============ KENDALI ============ */
-.h2{font:700 13px var(--ui);letter-spacing:.14em}
-.sub2{font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--dim2);margin:3px 0 12px}
-.sect{margin-bottom:14px}
-.sect h3{font:700 10.5px var(--ui);letter-spacing:.14em;color:var(--dim);margin-bottom:7px;display:flex;align-items:center;gap:7px}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.opt{padding:9px 11px;border:1px solid var(--line2);border-radius:11px;text-align:left;background:var(--pan)}
-.opt b{display:block;font:700 11px var(--mono);letter-spacing:.06em}
-.opt small{font-size:11px;color:var(--dim2)}
-.opt.on{border-color:var(--cyan);background:rgba(34,211,238,.07)}
-.opt.on b{color:var(--cyan)}
-.note1{margin-top:7px;font-size:11.5px;color:var(--dim2)}
-.note1 b{color:var(--dim)}
-.sw{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan);margin-bottom:6px}
-.swic{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:8px;
-  border:1px solid var(--line2);color:var(--cyan);background:rgba(34,211,238,.05)}
-.swic svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* nav bawah */
+nav{flex:none;display:flex;border-top:1px solid var(--line);background:var(--bg);padding-bottom:env(safe-area-inset-bottom);transition:background .35s}
+.navbtn{flex:1;padding:9px 0 10px;font-size:10.5px;font-weight:700;letter-spacing:2px;color:var(--dim2);position:relative;transition:.2s}
+.navbtn.on{color:var(--cyan)}
+.navbtn .dot{display:none;position:absolute;top:7px;right:calc(50% - 16px);width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.navbtn .dot.show{display:block}
+
+/* sheet TUGAS */
+#sheet{position:fixed;inset:0;z-index:60;pointer-events:none}
+#sheet .shbg{position:absolute;inset:0;background:rgba(4,7,12,.55);opacity:0;transition:.3s}
+#sheet .shpan{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--bg);border-radius:22px 22px 0 0;border-top:1px solid var(--line2);transform:translateY(102%);transition:transform .38s cubic-bezier(.32,.72,.24,1)}
+#sheet.open{pointer-events:auto}
+#sheet.open .shbg{opacity:1}
+#sheet.open .shpan{transform:translateY(0)}
+.shhd{display:flex;align-items:center;padding:16px 18px 6px}
+.shhd b{font-size:13px;font-weight:700;letter-spacing:2.5px}
+.shx{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);color:var(--dim);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px 18px 4px}
+.stat{background:var(--pan);border:1px solid var(--line);border-radius:13px;padding:10px 6px;text-align:center}
+.stat b{font-family:var(--disp);font-size:17px;font-weight:700;display:block}
+.stat small{font-size:8.5px;font-weight:700;letter-spacing:1.2px;color:var(--dim2)}
+.stat.jl b{color:var(--cyan)} .stat.sx b{color:var(--green)} .stat.kr b{color:var(--gold)}
+.shsec{padding:12px 18px 2px}
+.srow{display:flex;align-items:center;gap:11px;background:var(--pan);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:8px;cursor:pointer}
+.srow:hover{border-color:var(--line2)}
+.swic{width:34px;height:34px;border-radius:11px;background:var(--cyanSoft);color:var(--cyan);display:flex;align-items:center;justify-content:center;flex:none;font-weight:700}
 .swb{flex:1;min-width:0}
-.swb b{font-size:13px;display:block}
-.swb small{font-size:11px;color:var(--dim2)}
-.tg{width:38px;height:22px;flex:none;border-radius:99px;border:1px solid var(--line2);position:relative;background:rgba(148,178,220,.12)}
-.tg i{position:absolute;top:2.5px;left:3px;width:15px;height:15px;border-radius:50%;background:var(--dim2);transition:.2s}
-.tg.on{border-color:var(--cyan);background:rgba(34,211,238,.14)}
-.tg.on i{left:18px;background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.6)}
-.tg.lock{opacity:.55}
-.slider{display:flex;align-items:center;gap:12px}
-input[type=range]{flex:1;appearance:none;height:4px;border-radius:4px;background:rgba(148,178,220,.18);outline:none}
-input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.55);cursor:pointer}
-.krd{font:700 13px var(--mono);color:var(--cyan);min-width:52px;text-align:right}
-.nseg{display:flex;gap:7px}
-.qc{flex:1;padding:8px 6px;border:1px solid var(--line2);border-radius:10px;font:600 10px var(--mono);letter-spacing:.06em;color:var(--dim);background:var(--pan)}
-.qc.on{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.07)}
-.logbox{max-height:112px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;background:rgba(5,9,17,.8);
-  padding:8px 10px;font:400 10.5px/1.75 var(--mono);color:var(--dim)}
-.logbox b{color:var(--cyan);font-weight:600}
-.logbox em{color:var(--gold);font-style:normal}
-.soon{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.soon .cell{padding:9px 10px;border:1px dashed var(--line2);border-radius:11px}
-.soon .cell b{display:block;font-size:12.5px}
-.soon .cell small{display:block;font-size:10.5px;color:var(--dim2);margin:2px 0 6px}
+.swb b{font-size:13.5px;font-weight:600;display:block}
+.swb small{color:var(--dim);font-size:11px;display:flex;align-items:center;gap:6px;margin-top:1px;flex-wrap:wrap}
+.srow .arr{color:var(--dim2);font-size:15px}
+.sst{font:700 8.5px var(--mono);letter-spacing:1px;padding:2px 6px;border-radius:5px}
+.sst.run{color:var(--cyan);background:var(--cyanSoft)}
+.sst.ok{color:var(--green);background:var(--cyanSoft)}
+.srow.ok{border-color:var(--green)}
+.srow.stopped{border-color:rgba(248,113,113,.4)}
+.shbar{height:4px;border-radius:4px;background:var(--pan2);overflow:hidden;margin-top:7px}
+.shbar b{display:block;height:100%;background:var(--cyan);border-radius:4px;transition:width .4s}
+.empty{color:var(--dim2);font-size:12.5px;font-style:italic;padding:4px 2px 2px}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qc2{background:var(--pan);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:left;transition:.2s}
+.qc2:hover{border-color:var(--cyan)}
+.qc2 b{font-size:13px;font-weight:600;display:block}
+.qc2 small{color:var(--dim2);font-size:10.5px}
+.daylab{font:700 9px var(--mono);letter-spacing:2px;color:var(--dim2);margin:14px 0 2px}
 
-/* ============ SHEET TUGAS ============ */
-.sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;visibility:hidden}
-.sheet.open{visibility:visible}
-.shbg{position:absolute;inset:0;background:rgba(3,6,12,.6);opacity:0;transition:.22s}
-.sheet.open .shbg{opacity:1}
-.shpanel{position:relative;width:100%;max-height:82%;display:flex;flex-direction:column;
-  background:#0A1220;border:1px solid var(--line2);border-bottom:none;border-radius:20px 20px 0 0;transform:translateY(102%);transition:transform .26s}
-.sheet.open .shpanel{transform:none}
-.shgrip{padding:7px 0 3px;display:flex;justify-content:center}
-.shgrip span{width:38px;height:4px;border-radius:4px;background:rgba(148,178,220,.25)}
-.shhead{display:flex;align-items:center;gap:10px;padding:5px 14px 9px;border-bottom:1px solid var(--line)}
-.shh2{font:700 13px var(--ui);letter-spacing:.12em}
-.shsub{font:600 8px var(--mono);letter-spacing:.16em;color:var(--dim2);margin-top:2px}
-.shx{margin-left:auto;width:30px;height:30px;border-radius:9px;border:1px solid var(--line2);color:var(--dim);font-size:12px}
-.shscroll{flex:1;min-height:0;overflow-y:auto;padding:12px 13px 16px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:13px}
-.stat{padding:8px 4px;text-align:center;border:1px solid var(--line);border-radius:11px;background:var(--pan)}
-.stat b{display:block;font:700 15px var(--mono)}
-.stat span{font:600 8px var(--mono);letter-spacing:.12em;color:var(--dim2)}
-.stat b.k{color:var(--green)} .stat b.g{color:var(--gold)}
-.shrun{padding:10px 11px;border:1px solid rgba(245,181,74,.4);border-radius:12px;background:rgba(245,181,74,.05)}
-.shrtop{display:flex;align-items:center;gap:8px}
-.shrtop b{font-size:13.5px;flex:1}
-.shrtop .spct{font:700 12px var(--mono);color:var(--gold)}
-.shstep{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px;color:var(--dim)}
-.shrun .shbtns{display:flex;gap:8px;margin-top:9px}
-.shrun.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.05)}
-.shrun.ok .spct{color:var(--green)}
-.shrun.stopped{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.05)}
-.ghead{font:600 8.5px var(--mono);letter-spacing:.16em;color:var(--dim2);margin:9px 0 5px}
-.srow{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan);margin-bottom:6px}
-.srow.act{cursor:pointer}
-.srow.act:hover{border-color:var(--cyan)}
-.srow .swb b{font-size:12.5px;display:block}
-.srow .swb small{font-size:10.5px;color:var(--dim2)}
-.arr{margin-left:auto;color:var(--dim2);font-size:14px}
-.sst{font:600 9px var(--mono);letter-spacing:.08em}
-.sst.ok{color:var(--green)} .sst.run{color:var(--gold)} .sst.st{color:var(--red)}
-.jrow{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--pan);margin-bottom:6px}
-.jrow .swb b{font-size:12.5px;display:block}
-.jrow .swb small{font-size:10.5px;color:var(--dim2)}
+/* kendali */
+.opt{flex:1;border:1px solid var(--line);border-radius:11px;padding:9px 4px;text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--dim)}
+.opt.on{border-color:var(--cyan);color:var(--cyan);background:var(--cyanSoft)}
+.optrow{display:flex;gap:8px}
+.tg{width:40px;height:22px;border-radius:999px;background:var(--pan2);border:1px solid var(--line2);position:relative;flex:none;transition:.2s}
+.tg::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--dim2);transition:.2s}
+.tg.on{background:var(--cyanSoft);border-color:var(--cyan)}
+.tg.on::after{left:20px;background:var(--cyan)}
+.swrow{display:flex;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
+.swrow:first-of-type{border-top:none}
+.swrow b{font-size:13.5px;font-weight:600}
+.swrow small{display:block;color:var(--dim);font-size:11px;font-weight:400}
+.swrow .tg{margin-left:auto}
+input[type=range]{-webkit-appearance:none;flex:1;height:4px;border-radius:4px;background:var(--pan2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--gold);border:2px solid var(--bg);box-shadow:0 0 8px var(--goldSoft)}
+.seg{display:flex;background:var(--pan2);border-radius:11px;padding:3px;gap:3px}
+.seg .qc{flex:1;padding:7px 4px;border-radius:9px;font-size:10.5px;font-weight:700;letter-spacing:.5px;color:var(--dim)}
+.seg .qc.on{background:var(--cyan);color:#06202A}
+.logbox{background:var(--pan2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:500 10px var(--mono);color:var(--dim);line-height:1.9}
+.soon{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.soon .sc{border:1px dashed var(--line2);border-radius:13px;padding:11px 12px}
+.soon .sc b{font-size:12px;font-weight:600;display:block;color:var(--dim)}
+.soon .sc small{font:700 8px var(--mono);letter-spacing:1.5px;color:var(--gold)}
 
-/* ============ MODE SUARA — pola Sesame: orb + transkrip, tanpa chrome ============ */
-.liveov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;
-  background:radial-gradient(90% 70% at 50% 30%, rgba(8,14,26,.94), rgba(4,7,13,.98));opacity:0;visibility:hidden;transition:.25s;padding:0 18px calc(22px + env(safe-area-inset-bottom))}
-.liveov.open{opacity:1;visibility:visible}
-.lvtop{position:absolute;top:16px;left:18px;right:18px;display:flex;align-items:center;gap:10px}
-.lvorb{width:104px;height:104px;margin-bottom:4px}
-.lvstate{font:600 10px var(--mono);letter-spacing:.2em;color:var(--cyan)}
-.wave{display:flex;align-items:center;gap:3px;height:34px}
-.wave i{width:3px;border-radius:3px;background:var(--cyan);opacity:.75;animation:wv 1s ease-in-out infinite}
-.wave i.g{background:var(--gold)}
-@keyframes wv{0%,100%{height:6px}50%{height:26px}}
-.lvlog{width:100%;max-width:380px;max-height:30vh;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
-.lvln{opacity:0;transform:translateY(6px);transition:.3s;padding:8px 11px;border-radius:12px;font-size:13px}
+/* mode suara */
+#liveov{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .35s}
+#liveov.open{opacity:1;pointer-events:auto}
+#lvClose{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);color:var(--dim);font-size:14px}
+.lvorbig{width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#BDF3FF 0%,var(--cyan) 42%,#0E7490 100%);box-shadow:0 0 44px var(--glow),inset 0 0 14px rgba(255,255,255,.4);animation:nafas 1.8s ease-in-out infinite}
+#lvState{margin-top:18px;font-size:11px;font-weight:700;letter-spacing:2.5px;color:var(--dim)}
+#wave{display:flex;gap:3px;height:26px;align-items:center;margin-top:14px}
+#wave i{width:3px;border-radius:3px;background:var(--cyan);height:20%;animation:wv 1s ease-in-out infinite}
+#wave i.g{background:var(--gold)}
+@keyframes wv{0%,100%{height:18%}50%{height:92%}}
+#lvLog{margin-top:22px;width:min(320px,84%);display:flex;flex-direction:column;gap:9px}
+.lvln{background:var(--pan);border:1px solid var(--line);border-radius:13px;padding:9px 13px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:.4s}
 .lvln.show{opacity:1;transform:none}
-.lvln.me{align-self:flex-end;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.2)}
-.lvln.avi{align-self:flex-start;background:rgba(14,22,38,.85);border:1px solid var(--line)}
-.lvln .lw{font:600 8px var(--mono);letter-spacing:.16em;color:var(--dim2);margin-bottom:3px}
-.lvfoot{display:flex;flex-direction:column;align-items:center;gap:11px}
-.lvtele{font:600 8.5px var(--mono);letter-spacing:.14em;color:var(--dim2)}
-.lvtele b{color:var(--cyan)}
+.lvln small{display:block;font:700 8px var(--mono);letter-spacing:1.5px;color:var(--dim2);margin-bottom:2px}
+.soonTag{margin-top:20px;font:700 8.5px var(--mono);letter-spacing:1.5px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);padding:4px 10px;border-radius:7px}
 
-/* ============ TOAST ============ */
-.toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,14px);z-index:80;max-width:86%;
-  padding:9px 15px;border:1px solid var(--line2);border-radius:11px;background:rgba(10,16,29,.96);
-  font:600 11.5px var(--mono);letter-spacing:.02em;color:var(--txt);opacity:0;visibility:hidden;transition:.24s;box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+/* note luar + toast */
+.note{position:fixed;left:0;right:0;bottom:10px;text-align:center;font:600 8px var(--mono);letter-spacing:1.4px;color:var(--dim2);z-index:5;pointer-events:none;opacity:.75}
+.toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(14px);background:var(--pan2);border:1px solid var(--line2);color:var(--txt);padding:10px 17px;border-radius:12px;font-size:12.5px;font-weight:600;opacity:0;transition:.3s;z-index:90;pointer-events:none;max-width:86%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:460px){.note{display:none}}
 </style>
 </head>
 <body>
+<div class="app" id="app">
 
-<!-- latar MK1 — satu lapis -->
-<div class="fx"></div>
-
-<div class="stage">
-  <div class="app">
-
-    <!-- ===== HEADER ASISTEN ===== -->
-    <header>
-      <div class="orb ring work" id="hdOrb" style="width:36px;height:36px"></div>
-      <div>
-        <div class="hd-name">AVI</div>
-        <div class="hd-sub">ASISTEN PRIBADI · MK1</div>
-      </div>
-      <div class="pill work" id="hdPill" role="button" tabindex="0" aria-label="Buka tugas dan antrean"><i></i><span id="hdPillTx">BEKERJA · 34%</span></div>
-    </header>
-
-    <!-- ===== STRIP KENDALI — JEDA/STOP hanya di sini, selalu terjangkau ===== -->
-    <div class="strip on" id="strip">
-      <button class="sjump" id="stripJump" aria-label="Lompat ke tugas yang berjalan">
-        <span class="sdot"></span>
-        <span class="snm">AUDIT BILLING</span>
-        <b class="spct" id="stPct">34%</b>
-        <span class="sbar"><i id="stBar" style="width:34%"></i></span>
-      </button>
-      <button class="sbtn" id="btnSPause">JEDA</button>
-      <button class="sbtn red" id="btnSStop">STOP</button>
+  <!-- HEADER: orb kehadiran + nama + status -->
+  <header>
+    <div class="orb" id="hdOrb"></div>
+    <div class="brand"><b>AVI</b><small>ASISTEN PRIBADI</small></div>
+    <div class="hdR">
+      <button class="themeBtn" id="btnTheme" aria-label="Ganti tema">☾</button>
+      <button class="pill" id="hdPill"><i></i><span id="hdPillTx">SIAP, PAK</span></button>
     </div>
+  </header>
 
-    <!-- ================= VIEW 1 · OBROLAN ================= -->
+  <!-- STRIP KENDALI: status tugas sekali pandang — JEDA/STOP hanya di sini -->
+  <div id="strip" class="on">
+    <span class="dot"></span>
+    <span class="nm" id="stripJump" style="cursor:pointer">Laporan pengeluaran</span>
+    <span class="pc" id="stPct">34%</span>
+    <span class="bar"><b id="barTx" style="width:34%"></b></span>
+    <button class="sbtn" id="btnSPause">JEDA</button>
+    <button class="sbtn" id="btnSStop">STOP</button>
+  </div>
+
+  <main class="scr">
+
+    <!-- ===================== OBROLAN ===================== -->
     <section class="view on" id="v-obrolan">
-      <div class="scroll scr" id="threadScroll">
-        <div class="thread">
 
-          <div class="hai">
-            <h1>Selamat pagi, <b>Pak</b>.</h1>
-            <p>Saya AVI, asisten Pak. Bilang saja yang perlu dikerjakan — kalau pekerjaannya berat, saya urus sampai jadi.</p>
-            <div class="tele">REAKTOR STABIL · NET AKTIF · 1 TUGAS BERJALAN</div>
-          </div>
+      <div class="greet">
+        <h1 id="greetTx">Selamat pagi, <em>Pak</em>.</h1>
+        <p>Ada yang bisa saya urus hari ini?</p>
+        <div class="whisp" id="whisp">MK1 · REAKTOR STABIL · NET AKTIF · 1 TUGAS BERJALAN</div>
+      </div>
 
-          <!-- obrolan biasa: asisten dulu -->
-          <div class="row me"><div class="bub">Rekap rapat direksi kemarin, singkat saja.</div></div>
-          <div class="row avi">
-            <div class="orb av"></div>
-            <div class="bub"><div class="who">AVI · ASISTEN</div>Siap, Pak. Lima poin: target Q4 disetujui, anggaran pemasaran naik 12%, dua rekrutmen baru, migrasi server minggu depan, dan evaluasi vendor logistik.</div>
-          </div>
+      <!-- brief harian ala Snapshot -->
+      <div class="card brief">
+        <div class="clab">HARI INI<span class="tg2">RINGKASAN AVI</span></div>
+        <div class="brow"><span class="bic">▤</span><div><b>2 jadwal</b><small>Rapat tim pagi · Review desain sore</small></div></div>
+        <div class="brow"><span class="bic">◔</span><div><b>1 pengingat</b><small>Bayar listrik — Jumat depan</small></div></div>
+        <div class="brow"><span class="bic">☀</span><div><b>Cerah 31°</b><small>Langit bersih sepanjang hari, Pak</small></div></div>
+        <div class="cap">Saya rangkum otomatis setiap pagi — tanpa Pak minta.</div>
+      </div>
 
-          <!-- permintaan berat -->
-          <div class="row me"><div class="bub">Bandingkan penjualan Q2 vs Q3 dari data terlampir, jadikan laporan PDF yang rapi.
-            <div class="attach">⎘ data_penjualan.xlsx</div></div></div>
-          <div class="row avi">
-            <div class="orb av"></div>
-            <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
-              <div class="card ok">
-                <div class="ch">RENCANA RINGKAS <span class="r" style="color:var(--green)">✓ SELESAI · 14 KR · 6 MNT</span></div>
-                <div class="cb">
-                  <div class="ttl">Laporan Analisa Penjualan Q3</div>
-                  <div class="mut">Disetujui Pak — dieksekusi tadi siang.</div>
-                  <div class="steps">
-                    <div class="st done"><i>✓</i><span class="t">Baca &amp; olah data</span><span class="s">SELESAI</span><span class="kr">3 KR</span></div>
-                    <div class="st done"><i>✓</i><span class="t">Analisa tren &amp; anomali</span><span class="s">SELESAI</span><span class="kr">4 KR</span></div>
-                    <div class="st done"><i>✓</i><span class="t">Susun PDF + grafik</span><span class="s">SELESAI</span><span class="kr">7 KR</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <!-- percakapan -->
+      <div class="msg me"><div class="bub">AVI, tolong buatkan laporan pengeluaran bulan ini ya.</div></div>
+      <div class="msg"><span class="mav"></span><div class="bub">Siap, Pak. Saya kumpulkan catatan & nota bulan ini, rapikan per kategori, lalu saya susun jadi PDF yang rapi. Sebentar lagi.</div></div>
 
-          <!-- hasil langsung dari asisten -->
-          <div class="row avi">
-            <div class="orb av"></div>
-            <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
-              <div class="bub sum" style="border:1px solid var(--line);border-radius:14px;margin-bottom:9px">Selesai, Pak — 14 halaman, 7 grafik. Penjualan naik <b>+28.6%</b>, ada 3 anomali (terbesar <em>Sep-14</em>).</div>
-              <div class="card" id="resCard">
-                <div class="cb">
-                  <div class="file">
-                    <div class="fic">PDF</div>
-                    <div class="fmeta">
-                      <div class="fname">LAPORAN_Q3.pdf</div>
-                      <div class="fsub">2.4 MB · 14 HAL · 7 GRAFIK · QC LOLOS</div>
-                    </div>
-                  </div>
-                  <div class="versi">
-                    <span class="vc">v1</span><span class="vc on">v2 · TERBARU</span>
-                    <span class="tag">SEJARAH VERSI — COMING SOON</span>
-                  </div>
-                </div>
-                <div class="foot">
-                  <button class="btn gold block" data-toast="Simulasi tampilan — unduh menyusul di aplikasi">⭳ UNDUH</button>
-                  <button class="btn block" data-toast="Simulasi tampilan — bagikan menyusul di aplikasi">⇪ BAGIKAN</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- revisi lewat obrolan biasa -->
-          <div class="row me"><div class="bub">Bagus. Grafiknya ganti ke emas ya.</div></div>
-          <div class="row avi">
-            <div class="orb av"></div>
-            <div class="bub"><div class="who">AVI · ASISTEN</div>Siap, Pak — v2 sudah saya render ulang dengan aksen emas, isinya sama.</div>
-          </div>
-
-          <!-- SEDANG BEKERJA: kartu live di dalam obrolan -->
-          <div class="row avi">
-            <div class="orb av" id="avOrb"></div>
-            <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
-              <div class="card" id="liveCard">
-                <div class="ch">AVI SEDANG BEKERJA <span class="r" id="liveHdr">LANGKAH 2/3</span></div>
-                <div class="cb">
-                  <div class="live">
-                    <div class="ringw">
-                      <svg viewBox="0 0 74 74" width="74" height="74">
-                        <circle class="bgc" cx="37" cy="37" r="31"/>
-                        <circle class="fgc" id="ringFg" cx="37" cy="37" r="31" stroke-dasharray="194.8" stroke-dashoffset="128"/>
-                      </svg>
-                      <div class="ringv"><b id="pctTx">34%</b><span>PROSES</span></div>
-                    </div>
-                    <div class="lmeta">
-                      <div class="lstep"><span class="dotc"></span><span id="stepTx">Telusuri celah &amp; duplikasi…</span></div>
-                      <div class="teler"><span>T+<b id="tTx">01:12</b></span><span><b id="krTx">5</b>/9 KR</span><span>REAKTOR <b id="rxTx">96%</b></span></div>
-                      <div class="bar"><i id="barTx" style="width:34%"></i></div>
-                    </div>
-                  </div>
-
-                  <div class="gate" id="gate">
-                    <div class="gt"><b>Butuh izin, Pak</b> — akses berkas log billing untuk melengkapi audit.</div>
-                    <button class="btn gold" id="gateOk">IZINKAN</button>
-                    <button class="btn" id="gateSkip">LEWATI</button>
-                  </div>
-
-                  <div class="exp" id="exp">
-                    <div class="log"><b>›</b> pindai billing/*.kt … 14 modul
-<b>›</b> dependensi: 23 terpakai, 4 tidak terpakai
-<em>› anomali: double-charge pada retry() …</em>
-<b>›</b> telusuri jalur pembayaran — 3 cabang
-<b>›</b> ketuk "Ekspor log billing" — antarmuka app
-<b>›</b> menunggu izin berkas log…</div>
-                  </div>
-
-                  <div class="steps" style="margin-top:10px">
-                    <div class="st done"><i>✓</i><span class="t">Pindai modul &amp; dependensi</span><span class="s">SELESAI</span></div>
-                    <div class="st run"><i>2</i><span class="t">Telusuri celah &amp; duplikasi</span><span class="s">BERJALAN</span></div>
-                    <div class="st"><i>3</i><span class="t">Susun temuan + rekomendasi</span><span class="s">ANTRE</span><span class="kr">9 KR TOTAL</span></div>
-                  </div>
-                </div>
-                <div class="foot">
-                  <button class="btn block" id="btnExp">LIHAT PROSES</button>
-                </div>
-              </div>
-
-              <!-- selesai: hasil audit -->
-              <div class="card ok" id="doneCard" style="display:none">
-                <div class="ch">SELESAI <span class="r" style="color:var(--green)">9 KR · 7 MNT</span></div>
-                <div class="cb">
-                  <div class="sum">Audit billing tuntas, Pak — <b>3 temuan</b>, 1 kritis (double-charge saat retry).</div>
-                  <div class="file" style="margin-top:10px">
-                    <div class="fic">PDF</div>
-                    <div class="fmeta">
-                      <div class="fname">AUDIT_BILLING.pdf</div>
-                      <div class="fsub">0.8 MB · 6 HAL · 9 TEMUAN DIPERIKSA</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="foot">
-                  <button class="btn gold block" data-toast="Simulasi tampilan — unduh menyusul di aplikasi">⭳ UNDUH</button>
-                  <button class="btn block" data-toast="Simulasi tampilan — bagikan menyusul di aplikasi">⇪ BAGIKAN</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- antre tanpa form -->
-          <div class="row me"><div class="bub">Kalau sudah selesai, audit juga modul auth-nya ya.</div></div>
-          <div class="row avi">
-            <div class="orb av"></div>
-            <div class="bub"><div class="who">AVI · ASISTEN</div>Siap, Pak — sudah saya catat, masuk antre setelah audit billing. Tidak perlu atur apa-apa lagi.</div>
-          </div>
-
+      <div class="card">
+        <div class="clab">RENCANA SINGKAT</div>
+        <div class="steps">
+          <div class="st"><i>1</i>Kumpulkan catatan & nota<span class="s">ANTRE</span></div>
+          <div class="st"><i>2</i>Rapikan per kategori + cek angka<span class="s">ANTRE</span></div>
+          <div class="st"><i>3</i>Susun PDF & periksa ulang<span class="s">ANTRE</span></div>
         </div>
       </div>
 
-      <!-- composer -->
-      <div class="composer">
-        <button class="cbtn" data-toast="Lampir berkas — simulasi tampilan" aria-label="Lampir berkas">
-          <svg viewBox="0 0 24 24"><path d="M21.4 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66L9.4 17.4a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
-        </button>
-        <div class="cin"><input id="cin" placeholder="Tulis ke AVI…" aria-label="Tulis pesan"/></div>
-        <button class="cbtn" id="btnMic" aria-label="Mode suara AVI">
-          <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3"/></svg>
-        </button>
-        <button class="cbtn send" id="btnSend" data-toast="Simulasi tampilan — kirim pesan menyusul" aria-label="Kirim">
-          <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-        </button>
+      <!-- kartu live: pekerjaan berjalan -->
+      <div class="card" id="liveCard">
+        <div class="lhdr"><b id="liveHdr">SEDAANG SAYA KERJAKAN</b><span id="pctTx">34%</span></div>
+        <div class="lrow">
+          <div class="ring">
+            <svg width="68" height="68" viewBox="0 0 68 68">
+              <circle cx="34" cy="34" r="31" fill="none" stroke="var(--pan2)" stroke-width="5"/>
+              <circle id="ringFg" cx="34" cy="34" r="31" fill="none" stroke="var(--cyan)" stroke-width="5" stroke-linecap="round" stroke-dasharray="194.8" stroke-dashoffset="128.4"/>
+            </svg>
+            <span class="pctx" id="pctC">34%</span>
+          </div>
+          <div class="linfo">
+            <b id="stepTx">Kumpulkan catatan & nota…</b>
+            <div class="lmeta">
+              <span class="lt">⏱ <b id="tTx">00:48</b></span>
+              <span class="lt">KR <b id="krTx">2</b>/20</span>
+              <span class="lt">AKURASI <b id="rxTx">96%</b></span>
+            </div>
+          </div>
+        </div>
+        <div id="gate">
+          <b>AVI minta izin, Pak.</b>
+          <small>Membuka nota & tagihan dari email Pak — isinya tidak saya bagikan ke mana pun.</small>
+          <div class="gbtns">
+            <button class="btn gold" id="gateOk" style="flex:1">IZINKAN</button>
+            <button class="btn" id="gateSkip" style="flex:1">LEWATI</button>
+          </div>
+        </div>
+        <div id="exp">
+          boot mk1 — reaktor stabil · termal aman<br/>
+          net aktif · latensi 41ms<br/>
+          tugas #012 laporan pengeluaran — mulai<br/>
+          sumber: catatan lokal (3) · email (tertunda izin)<br/>
+          kr terpakai <span id="expKr">2</span>/20 · idr tidak terpakai
+        </div>
+        <div style="margin-top:10px;text-align:right"><button class="btn" id="btnExp" style="padding:6px 11px;font-size:10px">LIHAT PROSES</button></div>
       </div>
+
+      <!-- hasil -->
+      <div class="card" id="doneCard">
+        <div class="clab dlab" style="color:var(--green)">TUNTAS, PAK ✓</div>
+        <div class="file">
+          <div class="fic">PDF</div>
+          <div style="flex:1;min-width:0"><b>LAPORAN_PENGELUARAN.pdf</b><small>PDF · 2 halaman · 9 KR terpakai</small></div>
+          <span class="arr" style="color:var(--dim2)">›</span>
+        </div>
+        <div class="vers">
+          <span class="vtag new">v2 · TERBARU</span>
+          <span class="vtag soon">SEJARAH VERSI — COMING SOON</span>
+        </div>
+        <div class="dbtns">
+          <button class="btn" data-toast="Pratinjau dokumen — tampil penuh di aplikasi">BUKA</button>
+          <button class="btn gold" data-toast="Kirim laporan — fitur kirim segera hadir">KIRIM KE PAK</button>
+        </div>
+      </div>
+
+      <!-- balasan lanjutan (muncul saat tuntas) -->
+      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="bub">Laporannya sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div>
+
+      <div style="height:6px"></div>
     </section>
 
-    <!-- ================= VIEW 2 · KENDALI ================= -->
+    <!-- ===================== KENDALI ===================== -->
     <section class="view" id="v-kendali">
-      <div class="scroll scr">
-        <div class="h2">PUSAT KENDALI</div>
-        <div class="sub2">ATUR SEKALI · AVI PAKAI OTOMATIS</div>
-
-        <div class="sect">
-          <h3>OTORITAS KERJA — DEFAULT SEMUA TUGAS</h3>
-          <div class="opts">
-            <button class="opt" data-a="AMAN"><b>AMAN</b><small>Izin tiap langkah</small></button>
-            <button class="opt on" data-a="BAKU"><b>BAKU</b><small>Bebas + izin sensitif</small></button>
-            <button class="opt" data-a="PENUH" style="grid-column:1/-1"><b>PENUH</b><small>Bebas penuh, tercatat — tidak disarankan</small></button>
-          </div>
-          <div class="note1">BAKU: bebas bekerja; <b>login, pembayaran, penghapusan</b> selalu minta izin.</div>
+      <div class="card">
+        <div class="clab">OTORITAS AVI</div>
+        <div class="optrow">
+          <button class="opt" data-a="AMAN">AMAN</button>
+          <button class="opt on" data-a="BAKU">BAKU</button>
+          <button class="opt" data-a="PENUH">PENUH</button>
         </div>
-
-        <div class="sect">
-          <h3>KEMAMPUAN AGENT (ALAT KERJA AVI)</h3>
-          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg></div>
-            <div class="swb"><b>Riset Web</b><small>Pencarian &amp; baca halaman</small></div><button class="tg on" aria-label="Riset Web"><i></i></button></div>
-          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M4 17l6-5-6-5M12 19h8"/></svg></div>
-            <div class="swb"><b>Terminal &amp; Koding</b><small>Jalankan skrip, tulis &amp; ubah kode</small></div><button class="tg on" aria-label="Terminal dan Koding"><i></i></button></div>
-          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
-            <div class="swb"><b>Browser Virtual</b><small>Buka situs, isi form, ambil layar</small></div><button class="tg on" aria-label="Browser Virtual"><i></i></button></div>
-          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
-            <div class="swb"><b>Akses Berkas</b><small>Baca &amp; simpan hasil kerja</small></div><button class="tg on" aria-label="Akses Berkas"><i></i></button></div>
-          <div class="sw"><div class="swic"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></div>
-            <div class="swb"><b>Notifikasi Selesai</b><small>Kabar saat tugas tuntas</small></div><button class="tg on" aria-label="Notifikasi Selesai"><i></i></button></div>
-          <div class="sw"><div class="swic" style="color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
-            <div class="swb"><b>Pembayaran</b><small>Transaksi uang &amp; checkout</small></div><button class="tg lock on" aria-label="Pembayaran terkunci"><i></i></button></div>
-          <div class="note1"><span class="tag">PEMBAYARAN — SELALU MINTA IZIN, TERKUNCI</span></div>
+        <div class="empty" style="margin-top:8px">BAKU: pekerjaan rumah boleh jalan sendiri — uang & kirim-kirim selalu izin dulu.</div>
+      </div>
+      <div class="card">
+        <div class="clab">KEBIASAAN KERJA</div>
+        <div class="swrow"><div><b>Rapikan otomatis</b><small>Berkas hasil langsung ke folder rapi</small></div><button class="tg on"></button></div>
+        <div class="swrow"><div><b>Tanya sebelum kirim</b><small>Semua pesan keluar saya perlihatkan dulu</small></div><button class="tg on"></button></div>
+        <div class="swrow"><div><b>Pembayaran</b><small>Selalu minta izin — terkunci</small></div><button class="tg lock on"></button></div>
+        <div class="swrow"><div><b>Simpan riwayat</b><small>Untuk pelajaran & memory jangka panjang</small></div><button class="tg on"></button></div>
+      </div>
+      <div class="card">
+        <div class="clab">BATAS KR HARIAN — <span id="krOut" style="color:var(--gold)">20 KR</span></div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <input type="range" id="krSlider" min="5" max="60" value="20"/>
         </div>
-
-        <div class="sect">
-          <h3>BATAS KREDIT PER TUGAS</h3>
-          <div class="slider">
-            <input type="range" min="5" max="60" value="20" id="krSlider" aria-label="Batas kredit"/>
-            <div class="krd" id="krOut">20 KR</div>
-          </div>
-          <div class="note1">Melebihi batas → AVI berhenti dan meminta izin, Pak.</div>
-        </div>
-
-        <div class="sect">
-          <h3>PENGHUMASAN HASIL TUGAS</h3>
-          <div class="nseg" id="nseg">
-            <button class="qc" data-n="TIAP RUN">TIAP RUN</button>
-            <button class="qc on" data-n="HANYA SELESAI">HANYA SELESAI</button>
-            <button class="qc" data-n="HANYA GAGAL">HANYA GAGAL</button>
-          </div>
-          <div class="note1">Kabar ke HP Pak — diatur sekali untuk semua tugas. Pola: Devin.</div>
-        </div>
-
-        <div class="sect">
-          <h3>LOG AKTIVITAS</h3>
-          <div class="logbox scr"><b>›</b> otoritas BAKU aktif
-<b>›</b> laporan Q3 selesai — 14 KR
-<em>› audit billing berjalan — langkah 2/3</em>
-<b>›</b> audit auth masuk antre
-<b>›</b> izin berkas diminta — menunggu Pak</div>
-        </div>
-
-        <div class="sect">
-          <h3>NANTI</h3>
-          <div class="soon">
-            <div class="cell"><b>Memori jangka panjang</b><small>Ingat preferensi antar sesi</small><span class="tag">COMING SOON</span></div>
-            <div class="cell"><b>Template tugas</b><small>Pola kerja simpanan</small><span class="tag">COMING SOON</span></div>
-            <div class="cell"><b>Briefing pagi</b><small>Rekap siap-putar tiap pagi — pola Snapshot · Kai 9000</small><span class="tag">COMING SOON</span></div>
-            <div class="cell"><b>Layar hasil dari AVI</b><small>AVI bikinkan tampilan per hasil</small><span class="tag">COMING SOON</span></div>
-          </div>
-        </div>
-
-        <div class="sect">
-          <button class="btn red" style="width:100%;padding:9px" data-toast="Simulasi tampilan — riwayat tetap utuh">HAPUS RIWAYAT TUGAS</button>
+        <div class="empty">Kebijakan Devin: langkah besar = banyak KR, selalu ada pemberhentian aman.</div>
+      </div>
+      <div class="card">
+        <div class="clab">PENGHUMASAN</div>
+        <div class="seg" id="nseg">
+          <button class="qc" data-n="TIAP RUN">TIAP RUN</button>
+          <button class="qc on" data-n="HANYA SELESAI">HANYA SELESAI</button>
+          <button class="qc" data-n="HANYA GAGAL">HANYA GAGAL</button>
         </div>
       </div>
+      <div class="card">
+        <div class="clab">LOG PROSES</div>
+        <div class="logbox">
+          boot mk1 — reaktor stabil · termal aman<br/>
+          net aktif · latensi 41ms · mem 62%<br/>
+          tugas #012 — laporan pengeluaran · berjalan<br/>
+          kebijakan: BAKU · batas 20 KR<br/>
+          riwayat tersimpan · memory aktif
+        </div>
+      </div>
+      <div class="card">
+        <div class="clab">SEGERA HADIR</div>
+        <div class="soon">
+          <div class="sc"><b>Kalender & Email</b><small>COMING SOON</small></div>
+          <div class="sc"><b>Koneksi Rumah</b><small>COMING SOON</small></div>
+          <div class="sc"><b>Percakapan Tersimpan</b><small>COMING SOON</small></div>
+          <div class="sc"><b>Profil Pak</b><small>COMING SOON</small></div>
+        </div>
+      </div>
+      <div style="height:6px"></div>
     </section>
+  </main>
 
-    <!-- ===== NAV BAWAH ===== -->
-    <nav>
-      <button class="navbtn on" data-v="obrolan">
-        <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z"/></svg>
-        <span>OBROLAN</span>
-      </button>
-      <button class="navbtn" data-sheet="1" aria-label="Buka tugas dan antrean">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span>TUGAS</span>
-        <i class="dot show" id="navDot"></i>
-      </button>
-      <button class="navbtn" data-v="kendali">
-        <svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
-        <span>KENDALI</span>
-      </button>
-    </nav>
+  <!-- komposer: TANPA LAMPIRAN -->
+  <div class="composer">
+    <div class="cinWrap"><input id="cin" placeholder="Tulis apa saja, Pak…"/></div>
+    <button class="cbtn" id="btnMic" aria-label="Mode suara"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button class="cbtn send" id="btnSend" aria-label="Kirim"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+  </div>
 
-    <!-- ===== SHEET TUGAS & ANTREAN — padat, muat sekali gulir (ChatGPT Tasks · Gemini Scheduled) ===== -->
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Tugas dan antrean">
-      <div class="shbg" id="shBg"></div>
-      <div class="shpanel">
-        <div class="shgrip"><span></span></div>
-        <div class="shhead">
-          <div>
-            <div class="shh2">TUGAS &amp; ANTREAN</div>
-            <div class="shsub">JALAN · ANTRE · JADWAL · RIWAYAT</div>
+  <!-- NAV -->
+  <nav>
+    <button class="navbtn on" data-v="obrolan">OBROLAN</button>
+    <button class="navbtn" data-sheet="1">TUGAS<span class="dot" id="navDot"></span></button>
+    <button class="navbtn" data-v="kendali">KENDALI</button>
+  </nav>
+
+  <!-- SHEET TUGAS -->
+  <div id="sheet">
+    <div class="shbg" id="shBg"></div>
+    <div class="shpan scr">
+      <div class="shhd"><b>TUGAS</b><button class="shx" id="shClose">✕</button></div>
+      <div class="stats">
+        <div class="stat jl"><b id="stRun">1</b><small>JALAN</small></div>
+        <div class="stat"><b id="stQueue">0</b><small>ANTRE</small></div>
+        <div class="stat sx"><b id="stDone">3</b><small>SELESAI</small></div>
+        <div class="stat kr"><b id="stKr">11</b><small>KR PAKAI</small></div>
+      </div>
+      <div class="shsec">
+        <div class="clab">SEDANG BERJALAN</div>
+        <div class="srow" id="shRun">
+          <div class="swic" style="font:700 8px var(--mono)">DOC</div>
+          <div class="swb">
+            <b>Laporan pengeluaran bulan ini</b>
+            <small><span class="sst run">34%</span><span id="shStepTx">Kumpulkan catatan & nota…</span></small>
+            <div class="shbar"><b id="shBarTx" style="width:34%"></b></div>
           </div>
-          <button class="shx" id="shClose" aria-label="Tutup">✕</button>
-        </div>
-        <div class="shscroll scr">
-
-          <div class="stats">
-            <div class="stat"><b id="stRun">1</b><span>JALAN</span></div>
-            <div class="stat"><b id="stQueue">1</b><span>ANTRE</span></div>
-            <div class="stat"><b class="k" id="stDone">2</b><span>SELESAI</span></div>
-            <div class="stat"><b class="g" id="stKr">14</b><span>KR PAKAI</span></div>
-          </div>
-
-          <div class="sect">
-            <h3>SEDANG BERJALAN</h3>
-            <div class="shrun" id="shRun">
-              <div class="shrtop"><b>Audit kode modul billing</b><span class="spct" id="shPctTx">34%</span></div>
-              <div class="shstep"><span class="dotc"></span><span id="shStepTx">Telusuri celah &amp; duplikasi…</span></div>
-              <div class="bar" style="margin-top:8px"><i id="shBarTx" style="width:34%"></i></div>
-              <div class="shbtns"><button class="btn" id="shLihat">LIHAT DI OBROLAN</button></div>
-            </div>
-          </div>
-
-          <div class="sect">
-            <h3>ANTREAN OTOMATIS</h3>
-            <div id="queueList">
-              <div class="srow">
-                <div class="swic" style="font:700 8px var(--mono)">&lt;/&gt;</div>
-                <div class="swb"><b>Audit modul autentikasi</b><small>Masuk sendiri lewat obrolan — urutan diatur AVI</small></div>
-                <button class="btn red qcancel" style="padding:5px 9px;font-size:9.5px">BATAL</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="sect">
-            <h3>MULAI CEPAT — SATU KETUK</h3>
-            <div class="opts">
-              <button class="opt qadd" data-t="Laporan PDF mingguan"><b style="color:var(--txt)">LAPORAN PDF</b><small>Mingguan, siap unduh</small></button>
-              <button class="opt qadd" data-t="Audit keamanan repo"><b style="color:var(--txt)">AUDIT REPO</b><small>Keamanan &amp; kerapian</small></button>
-              <button class="opt qadd" data-t="Analisa data CSV"><b style="color:var(--txt)">ANALISA DATA</b><small>CSV / spreadsheet</small></button>
-              <button class="opt qadd" data-t="Pantau harga kompetitor"><b style="color:var(--txt)">PANTAU HARGA</b><small>Rutin via web</small></button>
-            </div>
-          </div>
-
-          <div class="sect">
-            <h3>JADWAL OTOMATIS <span class="tag">COMING SOON</span></h3>
-            <div class="jrow">
-              <div class="swic" style="color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-              <div class="swb"><b>Laporan pengguna harian</b><small>Setiap hari · 07.00 — dibuat lewat percakapan</small></div>
-              <button class="tg on jtg" aria-label="Jeda jadwal harian"><i></i></button>
-            </div>
-            <div class="jrow">
-              <div class="swic" style="color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></div>
-              <div class="swb"><b>Ringkasan pasar mingguan</b><small>Setiap Senin · 09.00 — hasil lewat notifikasi</small></div>
-              <button class="tg on jtg" aria-label="Jeda jadwal mingguan"><i></i></button>
-            </div>
-            <div class="note1">Cukup bilang: <b>"jalankan tiap Senin pagi"</b> — AVI yang mencatat. Pola: ChatGPT Tasks · Gemini Scheduled Actions · Bixby Routines.</div>
-          </div>
-
-          <div class="sect">
-            <h3>RIWAYAT</h3>
-            <div class="ghead">HARI INI</div>
-            <div class="srow act" id="shResRow">
-              <div class="swic" style="font:700 8px var(--mono)">DOC</div>
-              <div class="swb"><b>Laporan analisa penjualan Q3</b><small><span class="sst ok">SELESAI</span> · PDF · 14 HAL · 14 KR</small></div>
-              <span class="arr">›</span>
-            </div>
-            <div class="ghead">KEMARIN</div>
-            <div class="srow">
-              <div class="swic" style="font:700 8px var(--mono)">&lt;/&gt;</div>
-              <div class="swb"><b>Rapikan gaya kode DeckPanel</b><small><span class="sst ok">SELESAI</span> · 2 KR</small></div>
-              <span class="arr">›</span>
-            </div>
-            <div class="ghead">MINGGU INI</div>
-            <div class="srow">
-              <div class="swic" style="font:700 8px var(--mono);color:var(--gold);background:rgba(245,181,74,.07);border-color:rgba(245,181,74,.3)">WEB</div>
-              <div class="swb"><b>Pantau harga kompetitor</b><small><span class="sst st">DIHENTIKAN</span> · 4 KR</small></div>
-              <span class="arr">›</span>
-            </div>
-            <div class="note1">Riwayat lengkap tinggal gulir obrolan, Pak — satu tempat, tidak diduplikasi.</div>
-          </div>
-
+          <button class="btn" id="shLihat" style="padding:6px 10px;font-size:10px">LIHAT</button>
         </div>
       </div>
+      <div class="shsec">
+        <div class="clab">ANTREAN</div>
+        <div id="queueList"></div>
+        <div class="empty" id="queueEmpty">Kosong — semua tugas tuntas, Pak.</div>
+      </div>
+      <div class="shsec">
+        <div class="clab">MULAI CEPAT</div>
+        <div class="qgrid">
+          <button class="qc2 qadd" data-t="Rekap rapat"><b>Rekap rapat</b><small>Poin & keputusan → PDF</small></button>
+          <button class="qc2 qadd" data-t="Draf email"><b>Draf email</b><small>Saya tuliskan, Pak betulkan</small></button>
+          <button class="qc2 qadd" data-t="Laporan pengeluaran"><b>Laporan pengeluaran</b><small>Rekap per kategori</small></button>
+          <button class="qc2 qadd" data-t="Pengingat"><b>Pengingat</b><small>Diingatkan tepat waktu</small></button>
+        </div>
+      </div>
+      <div class="shsec">
+        <div class="clab">JADWAL OTOMATIS<span class="tg2">COMING SOON</span></div>
+        <div class="swrow"><div><b>Rekap tiap pagi</b><small>Brief ringkas di sapaan, Pak</small></div><button class="tg jtg on"></button></div>
+      </div>
+      <div class="shsec" style="padding-bottom:26px">
+        <div class="clab">RIWAYAT</div>
+        <div class="daylab">HARI INI</div>
+        <div class="srow" id="shResRow">
+          <div class="swic" style="font:700 8px var(--mono)">✓</div>
+          <div class="swb"><b>Rekap rapat pagi</b><small><span class="sst ok">SELESAI</span> PDF · 6 KR</small></div><span class="arr">›</span>
+        </div>
+        <div class="daylab">KEMARIN</div>
+        <div class="srow"><div class="swic" style="font:700 8px var(--mono)">✉</div><div class="swb"><b>Draf email ke Bu Sari</b><small><span class="sst ok">SELESAI</span> · 3 KR</small></div><span class="arr">›</span></div>
+        <div class="daylab">SENIN</div>
+        <div class="srow"><div class="swic" style="font:700 8px var(--mono)">▤</div><div class="swb"><b>Rekap pengeluaran mingguan</b><small><span class="sst ok">SELESAI</span> PDF · 7 KR</small></div><span class="arr">›</span></div>
+      </div>
     </div>
+  </div>
 
-    <!-- ===== MODE SUARA — pola: Sesame Maya · Gemini Live · Agora · Sara ===== -->
-    <div class="liveov" id="liveov" role="dialog" aria-modal="true" aria-label="Mode suara AVI">
-      <div class="lvtop">
-        <div class="shsub" style="margin:0">MODE SUARA</div>
-        <span class="tag lvstag">COMING SOON</span>
-      </div>
-      <div class="orb ring lvorb"></div>
-      <div class="lvstate" id="lvState">MENDENGARKAN…</div>
-      <div class="wave" id="wave" aria-hidden="true"></div>
-      <div class="lvlog" id="lvLog">
-        <div class="lvln me"><div class="lw">PAK · SUARA</div>AVI, rekap penjualan pekan ini.</div>
-        <div class="lvln avi"><div class="lw">AVI · SUARA</div>Siap, Pak. Naik 12% dari pekan lalu — saya kirim ringkasannya ke obrolan ya.</div>
-        <div class="lvln avi"><div class="lw">AVI · SUARA</div>Oh, Pak menyela — saya dengar. Silakan, saya berhenti sebentar.</div>
-      </div>
-      <div class="lvfoot">
-        <div class="lvtele">INTERUPSI NATURAL · TRANSKRIP LANGSUNG · LATENSI <b>230MS</b></div>
-        <button class="btn" id="lvClose" style="padding:10px 26px">TUTUP</button>
-      </div>
+  <!-- MODE SUARA -->
+  <div id="liveov">
+    <button id="lvClose">✕</button>
+    <div class="lvorbig" id="lvOrb"></div>
+    <div id="lvState">MENDENGARKAN…</div>
+    <div id="wave"></div>
+    <div id="lvLog">
+      <div class="lvln"><small>PAK</small>"AVI, ingatkan saya bayar listrik Jumat."</div>
+      <div class="lvln"><small>AVI</small>"Siap, Pak. Saya ingatkan Jumat pagi — sebelum jam kerja."</div>
+      <div class="lvln"><small>PAK</small>"Bagus. Itu saja."</div>
     </div>
-
+    <div class="soonTag">MODE SUARA — COMING SOON · RESPON 230MS</div>
   </div>
 </div>
 
-<div class="note">v7 · SATU APLIKASI UTUH · SEKALI PANDANG, SATU KETUK — POLA: GOOGLE ASSISTANT SNAPSHOT · RAYCAST · LINEAR · CHATGPT TASKS · SESAME · MANUS · DEVIN</div>
+<div class="note">v8 · ASISTEN PRIBADI — HANGAT DI DEPAN, TANGGUH DI BALIK · POLA: GOOGLE ASSISTANT SNAPSHOT · SIRI EDGE-GLOW · PI · SESAME · AUMI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -746,6 +545,22 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 /* ---- toast ---- */
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
+
+/* ---- tema: siang (hangat, ala asisten daylight) / malam (jarvis) ---- */
+$('#btnTheme').addEventListener('click',()=>{
+  const h=document.documentElement;
+  const toSiang=h.dataset.theme==='malam';
+  h.dataset.theme=toSiang?'siang':'malam';
+  $('#btnTheme').textContent=toSiang?'☀':'☾';
+  toast(toSiang?'Tema siang — lembut, hangat':'Tema malam — nuansa Jarvis');
+});
+
+/* ---- sapaan mengikuti waktu (tanpa menampilkan jam) ---- */
+(function(){
+  const h=new Date().getHours();
+  const w=h<4?'malam':h<10?'pagi':h<15?'siang':h<19?'sore':'malam';
+  $('#greetTx').innerHTML='Selamat '+w+', <em>Pak</em>.';
+})();
 
 /* ---- navigasi bawah ---- */
 $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
@@ -757,7 +572,7 @@ $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
 $('#hdPill').addEventListener('click',openSheet);
 
 /* ---- obrolan: kirim dummy ---- */
-$('#btnSend').addEventListener('click',()=>{const i=$('#cin');if(i.value.trim()){toast('Simulasi tampilan — balasan menyusul di aplikasi');i.value=''}else toast('Tulis dulu, Pak')});
+$('#btnSend').addEventListener('click',()=>{const i=$('#cin');if(i.value.trim()){toast('Baik, Pak — saya catat. Balasan penuh di aplikasi');i.value=''}else toast('Tulis dulu, Pak')});
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
 
 /* ---- sheet: tugas & antrean ---- */
@@ -773,15 +588,15 @@ function jump(sel){
   $$('.navbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='obrolan'));
   const el=$(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
 }
-$('#shResRow').addEventListener('click',()=>jump('#resCard'));
+$('#shResRow').addEventListener('click',()=>toast('Riwayat lama — pratinjau di aplikasi'));
 
-/* ---- kendali: otoritas / saklar / slider / penghumasan ---- */
+/* ---- kendali ---- */
 $$('.opt:not(.qadd)').forEach(o=>o.addEventListener('click',()=>{
   $$('.opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');
-  toast('Otoritas: '+o.dataset.a+' — dipakai untuk semua tugas');
+  toast('Otoritas '+o.dataset.a+' — dipakai untuk semua tugas, Pak');
 }));
 $$('.tg:not(.lock):not(.jtg)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
-$$('.tg.lock').forEach(t=>t.addEventListener('click',()=>toast('PEMBAYARAN — SELALU MINTA IZIN (terkunci)')));
+$$('.tg.lock').forEach(t=>t.addEventListener('click',()=>toast('Pembayaran selalu minta izin, Pak — terkunci')));
 const ks=$('#krSlider');ks.addEventListener('input',()=>$('#krOut').textContent=ks.value+' KR');
 $$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
   $$('#nseg .qc').forEach(x=>x.classList.remove('on'));b.classList.add('on');
@@ -789,93 +604,97 @@ $$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
 }));
 
 /* ================= MESIN CONTOH: ASISTEN BEKERJA ================= */
-const C=2*Math.PI*31; let pct=34,sec=72,kr=5,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false;
-const stepNames=['Pindai modul & dependensi…','Telusuri celah & duplikasi…','Menyusun temuan + rekomendasi…'];
-const stepEls=$$('#liveCard .steps .st');
+const C=2*Math.PI*31; let pct=34,sec=48,kr=2,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false;
+const stepNames=['Kumpulkan catatan & nota…','Rapikan per kategori…','Susun PDF & periksa…'];
+const stepEls=$$('#v-obrolan .steps .st');
 function pill(cls,tx){const p=$('#hdPill');p.className='pill'+(cls?' '+cls:'');$('#hdPillTx').textContent=tx}
 function render(){
   const off=C*(1-pct/100);
   $('#ringFg').setAttribute('stroke-dashoffset',off.toFixed(1));
   $('#pctTx').textContent=Math.round(pct)+'%';
+  $('#pctC').textContent=Math.round(pct)+'%';
   $('#barTx').style.width=pct+'%';
   $('#stPct').textContent=Math.round(pct)+'%';
-  $('#stBar').style.width=pct+'%';
   $('#tTx').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');
   $('#krTx').textContent=kr;$('#rxTx').textContent=(94+Math.round(Math.random()*4))+'%';
   const step=stepNames[pct<33?0:pct<66?1:2];
   $('#stepTx').textContent=step;
-  $('#liveHdr').textContent='LANGKAH '+(pct<33?1:pct<66?2:3)+'/3';
-  const sp=$('#shPctTx');if(sp)sp.textContent=Math.round(pct)+'%';
-  const sb2=$('#shBarTx');if(sb2)sb2.style.width=pct+'%';
-  const ss2=$('#shStepTx');if(ss2&&!stopped&&!done)ss2.textContent=step;
+  const sp=$('#shRun .sst.run');if(sp)sp.textContent=Math.round(pct)+'%';
+  const sb=$('#shBarTx');if(sb)sb.style.width=pct+'%';
+  const ss=$('#shStepTx');if(ss&&!stopped&&!done)ss.textContent=step;
   const nd=$('#navDot');if(nd)nd.classList.toggle('show',!stopped&&!done);
-  pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'BEKERJA · '+Math.round(pct)+'%');
+  pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'KERJA · '+Math.round(pct)+'%');
 }
+function setWhisp(t){$('#whisp').textContent=t}
 function finish(){
   fin=true;done=true;render();
+  const sp=$('#shRun .sst.run');if(sp){sp.textContent='TUNTAS';sp.classList.remove('run');sp.classList.add('ok')}
   $('#liveCard').style.display='none';
+  $('#app').classList.remove('live');
   const sd=$('#stDone');if(sd)sd.textContent=String(+sd.textContent+1);
   const sk=$('#stKr');if(sk)sk.textContent=String(+sk.textContent+9);
   const sr=$('#stRun');if(sr)sr.textContent='0';
   const nw=document.createElement('div');
-  nw.innerHTML='<div class="srow"><div class="swic" style="font:700 8px var(--mono)">DOC</div><div class="swb"><b>Audit kode modul billing</b><small><span class="sst ok">SELESAI</span> · PDF · 9 KR</small></div><span class="arr">›</span></div>';
+  nw.innerHTML='<div class="srow"><div class="swic" style="font:700 8px var(--mono)">✓</div><div class="swb"><b>Laporan pengeluaran bulan ini</b><small><span class="sst ok">SELESAI</span> PDF · 9 KR</small></div><span class="arr">›</span></div>';
   const refEl=$('#shResRow');if(refEl&&refEl.parentNode)refEl.parentNode.insertBefore(nw.firstChild,refEl);
   $('#doneCard').style.display='block';
+  const fm=$('#followMsg');if(fm)fm.style.display='flex';
   $('#hdOrb').classList.remove('work');
   const nd=$('#navDot');if(nd)nd.classList.remove('show');
-  /* strip: status selesai sekali pandang, lalu senyap (tanpa chrome permanen) */
   const st=$('#strip');st.classList.add('ok');
-  $('#stPct').textContent='SELESAI';
-  const lb=$('#btnSPause');lb.textContent='JEDA';
+  $('#stPct').textContent='TUNTAS';
+  $('#btnSPause').textContent='JEDA';
+  setWhisp('MK1 · SEMUA TENANG · SIAP PERINTAH');
   setTimeout(()=>{st.classList.remove('on')},4000);
-  /* baris jalan di sheet */
   const sh=$('#shRun');
-  if(sh){sh.classList.add('ok');$('#shStepTx').textContent='Tuntas — 3 temuan, 1 kritis. Hasil di obrolan.';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
-  toast('Tugas selesai, Pak — hasil masuk di obrolan');
-  setTimeout(()=>{pill('','SIAP')},3500);
+  if(sh){sh.classList.add('ok');const s2=$('#shStepTx');if(s2)s2.textContent='Tuntas — 2 halaman, angka sudah saya cek ulang.';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
+  toast('Tuntas, Pak — laporannya menunggu di obrolan');
+  setTimeout(()=>{pill('','SIAP, PAK')},3500);
 }
 setInterval(()=>{
   if(paused||stopped||fin||gateUp||done)return;
   pct+=0.55;sec+=1;
   if(pct>=45&&kr<9)kr=Math.min(9,Math.round(pct/100*9)+(pct>55?1:0));
-  if(pct>=60&&!gateDone){pct=60;gateUp=true;$('#gate').classList.add('show');toast('AVI butuh izin berkas, Pak')}
+  if(pct>=60&&!gateDone){pct=60;gateUp=true;$('#gate').classList.add('show');toast('AVI minta izin membuka email, Pak')}
   if(pct>=100){pct=100;render();finish();return}
   stepEls.forEach((el,i)=>{const th=[0,33,66][i];
     el.classList.toggle('done',pct>th+27);
     el.classList.toggle('run',!stopped&&pct>th&&pct<=th+27);
     const s=el.querySelector('.s');
-    if(el.classList.contains('done'))s.textContent='SELESAI',s.style.color='';
-    else if(el.classList.contains('run'))s.textContent='BERJALAN',s.style.color='';
+    if(el.classList.contains('done'))s.textContent='SUDAH';
+    else if(el.classList.contains('run'))s.textContent='LAGI';
     else s.textContent='ANTRE';
   });
+  $('#expKr').textContent=kr;
   render();
 },420);
 
 /* ---- gate izin ---- */
-$('#gateOk').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Diizinkan — AVI lanjut bekerja')});
-$('#gateSkip').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Dilewati — AVI pakai data alternatif')});
+$('#gateOk').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Diizinkan — saya lanjutkan, Pak')});
+$('#gateSkip').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Dilewati — saya pakai nota yang tersimpan saja')});
 
 /* ---- JEDA/STOP: satu tempat — strip kendali ---- */
-function setPaused(v){paused=v;$('#btnSPause').textContent=v?'LANJUT':'JEDA';toast(v?'Dijeda, Pak':'Lanjut bekerja, Pak')}
+function setPaused(v){paused=v;$('#btnSPause').textContent=v?'LANJUT':'JEDA';toast(v?'Saya jeda dulu, Pak':'Lanjut saya kerjakan, Pak')}
 $('#btnSPause').addEventListener('click',()=>{if(stopped||fin)return;setPaused(!paused)});
 function doStop(){
   if(fin)return;
   stopped=true;paused=false;render();
   const sr=$('#stRun');if(sr)sr.textContent='0';
+  $('#app').classList.remove('live');
   $('#liveCard').classList.add('stop');
-  $('#liveHdr').textContent='DIHENTIKAN';
-  $('#hdOrb').classList.remove('work');
-  const nd2=$('#navDot');if(nd2)nd2.classList.remove('show');
   $('#stepTx').innerHTML='<span style="color:var(--red)">Dihentikan oleh Pak — 4 KR terpakai.</span>';
+  $('#hdOrb').classList.remove('work');
+  const nd=$('#navDot');if(nd)nd.classList.remove('show');
   const st=$('#strip');st.classList.add('bad');$('#stPct').textContent='STOP';
+  setWhisp('MK1 · SIAGA · MENUNGGU PERINTAH PAK');
   setTimeout(()=>{st.classList.remove('on')},3800);
   const sh=$('#shRun');
-  if(sh){sh.classList.add('stopped');$('#shStepTx').textContent='Dihentikan oleh Pak — 4 KR terpakai.'}
-  toast('Tugas dihentikan, Pak');
+  if(sh){sh.classList.add('stopped');const s2=$('#shStepTx');if(s2)s2.textContent='Dihentikan oleh Pak — 4 KR terpakai.'}
+  toast('Saya berhenti, Pak');
 }
 $('#btnSStop').addEventListener('click',doStop);
 
-/* ---- log proses di kartu live ---- */
+/* ---- log proses ---- */
 $('#btnExp').addEventListener('click',e=>{
   const ex=$('#exp');ex.classList.toggle('open');
   e.target.textContent=ex.classList.contains('open')?'TUTUP PROSES':'LIHAT PROSES';
@@ -885,21 +704,22 @@ $('#btnExp').addEventListener('click',e=>{
 $('#stripJump').addEventListener('click',()=>jump(done?'#doneCard':'#liveCard'));
 $('#shLihat').addEventListener('click',()=>jump(done?'#doneCard':'#liveCard'));
 
-/* ---- antre: tambah dari mulai cepat, batal ---- */
-function bindCancel(btn){if(!btn)return;btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.srow').remove();const st=$('#stQueue');if(st)st.textContent=Math.max(0,+st.textContent-1);toast('Antrean dibatalkan, Pak')})}
+/* ---- antre ---- */
+function bindCancel(btn){if(!btn)return;btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.srow').remove();const st=$('#stQueue');if(st)st.textContent=Math.max(0,+st.textContent-1);toast('Antrean saya batalkan, Pak')})}
 $$('.qcancel').forEach(bindCancel);
 $$('.qadd').forEach(b=>b.addEventListener('click',()=>{
   const row=document.createElement('div');row.className='srow';
-  row.innerHTML='<div class="swic" style="font:700 8px var(--mono)">★</div>'+
-    '<div class="swb"><b>'+b.dataset.t+'</b><small>Mulai cepat — urutan diatur AVI</small></div>'+
+  row.innerHTML='<div class="swic" style="font:700 9px var(--mono)">＋</div>'+
+    '<div class="swb"><b>'+b.dataset.t+'</b><small>Masuk antre — urutannya saya atur</small></div>'+
     '<button class="btn red qcancel" style="padding:5px 9px;font-size:9.5px">BATAL</button>';
-  $('#queueList').appendChild(row);bindCancel(row.querySelector('.qcancel'));
+  $('#queueList').appendChild(row);$('#queueEmpty').style.display='none';
+  bindCancel(row.querySelector('.qcancel'));
   const st=$('#stQueue');if(st)st.textContent=String(+st.textContent+1);
-  toast('Masuk antre, Pak — '+b.dataset.t);
+  toast('Siap, masuk antre — '+b.dataset.t);
 }));
-$$('.jtg').forEach(t=>t.addEventListener('click',()=>toast('Jadwal — COMING SOON')));
+$$('.jtg').forEach(t=>t.addEventListener('click',()=>toast('Jadwal otomatis — COMING SOON')));
 
-/* ================= MODE SUARA (pola: Sesame · Gemini Live · Agora · Sara) ================= */
+/* ================= MODE SUARA (Sesame · Gemini Live · Agora) ================= */
 const lv=$('#liveov');let lvT=[];
 function lvBars(){const w=$('#wave');if(!w||w.children.length)return;
   for(let i=0;i<23;i++){const b=document.createElement('i');
@@ -907,21 +727,22 @@ function lvBars(){const w=$('#wave');if(!w||w.children.length)return;
     b.style.animationDuration=(0.8+Math.random()*0.6).toFixed(2)+'s';
     if(i%6===5)b.className='g';
     w.appendChild(b);}}
-function lvOpen(){lvBars();lv.classList.add('open');
+function lvOpen(){lvBars();lv.classList.add('open');$('#app').classList.add('live');
   const L=$$('#lvLog .lvln');L.forEach(x=>x.classList.remove('show'));
   const st=$('#lvState');st.textContent='MENDENGARKAN…';
   lvT.forEach(clearTimeout);lvT=[];
   lvT.push(setTimeout(()=>{L[0].classList.add('show')},900));
-  lvT.push(setTimeout(()=>{st.textContent='MERANCANG JAWAB…'},1900));
+  lvT.push(setTimeout(()=>{st.textContent='SAYA SUSUN JAWAB…'},1900));
   lvT.push(setTimeout(()=>{L[1].classList.add('show')},2600));
   lvT.push(setTimeout(()=>{L[2].classList.add('show');st.textContent='PAK MENYELA · DILAYANI'},4200));
   lvT.push(setTimeout(()=>{st.textContent='MENDENGARKAN…'},5800));
 }
-function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[]}
+function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[];if(!done&&!stopped&&!fin)$('#app').classList.add('live')}
 $('#btnMic').addEventListener('click',lvOpen);
 $('#lvClose').addEventListener('click',lvClose);
 
-/* mulai */
+/* mulai: kehadiran menyala selama bekerja */
+$('#app').classList.add('live');
 render();
 </script>
 </body>
