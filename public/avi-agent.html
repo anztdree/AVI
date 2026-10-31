@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AVI MK1 · MODE AGENT — Papan Tampilan HTML v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+/* ============ DASAR & VARIABEL ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070B12; --panel:#0B1322; --panel2:#0E1728; --line:rgba(34,211,238,.16);
+  --cyan:#22D3EE; --gold:#F5B54A; --red:#F87171; --green:#34D399;
+  --txt:#E6F1FF; --dim:#8CA3C7; --dim2:#5B7099;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --disp:'Orbitron',sans-serif; --ui:'Rajdhani',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:var(--ui);font-size:16px;line-height:1.45;min-height:100vh;overflow-x:hidden}
+::selection{background:rgba(245,181,74,.35)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,textarea{font-family:inherit;color:var(--txt);background:none;border:none;outline:none}
+
+/* ============ LAPISAN EFEK LATAR (HUD) ============ */
+.fx{position:fixed;inset:0;pointer-events:none;z-index:0}
+.fx-nebula{background:
+  radial-gradient(900px 500px at 12% -8%, rgba(34,211,238,.16), transparent 60%),
+  radial-gradient(800px 480px at 92% 6%, rgba(245,181,74,.10), transparent 60%),
+  radial-gradient(1000px 700px at 50% 115%, rgba(34,211,238,.08), transparent 65%);
+  animation:drift 26s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(0,-26px,0) scale(1.04)}}
+.fx-grid{background-image:
+  linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(75% 62% at 50% 30%,#000 30%,transparent 100%);
+          mask-image:radial-gradient(75% 62% at 50% 30%,#000 30%,transparent 100%)}
+.fx-stars{background-image:
+  radial-gradient(1.2px 1.2px at 18% 22%,rgba(255,255,255,.75),transparent 55%),
+  radial-gradient(1px 1px at 64% 12%,rgba(165,243,252,.8),transparent 55%),
+  radial-gradient(1.4px 1.4px at 84% 34%,rgba(255,255,255,.5),transparent 55%),
+  radial-gradient(1px 1px at 36% 58%,rgba(245,181,74,.6),transparent 55%),
+  radial-gradient(1.2px 1.2px at 8% 74%,rgba(255,255,255,.45),transparent 55%),
+  radial-gradient(1px 1px at 72% 82%,rgba(165,243,252,.55),transparent 55%);
+  animation:twinkle 5.5s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.45}to{opacity:1}}
+.fx-scan{background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+.fx-scan::after{content:"";position:absolute;left:0;right:0;height:120px;top:-120px;
+  background:linear-gradient(180deg,transparent,rgba(34,211,238,.06),transparent);
+  animation:scanmove 9s linear infinite}
+@keyframes scanmove{0%{top:-120px}60%,100%{top:110%}}
+
+/* ============ HEADER PAPAN ============ */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 18px}
+.topbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:20px 0 12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .tt{font-family:var(--disp);font-weight:900;font-size:19px;letter-spacing:.14em}
+.brand .tt em{font-style:normal;color:var(--cyan)}
+.brand .st{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--dim)}
+.ver-chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold);
+  border:1px dashed rgba(245,181,74,.55);border-radius:8px;padding:6px 10px;background:rgba(245,181,74,.06)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-left:auto}
+.seg button{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;padding:9px 14px;color:var(--dim);transition:.2s}
+.seg button.on{background:rgba(34,211,238,.14);color:var(--cyan);box-shadow:inset 0 0 18px rgba(34,211,238,.12)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0 14px}
+.legend span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--dim);border:1px solid rgba(140,163,199,.25);border-radius:99px;padding:4px 10px}
+.legend span b{color:var(--gold);font-weight:600}
+.legend span i{color:var(--cyan);font-style:normal}
+
+/* ============ NAV LOMPAT LAYAR ============ */
+.jumps{position:sticky;top:0;z-index:40;display:flex;gap:8px;overflow-x:auto;padding:10px 2px;
+  background:rgba(7,11,18,.82);backdrop-filter:blur(10px);border-bottom:1px solid rgba(34,211,238,.12);
+  scrollbar-width:none}
+.jumps::-webkit-scrollbar{display:none}
+.jumps a{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--dim);
+  border:1px solid rgba(140,163,199,.3);border-radius:99px;padding:7px 13px;text-decoration:none;transition:.2s;scroll-margin:0}
+.jumps a b{color:var(--cyan);font-weight:600;margin-right:5px}
+.jumps a.on{color:var(--gold);border-color:rgba(245,181,74,.65);background:rgba(245,181,74,.08);box-shadow:0 0 14px rgba(245,181,74,.15)}
+
+/* ============ PAPAN & LAYAR ============ */
+.board{padding:26px 0 10px}
+.screen{display:grid;grid-template-columns:minmax(0,412px) minmax(280px,470px);gap:30px;justify-content:center;
+  align-items:start;scroll-margin-top:130px;padding:18px 0 26px;animation:rise .7s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+body.satu .screen{display:none}
+body.satu .screen.on{display:grid;animation:rise .45s ease both}
+.scr-head{grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.scr-num{font-family:var(--disp);font-weight:900;font-size:26px;color:var(--cyan);text-shadow:0 0 18px rgba(34,211,238,.5)}
+.scr-tt{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.16em}
+.scr-sub{font-size:13.5px;color:var(--dim)}
+.pola{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--cyan);
+  border:1px solid rgba(34,211,238,.4);border-radius:6px;padding:3px 8px;background:rgba(34,211,238,.07)}
+.pola.gd{color:var(--gold);border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.07)}
+.scr-notes{background:rgba(11,19,34,.75);border:1px solid rgba(140,163,199,.2);border-radius:14px;padding:16px 18px}
+.scr-notes h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--cyan);margin-bottom:10px}
+.scr-notes ul{list-style:none;display:grid;gap:7px}
+.scr-notes li{font-size:13.5px;color:#C7D6EE;padding-left:16px;position:relative}
+.scr-notes li::before{content:"▹";position:absolute;left:0;color:var(--gold)}
+.scr-notes li.warn{color:#FCA5A5}
+.scr-notes li.warn::before{content:"✕";color:var(--red)}
+.flow-link{display:flex;justify-content:center;gap:10px;align-items:center;padding:6px 0;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--gold);opacity:.85}
+.flow-link::before,.flow-link::after{content:"";width:70px;height:1px;background:linear-gradient(90deg,transparent,rgba(245,181,74,.6))}
+.flow-link::after{background:linear-gradient(90deg,rgba(245,181,74,.6),transparent)}
+body.satu .flow-link{display:none}
+
+/* ============ BINGKAI PONSEL ============ */
+.phone{width:412px;max-width:100%;height:846px;border-radius:36px;position:relative;
+  background:#04070D;border:1px solid rgba(34,211,238,.35);
+  box-shadow:0 0 0 7px #0A101C,0 0 0 8px rgba(34,211,238,.25),0 24px 70px rgba(0,0,0,.65),0 0 60px rgba(34,211,238,.10);
+  display:flex;flex-direction:column;overflow:hidden;margin:0 auto}
+.punch{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:15px;height:15px;border-radius:50%;
+  background:#01030a;border:1px solid #16233B;z-index:60;box-shadow:inset 0 0 4px rgba(34,211,238,.4)}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:13px 24px 6px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--dim)}
+.statusbar .r{display:flex;align-items:center;gap:7px}
+.batt{width:20px;height:10px;border:1px solid var(--dim2);border-radius:3px;position:relative;padding:1.5px}
+.batt::before{content:"";display:block;height:100%;width:87%;background:var(--green);border-radius:1px}
+.batt::after{content:"";position:absolute;right:-3.5px;top:2.5px;width:2px;height:5px;background:var(--dim2)}
+.appbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(34,211,238,.12);
+  background:rgba(5,9,16,.7);position:relative;z-index:5}
+.appbar .tt{font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.18em}
+.appbar .sb{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--dim)}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid rgba(140,163,199,.3);display:flex;
+  align-items:center;justify-content:center;color:var(--dim);transition:.2s;flex:0 0 auto}
+.icon-btn:hover{color:var(--cyan);border-color:rgba(34,211,238,.5)}
+.appbar .sp{margin-left:auto}
+.scr-body{flex:1;overflow-y:auto;padding:14px 14px 20px;position:relative}
+.scr-body::-webkit-scrollbar{width:4px}
+.scr-body::-webkit-scrollbar-thumb{background:rgba(34,211,238,.35);border-radius:9px}
+.scr-body::-webkit-scrollbar-track{background:transparent}
+
+/* ============ NAV BAWAH + FAB ============ */
+.bottomnav{display:flex;align-items:center;border-top:1px solid rgba(34,211,238,.14);
+  background:rgba(4,8,14,.94);padding:8px 12px calc(10px + env(safe-area-inset-bottom));gap:4px}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim2);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;padding:6px 0;transition:.2s}
+.bn svg{width:19px;height:19px}
+.bn.on{color:var(--cyan);text-shadow:0 0 12px rgba(34,211,238,.6)}
+.fab{flex:0 0 auto;width:52px;height:52px;border-radius:50%;margin:0 6px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1px;background:linear-gradient(135deg,#F7C56A,#F5B54A 55%,#D9932F);
+  color:#1A1206;font-family:var(--mono);font-size:7.5px;font-weight:600;letter-spacing:.1em;
+  box-shadow:0 0 24px rgba(245,181,74,.45),inset 0 1px 0 rgba(255,255,255,.5);animation:breathe 3.4s ease-in-out infinite}
+.fab svg{width:20px;height:20px}
+
+/* ============ ORB REAKTOR MK1 ============ */
+.orb{width:74px;height:74px;border-radius:50%;position:relative;flex:0 0 auto;
+  background:radial-gradient(circle at 35% 30%,#CFFAFE 0%,#67E8F9 22%,#22D3EE 45%,#0E7490 72%,#062A33 100%);
+  box-shadow:0 0 34px rgba(34,211,238,.75),0 0 90px rgba(34,211,238,.3),inset -8px -10px 22px rgba(0,0,0,.55);
+  animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.orb::before{content:"";position:absolute;inset:-8px;border-radius:50%;
+  border:1.5px solid transparent;border-top-color:var(--cyan);border-right-color:rgba(34,211,238,.4);
+  animation:spin 5.5s linear infinite;filter:drop-shadow(0 0 6px rgba(34,211,238,.8))}
+.orb::after{content:"";position:absolute;inset:-16px;border-radius:50%;
+  border:1px dashed rgba(245,181,74,.4);animation:spin 15s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orb .core{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle,#FFFBEB,rgba(245,181,74,.7) 60%,transparent);
+  filter:blur(2px);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+.orb-sm{width:34px;height:34px;box-shadow:0 0 14px rgba(34,211,238,.6),inset -3px -4px 9px rgba(0,0,0,.5)}
+.orb-sm::before{inset:-4px;border-width:1px}
+.orb-sm::after{inset:-8px}
+
+/* ============ KARTU / PANEL / TEKS ============ */
+.card{background:linear-gradient(180deg,rgba(14,23,40,.92),rgba(9,15,28,.92));
+  border:1px solid rgba(140,163,199,.22);border-radius:14px;padding:14px;position:relative;margin-bottom:10px}
+.card.hud::before{content:"";position:absolute;top:-1px;left:-1px;width:16px;height:16px;
+  border-top:2px solid var(--gold);border-left:2px solid var(--gold);border-top-left-radius:14px}
+.card.hud::after{content:"";position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;
+  border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);border-bottom-right-radius:14px}
+.k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--dim);display:block;margin-bottom:6px}
+.mono{font-family:var(--mono)}
+.dim{color:var(--dim)}.dim2{color:var(--dim2)}
+.cy{color:var(--cyan)}.gd{color:var(--gold)}.gr{color:var(--green)}.rd{color:var(--red)}
+.h{font-weight:700;font-size:16.5px;letter-spacing:.02em}
+.sm{font-size:13px}
+.xs{font-size:11.5px}
+.row{display:flex;align-items:center;gap:10px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ============ TOMBOL ============ */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;
+  border-radius:12px;font-weight:700;font-size:14px;letter-spacing:.1em;transition:.2s;position:relative}
+.btn svg{width:17px;height:17px}
+.btn-gold{background:linear-gradient(135deg,#F7C56A,#F5B54A 50%,#D9932F);color:#1A1206;
+  box-shadow:0 8px 26px rgba(245,181,74,.35),inset 0 1px 0 rgba(255,255,255,.55)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(245,181,74,.5)}
+.btn-cyan{border:1px solid rgba(34,211,238,.6);color:var(--cyan);background:rgba(34,211,238,.08)}
+.btn-cyan:hover{background:rgba(34,211,238,.16)}
+.btn-red{border:1px solid rgba(248,113,113,.55);color:var(--red);background:rgba(248,113,113,.06)}
+.btn-ghost{border:1px solid rgba(140,163,199,.35);color:var(--dim)}
+.btn-ghost:hover{color:var(--txt)}
+.btn.sm{padding:9px 12px;font-size:11.5px;letter-spacing:.08em;width:auto}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ============ BADGE ============ */
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.16em;border-radius:6px;padding:4px 8px;border:1px solid}
+.badge::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite}
+.badge.gold{color:var(--gold);border-color:rgba(245,181,74,.55);background:rgba(245,181,74,.09)}
+.badge.cyan{color:var(--cyan);border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.09)}
+.badge.green{color:var(--green);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.08)}
+.badge.red{color:var(--red);border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.08)}
+.badge.dim{color:var(--dim2);border-color:rgba(91,112,153,.5);background:rgba(91,112,153,.08)}
+.badge.still::before{animation:none}
+.soon{display:inline-flex;align-items:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
+  color:var(--gold);border:1px dashed rgba(245,181,74,.6);border-radius:6px;padding:3px 7px;
+  background:rgba(245,181,74,.05);white-space:nowrap}
+
+/* ============ CHIP ============ */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;letter-spacing:.04em;
+  border:1px solid rgba(140,163,199,.35);border-radius:99px;padding:7px 13px;color:var(--dim);transition:.2s}
+.chip svg{width:14px;height:14px}
+.chip.sel{color:var(--cyan);border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.1);
+  box-shadow:0 0 14px rgba(34,211,238,.15)}
+.chip:active{transform:scale(.96)}
+
+/* ============ FORM ============ */
+.input,.textarea{width:100%;background:rgba(5,9,16,.7);border:1px solid rgba(140,163,199,.3);
+  border-radius:11px;padding:12px 13px;font-size:14.5px;color:var(--txt)}
+.input:focus,.textarea:focus{border-color:rgba(34,211,238,.65);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.textarea{min-height:88px;resize:none;line-height:1.5}
+.filechip{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(52,211,153,.4);
+  background:rgba(52,211,153,.07);border-radius:10px;padding:8px 11px;font-family:var(--mono);font-size:10.5px;color:#A7F3D0}
+.auth-card{border:1px solid rgba(140,163,199,.3);border-radius:12px;padding:11px 12px;cursor:pointer;transition:.2s}
+.auth-card .t{font-weight:700;font-size:13.5px;letter-spacing:.08em;display:flex;gap:7px;align-items:center}
+.auth-card .d{font-size:11px;color:var(--dim);margin-top:3px}
+.auth-card.sel{border-color:rgba(245,181,74,.7);background:rgba(245,181,74,.08);box-shadow:0 0 18px rgba(245,181,74,.12)}
+.auth-card.sel .t{color:var(--gold)}
+.slider{-webkit-appearance:none;width:100%;height:4px;border-radius:9px;outline:none;margin:14px 0 6px;
+  background:linear-gradient(90deg,var(--cyan) 0 64%,rgba(140,163,199,.3) 64%)}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--gold);border:2px solid #1A1206;box-shadow:0 0 12px rgba(245,181,74,.8);cursor:pointer}
+
+/* ============ OBROLAN ============ */
+.msg{display:flex;gap:9px;margin-bottom:12px}
+.msg .bub{max-width:82%;border-radius:14px;padding:10px 13px;font-size:14.5px;line-height:1.5}
+.msg.avi .bub{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);border-top-left-radius:4px}
+.msg.me{flex-direction:row-reverse}
+.msg.me .bub{background:rgba(140,163,199,.14);border:1px solid rgba(140,163,199,.3);border-top-right-radius:4px}
+.msg .av{flex:0 0 auto;margin-top:2px}
+.cta-fixed{position:sticky;bottom:0;padding:8px 0 4px;background:linear-gradient(180deg,transparent,rgba(4,7,13,.9) 40%)}
+.composer{display:flex;align-items:center;gap:8px;border-top:1px solid rgba(34,211,238,.14);
+  background:rgba(4,8,14,.94);padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+.composer .field{flex:1;display:flex;align-items:center;gap:8px;background:rgba(140,163,199,.1);
+  border:1px solid rgba(140,163,199,.28);border-radius:99px;padding:9px 15px}
+.composer .field input{flex:1;font-size:14px}
+.composer .field input::placeholder{color:var(--dim2)}
+
+/* ============ LANGKAH RENCANA / TIMELINE ============ */
+.step{display:flex;gap:11px;align-items:flex-start;background:rgba(11,19,34,.8);
+  border:1px solid rgba(140,163,199,.22);border-radius:12px;padding:11px 12px;margin-bottom:8px}
+.step .n{width:24px;height:24px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10.5px;border:1px solid rgba(140,163,199,.45);color:var(--dim)}
+.step.done{border-color:rgba(52,211,153,.4)}
+.step.done .n{background:rgba(52,211,153,.15);border-color:var(--green);color:var(--green)}
+.step.run{border-color:rgba(34,211,238,.65);box-shadow:0 0 18px rgba(34,211,238,.14);animation:glowcy 2s infinite}
+.step.run .n{background:rgba(34,211,238,.15);border-color:var(--cyan);color:var(--cyan)}
+@keyframes glowcy{0%,100%{box-shadow:0 0 8px rgba(34,211,238,.08)}50%{box-shadow:0 0 22px rgba(34,211,238,.28)}}
+.step .meta{flex:1}
+.step .t{font-weight:600;font-size:14px}
+.step .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--dim);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ============ RING PROGRES ============ */
+.ring{position:relative;width:132px;height:132px;flex:0 0 auto}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .pct b{font-family:var(--disp);font-size:24px;color:var(--cyan);text-shadow:0 0 16px rgba(34,211,238,.6)}
+.ring .pct span{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;color:var(--dim)}
+
+/* ============ DOCK RUANG KERJA ============ */
+.dock{border:1px solid rgba(245,181,74,.35);border-radius:14px;overflow:hidden;background:rgba(9,14,26,.95)}
+.dock-tabs{display:flex;border-bottom:1px solid rgba(245,181,74,.25);background:rgba(245,181,74,.05)}
+.dock-tabs button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.14em;padding:9px 4px;color:var(--dim);transition:.2s}
+.dock-tabs button.on{color:var(--gold);background:rgba(245,181,74,.12);box-shadow:inset 0 -2px 0 var(--gold)}
+.dock-pane{padding:11px;min-height:148px}
+.term{font-family:var(--mono);font-size:10.8px;line-height:1.75;color:#BBF7D0}
+.term .c{color:var(--dim2)}
+.term .y{color:var(--gold)}
+.term .b{color:var(--cyan)}
+.cursor{display:inline-block;width:7px;height:13px;background:var(--cyan);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.fakewin{border:1px solid rgba(140,163,199,.3);border-radius:8px;overflow:hidden}
+.fakewin .bar{display:flex;gap:5px;align-items:center;padding:6px 9px;background:rgba(140,163,199,.1);
+  font-family:var(--mono);font-size:9px;color:var(--dim)}
+.fakewin .bar i{width:7px;height:7px;border-radius:50%;background:var(--dim2)}
+.fakewin .bar i:first-child{background:var(--red)}
+.fakewin .bd{padding:10px;display:grid;gap:7px}
+.skel{height:8px;border-radius:4px;background:rgba(140,163,199,.18)}
+.minibars{display:flex;align-items:flex-end;gap:5px;height:56px;padding:4px 2px}
+.minibars i{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.25))}
+.minibars i:nth-child(2n){background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.25))}
+
+/* ============ ARTEFAK PDF ============ */
+.pdfpage{width:158px;border-radius:6px;background:#F5F7FA;color:#0F172A;padding:11px 11px 8px;flex:0 0 auto;
+  box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.25);position:relative;overflow:hidden}
+.pdfpage .bar{display:flex;justify-content:space-between;font-family:var(--mono);font-size:6.5px;
+  letter-spacing:.12em;color:#B45309;border-bottom:1.5px solid #F5B54A;padding-bottom:4px;margin-bottom:7px;font-weight:600}
+.pdfpage .bar b{color:#0E7490}
+.pdfpage h5{font-size:9px;font-weight:700;color:#0F172A;margin-bottom:6px;line-height:1.3}
+.pdfpage .ln{height:4px;border-radius:2px;background:#CBD5E1;margin-bottom:4px}
+.pdfpage .ln.w60{width:60%}.pdfpage .ln.w80{width:80%}
+.pdfpage .foot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:6px;color:#64748B;margin-top:8px;border-top:1px solid #E2E8F0;padding-top:4px}
+.vchip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;border:1px solid rgba(140,163,199,.35);
+  color:var(--dim);border-radius:8px;padding:6px 12px}
+.vchip.on{color:var(--gold);border-color:rgba(245,181,74,.65);background:rgba(245,181,74,.09)}
+
+/* ============ RIWAYAT ============ */
+.task{display:flex;gap:11px;align-items:center;background:rgba(11,19,34,.8);
+  border:1px solid rgba(140,163,199,.22);border-radius:13px;padding:12px;margin-bottom:9px;transition:.2s;cursor:pointer}
+.task:hover{border-color:rgba(34,211,238,.55)}
+.task .ic{width:38px;height:38px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;border:1px solid}
+.task .ic svg{width:17px;height:17px}
+.task .ic.pdf{color:var(--gold);border-color:rgba(245,181,74,.4);background:rgba(245,181,74,.08)}
+.task .ic.code{color:var(--cyan);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.08)}
+.task .ic.data{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.task .ic.web{color:#F0ABFC;border-color:rgba(240,171,252,.4);background:rgba(240,171,252,.08)}
+.task .meta{flex:1;min-width:0}
+.task .t{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--dim);margin-top:3px;display:flex;gap:9px;flex-wrap:wrap}
+
+/* ============ SAKLAR ============ */
+.sw{width:42px;height:23px;border-radius:99px;background:#1B2740;border:1px solid rgba(140,163,199,.4);
+  position:relative;transition:.25s;flex:0 0 auto}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;
+  background:#5B7099;transition:.25s}
+.sw.on{background:rgba(34,211,238,.22);border-color:var(--cyan)}
+.sw.on::after{left:21px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.toolrow{display:flex;align-items:center;gap:11px;padding:11px 2px;border-bottom:1px dashed rgba(140,163,199,.18)}
+.toolrow:last-child{border-bottom:none}
+.toolrow .ic{width:32px;height:32px;border-radius:9px;border:1px solid rgba(34,211,238,.35);
+  color:var(--cyan);display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:rgba(34,211,238,.06)}
+.toolrow .ic svg{width:15px;height:15px}
+.toolrow .meta{flex:1}
+.toolrow .t{font-weight:600;font-size:14px}
+.toolrow .d{font-size:11px;color:var(--dim)}
+
+/* ============ LOG ============ */
+.log{font-family:var(--mono);font-size:10.3px;line-height:1.9;background:rgba(4,8,14,.85);
+  border:1px solid rgba(140,163,199,.25);border-radius:11px;padding:12px;max-height:180px;overflow-y:auto}
+.log::-webkit-scrollbar{width:4px}
+.log::-webkit-scrollbar-thumb{background:rgba(34,211,238,.35);border-radius:9px}
+.log .t{color:var(--dim2)}
+.log .ok{color:var(--green)}
+.log .wr{color:var(--gold)}
+.log .cy{color:var(--cyan)}
+
+/* ============ TOAST + KONTROL SATU LAYAR ============ */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);z-index:90;
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--cyan);
+  background:rgba(7,11,18,.95);border:1px solid rgba(34,211,238,.55);border-radius:10px;
+  padding:11px 18px;box-shadow:0 0 30px rgba(34,211,238,.25);transition:.3s;opacity:0;max-width:88vw;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast b{color:var(--gold)}
+.satu-ctl{position:fixed;right:22px;bottom:22px;z-index:50;display:none;gap:10px}
+body.satu .satu-ctl{display:flex}
+.satu-ctl button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(245,181,74,.55);
+  background:rgba(7,11,18,.9);color:var(--gold);font-size:19px;box-shadow:0 0 20px rgba(245,181,74,.2);transition:.2s}
+.satu-ctl button:hover{background:rgba(245,181,74,.15)}
+.satu-pos{position:fixed;left:22px;bottom:33px;z-index:50;display:none;font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.2em;color:var(--dim)}
+body.satu .satu-pos{display:block}
+body.satu .satu-pos b{color:var(--gold)}
+
+/* ============ KEPUTUSAN & FOOTER ============ */
+.decisions{margin:30px 0 0;border:1px dashed rgba(245,181,74,.5);border-radius:16px;
+  background:rgba(245,181,74,.04);padding:20px 22px}
+.decisions h3{font-family:var(--disp);font-size:13px;letter-spacing:.2em;color:var(--gold);margin-bottom:12px}
+.decisions ul{list-style:none;display:grid;gap:8px}
+.decisions li{font-size:14px;color:#DCE7F7;padding-left:20px;position:relative}
+.decisions li::before{content:"◆";position:absolute;left:0;color:var(--cyan);font-size:10px;top:5px}
+footer{margin-top:34px;border-top:1px solid rgba(34,211,238,.15);padding:20px 0 30px;text-align:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim2)}
+footer b{color:var(--gold)}
+
+/* ============ RESPONSIF ============ */
+@media (max-width:960px){
+  .screen{grid-template-columns:minmax(0,1fr)}
+  .seg{margin-left:0}
+}
+@media (max-width:460px){
+  .phone{width:100%;height:800px;border-radius:28px}
+  .scr-num{font-size:21px}
+}
+</style>
+</head>
+<body class="alur">
+
+<div class="fx fx-nebula"></div>
+<div class="fx fx-grid"></div>
+<div class="fx fx-stars"></div>
+<div class="fx fx-scan"></div>
+
+<!-- ================= HEADER ================= -->
+<header class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="orb orb-sm"><span class="core"></span></div>
+      <div>
+        <div class="tt">AVI <em>MK1</em> · MODE AGENT</div>
+        <div class="st">PAPAN TAMPILAN HTML v2 — VISUAL SAJA · FUNGSI DISIMULASI</div>
+      </div>
+    </div>
+    <div class="seg" id="modeSeg">
+      <button class="on" data-mode="alur">▣ ALUR PENUH</button>
+      <button data-mode="satu">▢ SATU LAYAR</button>
+    </div>
+  </div>
+  <div class="legend">
+    <span><i>POLA·X</i> = pola diambil dari referensi nyata (Manus / Devin / ChatGPT Agent / Claude)</span>
+    <span><b>COMING SOON</b> = fitur teridentifikasi, belum dibangun</span>
+    <span>v1.3.0(12) → usulan <b>v1.4.0(13)</b> — menunggu persetujuan Pak</span>
+  </div>
+</header>
+
+<!-- ================= NAV LOMPAT ================= -->
+<nav class="jumps" id="jumps">
+  <a href="#layar-1" data-jump="1" class="on"><b>01</b>OBROLAN</a>
+  <a href="#layar-2" data-jump="2"><b>02</b>AJUKAN</a>
+  <a href="#layar-3" data-jump="3"><b>03</b>RENCANA</a>
+  <a href="#layar-4" data-jump="4"><b>04</b>EKSEKUSI</a>
+  <a href="#layar-5" data-jump="5"><b>05</b>ARTEFAK</a>
+  <a href="#layar-6" data-jump="6"><b>06</b>TUGAS</a>
+  <a href="#layar-7" data-jump="7"><b>07</b>KENDALI</a>
+</nav>
+
+<main class="wrap board">
+
+<!-- ================================================== -->
+<!-- LAYAR 01 · OBROLAN                                  -->
+<!-- ================================================== -->
+<section class="screen on" id="layar-1" data-n="1">
+  <div class="scr-head">
+    <span class="scr-num">01</span>
+    <div style="flex:1">
+      <div class="scr-tt">OBROLAN — DIBERSIHKAN</div>
+      <div class="scr-sub">Gerbang masuk. Tidak ada jam, tidak ada chip saran. Satu tombol emas menuju Mode Agent.</div>
+    </div>
+    <span class="pola">POLA · CHATGPT AGENT</span><span class="pola gd">NUANSA · JARVIS MK1</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r">
+        <svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span>5G</span><span class="batt"></span><span class="gr">87%</span>
+      </span>
+    </div>
+    <div class="appbar">
+      <div class="orb orb-sm"><span class="core"></span></div>
+      <div>
+        <div class="tt">AVI</div>
+        <div class="sb">MODE AGENT · SIAP</div>
+      </div>
+      <span class="sp"></span>
+      <button class="icon-btn" data-goto="7" title="Pusat Kendali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      </button>
+      <button class="icon-btn" data-goto="6" title="Tugas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      </button>
+    </div>
+
+    <div class="scr-body">
+      <div class="card hud" style="text-align:center;padding:22px 16px 18px">
+        <div class="orb" style="margin:6px auto 14px"><span class="core"></span></div>
+        <div class="h">Selamat pagi, <span class="gd">Pak</span>.</div>
+        <div class="sm dim" style="margin-top:5px">Sistem siap. Berikan saya pekerjaan berat hari ini —
+        laporan, kode, atau analisa — saya urus dari awal sampai jadi.</div>
+        <div class="mono xs cy" style="margin-top:13px;letter-spacing:.14em">REAKTOR STABIL · NET AKTIF · 0 TUGAS JALAN</div>
+      </div>
+
+      <div class="msg me">
+        <div class="bub">Bandingkan penjualan Q2 vs Q3 dari data yang saya lampirkan, jadikan laporan PDF yang rapi.</div>
+      </div>
+      <div class="msg avi">
+        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
+        <div class="bub">Siap, Pak. Ini pekerjaan untuk <b class="gd">Tugas Agent</b> — saya baca datanya, analisa,
+        lalu susun PDF-nya. Mau saya susun rencananya dulu?</div>
+      </div>
+      <div class="msg avi">
+        <div class="av"><div class="orb orb-sm"><span class="core"></span></div></div>
+        <div class="bub dim">Sambil menunggu, saya bisa juga disuruh: coding, audit kode, atau analisa data.</div>
+      </div>
+
+      <div class="cta-fixed">
+        <button class="btn btn-gold" data-goto="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>
+          AJUKAN SEBAGAI TUGAS AGENT
+        </button>
+      </div>
+    </div>
+
+    <div class="composer">
+      <button class="icon-btn" data-sim="LAMPIR FILE">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div class="field">
+        <input placeholder="Tulis pesan ke AVI…"/>
+      </div>
+      <button class="icon-btn" data-sim="MICROPHONE">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <button class="icon-btn" data-sim="KIRIM PESAN" style="color:var(--gold);border-color:rgba(245,181,74,.5)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="17" height="17"><path d="M22 2L11 13M22 2l-7 20-4-7-7-4 20-9z"/></svg>
+      </button>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn on" data-goto="1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>
+        OBROLAN
+      </button>
+      <button class="bn" data-goto="6">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        TUGAS
+      </button>
+      <button class="fab" data-goto="2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>
+        AJUKAN
+      </button>
+      <button class="bn" data-goto="7">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+        KENDALI
+      </button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li class="warn">JAM & CHIP SARAN — DIHAPUS TOTAL, TANPA PENGGANTI (arah Pak, dipatuhi 100%).</li>
+      <li>Orb reaktor MK1 bernafas + sapaan “Pak” — nuansa Jarvis dipertahankan.</li>
+      <li>Telemetri mono (REAKTOR · NET · TUGAS JALAN) tanpa jam.</li>
+      <li>Tombol emas <b>AJUKAN SEBAGAI TUGAS AGENT</b> — pintu masuk alur 6 langkah.</li>
+      <li>Bottom nav baru: OBROLAN · TUGAS · ⚡ AJUKAN · KENDALI (pola navigasi umum, diadaptasi dari sidebar Manus/Devin).</li>
+      <li>Lampiran, mic, kirim — ikon tersedia di composer.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="flow-link">PAK MENEKAN “AJUKAN SEBAGAI TUGAS AGENT” ↓</div>
+
+<!-- ================================================== -->
+<!-- LAYAR 02 · AJUKAN TUGAS                             -->
+<!-- ================================================== -->
+<section class="screen" id="layar-2" data-n="2">
+  <div class="scr-head">
+    <span class="scr-num">02</span>
+    <div style="flex:1">
+      <div class="scr-tt">AJUKAN TUGAS BARU</div>
+      <div class="scr-sub">Form satu layar: instruksi, kemampuan opsional, lampiran, otoritas, estimasi.</div>
+    </div>
+    <span class="pola">POLA · DEVIN SESI</span><span class="pola">POLA · CHATGPT AGENT</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
+    </div>
+    <div class="appbar">
+      <button class="icon-btn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="tt">AJUKAN TUGAS</div>
+      <span class="sp"></span>
+      <span class="badge cyan still">DRAFT</span>
+    </div>
+
+    <div class="scr-body">
+      <div class="card hud">
+        <span class="k">JUDUL TUGAS</span>
+        <input class="input" value="Laporan Analisa Penjualan Q3"/>
+      </div>
+
+      <div class="card">
+        <span class="k">INSTRUKSI UNTUK AVI</span>
+        <textarea class="textarea">Baca data penjualan terlampir. Bandingkan Q2 vs Q3, cari tren & anomali, susun laporan PDF 10+ halaman lengkap dengan grafik dan rekomendasi.</textarea>
+      </div>
+
+      <div class="card">
+        <div class="between" style="margin-bottom:9px">
+          <span class="k" style="margin:0">KEMAMPUAN</span>
+          <span class="badge gold still">OPSIONAL</span>
+        </div>
+        <div class="chips" id="caps">
+          <button class="chip sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>LAPORAN PDF</button>
+          <button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg>CODING</button>
+          <button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>ANALISA KODE</button>
+          <button class="chip sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>ANALISA DATA</button>
+          <button class="chip sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>RISET WEB</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="k">TEMPLATE CEPAT</span>
+        <div class="chips">
+          <button class="chip" data-sim="TEMPLATE">📄 LAPORAN PDF <span class="soon">COMING SOON</span></button>
+          <button class="chip" data-sim="TEMPLATE">⌨️ AUDIT KODE <span class="soon">COMING SOON</span></button>
+          <button class="chip" data-sim="TEMPLATE">📊 ANALISA DATA <span class="soon">COMING SOON</span></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="k">LAMPIRAN</span>
+        <div class="row" style="flex-wrap:wrap;gap:8px">
+          <span class="filechip">▣ data_penjualan.xlsx · 1.2 MB</span>
+          <button class="icon-btn" data-sim="TAMBAH LAMPIRAN" style="width:32px;height:32px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="card hud">
+        <span class="k">OTORITAS EKSEKUSI</span>
+        <div class="grid2" id="authSel">
+          <div class="auth-card" data-desc="AVI berhenti & minta izin di setiap langkah. Paling terkendali.">
+            <div class="t">◈ AMAN</div>
+            <div class="d">Tanya dulu tiap langkah</div>
+          </div>
+          <div class="auth-card sel" data-desc="AVI bebas bekerja, tapi selalu minta izin untuk login, pembayaran, atau penghapusan.">
+            <div class="t">◈ BAKU</div>
+            <div class="d">Bebas, hal berisiko minta izin</div>
+          </div>
+          <div class="auth-card" data-desc="AVI bebas penuh sampai tugas selesai. Semua aksi tercatat di log.">
+            <div class="t">◈ PENUH</div>
+            <div class="d">Bebas penuh, log sesudahnya</div>
+          </div>
+        </div>
+        <div class="xs dim" id="authDesc" style="margin-top:9px">BAKU: AVI bebas bekerja, tapi selalu minta izin untuk login, pembayaran, atau penghapusan.</div>
+      </div>
+
+      <div class="card">
+        <span class="k">ESTIMASI</span>
+        <div class="mono sm cy" style="letter-spacing:.1em">≈ 18 KREDIT · ± 12 MENIT · 5 LANGKAH</div>
+        <div class="row between" style="margin-top:12px;padding-top:11px;border-top:1px dashed rgba(140,163,199,.2)">
+          <div>
+            <div class="sm" style="font-weight:600">Jadwalkan otomatis</div>
+            <div class="xs dim">Jalankan tugas pada waktu tertentu</div>
+          </div>
+          <span class="soon">COMING SOON</span>
+          <span class="sw"></span>
+        </div>
+      </div>
+
+      <button class="btn btn-gold" data-goto="3">
+        SUSUN RENCANA
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <button class="btn btn-ghost sm" data-sim="SIMPAN TEMPLATE" style="margin-top:8px">SIMPAN SEBAGAI TEMPLATE <span class="soon">COMING SOON</span></button>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
+      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li>Judul + instruksi panjang (seperti form sesi Devin).</li>
+      <li>Kemampuan bertanda <b>OPSIONAL</b> — AVI tetap jalan walau tidak dipilih.</li>
+      <li>Lampiran file (xlsx/pdf/zip) tampil sebagai chip.</li>
+      <li>Otoritas AMAN / BAKU / PENUH + deskripsi yang ikut berganti.</li>
+      <li>Estimasi kredit, waktu, jumlah langkah — sebelum setuju.</li>
+      <li>Template cepat & jadwal otomatis = <b>COMING SOON</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="flow-link">PAK MENEKAN “SUSUN RENCANA” ↓</div>
+
+<!-- ================================================== -->
+<!-- LAYAR 03 · RENCANA                                  -->
+<!-- ================================================== -->
+<section class="screen" id="layar-3" data-n="3">
+  <div class="scr-head">
+    <span class="scr-num">03</span>
+    <div style="flex:1">
+      <div class="scr-tt">RENCANA — MENUNGGU PERSETUJUAN</div>
+      <div class="scr-sub">AVI menyusun langkah; Pak yang menyetujui. Tidak ada eksekusi tanpa persetujuan.</div>
+    </div>
+    <span class="pola">POLA · DEVIN PLAN</span><span class="pola">POLA · MANUS TODO</span><span class="pola">POLA · CHATGPT IZIN</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
+    </div>
+    <div class="appbar">
+      <button class="icon-btn" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="tt">RENCANA TUGAS</div>
+      <span class="sp"></span>
+      <span class="badge gold">MENUNGGU PERSETUJUAN</span>
+    </div>
+
+    <div class="scr-body">
+      <div class="card hud">
+        <div class="between">
+          <div>
+            <div class="h">Laporan Analisa Penjualan Q3</div>
+            <div class="xs dim mono" style="letter-spacing:.1em;margin-top:3px">LAPORAN PDF · ANALISA DATA · RISET WEB</div>
+          </div>
+          <div class="orb orb-sm"><span class="core"></span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="n">1</span>
+        <div class="meta">
+          <div class="t">Baca & validasi data_penjualan.xlsx</div>
+          <div class="s"><span>≈2 KR</span><span>·</span><span>AKSES FILE</span></div>
+        </div>
+        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <div class="meta">
+          <div class="t">Analisa tren Q2 vs Q3 (Python)</div>
+          <div class="s"><span>≈4 KR</span><span>·</span><span>TERMINAL</span></div>
+        </div>
+        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <div class="meta">
+          <div class="t">Riset pasar pendukung (web)</div>
+          <div class="s"><span>≈3 KR</span><span>·</span><span class="cy">▮ PERLU IZIN</span></div>
+        </div>
+        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+      </div>
+      <div class="step">
+        <span class="n">4</span>
+        <div class="meta">
+          <div class="t">Susun draf laporan + grafik</div>
+          <div class="s"><span>≈4 KR</span><span>·</span><span>EDITOR</span></div>
+        </div>
+        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+      </div>
+      <div class="step">
+        <span class="n">5</span>
+        <div class="meta">
+          <div class="t">Render PDF & QC final</div>
+          <div class="s"><span>≈5 KR</span><span>·</span><span>RENDER</span></div>
+        </div>
+        <button class="icon-btn" style="width:30px;height:30px" data-sim="UBAH LANGKAH"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="13" height="13"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+      </div>
+
+      <div class="card" style="border-color:rgba(34,211,238,.4)">
+        <div class="row" style="align-items:flex-start;gap:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.8" width="17" height="17" style="flex:0 0 auto;margin-top:1px"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          <div class="xs dim">AVI akan <b class="cy">berhenti & minta izin</b> bila menemukan langkah yang perlu login, pembayaran, atau penghapusan — persis seperti aturan otoritas yang Pak pilih.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="mono xs cy between"><span>TOTAL 5 LANGKAH</span><span>≈18 KREDIT · ±12 MNT</span></div>
+      </div>
+
+      <button class="btn btn-gold" data-goto="4">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+        SETUJUI & MULAI EKSEKUSI
+      </button>
+      <button class="btn btn-cyan" style="margin-top:8px" data-sim="REVISI RENCANA">✎ MINTA REVISI RENCANA</button>
+      <button class="btn btn-ghost" style="margin-top:8px" data-sim="UBAH SENDIRI">UBAH LANGKAH SENDIRI <span class="soon">COMING SOON</span></button>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
+      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li>Badge emas berdenyut <b>MENUNGGU PERSETUJUAN</b>.</li>
+      <li>Rencana langkah bernomor + estimasi kredit per langkah (pola todo-list Manus / plan Devin).</li>
+      <li>Langkah berisiko diberi tanda <b>PERLU IZIN</b> (pola izin ChatGPT Agent).</li>
+      <li>Setiap langkah bisa diminta diubah (ikon ✎ — visual).</li>
+      <li>Setuju → eksekusi. Minta revisi → kembali ke percakapan.</li>
+      <li>Editor langkah manual = <b>COMING SOON</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="flow-link">PAK MENYETUJUI RENCANA ↓</div>
+
+<!-- ================================================== -->
+<!-- LAYAR 04 · EKSEKUSI LIVE                            -->
+<!-- ================================================== -->
+<section class="screen" id="layar-4" data-n="4">
+  <div class="scr-head">
+    <span class="scr-num">04</span>
+    <div style="flex:1">
+      <div class="scr-tt">EKSEKUSI LIVE</div>
+      <div class="scr-sub">Narasi langsung, timeline status, ruang kerja AVI, dan kendali penuh di tangan Pak.</div>
+    </div>
+    <span class="pola">POLA · MANUS COMPUTER</span><span class="pola">POLA · CHATGPT NARASI</span><span class="pola">POLA · DEVIN TIMELINE</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
+    </div>
+    <div class="appbar">
+      <button class="icon-btn" data-goto="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="tt">EKSEKUSI LIVE</div>
+      <span class="sp"></span>
+      <span class="badge cyan">JALAN</span>
+    </div>
+
+    <div class="scr-body">
+      <div class="card hud">
+        <div class="row" style="gap:16px">
+          <div class="ring">
+            <svg viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#F5B54A"/>
+                </linearGradient>
+              </defs>
+              <circle cx="60" cy="60" r="52" stroke="rgba(140,163,199,.2)" stroke-width="8" fill="none"/>
+              <circle cx="60" cy="60" r="52" stroke="url(#rg)" stroke-width="8" fill="none"
+                stroke-dasharray="326.7" stroke-dashoffset="124" stroke-linecap="round"
+                style="filter:drop-shadow(0 0 8px rgba(34,211,238,.6))"/>
+            </svg>
+            <div class="pct"><b>62%</b><span>LANGKAH 3/5</span></div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="sm" style="font-weight:600">Analisa tren Q2 vs Q3…</div>
+            <div class="mono xs" style="margin-top:9px;display:grid;gap:5px;letter-spacing:.08em">
+              <div class="between"><span class="dim">T+ BERJALAN</span><span class="cy">07:42</span></div>
+              <div class="between"><span class="dim">TOKEN</span><span class="cy">11.2K</span></div>
+              <div class="between"><span class="dim">KREDIT</span><span class="gd">≈9 / 18</span></div>
+              <div class="between"><span class="dim">REAKTOR</span><span class="gr">96% STABIL</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(34,211,238,.45)">
+        <span class="k cy">NARASI LANGSUNG — AVI</span>
+        <div class="sm" id="narr" style="min-height:44px">Sedang menjalankan skrip analisa tren…</div>
+        <div class="xs dim2 mono" style="letter-spacing:.14em;margin-top:6px">SUMBER: PESAN PROGRES OTOMATIS AVI</div>
+      </div>
+
+      <div>
+        <span class="k">TIMELINE STATUS</span>
+        <div class="step done">
+          <span class="n">✓</span>
+          <div class="meta"><div class="t">Baca & validasi data</div>
+          <div class="s gr">SELESAI · 1.204 BARIS VALID</div></div>
+        </div>
+        <div class="step done">
+          <span class="n">✓</span>
+          <div class="meta"><div class="t">Analisa tren Q2 vs Q3</div>
+          <div class="s gr">SELESAI · 3 ANOMALI DITEMUKAN</div></div>
+        </div>
+        <div class="step run">
+          <span class="n">●</span>
+          <div class="meta"><div class="t">Riset pasar pendukung</div>
+          <div class="s cy">BERJALAN · MENUNGGU HASIL PENCARIAN</div></div>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <div class="meta"><div class="t dim">Susun draf laporan + grafik</div>
+          <div class="s dim2">ANTRE</div></div>
+        </div>
+        <div class="step">
+          <span class="n">5</span>
+          <div class="meta"><div class="t dim">Render PDF & QC final</div>
+          <div class="s dim2">ANTRE</div></div>
+        </div>
+      </div>
+
+      <div class="dock">
+        <div class="dock-tabs" id="dockTabs">
+          <button class="on" data-pane="term">TERMINAL</button>
+          <button data-pane="web">BROWSER</button>
+          <button data-pane="edit">EDITOR</button>
+          <button data-pane="scr">LAYAR</button>
+        </div>
+        <div class="dock-pane" id="pane-term">
+          <div class="term">
+            <div>$ python analisa_tren.py</div>
+            <div class="c">&gt; memuat 1.204 baris … <span class="ok" style="color:var(--green)">OK</span></div>
+            <div class="c">&gt; Q2 rata-rata: 412 · Q3: 531 (+28.8%)</div>
+            <div class="y">&gt; anomali: Sep-14 · +312%</div>
+            <div class="b">&gt; menyimpan tren.json … selesai</div>
+            <div>$ <span class="cursor"></span></div>
+          </div>
+        </div>
+        <div class="dock-pane" id="pane-web" hidden>
+          <div class="fakewin">
+            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">intranet.data.local/q3-tren</span></div>
+            <div class="bd">
+              <div class="skel" style="width:52%"></div>
+              <div class="minibars"><i style="height:40%"></i><i style="height:65%"></i><i style="height:52%"></i><i style="height:88%"></i><i style="height:70%"></i><i style="height:95%"></i></div>
+              <div class="skel" style="width:78%"></div>
+              <div class="skel" style="width:64%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dock-pane" id="pane-edit" hidden>
+          <div class="fakewin">
+            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">analisa_tren.py</span></div>
+            <div class="bd term" style="font-size:10px">
+              <div><span class="c">1</span>&nbsp;&nbsp;<span class="b">import</span> pandas <span class="b">as</span> pd</div>
+              <div><span class="c">2</span>&nbsp;&nbsp;df = pd.read_excel(<span class="y">"data.xlsx"</span>)</div>
+              <div><span class="c">3</span>&nbsp;&nbsp;tren = df.groupby(<span class="y">"bulan"</span>)</div>
+              <div><span class="c">4</span>&nbsp;&nbsp;<span class="b">print</span>(tren.mean())</div>
+              <div><span class="c">5</span>&nbsp;&nbsp;<span class="cursor"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="dock-pane" id="pane-scr" hidden>
+          <div class="fakewin" style="background:#0B1322">
+            <div class="bar"><i></i><i></i><i></i><span style="margin-left:6px">LAYAR AVI · T+07:42</span></div>
+            <div class="bd">
+              <div class="row" style="gap:6px"><span class="skel" style="width:30%;height:6px"></span><span class="skel" style="width:14%;height:6px"></span></div>
+              <div class="minibars" style="height:44px"><i style="height:35%"></i><i style="height:60%"></i><i style="height:45%"></i><i style="height:80%"></i><i style="height:55%"></i><i style="height:92%"></i></div>
+              <div class="mono xs cy" style="letter-spacing:.14em">REKAM LAYAR AGENT · POLA MANUS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:12px">
+        <button class="btn btn-cyan sm" data-sim="JEDA">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5v14M15 5v14"/></svg>JEDA
+        </button>
+        <button class="btn btn-red sm" data-sim="HENTIKAN">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>HENTIKAN
+        </button>
+      </div>
+      <button class="btn btn-ghost sm" style="margin-top:8px" data-sim="AMBIL ALIH">🖐 AMBIL ALIH KONTROL <span class="soon">COMING SOON</span></button>
+      <div class="xs dim2 mono" style="letter-spacing:.12em;margin-top:10px;text-align:center">SELESAI NANTI → NOTIFIKASI KE PAK</div>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
+      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li>Ring progres + % + langkah berjalan (pola Manus/Devin).</li>
+      <li>Telemetri mono: T+, token, kredit terpakai, status reaktor — <b>tanpa jam dinding</b>.</li>
+      <li>Narasi langsung ala ChatGPT Agent (teks mengetik sendiri).</li>
+      <li>Timeline status: ✓ selesai · ● berjalan · ○ antre.</li>
+      <li>Dock <b>RUANG KERJA AVI</b>: Terminal / Browser / Editor / Layar — 4 tab bisa diklik (pola “Manus’s Computer”).</li>
+      <li>Kendali: JEDA · HENTIKAN · AMBIL ALIH (ambul alih = COMING SOON).</li>
+      <li>Notifikasi saat tugas selesai.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="flow-link">TUGAS SELESAI → NOTIFIKASI ↓</div>
+
+<!-- ================================================== -->
+<!-- LAYAR 05 · ARTEFAK                                  -->
+<!-- ================================================== -->
+<section class="screen" id="layar-5" data-n="5">
+  <div class="scr-head">
+    <span class="scr-num">05</span>
+    <div style="flex:1">
+      <div class="scr-tt">HASIL & ARTEFAK</div>
+      <div class="scr-sub">PDF jadi, bisa diunduh/dibagikan, dan bisa diminta revisi jadi versi baru.</div>
+    </div>
+    <span class="pola">POLA · CLAUDE ARTEFAK</span><span class="pola">POLA · MANUS FILE</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
+    </div>
+    <div class="appbar">
+      <button class="icon-btn" data-goto="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <div class="tt">HASIL TUGAS</div>
+      <span class="sp"></span>
+      <span class="badge green">SELESAI</span>
+    </div>
+
+    <div class="scr-body">
+      <div class="card hud">
+        <div class="between">
+          <div>
+            <div class="h">Laporan Analisa Penjualan Q3</div>
+            <div class="mono xs dim" style="letter-spacing:.1em;margin-top:4px">SELESAI T+12:03 · 18 KREDIT TERPAKAI</div>
+          </div>
+          <div class="orb orb-sm"><span class="core"></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="gap:14px;align-items:flex-start">
+          <div class="pdfpage">
+            <div class="bar"><b>AVI</b><span>LAPORAN Q3</span></div>
+            <h5>ANALISA PENJUALAN<br/>Q2 vs Q3</h5>
+            <div class="minibars" style="height:34px;margin:4px 0 8px"><i style="height:45%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:62%"></i></div>
+            <div class="ln w80"></div><div class="ln"></div><div class="ln w60"></div>
+            <div class="foot"><span>AVI MK1 · AGENT</span><span>HAL 1/14</span></div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="mono sm gd" style="word-break:break-all">LAPORAN_Q3.pdf</div>
+            <div class="mono xs dim" style="margin-top:6px;display:grid;gap:4px;letter-spacing:.08em">
+              <div class="between"><span>UKURAN</span><span class="cy">2.4 MB</span></div>
+              <div class="between"><span>HALAMAN</span><span class="cy">14</span></div>
+              <div class="between"><span>GRAFIK</span><span class="cy">7</span></div>
+              <div class="between"><span>QC</span><span class="gr">LOLOS</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:13px;gap:8px;flex-wrap:wrap">
+          <span class="k" style="margin:0">VERSI</span>
+          <button class="vchip">v1</button>
+          <button class="vchip on">v2 · TERBARU</button>
+          <span class="soon" style="margin-left:auto">SEJARAH LENGKAP · COMING SOON</span>
+        </div>
+
+        <div class="grid2" style="margin-top:13px">
+          <button class="btn btn-gold sm" data-sim="UNDUH">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>UNDUH
+          </button>
+          <button class="btn btn-cyan sm" data-sim="BAGIKAN">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3M8 7l4-4 4 4"/></svg>BAGIKAN
+          </button>
+        </div>
+        <button class="btn btn-ghost sm" style="margin-top:8px" data-sim="BUKA">⤢ BUKA PRATINJAU PENUH</button>
+      </div>
+
+      <div class="card">
+        <span class="k gd">MINTA REVISI</span>
+        <input class="input" placeholder="cth: tambahkan grafik per region & ringkasan 1 halaman…"/>
+        <button class="btn btn-cyan sm" style="margin-top:10px" data-sim="KIRIM REVISI → v3">KIRIM REVISI → JADI v3</button>
+      </div>
+
+      <div>
+        <span class="k">ARTEFAK LAIN DARI TUGAS INI</span>
+        <div class="task" data-sim="BUKA KODE">
+          <span class="ic code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span>
+          <div class="meta">
+            <div class="t">analisa_tren.py</div>
+            <div class="s"><span>CODING</span><span>·</span><span>2.1 KB</span></div>
+          </div>
+          <span class="dim2">›</span>
+        </div>
+        <div class="task" data-sim="BUKA DATA">
+          <span class="ic data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
+          <div class="meta">
+            <div class="t">tren.json</div>
+            <div class="s"><span>ANALISA DATA</span><span>·</span><span>184 KB</span></div>
+          </div>
+          <span class="dim2">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
+      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li>Pratinjau halaman PDF digambar langsung (header AVI, grafik, nomor halaman).</li>
+      <li>Metadata: ukuran, halaman, jumlah grafik, status QC.</li>
+      <li>UNDUH · BAGIKAN · BUKA — semua simulasi toast.</li>
+      <li>Versi artefak v1/v2 ala Claude + revisi jadi v3.</li>
+      <li>Multi-artefak per tugas: PDF + kode + data (tugas coding/analisa menghasilkan artefak lain pula).</li>
+      <li>Sejarah versi lengkap = <b>COMING SOON</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="flow-link">PAK MEMBUKA TAB “TUGAS” ↓</div>
+
+<!-- ================================================== -->
+<!-- LAYAR 06 · RIWAYAT / HUB TUGAS                      -->
+<!-- ================================================== -->
+<section class="screen" id="layar-6" data-n="6">
+  <div class="scr-head">
+    <span class="scr-num">06</span>
+    <div style="flex:1">
+      <div class="scr-tt">TUGAS — RIWAYAT & ANTREAN</div>
+      <div class="scr-sub">Semua tugas agent: selesai, jalan, antre, dihentikan — satu daftar.</div>
+    </div>
+    <span class="pola">POLA · DEVIN SESSIONS</span><span class="pola">POLA · MANUS HISTORY</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
+    </div>
+    <div class="appbar">
+      <div class="tt">TUGAS</div>
+      <span class="sp"></span>
+      <button class="icon-btn" data-sim="CARI/ FILTER" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+      <button class="icon-btn" data-sim="BERSIHKAN" style="width:32px;height:32px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="14" height="14"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+    </div>
+
+    <div class="scr-body">
+      <input class="input" placeholder="Cari tugas…" style="margin-bottom:10px"/>
+      <div class="chips" id="filters" style="margin-bottom:12px">
+        <button class="chip sel">SEMUA</button>
+        <button class="chip">SELESAI</button>
+        <button class="chip">JALAN</button>
+        <button class="chip">ANTRE</button>
+        <button class="chip">DIHENTIKAN</button>
+      </div>
+
+      <div class="mono xs dim2 between" style="letter-spacing:.12em;margin-bottom:10px">
+        <span>2 SELESAI · 1 JALAN</span><span>1 ANTRE · 1 DIHENTIKAN</span>
+      </div>
+
+      <div class="task" data-goto="5">
+        <span class="ic pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></span>
+        <div class="meta">
+          <div class="t">Laporan Analisa Penjualan Q3</div>
+          <div class="s"><span class="gr">● SELESAI</span><span>·</span><span>PDF</span><span>·</span><span>18 KR</span><span>·</span><span>KEMARIN</span></div>
+        </div>
+        <span class="dim2">›</span>
+      </div>
+
+      <div class="task" data-goto="4">
+        <span class="ic code"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span>
+        <div class="meta">
+          <div class="t">Refactor modul autentikasi</div>
+          <div class="s"><span class="cy">● JALAN 62%</span><span>·</span><span>CODING</span><span>·</span><span>EST 24 KR</span></div>
+        </div>
+        <span class="dim2">›</span>
+      </div>
+
+      <div class="task" data-sim="DETAIL TUGAS SELESAI">
+        <span class="ic data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
+        <div class="meta">
+          <div class="t">Audit kode modul billing</div>
+          <div class="s"><span class="gr">● SELESAI</span><span>·</span><span>ANALISA KODE</span><span>·</span><span>11 KR</span><span>·</span><span>2 HARI LALU</span></div>
+        </div>
+        <span class="dim2">›</span>
+      </div>
+
+      <div class="task" data-sim="DETAIL ANTRIAN">
+        <span class="ic pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg></span>
+        <div class="meta">
+          <div class="t">Slide deck rapat direksi</div>
+          <div class="s"><span class="dim">◌ ANTRIAN</span><span>·</span><span>PDF</span><span>·</span><span>EST 9 KR</span></div>
+        </div>
+        <span class="dim2">›</span>
+      </div>
+
+      <div class="task" data-sim="DETAIL DIHENTIKAN">
+        <span class="ic web"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></span>
+        <div class="meta">
+          <div class="t">Pemantauan harga kompetitor</div>
+          <div class="s"><span class="rd">● DIHENTIKAN OLEH PAK</span><span>·</span><span>WEB</span><span>·</span><span>4 KR TERPAKAI</span></div>
+        </div>
+        <span class="dim2">›</span>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="between">
+          <div>
+            <div class="sm" style="font-weight:600">Putar ulang sesi kerja</div>
+            <div class="xs dim">Tonton langkah AVI seperti rekaman</div>
+          </div>
+          <span class="soon">COMING SOON</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn on" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
+      <button class="bn" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li>Hub TUGAS = riwayat + antrean (pola daftar sesi Devin / history Manus).</li>
+      <li>Status berwarna: SELESAI · JALAN · ANTRE · DIHENTIKAN.</li>
+      <li>Kartu JALAN menampilkan % progres; kartu selesai menyimpan kredit terpakai.</li>
+      <li>Pencarian + filter status.</li>
+      <li>Replay sesi (pola Manus) = <b>COMING SOON</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="flow-link">PAK MEMBUKA PUSAT KENDALI ↓</div>
+
+<!-- ================================================== -->
+<!-- LAYAR 07 · PUSAT KENDALI                            -->
+<!-- ================================================== -->
+<section class="screen" id="layar-7" data-n="7">
+  <div class="scr-head">
+    <span class="scr-num">07</span>
+    <div style="flex:1">
+      <div class="scr-tt">PUSAT KENDALI AGENT</div>
+      <div class="scr-sub">Otoritas, perkakas, batas kredit, dan log — Pak pegang kendali penuh.</div>
+    </div>
+    <span class="pola">POLA · DEVIN SETTINGS</span><span class="pola">POLA · CHATGPT IZIN</span>
+  </div>
+
+  <div class="phone">
+    <span class="punch"></span>
+    <div class="statusbar">
+      <span>MK1 · AGENT</span>
+      <span class="r"><svg width="13" height="11" viewBox="0 0 14 12" fill="none"><path d="M1 11V8M5 11V5M9 11V2M13 11V0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>5G</span><span class="batt"></span><span class="gr">87%</span></span>
+    </div>
+    <div class="appbar">
+      <div class="tt">PUSAT KENDALI</div>
+      <span class="sp"></span>
+      <div class="orb orb-sm"><span class="core"></span></div>
+    </div>
+
+    <div class="scr-body">
+      <div class="card hud">
+        <span class="k">OTORITAS GLOBAL</span>
+        <div class="grid2" id="authG">
+          <div class="auth-card" data-desc="AMAN: AVI berhenti & minta izin di setiap langkah.">
+            <div class="t">◈ AMAN</div><div class="d">Izin tiap langkah</div>
+          </div>
+          <div class="auth-card sel" data-desc="BAKU: bebas bekerja; login/pembayaran/penghapusan selalu minta izin.">
+            <div class="t">◈ BAKU</div><div class="d">Bebas + izin berisiko</div>
+          </div>
+          <div class="auth-card" data-desc="PENUH: bebas penuh sampai selesai; semua aksi tercatat di log.">
+            <div class="t">◈ PENUH</div><div class="d">Bebas penuh, tercatat</div>
+          </div>
+        </div>
+        <div class="xs dim" id="authGDesc" style="margin-top:9px">BAKU: bebas bekerja; login/pembayaran/penghapusan selalu minta izin.</div>
+      </div>
+
+      <div class="card">
+        <span class="k">PERKAKAS AGENT</span>
+        <div class="toolrow">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></span>
+          <div class="meta"><div class="t">Riset Web</div><div class="d">Pencarian & baca halaman</div></div>
+          <span class="sw on"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17l6-5-6-5M12 19h8"/></svg></span>
+          <div class="meta"><div class="t">Terminal & Kode</div><div class="d">Jalankan skrip, tulis & ubah kode</div></div>
+          <span class="sw on"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/></svg></span>
+          <div class="meta"><div class="t">Browser Virtual</div><div class="d">Buka situs, isi form, ambil layar</div></div>
+          <span class="sw on"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>
+          <div class="meta"><div class="t">Akses File</div><div class="d">Baca & simpan artefak</div></div>
+          <span class="sw on"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 1 0-12 0c0 6-2 7-2 7h16s-2-1-2-7M10 20a2 2 0 0 0 4 0"/></svg></span>
+          <div class="meta"><div class="t">Notifikasi Selesai</div><div class="d">Kabari Pak saat tugas tuntas</div></div>
+          <span class="sw on"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic" style="color:var(--gold);border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.06)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+          <div class="meta"><div class="t">Pembayaran & Otentikasi</div><div class="d cy xs">SELALU MINTA IZIN — TIDAK BISA MATI</div></div>
+          <span class="sw"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic" style="color:var(--dim2);border-color:rgba(140,163,199,.3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a6 6 0 0 1 6 6c0 2.2-1.2 3.6-2.4 4.8-.8.8-1.6 1.7-1.6 3.2h-4c0-1.5-.8-2.4-1.6-3.2C7.2 12.6 6 11.2 6 9a6 6 0 0 1 6-6zM10 21h4"/></svg></span>
+          <div class="meta"><div class="t dim">Memori Jangka Panjang</div><div class="d">AVI mengingat gaya & preferensi Pak</div></div>
+          <span class="soon">COMING SOON</span>
+          <span class="sw"></span>
+        </div>
+        <div class="toolrow">
+          <span class="ic" style="color:var(--dim2);border-color:rgba(140,163,199,.3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+          <div class="meta"><div class="t dim">Jadwal Otomatis (rutin)</div><div class="d">cth: laporan tiap Senin pagi</div></div>
+          <span class="soon">COMING SOON</span>
+          <span class="sw"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="between"><span class="k" style="margin:0">BATAS KREDIT PER TUGAS</span><span class="mono sm gd" id="krVal">25 KR</span></div>
+        <input type="range" class="slider" min="5" max="60" value="25" id="kr"/>
+        <div class="mono xs dim2 between"><span>5</span><span>MAKS 60</span></div>
+      </div>
+
+      <div class="card">
+        <span class="k">LOG AKTIVITAS — TUGAS TERAKHIR</span>
+        <div class="log">
+          <div><span class="t">[T+00:00]</span> tugas dibuat · otoritas BAKU</div>
+          <div><span class="t">[T+00:04]</span> <span class="cy">rencana disetujui oleh PAK</span></div>
+          <div><span class="t">[T+00:09]</span> baca data_penjualan.xlsx · 1.204 baris</div>
+          <div><span class="t">[T+02:31]</span> skrip analisa selesai · 3 anomali</div>
+          <div><span class="t">[T+04:10]</span> <span class="wr">izin diminta: riset web → disetujui</span></div>
+          <div><span class="t">[T+07:42]</span> riset pasar · 6 sumber terkumpul</div>
+          <div><span class="t">[T+12:03]</span> <span class="ok">LAPORAN_Q3.pdf selesai · 2.4 MB</span></div>
+        </div>
+      </div>
+
+      <button class="btn btn-red sm" data-sim="HAPUS RIWAYAT">HAPUS SEMUA RIWAYAT TUGAS</button>
+    </div>
+
+    <div class="bottomnav">
+      <button class="bn" data-goto="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>OBROLAN</button>
+      <button class="bn" data-goto="6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>TUGAS</button>
+      <button class="fab" data-goto="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L4.5 12.5H11l-1 9.5L18.5 11H12l1-9z"/></svg>AJUKAN</button>
+      <button class="bn on" data-goto="7"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>KENDALI</button>
+    </div>
+  </div>
+
+  <div class="scr-notes">
+    <h4>FITUR DI LAYAR INI</h4>
+    <ul>
+      <li>Otoritas global AMAN / BAKU / PENUH + deskripsi berganti ikut pilihan.</li>
+      <li>Saklar perkakas: Web, Terminal, Browser, File, Notifikasi.</li>
+      <li>Pembayaran & otentikasi: <b>terkunci SELALU MINTA IZIN</b> (pola izin ChatGPT Agent).</li>
+      <li>Memori jangka panjang & jadwal rutin = <b>COMING SOON</b>.</li>
+      <li>Batas kredit per tugas (slider 5–60).</li>
+      <li>Log aktivitas mono bergaya telemetri MK1.</li>
+      <li>Zona merah: hapus semua riwayat.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CATATAN KEPUTUSAN ================= -->
+<section class="decisions">
+  <h3>STATUS & CATATAN UNTUK PAK</h3>
+  <ul>
+    <li>Ini <b class="gd">papan tampilan HTML</b> — semua aksi hanya simulasi/toast; tidak ada fungsi nyata, tidak ada implementasi app.</li>
+    <li>7 layar memakai pola dari referensi nyata: Manus (todo, dock computer, artefak, replay), Devin (sesi, rencana, riwayat, settings), ChatGPT Agent (narasi live, izin, ambil alih), Claude (artefak + versi/revisi) — masing-masing bertanda <span class="pola" style="font-size:9px">POLA · X</span>.</li>
+    <li>Fitur yang teridentifikasi tapi belum disetujui dibangun diberi badge <b class="gd">COMING SOON</b>: template cepat, jadwal otomatis, editor langkah manual, ambil alih kontrol, sejarah versi lengkap, replay sesi, memori jangka panjang.</li>
+    <li>JAM & chip saran di Obrolan: <b class="rd">tetap dihapus total, tanpa pengganti</b> — sesuai arahan Pak.</li>
+    <li>Nuansa Jarvis MK1 dipertahankan & diperkuat: orb reaktor bernafas, sian/emas, scanline, telemetri mono, sapaan “Pak”.</li>
+    <li>Setelah Pak menyetujui tampilan ini → baru usulkan implementasi ke Jetpack Compose sebagai <b class="gd">v1.4.0(13)</b>. Belum ada commit apa pun.</li>
+  </ul>
+</section>
+
+<footer>
+  AVI MK1 · MODE AGENT — PAPAN TAMPILAN VISUAL · FUNGSI DISIMULASI · <b>DIBUAT UNTUK PENILAIAN PAK</b>
+</footer>
+
+</main>
+
+<div class="satu-pos" id="satuPos"><b>01</b> / 07 — OBROLAN</div>
+<div class="satu-ctl">
+  <button id="prevBtn" title="Layar sebelumnya">←</button>
+  <button id="nextBtn" title="Layar berikutnya">→</button>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var body=document.body, cur=1;
+  var screens=[].slice.call(document.querySelectorAll(".screen"));
+  var names={1:"OBROLAN",2:"AJUKAN",3:"RENCANA",4:"EKSEKUSI",5:"ARTEFAK",6:"TUGAS",7:"KENDALI"};
+
+  function pad(n){return (n<10?"0":"")+n}
+  function toast(msg){
+    var t=document.getElementById("toast");
+    t.innerHTML="<b>SIMULASI</b> · "+msg;
+    t.classList.add("show");
+    clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove("show")},1900);
+  }
+  function updateJumps(){
+    [].slice.call(document.querySelectorAll("[data-jump]")).forEach(function(a){
+      a.classList.toggle("on", +a.getAttribute("data-jump")===cur);
+    });
+    var p=document.getElementById("satuPos");
+    if(p) p.innerHTML="<b>"+pad(cur)+"</b> / 07 — "+names[cur];
+  }
+  function goto(n){
+    if(n<1||n>7) return;
+    cur=n;
+    if(body.classList.contains("satu")){
+      screens.forEach(function(s){s.classList.toggle("on", +s.getAttribute("data-n")===n)});
+      window.scrollTo({top:0,behavior:"smooth"});
+    }else{
+      var el=document.getElementById("layar-"+n);
+      if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+    updateJumps();
+  }
+
+  /* Semua elemen data-goto */
+  document.addEventListener("click",function(e){
+    var g=e.target.closest("[data-goto]");
+    if(g){ goto(+g.getAttribute("data-goto")); return; }
+    var sim=e.target.closest("[data-sim]");
+    if(sim){ toast(sim.getAttribute("data-sim")+" — fungsi menyusul"); return; }
+  });
+
+  /* Mode tampilan */
+  var seg=document.getElementById("modeSeg");
+  seg.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    [].slice.call(seg.children).forEach(function(x){x.classList.toggle("on",x===b)});
+    var m=b.getAttribute("data-mode");
+    body.classList.toggle("satu",m==="satu");
+    body.classList.toggle("alur",m==="alur");
+    if(m==="satu") goto(cur); else updateJumps();
+  });
+
+  /* Nav lompat (anchor) — jangan navigasi bawaan di mode satu */
+  document.getElementById("jumps").addEventListener("click",function(e){
+    var a=e.target.closest("[data-jump]");
+    if(a){ e.preventDefault(); goto(+a.getAttribute("data-jump")); }
+  });
+
+  /* Panah satu layar + keyboard */
+  document.getElementById("prevBtn").addEventListener("click",function(){goto(cur-1)});
+  document.getElementById("nextBtn").addEventListener("click",function(){goto(cur+1)});
+  document.addEventListener("keydown",function(e){
+    if(!body.classList.contains("satu")) return;
+    if(e.key==="ArrowRight") goto(cur+1);
+    if(e.key==="ArrowLeft") goto(cur-1);
+  });
+
+  /* Sorot nav lompat saat scroll (mode alur) */
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting && body.classList.contains("alur")){
+          cur=+en.target.getAttribute("data-n"); updateJumps();
+        }
+      });
+    },{rootMargin:"-40% 0px -55% 0px"});
+    screens.forEach(function(s){io.observe(s)});
+  }
+
+  /* Chips pilihan (kemampuan, filter) */
+  document.querySelectorAll("#caps .chip, #filters .chip").forEach(function(c){
+    c.addEventListener("click",function(){c.classList.toggle("sel")});
+  });
+
+  /* Kartu otoritas (form + kendali) */
+  function wireAuth(selId,descId){
+    var box=document.getElementById(selId); if(!box) return;
+    box.addEventListener("click",function(e){
+      var card=e.target.closest(".auth-card"); if(!card) return;
+      [].slice.call(box.querySelectorAll(".auth-card")).forEach(function(x){x.classList.toggle("sel",x===card)});
+      var d=document.getElementById(descId);
+      if(d) d.textContent=card.getAttribute("data-desc");
+      toast("OTORITAS: "+card.querySelector(".t").textContent.trim()+" (simulasi)");
+    });
+  }
+  wireAuth("authSel","authDesc");
+  wireAuth("authG","authGDesc");
+
+  /* Saklar */
+  document.querySelectorAll(".sw").forEach(function(s){
+    s.addEventListener("click",function(){s.classList.toggle("on")});
+  });
+
+  /* Dock tab */
+  var tabs=document.getElementById("dockTabs");
+  if(tabs){
+    tabs.addEventListener("click",function(e){
+      var b=e.target.closest("button"); if(!b) return;
+      [].slice.call(tabs.children).forEach(function(x){x.classList.toggle("on",x===b)});
+      ["term","web","edit","scr"].forEach(function(p){
+        document.getElementById("pane-"+p).hidden=(p!==b.getAttribute("data-pane"));
+      });
+    });
+  }
+
+  /* Slider kredit */
+  var kr=document.getElementById("kr"), kv=document.getElementById("krVal");
+  if(kr){
+    function upd(){kv.textContent=kr.value+" KR";
+      var pct=((kr.value-kr.min)/(kr.max-kr.min))*100;
+      kr.style.background="linear-gradient(90deg,var(--cyan) 0 "+pct+"%,rgba(140,163,199,.3) "+pct+"%)";}
+    kr.addEventListener("input",upd); upd();
+  }
+
+  /* Versi artefak */
+  document.querySelectorAll(".vchip").forEach(function(v){
+    v.addEventListener("click",function(){
+      document.querySelectorAll(".vchip").forEach(function(x){x.classList.remove("on")});
+      v.classList.add("on");
+      toast("PRATINJAU "+v.textContent.trim()+" (simulasi)");
+    });
+  });
+
+  /* Narasi mengetik sendiri */
+  var lines=[
+    "Sedang menjalankan skrip analisa tren…",
+    "Menemukan 3 anomali — yang terbesar Sep-14, +312%…",
+    "Sekarang mencari 6 sumber pasar pendukung, Pak…",
+    "Draf laporan mulai disusun, grafik Q2 vs Q3 siap."
+  ];
+  var narr=document.getElementById("narr");
+  if(narr){
+    var li=0,ci=0,del=false;
+    (function type(){
+      var s=lines[li];
+      narr.textContent=s.slice(0,ci);
+      if(!del){ ci++; if(ci>s.length){del=true;setTimeout(type,2100);return;} }
+      else { ci--; if(ci===0){del=false;li=(li+1)%lines.length;} }
+      setTimeout(type,del?18:46);
+    })();
+  }
+})();
+</script>
+</body>
+</html>
