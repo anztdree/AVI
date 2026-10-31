@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v5</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
@@ -304,6 +304,65 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
 .srow.act:hover{border-color:rgba(34,211,238,.4)}
 .srow .arr{color:var(--dim2);font-size:16px;margin-left:auto;flex:none}
 
+/* ============ v6 · STRIP HARI INI (pola Google Assistant Snapshot) ============ */
+.stats{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;margin-bottom:13px;
+  border:1px solid rgba(34,211,238,.2);border-radius:12px;background:rgba(11,19,34,.55);
+  font:600 9.5px var(--mono);letter-spacing:.1em;color:var(--dim2)}
+.stats span{display:flex;align-items:center;gap:6px}
+.stats b{color:var(--cyan);font-weight:700}
+.stats b.k{color:var(--green)}
+.stats b.g{color:var(--gold)}
+/* MULAI CEPAT — pola Devin Template Gallery */
+.qwrap{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;margin-bottom:9px}
+.qwrap::-webkit-scrollbar{height:0}
+.qc{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;
+  font:600 10px var(--mono);letter-spacing:.08em;color:var(--dim);background:rgba(11,19,34,.5);white-space:nowrap}
+.qc:hover{border-color:var(--gold);color:var(--gold)}
+.qc i{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.qc.on{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.08)}
+.qc.on i{background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+/* JADWAL — pola Manus Automations · Devin Automations · Bixby Routines */
+.jrow{padding:11px 12px;border:1px solid rgba(34,211,238,.14);border-radius:13px;background:rgba(11,19,34,.5)}
+.jrow+.jrow{margin-top:7px}
+.jtop{display:flex;align-items:center;gap:10px}
+.jmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.trig{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;border:1px solid rgba(34,211,238,.3);
+  background:rgba(34,211,238,.06);font:600 8.5px var(--mono);letter-spacing:.1em;color:var(--cyan)}
+.trig.gd{border-color:rgba(245,181,74,.35);background:rgba(245,181,74,.07);color:var(--gold)}
+.next{font:600 9px var(--mono);letter-spacing:.08em;color:var(--dim2)}
+.cal{display:flex;gap:5px;margin-top:10px}
+.cald{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 0 6px;border:1px solid rgba(34,211,238,.1);
+  border-radius:9px;background:rgba(7,11,18,.5);cursor:pointer}
+.cald span{font:600 7.5px var(--mono);letter-spacing:.1em;color:var(--dim2)}
+.cald b{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.cald.today{border-color:rgba(34,211,238,.5)}
+.cald.today span{color:var(--cyan)}
+/* RIWAYAT digroup per tanggal — pola Manus "Updates" */
+.ghead{margin:11px 0 6px;font:600 8.5px var(--mono);letter-spacing:.2em;color:var(--dim2)}
+/* ============ v6 · MODE SUARA (pola Agora · Gemini Live · Sara) ============ */
+.liveov{position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 30%, rgba(13,28,46,.97), rgba(4,8,15,.99));
+  backdrop-filter:blur(8px);padding:24px;text-align:center}
+.liveov.open{display:flex}
+.lvtop{position:absolute;top:18px;left:20px;right:20px;display:flex;align-items:center;gap:10px}
+.lvstag{margin-left:auto}
+.lvorb{width:150px;height:150px;flex:none;animation:breathe 3.6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.lvstate{margin-top:22px;font:700 11px var(--disp);letter-spacing:.3em;color:var(--cyan);min-height:14px}
+.wave{display:flex;align-items:center;gap:3.5px;height:46px;margin-top:14px}
+.wave i{width:3.5px;border-radius:3px;background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.55);animation:wv 1.05s ease-in-out infinite}
+.wave i.g{background:var(--gold);box-shadow:0 0 8px rgba(245,181,74,.55)}
+@keyframes wv{0%,100%{height:7px;opacity:.45}50%{height:38px;opacity:1}}
+.lvlog{width:100%;max-width:340px;margin-top:20px;display:flex;flex-direction:column;gap:9px}
+.lvln{display:none;padding:9px 13px;border-radius:12px;font-size:13.5px;text-align:left;animation:shUp .3s ease}
+.lvln .lw{font:600 8px var(--mono);letter-spacing:.2em;color:var(--dim2);margin-bottom:3px}
+.lvln.me{align-self:flex-end;background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.2);border-bottom-right-radius:4px}
+.lvln.avi{align-self:flex-start;background:rgba(14,23,40,.9);border:1px solid var(--line);border-bottom-left-radius:4px}
+.lvln.show{display:block}
+.lvfoot{position:absolute;bottom:22px;left:20px;right:20px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.lvtele{font:600 9px var(--mono);letter-spacing:.16em;color:var(--dim)}
+.lvtele b{color:var(--cyan);font-weight:600}
+
 /* ============ TOAST ============ */
 .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:9;opacity:0;pointer-events:none;
   padding:10px 18px;border-radius:12px;border:1px solid rgba(245,181,74,.45);background:rgba(11,19,34,.95);
@@ -448,6 +507,8 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
 <b>›</b> dependensi: 23 terpakai, 4 tidak terpakai
 <em>› anomali: double-charge pada retry() …</em>
 <b>›</b> telusuri jalur pembayaran — 3 cabang
+<b>›</b> gulir tabel transaksi — 4 layar diperiksa
+<b>›</b> ketuk "Ekspor log billing" — antarmuka app
 <b>›</b> menunggu izin berkas log…</div>
                   </div>
 
@@ -501,7 +562,7 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
           <svg viewBox="0 0 24 24"><path d="M21.4 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66L9.4 17.4a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
         </button>
         <div class="cin"><input id="cin" placeholder="Tulis ke AVI…" aria-label="Tulis pesan"/></div>
-        <button class="cbtn" data-toast="Bicara langsung — simulasi tampilan">
+        <button class="cbtn" id="btnMic" aria-label="Mode suara AVI">
           <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3"/></svg>
         </button>
         <button class="cbtn send" id="btnSend" data-toast="Simulasi tampilan — kirim pesan menyusul">
@@ -554,6 +615,16 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         </div>
 
         <div class="sect">
+          <h3>PENGHUMASAN HASIL TUGAS</h3>
+          <div class="nseg" id="nseg">
+            <button class="qc" data-n="TIAP RUN">TIAP RUN</button>
+            <button class="qc on" data-n="HANYA SELESAI">HANYA SELESAI</button>
+            <button class="qc" data-n="HANYA GAGAL">HANYA GAGAL</button>
+          </div>
+          <div class="note1">Kabar ke HP Pak — diatur sekali untuk semua tugas. Pola: Devin (notification granularity).</div>
+        </div>
+
+        <div class="sect">
           <h3>LOG AKTIVITAS</h3>
           <div class="logbox scr"><b>›</b> otoritas BAKU aktif
 <b>›</b> laporan Q3 selesai — 14 KR
@@ -570,6 +641,8 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
             <div class="swb"><b>Template tugas</b><small>Pola kerja simpanan</small></div><span class="tag">COMING SOON</span></div>
           <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><path d="M12 3a4 4 0 014 4c2.5.5 4 2.4 4 5a5 5 0 01-5 5H9a5 5 0 01-5-5c0-2.6 1.5-4.5 4-5a4 4 0 014-4z"/></svg></div>
             <div class="swb"><b>Memori jangka panjang</b><small>Ingat preferensi antar sesi</small></div><span class="tag">COMING SOON</span></div>
+          <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M7 14h6"/></svg></div>
+            <div class="swb"><b>Layar hasil dari AVI</b><small>AVI bikinkan tampilan sendiri per hasil — bukan cuma balon chat</small></div><span class="tag">COMING SOON</span></div>
         </div>
 
         <div class="sect">
@@ -598,11 +671,18 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         <div class="shhead">
           <div>
             <div class="shh2">TUGAS &amp; ANTREAN</div>
-            <div class="shsub">DIBUKA DARI IKON JAM · RIWAYAT LENGGAP TETAP DI OBROLAN</div>
+            <div class="shsub">SEKALI PANDANG: JALAN · ANTRE · JADWAL · HASIL</div>
           </div>
           <button class="shx" id="shClose" aria-label="Tutup">✕</button>
         </div>
         <div class="shscroll scr">
+
+          <div class="stats">
+            <span>BERJALAN <b id="stRun">1</b></span>
+            <span>ANTRE <b id="stQueue">1</b></span>
+            <span>SELESAI <b class="k" id="stDone">2</b></span>
+            <span>KR PAKAI <b class="g" id="stKr">14</b></span>
+          </div>
 
           <div class="sect">
             <h3>SEDANG BERJALAN</h3>
@@ -621,35 +701,88 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
 
           <div class="sect">
             <h3>ANTREAN OTOMATIS</h3>
-            <div class="srow">
-              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
-              <div class="swb"><b>Audit modul autentikasi</b><small>Masuk sendiri lewat obrolan — urutan diatur AVI</small></div>
-              <button class="btn red" style="padding:6px 10px;font-size:10px" data-toast="Batal antre — simulasi tampilan">BATAL</button>
+            <div id="queueList">
+              <div class="srow">
+                <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
+                <div class="swb"><b>Audit modul autentikasi</b><small>Masuk sendiri lewat obrolan — urutan diatur AVI</small></div>
+                <button class="btn red qcancel" style="padding:6px 10px;font-size:10px">BATAL</button>
+              </div>
             </div>
           </div>
 
           <div class="sect">
-            <h3>JADWAL OTOMATIS</h3>
-            <div class="srow" style="opacity:.85">
-              <div class="swic" style="width:30px;height:30px;color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-              <div class="swb"><b>Ringkasan pasar tiap Senin 09.00</b><small>Dibuat lewat percakapan · hasil lewat notifikasi</small></div>
-              <span class="tag">COMING SOON</span>
+            <h3>MULAI CEPAT — SATU KETUK</h3>
+            <div class="qwrap">
+              <button class="qc qadd" data-t="Laporan PDF mingguan"><i></i>LAPORAN PDF MINGGUAN</button>
+              <button class="qc qadd" data-t="Audit keamanan repo"><i></i>AUDIT KEAMANAN REPO</button>
+              <button class="qc qadd" data-t="Analisa data CSV"><i></i>ANALISA DATA CSV</button>
+              <button class="qc qadd" data-t="Pantau harga kompetitor"><i></i>PANTAU HARGA</button>
             </div>
-            <div class="note1" style="margin-top:8px">Cukup bilang, Pak — <b>“jalankan tiap Senin pagi”</b>. AVI yang mencatat. Pola: ChatGPT Tasks · Gemini Scheduled Actions.</div>
+            <div class="note1">Pola kerja siap pakai — ketuk sekali, AVI yang susun langkah dan urutannya, Pak.</div>
+          </div>
+
+          <div class="sect">
+            <h3>JADWAL OTOMATIS <span class="tag" style="margin-left:6px">COMING SOON</span></h3>
+            <div class="jrow">
+              <div class="jtop">
+                <div class="swic" style="width:30px;height:30px;color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+                <div class="swb"><b>Laporan pengguna harian</b><small>Dibuat lewat percakapan — AVI catat sendiri</small></div>
+                <button class="tg on jtg" aria-label="Jeda jadwal harian"><i></i></button>
+              </div>
+              <div class="jmeta">
+                <span class="trig"><svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>SETIAP HARI · 07.00</span>
+                <span class="next">BERIKUTNYA: BESOK 07.00</span>
+              </div>
+              <div class="jmeta"><span class="next">NOTIF: <b style="color:var(--cyan);font-weight:600">SAAT SELESAI</b></span>
+                <button class="btn jtest" style="padding:5px 10px;font-size:9.5px">TEST RUN</button></div>
+            </div>
+            <div class="jrow">
+              <div class="jtop">
+                <div class="swic" style="width:30px;height:30px;color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg></div>
+                <div class="swb"><b>Ringkasan pasar mingguan</b><small>Hasil dikirim lewat notifikasi</small></div>
+                <button class="tg on jtg" aria-label="Jeda jadwal mingguan"><i></i></button>
+              </div>
+              <div class="jmeta">
+                <span class="trig gd">SETIAP SENIN · 09.00</span>
+                <span class="next">BERIKUTNYA: SENIN 09.00</span>
+              </div>
+              <div class="jmeta"><span class="next">NOTIF: <b style="color:var(--gold);font-weight:600">HANYA SAAT GAGAL</b></span>
+                <button class="btn jtest" style="padding:5px 10px;font-size:9.5px">TEST RUN</button></div>
+            </div>
+            <div class="cal" id="calWeek" aria-label="Kalender jadwal minggu ini">
+              <div class="cald"><span>SEN</span><b></b></div>
+              <div class="cald today"><span>SEL</span><b></b></div>
+              <div class="cald"><span>RAB</span><b></b></div>
+              <div class="cald"><span>KAM</span><b></b></div>
+              <div class="cald"><span>JUM</span><b></b></div>
+              <div class="cald"><span>SAB</span><b></b></div>
+              <div class="cald"><span>MIN</span><b></b></div>
+            </div>
+            <div class="note1" style="margin-top:8px">Cukup bilang, Pak — <b>“jalankan tiap Senin pagi”</b>. AVI yang mencatat. Pola: ChatGPT Tasks · Gemini Scheduled Actions · Manus &amp; Devin Automations · Bixby Routines.</div>
+          </div>
+
+          <div class="sect">
+            <h3>BRIEFING PAGI</h3>
+            <div class="soonrow"><div class="swic" style="opacity:.6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></div>
+              <div class="swb"><b>Rekap pagi dari AVI</b><small>Tugas semalam · jadwal hari ini · yang menunggu izin Pak</small></div><span class="tag">COMING SOON</span></div>
+            <div class="note1" style="margin-top:8px">Setiap pagi AVI menyapa dengan ringkasan siap-putar — Pak tinggal dengar. Pola: Google Assistant Snapshot · “denyut” Kai 9000.</div>
           </div>
 
           <div class="sect">
             <h3>RIWAYAT</h3>
+            <div class="ghead">HARI INI</div>
             <div class="srow act" id="shResRow">
               <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">DOC</div>
               <div class="swb"><b>Laporan analisa penjualan Q3</b><small><span class="sst ok">SELESAI</span> · PDF · 14 HAL · 14 KR</small></div>
               <span class="arr">›</span>
             </div>
+            <div class="ghead">KEMARIN</div>
             <div class="srow">
               <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
               <div class="swb"><b>Rapikan gaya kode DeckPanel</b><small><span class="sst ok">SELESAI</span> · 2 HARI LALU</small></div>
               <span class="arr">›</span>
             </div>
+            <div class="ghead">MINGGU INI</div>
             <div class="srow">
               <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono);color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)">WEB</div>
               <div class="swb"><b>Pantau harga kompetitor</b><small><span class="sst st">DIHENTIKAN OLEH PAK</span> · 4 KR</small></div>
@@ -662,10 +795,30 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
       </div>
     </div>
 
+    <!-- ===== MODE SUARA LIVE — pola: Gemini Live · Agora Conversational AI · Sara ===== -->
+    <div class="liveov" id="liveov" role="dialog" aria-modal="true" aria-label="Mode suara AVI">
+      <div class="lvtop">
+        <div class="shsub" style="margin:0">MODE SUARA</div>
+        <span class="tag lvstag">COMING SOON</span>
+      </div>
+      <div class="orb ring lvorb"></div>
+      <div class="lvstate" id="lvState">MENDENGARKAN…</div>
+      <div class="wave" id="wave" aria-hidden="true"></div>
+      <div class="lvlog" id="lvLog">
+        <div class="lvln me"><div class="lw">PAK · SUARA</div>AVI, rekap penjualan pekan ini.</div>
+        <div class="lvln avi"><div class="lw">AVI · SUARA</div>Siap, Pak. Naik 12% dari pekan lalu — saya kirim ringkasannya ke obrolan ya.</div>
+        <div class="lvln avi"><div class="lw">AVI · SUARA</div>Oh, Pak menyela — saya dengar. Silakan, saya berhenti sebentar.</div>
+      </div>
+      <div class="lvfoot">
+        <div class="lvtele">INTERUPSI NATURAL · TRANSKRIP LANGSUNG · LATENSI <b>230MS</b></div>
+        <button class="btn" id="lvClose" style="padding:10px 26px">TUTUP</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div class="note">v5 · TUGAS DIBUKA DARI IKON JAM (POLA: CHATGPT TASKS · GEMINI SCHEDULED ACTIONS) · RIWAYAT = OBROLAN</div>
+<div class="note">v6 · SATU APLIKASI UTUH — ASISTEN PRIBADI · POLA: MANUS · DEVIN · CHATGPT TASKS · GEMINI · GOOGLE ASSISTANT · SARA · AGORA · MOBILE-AGENT · KAI 9000 · BIXBY</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -739,6 +892,12 @@ function render(){
 function finish(){
   fin=true;done=true;render();
   $('#liveCard').style.display='none';
+  const sd=$('#stDone');if(sd)sd.textContent=String(+sd.textContent+1);
+  const sk=$('#stKr');if(sk)sk.textContent=String(+sk.textContent+9);
+  const sr=$('#stRun');if(sr)sr.textContent='0';
+  const nw=document.createElement('div');
+  nw.innerHTML='<div class="srow"><div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">DOC</div><div class="swb"><b>Audit kode modul billing</b><small><span class="sst ok">SELESAI</span> · PDF · 9 KR</small></div><span class="arr">›</span></div>';
+  const refEl=$('#shResRow');if(refEl&&refEl.parentNode)refEl.parentNode.insertBefore(nw.firstChild,refEl);
   $('#doneCard').style.display='block';
   const nd=$('#navDot');if(nd)nd.classList.remove('show');
   const hd2=$('#hdDot');if(hd2)hd2.classList.remove('show');
@@ -772,6 +931,7 @@ function setPaused(v){paused=v;const lb=v?'LANJUT':'JEDA';['#btnPause','#shPause
 function doStop(){
   if(fin)return;
   stopped=true;paused=false;render();
+  const sr=$('#stRun');if(sr)sr.textContent='0';
   $('#liveCard').classList.add('stop');
   $('#liveHdr').textContent='DIHENTIKAN';
   const nd=$('#navDot');if(nd)nd.classList.remove('show');
@@ -789,6 +949,53 @@ $('#btnExp').addEventListener('click',e=>{
   const ex=$('#exp');ex.classList.toggle('open');
   e.target.textContent=ex.classList.contains('open')?'TUTUP PROSES':'LIHAT PROSES';
 });
+
+/* ================= v6: MULAI CEPAT · JADWAL · KALENDER · PENGHUMASAN ================= */
+/* mulai cepat → antre (pola Devin Template Gallery) */
+function bindCancel(btn){if(!btn)return;btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.srow').remove();const st=$('#stQueue');if(st)st.textContent=Math.max(0,+st.textContent-1);toast('Antrean dibatalkan, Pak')})}
+$$('.qcancel').forEach(bindCancel);
+$$('.qadd').forEach(b=>b.addEventListener('click',()=>{
+  const row=document.createElement('div');row.className='srow';
+  row.innerHTML='<div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">★</div>'+
+    '<div class="swb"><b>'+b.dataset.t+'</b><small>Mulai cepat — urutan diatur AVI</small></div>'+
+    '<button class="btn red qcancel" style="padding:6px 10px;font-size:10px">BATAL</button>';
+  $('#queueList').appendChild(row);bindCancel(row.querySelector('.qcancel'));
+  const st=$('#stQueue');if(st)st.textContent=String(+st.textContent+1);
+  toast('Masuk antre, Pak — '+b.dataset.t);
+}));
+/* jadwal: jeda & test run (pola Manus/Devin Automations) */
+$$('.jtg').forEach(t=>t.addEventListener('click',()=>{
+  toast(t.classList.contains('on')?'Jadwal aktif — COMING SOON':'Jadwal dijeda — COMING SOON');
+}));
+$$('.jtest').forEach(b=>b.addEventListener('click',()=>toast('Test run jadwal — COMING SOON')));
+$$('#calWeek .cald').forEach(c=>c.addEventListener('click',()=>toast('Kalender jadwal — COMING SOON')));
+/* penghumasan (pola Devin: tiap run / hanya gagal / hanya sukses) */
+$$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
+  $$('#nseg .qc').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  toast('Penghumasan: '+b.dataset.n);
+}));
+
+/* ================= MODE SUARA LIVE (pola: Gemini Live · Agora · Sara) ================= */
+const lv=$('#liveov');let lvT=[];
+function lvBars(){const w=$('#wave');if(!w||w.children.length)return;
+  for(let i=0;i<23;i++){const b=document.createElement('i');
+    b.style.animationDelay=(-Math.random()*1.05).toFixed(2)+'s';
+    b.style.animationDuration=(0.8+Math.random()*0.6).toFixed(2)+'s';
+    if(i%6===5)b.className='g';
+    w.appendChild(b);}}
+function lvOpen(){lvBars();lv.classList.add('open');
+  const L=$$('#lvLog .lvln');L.forEach(x=>x.classList.remove('show'));
+  const st=$('#lvState');st.textContent='MENDENGARKAN…';
+  lvT.forEach(clearTimeout);lvT=[];
+  lvT.push(setTimeout(()=>{L[0].classList.add('show')},900));
+  lvT.push(setTimeout(()=>{st.textContent='MERANCANG JAWAB…'},1900));
+  lvT.push(setTimeout(()=>{L[1].classList.add('show')},2600));
+  lvT.push(setTimeout(()=>{L[2].classList.add('show');st.textContent='PAK MENYELING · DILAYANI'},4200));
+  lvT.push(setTimeout(()=>{st.textContent='MENDENGARKAN…'},5800));
+}
+function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[]}
+$('#btnMic').addEventListener('click',lvOpen);
+$('#lvClose').addEventListener('click',lvClose);
 
 /* mulai */
 render();

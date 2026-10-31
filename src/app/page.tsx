@@ -3,7 +3,7 @@ export default function Page() {
     <main className="fixed inset-0 bg-[#070B12]">
       <iframe
         src="/avi-agent.html"
-        title="AVI MK1 — Asisten Pribadi · Tampilan Utuh v5"
+        title="AVI MK1 — Asisten Pribadi · Tampilan Utuh v6"
         className="h-full w-full border-0"
       />
     </main>
