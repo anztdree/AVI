@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v4</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
@@ -270,6 +270,40 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
 .soonrow+.soonrow{margin-top:7px}
 .soonrow .swb b{color:var(--dim)}
 
+/* ============ TOMBOL TUGAS & SHEET (pola ChatGPT Tasks · Gemini Scheduled Actions) ============ */
+.ico-tasks{position:relative;width:36px;height:36px;flex:none;border-radius:11px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.ico-tasks:hover{color:var(--cyan);border-color:var(--cyan)}
+.ico-tasks svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.hdot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:blink 1.6s infinite;display:none}
+.hdot.show{display:block}
+.sheet{position:absolute;inset:0;z-index:8;display:none}
+.sheet.open{display:block}
+.shbg{position:absolute;inset:0;background:rgba(4,8,15,.62);backdrop-filter:blur(3px)}
+.shpanel{position:absolute;left:0;right:0;bottom:0;max-height:80%;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#101B30,#0A1220);border:1px solid rgba(34,211,238,.25);border-bottom:none;
+  border-radius:22px 22px 0 0;box-shadow:0 -18px 50px rgba(0,0,0,.5);animation:shUp .28s ease}
+@keyframes shUp{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
+.shgrip{padding:9px 0 3px;display:flex;justify-content:center;flex:none}
+.shgrip span{width:44px;height:4px;border-radius:3px;background:rgba(34,211,238,.3)}
+.shhead{display:flex;align-items:flex-start;gap:10px;padding:5px 16px 11px;border-bottom:1px solid var(--line);flex:none}
+.shh2{font:700 13px var(--disp);letter-spacing:.12em}
+.shsub{font:600 8.5px var(--mono);letter-spacing:.18em;color:var(--dim2);margin-top:3px}
+.shx{margin-left:auto;width:30px;height:30px;flex:none;border-radius:9px;border:1px solid var(--line);color:var(--dim)}
+.shx:hover{color:var(--red);border-color:var(--red)}
+.shscroll{overflow-y:auto;padding:13px 16px calc(16px + env(safe-area-inset-bottom))}
+.shrun{padding:11px 12px;border:1px solid rgba(34,211,238,.35);border-radius:13px;background:rgba(34,211,238,.05)}
+.shrun.stopped{border-color:rgba(248,113,113,.4)}
+.shrun.ok{border-color:rgba(52,211,153,.4)}
+.shstep{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12.5px;color:var(--txt)}
+.shstep .dotc{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 1.2s infinite;flex:none}
+.shbtns{display:flex;gap:7px;margin-top:11px}
+.shbtns .btn{padding:7px 10px;font-size:10.5px}
+.srow{display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid rgba(34,211,238,.12);border-radius:12px;background:rgba(11,19,34,.5)}
+.srow+.srow{margin-top:7px}
+.srow.act{cursor:pointer}
+.srow.act:hover{border-color:rgba(34,211,238,.4)}
+.srow .arr{color:var(--dim2);font-size:16px;margin-left:auto;flex:none}
+
 /* ============ TOAST ============ */
 .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:9;opacity:0;pointer-events:none;
   padding:10px 18px;border-radius:12px;border:1px solid rgba(245,181,74,.45);background:rgba(11,19,34,.95);
@@ -303,6 +337,7 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         <div class="hd-sub">ASISTEN PRIBADI · MK1</div>
       </div>
       <div class="pill" id="hdPill"><i></i><span id="hdPillTx">SIAP</span></div>
+      <button class="ico-tasks" id="btnTasks" aria-label="Tugas dan antrean"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><i class="hdot show" id="hdDot"></i></button>
     </header>
 
     <!-- ================= VIEW 1 · OBROLAN ================= -->
@@ -350,7 +385,7 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
             <div class="orb av"></div>
             <div class="bub" style="background:none;border:none;padding:0;max-width:100%">
               <div class="bub sum" style="border:1px solid var(--line);border-radius:14px;margin-bottom:9px">Selesai, Pak — 14 halaman, 7 grafik. Penjualan naik <b>+28.6%</b>, ada 3 anomali (terbesar <em>Sep-14</em>).</div>
-              <div class="card">
+              <div class="card" id="resCard">
                 <div class="cb">
                   <div class="file">
                     <div class="fic">PDF</div>
@@ -475,67 +510,6 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
       </div>
     </section>
 
-    <!-- ================= VIEW 2 · TUGAS ================= -->
-    <section class="view" id="v-tugas">
-      <div class="scroll scr">
-        <div class="h2">TUGAS</div>
-        <div class="sub2">YANG AVI KERJAKAN UNTUK PAK · SATU DAFTAR</div>
-        <div class="search">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-          <input placeholder="Cari tugas…" aria-label="Cari tugas"/>
-        </div>
-        <div class="chips">
-          <button class="chip on" data-f="SEMUA">SEMUA</button>
-          <button class="chip" data-f="SELESAI">SELESAI</button>
-          <button class="chip" data-f="JALAN">JALAN</button>
-          <button class="chip" data-f="ANTRE">ANTRE</button>
-          <button class="chip" data-f="DIHENTIKAN">DIHENTIKAN</button>
-        </div>
-        <div class="tlist">
-          <div class="titem">
-            <div class="tico gd">&lt;/&gt;</div>
-            <div class="tbody">
-              <div class="tname">Audit kode modul billing</div>
-              <div class="tsub"><span class="sst run">JALAN <span id="tPct">34%</span></span><span>KODING</span><span>9 KR</span></div>
-            </div>
-            <span class="arr">›</span>
-          </div>
-          <div class="titem">
-            <div class="tico gd">DOC</div>
-            <div class="tbody">
-              <div class="tname">Audit modul autentikasi</div>
-              <div class="tsub"><span class="sst q">ANTRE</span><span>KODING</span><span>± 9 KR</span></div>
-            </div>
-            <span class="arr">›</span>
-          </div>
-          <div class="titem">
-            <div class="tico cy">DOC</div>
-            <div class="tbody">
-              <div class="tname">Laporan analisa penjualan Q3</div>
-              <div class="tsub"><span class="sst ok">SELESAI</span><span>PDF · 14 HAL</span><span>14 KR</span></div>
-            </div>
-            <span class="arr">›</span>
-          </div>
-          <div class="titem">
-            <div class="tico cy">&lt;/&gt;</div>
-            <div class="tbody">
-              <div class="tname">Rapikan gaya kode DeckPanel</div>
-              <div class="tsub"><span class="sst ok">SELESAI</span><span>KODING</span><span>2 HARI LALU</span></div>
-            </div>
-            <span class="arr">›</span>
-          </div>
-          <div class="titem">
-            <div class="tico cy">WEB</div>
-            <div class="tbody">
-              <div class="tname">Pantau harga kompetitor</div>
-              <div class="tsub"><span class="sst st">DIHENTIKAN OLEH PAK</span><span>4 KR TERPAKAI</span></div>
-            </div>
-            <span class="arr">›</span>
-          </div>
-        </div>
-        <div class="moret"><span class="tag">REPLAY SESI — COMING SOON</span></div>
-      </div>
-    </section>
 
     <!-- ================= VIEW 3 · KENDALI ================= -->
     <section class="view" id="v-kendali">
@@ -610,21 +584,88 @@ nav{display:flex;flex:none;border-top:1px solid var(--line);background:rgba(8,14
         <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z"/></svg>
         <span>OBROLAN</span>
       </button>
-      <button class="navbtn" data-v="tugas">
-        <span class="dot show" id="navDot"></span>
-        <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>
-        <span>TUGAS</span>
-      </button>
       <button class="navbtn" data-v="kendali">
         <svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
         <span>KENDALI</span>
       </button>
     </nav>
 
+    <!-- ===== SHEET TUGAS & ANTREAN — pola: ChatGPT Tasks · Gemini Scheduled Actions ===== -->
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Tugas dan antrean">
+      <div class="shbg" id="shBg"></div>
+      <div class="shpanel">
+        <div class="shgrip"><span></span></div>
+        <div class="shhead">
+          <div>
+            <div class="shh2">TUGAS &amp; ANTREAN</div>
+            <div class="shsub">DIBUKA DARI IKON JAM · RIWAYAT LENGGAP TETAP DI OBROLAN</div>
+          </div>
+          <button class="shx" id="shClose" aria-label="Tutup">✕</button>
+        </div>
+        <div class="shscroll scr">
+
+          <div class="sect">
+            <h3>SEDANG BERJALAN</h3>
+            <div class="shrun" id="shRun">
+              <div class="tname">Audit kode modul billing</div>
+              <div class="shstep"><span class="dotc"></span><span id="shStepTx">Telusuri celah &amp; duplikasi…</span></div>
+              <div class="bar" style="margin-top:9px"><i id="shBarTx" style="width:34%"></i></div>
+              <div class="tsub" style="margin-top:7px"><span class="sst run">JALAN <b id="shPctTx">34%</b></span><span>KODING</span><span>9 KR</span></div>
+              <div class="shbtns">
+                <button class="btn gold" id="shLihat">LIHAT</button>
+                <button class="btn" id="shPause">JEDA</button>
+                <button class="btn red" id="shStop">STOP</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sect">
+            <h3>ANTREAN OTOMATIS</h3>
+            <div class="srow">
+              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
+              <div class="swb"><b>Audit modul autentikasi</b><small>Masuk sendiri lewat obrolan — urutan diatur AVI</small></div>
+              <button class="btn red" style="padding:6px 10px;font-size:10px" data-toast="Batal antre — simulasi tampilan">BATAL</button>
+            </div>
+          </div>
+
+          <div class="sect">
+            <h3>JADWAL OTOMATIS</h3>
+            <div class="srow" style="opacity:.85">
+              <div class="swic" style="width:30px;height:30px;color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+              <div class="swb"><b>Ringkasan pasar tiap Senin 09.00</b><small>Dibuat lewat percakapan · hasil lewat notifikasi</small></div>
+              <span class="tag">COMING SOON</span>
+            </div>
+            <div class="note1" style="margin-top:8px">Cukup bilang, Pak — <b>“jalankan tiap Senin pagi”</b>. AVI yang mencatat. Pola: ChatGPT Tasks · Gemini Scheduled Actions.</div>
+          </div>
+
+          <div class="sect">
+            <h3>RIWAYAT</h3>
+            <div class="srow act" id="shResRow">
+              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">DOC</div>
+              <div class="swb"><b>Laporan analisa penjualan Q3</b><small><span class="sst ok">SELESAI</span> · PDF · 14 HAL · 14 KR</small></div>
+              <span class="arr">›</span>
+            </div>
+            <div class="srow">
+              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono)">&lt;/&gt;</div>
+              <div class="swb"><b>Rapikan gaya kode DeckPanel</b><small><span class="sst ok">SELESAI</span> · 2 HARI LALU</small></div>
+              <span class="arr">›</span>
+            </div>
+            <div class="srow">
+              <div class="swic" style="width:30px;height:30px;font:700 8px var(--mono);color:var(--gold);background:rgba(245,181,74,.08);border-color:rgba(245,181,74,.3)">WEB</div>
+              <div class="swb"><b>Pantau harga kompetitor</b><small><span class="sst st">DIHENTIKAN OLEH PAK</span> · 4 KR</small></div>
+              <span class="arr">›</span>
+            </div>
+            <div class="note1" style="margin-top:8px">Riwayat lengkap tinggal gulir obrolan, Pak — tidak perlu dua tempat.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div class="note">v4 · TAMPILAN UTUH — SATU APLIKASI, TANPA PEMBAGIAN · DASAR POLA: MANUS · DEVIN · CHATGPT AGENT · CLAUDE</div>
+<div class="note">v5 · TUGAS DIBUKA DARI IKON JAM (POLA: CHATGPT TASKS · GEMINI SCHEDULED ACTIONS) · RIWAYAT = OBROLAN</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -645,11 +686,22 @@ $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
 $('#btnSend').addEventListener('click',()=>{const i=$('#cin');if(i.value.trim()){toast('Simulasi tampilan — balasan menyusul di aplikasi');i.value=''}else toast('Tulis dulu, Pak')});
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
 
-/* ---- tugas: filter ---- */
-$$('.chip').forEach(c=>c.addEventListener('click',()=>{
-  $$('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-  toast('Filter: '+c.dataset.f+' — simulasi tampilan');
-}));
+/* ---- sheet: tugas & antrean ---- */
+const sheet=$('#sheet');
+function openSheet(){sheet.classList.add('open')}
+function closeSheet(){sheet.classList.remove('open')}
+$('#btnTasks').addEventListener('click',openSheet);
+$('#shClose').addEventListener('click',closeSheet);
+$('#shBg').addEventListener('click',closeSheet);
+function focusCard(sel){
+  closeSheet();
+  $$('.view').forEach(v=>v.classList.remove('on'));
+  $('#v-obrolan').classList.add('on');
+  $$('.navbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='obrolan'));
+  const el=$(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+$('#shLihat').addEventListener('click',()=>focusCard(done?'#doneCard':'#liveCard'));
+$('#shResRow').addEventListener('click',()=>focusCard('#resCard'));
 
 /* ---- kendali: otoritas ---- */
 $$('.opt').forEach(o=>o.addEventListener('click',()=>{
@@ -678,15 +730,21 @@ function render(){
   $('#krTx').textContent=kr;$('#rxTx').textContent=(94+Math.round(Math.random()*4))+'%';
   $('#stepTx').textContent=stepNames[pct<33?0:pct<66?1:2];
   $('#liveHdr').textContent='LANGKAH '+(pct<33?1:pct<66?2:3)+'/3';
-  const tp=$('#tPct');if(tp)tp.textContent=Math.round(pct)+'%';
+  const sp=$('#shPctTx');if(sp)sp.textContent=Math.round(pct)+'%';
+  const sb2=$('#shBarTx');if(sb2)sb2.style.width=pct+'%';
+  const ss2=$('#shStepTx');if(ss2&&!stopped&&!done)ss2.textContent=stepNames[pct<33?0:pct<66?1:2];
+  const hd=$('#hdDot');if(hd)hd.classList.toggle('show',!stopped&&!done);
   pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'BEKERJA · '+Math.round(pct)+'%');
 }
 function finish(){
   fin=true;done=true;render();
   $('#liveCard').style.display='none';
   $('#doneCard').style.display='block';
-  $('#navDot').classList.remove('show');
+  const nd=$('#navDot');if(nd)nd.classList.remove('show');
+  const hd2=$('#hdDot');if(hd2)hd2.classList.remove('show');
   $('#hdOrb').classList.remove('work');
+  const sh=$('#shRun');
+  if(sh){sh.classList.add('ok');$('#shStepTx').textContent='Tuntas — 3 temuan, 1 kritis. Hasil di obrolan.';$('#shPause').style.display='none';$('#shStop').style.display='none';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
   toast('Tugas selesai, Pak — hasil masuk di obrolan');
   setTimeout(()=>{pill('','SIAP')},3500);
 }
@@ -709,22 +767,24 @@ setInterval(()=>{
 
 $('#gateOk').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Diizinkan — AVI lanjut bekerja')});
 $('#gateSkip').addEventListener('click',()=>{gateUp=false;gateDone=true;$('#gate').classList.remove('show');toast('Dilewati — AVI pakai data alternatif')});
-$('#btnPause').addEventListener('click',e=>{
-  if(stopped||fin)return;
-  paused=!paused;e.target.textContent=paused?'LANJUT':'JEDA';
-  toast(paused?'Dijeda, Pak':'Lanjut bekerja, Pak');
-});
-$('#btnStop').addEventListener('click',()=>{
+function setPaused(v){paused=v;const lb=v?'LANJUT':'JEDA';['#btnPause','#shPause'].forEach(s=>{const b=$(s);if(b)b.textContent=lb});toast(v?'Dijeda, Pak':'Lanjut bekerja, Pak')}
+['#btnPause','#shPause'].forEach(s=>{const b=$(s);if(b)b.addEventListener('click',()=>{if(stopped||fin)return;setPaused(!paused)})});
+function doStop(){
   if(fin)return;
   stopped=true;paused=false;render();
   $('#liveCard').classList.add('stop');
   $('#liveHdr').textContent='DIHENTIKAN';
-  $('#navDot').classList.remove('show');
+  const nd=$('#navDot');if(nd)nd.classList.remove('show');
+  const hd=$('#hdDot');if(hd)hd.classList.remove('show');
   $('#hdOrb').classList.remove('work');
   $('#stepTx').innerHTML='<span style="color:var(--red)">Dihentikan oleh Pak — 4 KR terpakai.</span>';
-  $('#btnPause').style.display='none';$('#btnStop').style.display='none';
+  ['#btnPause','#shStop'].forEach(s=>{const b=$(s);if(b)b.style.display='none'});
+  const sh=$('#shRun');
+  if(sh){sh.classList.add('stopped');$('#shStepTx').textContent='Dihentikan oleh Pak — 4 KR terpakai.';$('#shPause').style.display='none';$('#shStop').style.display='none'}
   toast('Tugas dihentikan, Pak');
-});
+}
+$('#btnStop').addEventListener('click',doStop);
+$('#shStop').addEventListener('click',doStop);
 $('#btnExp').addEventListener('click',e=>{
   const ex=$('#exp');ex.classList.toggle('open');
   e.target.textContent=ex.classList.contains('open')?'TUTUP PROSES':'LIHAT PROSES';

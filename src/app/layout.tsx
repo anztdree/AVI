@@ -19,7 +19,7 @@ const jbMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AVI — Asisten dengan Kemampuan Agent · Papan Tampilan HTML v3",
+  title: "AVI — Asisten Pribadi · Tampilan Utuh v5",
   description:
     "AVI adalah ASISTEN pribadi yang punya kemampuan agent untuk tugas berat (laporan PDF, koding, analisa). Papan tampilan HTML: 5 layar, alur 1 tap, tanpa implementasi.",
   icons: {
