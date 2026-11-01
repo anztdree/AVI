@@ -3,26 +3,22 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v14</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v15</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v14 — ORB MELAYANG DI ATAS PAPAN KETIK · TANPA BANNER
-   · Koreksi arahan Pak (v13 hampir benar): orb jangan terkurung
-     banner — kini orb 112px berdiri SENDIRI, melayang bebas tepat
-     di atas komposer: tanpa garis, tanpa kotak, tanpa latar —
-     hanya cahayanya sendiri.
-   · TEKS DI SEBELAH ORB DIHAPUS (v13 terasa seperti pesan terkirim
-     di samping orb): sapaan pindah ke gelembung obrolan; status
-     kerja hidup DI DALAM orb (cincin + %); telemetri MK1 jadi satu
-     bisikan kecil di BAWAH orb — tengah, tanpa kotak.
-   · Teks yang Pak kirim muncul DI OBROLAN (gelembung emas), bukan
-     di sebelah orb — obrolan tetap mengalir di atas.
-     Papan ketik nyata tetap ditangani: interactive-widget=resizes
-     -content + visualViewport → orb & komposer selalu di atas
-     keyboard (orb mengecil halus saat keyboard terbuka).
+   AVI v15 — TEKS TERKIRIM DI SEBELAH ORB (BUKAN DI ATAS ORB)
+   · Koreksi arahan Pak (v14 keliru): teks yang dikirim / hasil voice
+     itu tampilnya DI SEBELAH orb — bukan di atas orb (bukan masuk
+     ke obrolan atas). Perintah Pak jelas sejak awal.
+   · Kini di sisi orb: tanda TERKIRIM ✓ + teks yang Pak kirim (emas),
+     di bawahnya balasan singkat AVI (sian) — persis di sebelah orb,
+     di atas papan ketik. Orb tetap melayang tanpa banner (v14).
+   · Hasil mode suara juga muncul DI SEBELAH orb saat ditutup.
+   · Obrolan atas tetap = obrolan saat ini (v10); riwayat tersembunyi
+     di atas; kartu kerja agent mengalir di dalam obrolan.
    · Arahan v10 (dipertahankan): yang tampil hanya ORB + OBROLAN
      SAAT INI; riwayat chat TERSEMBUNYI DI ATAS (histBar sticky).
    · Aliran kerja agent mengalir DI DALAM obrolan, tepat di bawah
@@ -165,11 +161,20 @@ main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:0 16px 10px}
 .orbBig.done .pct{color:#241300}
 .orbBig.done .r2{opacity:.8}
 @keyframes putar{to{transform:rotate(360deg)}}
-/* bisikan MK1 di bawah orb — satu baris kecil, tengah, TANPA kotak */
-#orbWhisp{font:600 8px var(--mono);letter-spacing:2.2px;color:var(--dim2);margin-top:5px;
-  max-width:100%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s}
-#orbWhisp.work{color:var(--cyan)}
-#orbWhisp.done{color:var(--gold)}
+/* sisi orb: teks terkirim + balasan AVI + status MK1 — DI SEBELAH orb */
+.orbSide{flex:1;min-width:0;position:relative}
+#orbIdle{font:600 8px var(--mono);letter-spacing:2.2px;color:var(--dim2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s}
+#orbIdle.work{color:var(--cyan)}
+#orbIdle.done{color:var(--gold)}
+#orbSent{display:none;margin-bottom:7px}
+#orbSent.show{display:block}
+#orbSent .tag{font:700 8px var(--mono);letter-spacing:1.8px;color:var(--gold)}
+#orbSent .tag i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-right:5px;vertical-align:1px}
+#orbSentTx{font-size:13.5px;font-weight:600;color:var(--gold);margin-top:3px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#orbReplyTx{display:none;font-size:12.5px;color:var(--cyan);margin-top:4px}
+#orbReplyTx.show{display:block}
 
 /* ---- panel kerja agent: mengalir DI DALAM obrolan — di dalam AVI ---- */
 #stgWork{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.32,.72,.24,1),opacity .4s,margin .4s;margin-top:0}
@@ -261,16 +266,15 @@ html[data-theme="siang"] #histPanel{box-shadow:0 18px 50px rgba(40,60,90,.25)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* dock v14: orb MELAYANG bebas di atas papan ketik — TANPA banner:
-   tanpa garis, tanpa kotak, tanpa latar; hanya cahayanya sendiri */
-#orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:0 14px}
-#orbDock::before{content:'';position:absolute;top:-49px;left:50%;transform:translateX(-50%);
+/* dock v15: orb melayang di atas papan ketik — teks terkirim DI SEBELAH orb */
+#orbDock{flex:none;position:relative;z-index:2;display:flex;align-items:center;gap:16px;padding:0 16px}
+#orbDock::before{content:'';position:absolute;top:50%;left:74px;transform:translate(-50%,-50%);
   width:210px;height:210px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,var(--auro1) 0%,rgba(34,211,238,.04) 44%,transparent 68%)}
 html[data-theme="siang"] #orbDock::before{background:radial-gradient(circle,var(--auro1) 0%,rgba(14,116,144,.04) 44%,transparent 68%)}
 #orbBig{transition:transform .28s}
 html.kb #orbBig{transform:scale(.66)}
-html.kb #orbDock::before{transform:translateX(-50%) scale(.66);top:-20px}
+html.kb #orbDock::before{transform:translate(-50%,-50%) scale(.66)}
 
 /* komposer — tanpa lampiran */
 .composer{flex:none;display:flex;gap:8px;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:transparent}
@@ -572,7 +576,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="hcap">Semua tersimpan aman, Pak — muncul saat dibutuhkan.<span class="vtag soon">BUKA PENUH — COMING SOON</span></div>
   </div>
 
-  <!-- ORB BESAR — melayang SENDIRI tepat di atas papan ketik (tanpa banner) -->
+  <!-- ORB BESAR — melayang di atas papan ketik; TEKS TERKIRIM DI SEBELAHNYA -->
   <div id="orbDock">
     <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
       <svg width="112" height="112" viewBox="0 0 112 112">
@@ -582,7 +586,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       </svg>
       <div class="core"><span class="pct" id="stgPct">34%</span></div>
     </div>
-    <div id="orbWhisp">MK1 · REAKTOR STABIL · NET AKTIF · MEMORI 62%</div>
+    <div class="orbSide">
+      <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div><div id="orbReplyTx"></div></div>
+      <div id="orbIdle">MK1 · REAKTOR STABIL · NET AKTIF · MEMORI 62%</div>
+    </div>
   </div>
 
   <!-- komposer: TANPA LAMPIRAN -->
@@ -670,7 +677,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   </div>
 </div>
 
-<div class="note">v14 · ORB MELAYANG DI ATAS PAPAN KETIK — TANPA BANNER · TEKS TERKIRIM DI OBROLAN · RIWAYAT TERSEMBUNYI DI ATAS · AGENT DI DALAM AVI · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
+<div class="note">v15 · TEKS TERKIRIM DI SEBELAH ORB — BUKAN DI ATAS ORB · ORB MELAYANG DI ATAS PAPAN KETIK · RIWAYAT TERSEMBUNYI DI ATAS · AGENT DI DALAM AVI · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -705,20 +712,20 @@ $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
 }));
 $('#hdPill').addEventListener('click',openSheet);
 
-/* ---- obrolan: teks yang dikirim masuk ke OBROLAN, bukan di sebelah orb ---- */
-function addMsg(txt,me){
-  const s=$('#v-obrolan'),d=document.createElement('div');
-  d.className='msg'+(me?' me':'');
-  d.innerHTML=(me?'':'<span class="mav"></span>')+'<div class="bub"></div>';
-  d.querySelector('.bub').textContent=txt;
-  const end=$('#chatEnd');if(end)s.insertBefore(d,end);else s.appendChild(d);
-  const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
+/* ---- obrolan: teks yang dikirim tampil DI SEBELAH orb — bukan di atas ---- */
+function sentShow(txt,reply){
+  const s=$('#orbSent');if(!s)return;
+  s.classList.add('show');
+  $('#orbSentTx').textContent=txt;
+  const rp=$('#orbReplyTx');
+  if(reply){rp.textContent=reply;rp.classList.add('show')}
+  else{rp.classList.remove('show');
+    setTimeout(()=>{rp.textContent='Baik, Pak — sudah saya catat. Saya urus sekarang.';rp.classList.add('show')},650)}
 }
 $('#btnSend').addEventListener('click',()=>{
   const i=$('#cin'),v=i.value.trim();
   if(!v){toast('Tulis dulu, Pak');return}
-  addMsg(v,true);i.value='';
-  setTimeout(()=>addMsg('Baik, Pak — sudah saya catat. Saya urus sekarang.'),650);
+  sentShow(v);i.value='';
 });
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
 
@@ -790,7 +797,7 @@ function logPush(){
   const g=$('#stgLog');g.appendChild(d);g.scrollTop=g.scrollHeight;
 }
 function pill(cls,tx){const p=$('#hdPill');p.className='pill'+(cls?' '+cls:'');$('#hdPillTx').textContent=tx}
-function state(cls,tx){const w=$('#orbWhisp');if(!w)return;w.className=cls||'';w.textContent=tx}
+function state(cls,tx){const w=$('#orbIdle');if(!w)return;w.className=cls||'';w.textContent=tx}
 function render(){
   const ob=$('#orbBig');
   ob.classList.toggle('work',!stopped&&!fin&&!done);
@@ -920,6 +927,16 @@ function lvOpen(){lvBars();lv.classList.add('open');$('#app').classList.add('liv
   lvT.push(setTimeout(()=>{st.textContent='MENDENGARKAN…'},5800));
 }
 function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[];
+  /* hasil voice tampil DI SEBELAH orb sebagai teks terkirim */
+  const shown=$$('#lvLog .lvln.show');
+  if(shown.length){
+    const q=shown[0].cloneNode(true);const sq=q.querySelector('small');if(sq)sq.remove();
+    const qtx=q.textContent.trim().replace(/^["\u201C]|["\u201D]$/g,'');
+    let rtx=null;
+    if(shown.length>1){const r=shown[1].cloneNode(true);const sr=r.querySelector('small');if(sr)sr.remove();
+      rtx=r.textContent.trim().replace(/^["\u201C]|["\u201D]$/g,'')}
+    if(qtx)sentShow(qtx,rtx||undefined);
+  }
   if(!done&&!stopped&&!fin){$('#app').classList.add('live');state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK')}
   else state('','MK1 · REAKTOR STABIL · SIAP MENEMANI PAK');
 }
