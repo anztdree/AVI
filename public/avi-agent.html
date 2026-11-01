@@ -3,27 +3,26 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · PRISM v26</title>
+<title>AVI — Asisten Pribadi · NEXUS v27</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v26 — "PRISM" : TEMA BARU + IKON BARU + TATA LETAK BARU
-   Masukan Pak: "dah lah,, suruh tema UI icon tata letak baru,.
-   tampilan gtu gitu aja muluuu".
-   ⇒ Identitas visual DIGANTI TOTAL (bukan restore, bukan poles):
-     · TEMA  : aurora prism — graphite dalam + blob aurora sian/
-       violet/emas yang bernapas + starfield, KEBIJAK: grid kotak
-       & kartu kurung sudut v25 DIHAPUS.
-     · IKON  : set SVG duotone kustom (sian + titik emas) di
-       squircle gradien — karakter unicode ▤◔☀ DIHAPUS.
-     · TATA  : dock kapsul melayang dgn indikator geser + komposer
-       KAPSUL KOMANDO tunggal (input+mik+send satu kapsul) — bar
-       nav teks full-width DIHAPUS.
-     · TIPO  : Unbounded (display) + Space Grotesk (UI).
-     · ORB   : PRISM CORE — inti pusaran aurora konik berputar +
-       orbit elips miring + satelit emas; bukan reaktor salinan.
+   AVI v27 — "NEXUS" : FOKUS TAMPILAN OBROLAN + ORB REAKTOR
+   Masukan Pak: "fokus ke tampilan obrolan .. masih terlaluu
+   sederhana orb juga jauh dari tema teknologi modern".
+   ⇒ Dua target, rombak dalam:
+     · OBROLAN : COMMS DECK — bar sambungan inti melekat (sinyal
+       hidup + latensi berdenyut + badge enkripsi), pesan ber-META
+       (label AVI · INTI MK1), bubble kaca dgn sudut bracket
+       teknis, garis event sistem ◈ saat agent bangun/stop/tuntas,
+       brief dgn tag meta emas per baris.
+     · ORB     : MK-VII REACTOR CORE — 4 lapisan mekanis berputar
+       (segmen HUD CW · bezel tick CCW · arc ganda sian+emas ·
+       orbit satelit miring) + inti turbin: jari-jari konik,
+       nucleus bernapas, swirl energi; OVERDRIVE saat kerja,
+       tema EMAS saat tuntas.
    Yang TETAP = arahan Pak yang sudah disetujui:
    · Nuansa Jarvis: orb hidup, sian #22D3EE + emas #F5B54A,
      telemetri MK1 = tanda vital.
@@ -107,7 +106,7 @@ header,main,.composer,nav,#strip{position:relative;z-index:2}
 /* ---------- animasi masuk ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 header{animation:rise .55s cubic-bezier(.22,1,.36,1) both}
-main .card,main .msg{animation:rise .6s cubic-bezier(.22,1,.36,1) both}
+main .card,main .msg,main .evt{animation:rise .6s cubic-bezier(.22,1,.36,1) both}
 #v-kendali .card:nth-child(2){animation-delay:.06s}
 .composer{animation:rise .6s .12s cubic-bezier(.22,1,.36,1) both}
 nav{animation:rise .6s .2s cubic-bezier(.22,1,.36,1) both}
@@ -173,8 +172,10 @@ html[data-theme="siang"] .card{box-shadow:0 16px 40px -24px rgba(30,50,80,.35)}
 .clab .tg2.live{color:var(--cyan);border-color:var(--cyanSoft);background:var(--cyanSoft);animation:blink 1.6s infinite}
 
 /* ---------- brief harian ---------- */
-.brief .brow{display:flex;align-items:center;gap:11px;padding:7.5px 0;border-top:1px solid var(--line);font-size:13.5px}
+.brief .brow{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
 .brief .brow:first-of-type{border-top:none}
+.brief .brow>div{flex:1;min-width:0}
+.bmeta{font:700 8px var(--mono);letter-spacing:1.2px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);padding:2.5px 7px;border-radius:6px;flex:none;white-space:nowrap}
 .bic{width:34px;height:34px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--cyan);
   background:linear-gradient(140deg,var(--cyanSoft),rgba(245,181,74,.07));border:1px solid var(--line);box-shadow:inset 0 0 12px rgba(34,211,238,.08)}
 .bic svg{width:16px;height:16px}
@@ -182,15 +183,58 @@ html[data-theme="siang"] .card{box-shadow:0 16px 40px -24px rgba(30,50,80,.35)}
 .brief small{display:block;color:var(--dim);font-size:11.5px;font-weight:400;line-height:1.35}
 .brief .cap{font-size:10.5px;color:var(--dim2);margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
 
-/* ---------- obrolan ---------- */
-.msg{display:flex;gap:9px;margin-top:14px;align-items:flex-end}
-.mav{width:26px;height:26px;border-radius:50%;flex:none;position:relative;overflow:hidden;
-  background:radial-gradient(circle at 34% 30%,#D9FAFF,var(--cyan) 55%,#0A4B5E);box-shadow:0 0 12px var(--glow)}
-.mav::after{content:'';position:absolute;inset:-35%;
-  background:conic-gradient(from 0deg,transparent 0 55%,rgba(255,255,255,.5) 78%,transparent 94%);animation:spin 5.5s linear infinite}
-.msg .bub{background:var(--pan2);border:1px solid var(--line2);border-radius:6px 18px 18px 18px;padding:10px 14px;font-size:14px;max-width:82%;backdrop-filter:blur(12px)}
+/* ---------- OBROLAN: COMMS DECK v27 ---------- */
+/* bar sambungan inti — melekat di atas obrolan */
+.commsBar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 12px;border-radius:12px;
+  background:linear-gradient(90deg,rgba(34,211,238,.10),rgba(13,21,36,.55) 42%,rgba(245,181,74,.08));
+  border:1px solid var(--line);backdrop-filter:blur(14px);
+  font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);box-shadow:0 10px 24px -14px rgba(0,0,0,.6)}
+.commsBar .csig{display:flex;align-items:flex-end;gap:1.5px;height:11px;flex:none}
+.commsBar .csig i{width:2.5px;border-radius:1px;background:var(--cyan);animation:sigp 1.4s ease-in-out infinite}
+.commsBar .csig i:nth-child(1){height:35%}
+.commsBar .csig i:nth-child(2){height:58%;animation-delay:.18s}
+.commsBar .csig i:nth-child(3){height:78%;animation-delay:.36s}
+.commsBar .csig i:nth-child(4){height:100%;animation-delay:.54s;background:var(--gold)}
+@keyframes sigp{0%,100%{opacity:.28}50%{opacity:1}}
+.commsBar .ttl{color:var(--cyan);font-weight:700;white-space:nowrap}
+.commsBar .enc{display:flex;align-items:center;gap:4px;color:var(--dim2);white-space:nowrap}
+.commsBar .enc svg{width:9.5px;height:9.5px}
+.commsBar .lat{margin-left:auto;color:var(--gold);font-weight:700;transition:opacity .2s}
+.commsBar .lat.tick{animation:blink .5s 1}
+html[data-theme="siang"] .commsBar{background:linear-gradient(90deg,rgba(9,125,150,.08),rgba(255,255,255,.72) 42%,rgba(176,110,10,.07))}
+/* garis event sistem ◈ — log komms di tengah obrolan */
+.evt{display:flex;align-items:center;gap:9px;margin-top:14px}
+.evt i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2))}
+.evt i:last-child{background:linear-gradient(90deg,var(--line2),transparent)}
+.evt span{font:700 8px var(--mono);letter-spacing:1.9px;color:var(--dim2);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.evt span b{color:var(--cyan);font-weight:400;font-size:9px}
+.evt.gold span b{color:var(--gold)}
+/* pesan ber-meta */
+.msg{display:flex;gap:9px;margin-top:15px;align-items:flex-end}
+.mav{width:30px;height:30px;border-radius:50%;flex:none;position:relative;
+  background:radial-gradient(circle at 34% 28%,#F0FEFF,var(--cyan) 52%,#083A4E);
+  box-shadow:0 0 14px var(--glow),inset 0 0 8px rgba(255,255,255,.45)}
+.mav::before{content:'';position:absolute;inset:-3.5px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 68%,var(--gold) 86%,transparent 97%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
+          mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
+  animation:spin 6s linear infinite}
+.mav::after{content:'';position:absolute;right:-1px;top:-1px;width:7px;height:7px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 6px rgba(245,181,74,.9);border:1.5px solid var(--bg0)}
+html[data-theme="siang"] .mav::after{border-color:#FFFFFF}
+.mcol{min-width:0;max-width:86%}
+.mmeta{display:flex;align-items:center;gap:6px;font:700 8.5px var(--mono);letter-spacing:1.7px;color:var(--dim2);margin:0 4px 4px}
+.mmeta b{color:var(--cyan);font-size:9.5px;letter-spacing:2.2px;font-weight:700}
+.msg.me .mmeta{justify-content:flex-end}
+.msg.me .mmeta b{color:var(--gold)}
+.msg .bub{position:relative;background:linear-gradient(155deg,rgba(255,255,255,.06),rgba(255,255,255,.015) 55%),var(--pan2);
+  border:1px solid var(--line2);border-radius:5px 16px 16px 16px;padding:10px 14px;font-size:14px;backdrop-filter:blur(12px);
+  box-shadow:0 12px 26px -16px rgba(0,0,0,.55)}
+.msg .bub::before{content:'';position:absolute;left:-1px;top:-1px;width:13px;height:13px;
+  border-left:2px solid var(--cyan);border-top:2px solid var(--cyan);border-radius:5px 0 0 0;opacity:.85}
 .msg.me{justify-content:flex-end}
-.msg.me .bub{background:linear-gradient(140deg,var(--goldSoft),rgba(245,181,74,.05));border-color:rgba(245,181,74,.35);border-radius:18px 6px 18px 18px;color:var(--txt)}
+.msg.me .bub{background:linear-gradient(140deg,var(--goldSoft),rgba(245,181,74,.05));border-color:rgba(245,181,74,.4);border-radius:16px 5px 16px 16px}
+.msg.me .bub::before{left:auto;right:-1px;border-left:none;border-right:2px solid var(--gold);border-radius:0 5px 0 0}
 .dots{display:inline-flex;gap:4px;padding:3px 2px;align-items:center}
 .dots i{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:dotp 1s ease-in-out infinite}
 .dots i:nth-child(2){animation-delay:.15s}
@@ -200,9 +244,10 @@ html[data-theme="siang"] .card{box-shadow:0 16px 40px -24px rgba(30,50,80,.35)}
 /* ---------- panel kerja agent (di dalam obrolan — agent di dalam AVI) ---------- */
 #stgWork{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.32,.72,.24,1),opacity .4s,margin .4s;margin-top:0}
 #stgWork.open{max-height:560px;opacity:1;margin-top:12px}
-.steps .st{display:flex;align-items:center;gap:10px;padding:7.5px 0;border-top:1px solid var(--line);font-size:13.5px;font-weight:500}
-.steps .st:first-child{border-top:none}
-.steps .st i{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-style:normal;color:var(--dim2);flex:none;font-family:var(--mono)}
+.steps{position:relative}
+.steps::before{content:'';position:absolute;left:10px;top:18px;bottom:18px;width:1px;background:linear-gradient(180deg,var(--cyan),var(--gold));opacity:.22}
+.steps .st{display:flex;align-items:center;gap:10px;padding:7.5px 0;font-size:13.5px;font-weight:500}
+.steps .st i{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-style:normal;color:var(--dim2);flex:none;font-family:var(--mono);background:var(--pan3);position:relative;z-index:1}
 .steps .st .s{margin-left:auto;font:700 9px var(--mono);letter-spacing:1px;color:var(--dim2);flex:none}
 .steps .st.run i{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px var(--glow)}
 .steps .st.run .s{color:var(--cyan)}
@@ -214,7 +259,9 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 #stgLog .ok{color:var(--mint)}
 
 /* gate izin */
-#gate{display:none;margin-top:11px;background:var(--goldSoft);border:1px solid rgba(245,181,74,.5);border-radius:14px;padding:10px 12px;box-shadow:0 0 24px var(--goldSoft)}
+#gate{display:none;margin-top:11px;background:var(--goldSoft);border:1px solid rgba(245,181,74,.5);border-radius:14px;padding:10px 12px;box-shadow:0 0 24px var(--goldSoft);position:relative;overflow:hidden}
+#gate::after{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(245,181,74,.9),transparent);animation:scanG 2.1s linear infinite}
+@keyframes scanG{0%{transform:translateY(0)}100%{transform:translateY(74px)}}
 #gate.show{display:block}
 #gate b{font-size:12.5px;font-weight:600;display:block}
 #gate small{color:var(--dim);font-size:11px;display:block;margin-top:1px}
@@ -241,37 +288,68 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ DOCK PRESENSI — orb prism BERSIH di atas papan ketik ============ */
+/* ============ ORB MK-VII — REACTOR CORE (v27) ============ */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;align-items:center;gap:16px;padding:2px 18px 6px}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
 html.kb .orbBig{transform:scale(.66)}
 .orbBig svg{position:absolute;inset:0;overflow:visible}
-.orbBig .eA{fill:none;stroke:var(--cyan);stroke-width:1;opacity:.5;transition:opacity .4s}
+.orbBig .trk{fill:none;stroke:var(--line2);stroke-width:1;opacity:.55}
+/* lapis 1 — segmen HUD, CW */
+.orbBig .rSeg{transform-origin:56px 56px;animation:spin 26s linear infinite}
+.orbBig .rSeg circle{fill:none;stroke:var(--cyan);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:64 22.4;opacity:.6;transition:opacity .4s,stroke .4s}
+/* lapis 2 — bezel tick halus, CCW */
+.orbBig .rTick{transform-origin:56px 56px;animation:spinR 44s linear infinite}
+.orbBig .rTick circle{fill:none;stroke:var(--cyan);stroke-width:4;stroke-dasharray:.9 4.16;opacity:.32}
+/* lapis 3 — arc ganda sian+emas, CW */
+.orbBig .rArc{transform-origin:56px 56px;animation:spin 13s linear infinite}
+.orbBig .rArc .a1{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:58 209.5;opacity:.9}
+.orbBig .rArc .a2{fill:none;stroke:var(--cyan);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:30 237.5;stroke-dashoffset:-118;opacity:.75}
+.orbBig .eA{fill:none;stroke:var(--cyan);stroke-width:1;opacity:.42;transition:opacity .4s}
 .orbBig .satA{transform-origin:56px 56px;animation:spin 9s linear infinite}
 .orbBig .satB{transform-origin:56px 56px;animation:spinR 15s linear infinite}
 .orbBig .satA circle{fill:var(--gold);filter:drop-shadow(0 0 4px rgba(245,181,74,.9))}
 .orbBig .satB circle{fill:var(--cyan)}
-.orbBig .prog{fill:none;stroke:var(--cyan);stroke-width:2.6;stroke-linecap:round;opacity:0;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .4s,opacity .4s}
-.core{position:absolute;inset:16px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
-  background:radial-gradient(circle at 34% 30%,#E4FCFF 0%,var(--cyan) 48%,#083A4E 100%);
-  box-shadow:0 0 36px var(--glow),0 10px 40px rgba(0,0,0,.4),inset 0 0 16px rgba(255,255,255,.35);
+.orbBig .prog{fill:none;stroke:var(--cyan);stroke-width:2.4;stroke-linecap:round;opacity:0;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .4s,opacity .4s;filter:drop-shadow(0 0 5px var(--glow))}
+/* inti reaktor — turbin */
+.core{position:absolute;inset:15px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  background:radial-gradient(circle at 34% 28%,#F2FEFF 0%,#BDF4FD 16%,var(--cyan) 47%,#0A6E88 74%,#05293A 100%);
+  box-shadow:0 0 0 1px rgba(140,243,255,.28),0 0 34px var(--glow),0 12px 34px rgba(0,0,0,.45),inset 0 0 20px rgba(255,255,255,.3);
   animation:nafas 3.8s ease-in-out infinite}
-.core .swirl{position:absolute;inset:-32%;opacity:.9;
-  background:conic-gradient(from 0deg,transparent 0deg,transparent 38deg,rgba(140,243,255,.6) 92deg,transparent 150deg,rgba(245,181,74,.30) 214deg,transparent 268deg,rgba(140,243,255,.4) 318deg,transparent 360deg);
-  animation:spin 6.5s linear infinite}
-.core .shine{position:absolute;left:17%;top:11%;width:46%;height:30%;border-radius:50%;
-  background:radial-gradient(closest-side,rgba(255,255,255,.9),transparent);filter:blur(2px)}
-.pct{position:relative;z-index:2;font:700 13px var(--mono);color:#05242F;opacity:0;transition:.3s}
-.orbBig.work .core{animation:nafas 1.05s ease-in-out infinite}
-.orbBig.work .swirl{animation-duration:1.5s}
+.core::before{content:'';position:absolute;inset:0;border-radius:50%;
+  background:
+    repeating-conic-gradient(from 0deg,rgba(4,30,42,.30) 0deg 4.5deg,transparent 4.5deg 15deg),
+    radial-gradient(circle,transparent 57%,rgba(4,30,42,.5) 58%,transparent 61%,transparent 78%,rgba(4,30,42,.4) 79%,transparent 82%);
+  opacity:.8}
+.core .swirl{position:absolute;inset:-30%;opacity:.7;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 40deg,rgba(190,247,255,.55) 95deg,transparent 150deg,rgba(245,181,74,.26) 214deg,transparent 268deg,rgba(190,247,255,.35) 318deg,transparent 360deg);
+  animation:spin 7s linear infinite}
+.core .nuc{position:absolute;left:50%;top:50%;width:27%;height:27%;border-radius:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#D9FAFF 42%,rgba(160,240,255,.25) 74%,transparent);
+  box-shadow:0 0 16px rgba(220,250,255,.95),0 0 40px rgba(34,211,238,.6);animation:nucP 2.7s ease-in-out infinite}
+@keyframes nucP{0%,100%{transform:translate(-50%,-50%) scale(.84);opacity:.8}50%{transform:translate(-50%,-50%) scale(1.05);opacity:1}}
+.core .shine{position:absolute;left:17%;top:10%;width:46%;height:28%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,255,255,.85),transparent);filter:blur(2px)}
+.pct{position:relative;z-index:3;font:700 13px var(--mono);color:#03222E;opacity:0;transition:.3s;text-shadow:0 0 8px rgba(255,255,255,.6)}
+/* state KERJA — reaktor overdrive */
+.orbBig.work .rSeg{animation-duration:8s}
+.orbBig.work .rTick{animation-duration:14s}
+.orbBig.work .rArc{animation-duration:3.6s}
+.orbBig.work .core{animation-duration:1.05s}
+.orbBig.work .swirl{animation-duration:1.6s}
+.orbBig.work .nuc{animation-duration:.85s}
+.orbBig.work .rSeg circle,.orbBig.work .eA{opacity:.9}
 .orbBig.work .prog,.orbBig.work .pct{opacity:1}
-.orbBig.work .eA{opacity:.85}
-.orbBig.done .core{background:radial-gradient(circle at 34% 30%,#FFF3D8 0%,var(--gold) 50%,#7A4E0C 100%);box-shadow:0 0 44px var(--goldSoft),0 10px 40px rgba(0,0,0,.4),inset 0 0 16px rgba(255,255,255,.45)}
-.orbBig.done .pct{color:#241300}
+/* state TUNTAS — reaktor emas */
+.orbBig.done .core{background:radial-gradient(circle at 34% 28%,#FFF7E0 0%,#FFE9B0 16%,var(--gold) 48%,#9A6210 74%,#3A2705 100%);
+  box-shadow:0 0 0 1px rgba(255,222,150,.3),0 0 44px rgba(245,181,74,.4),0 12px 34px rgba(0,0,0,.45),inset 0 0 20px rgba(255,255,255,.4)}
+.orbBig.done .rSeg circle,.orbBig.done .rArc .a1{stroke:var(--gold)}
+.orbBig.done .nuc{box-shadow:0 0 16px rgba(255,240,200,.95),0 0 40px rgba(245,181,74,.65);animation-duration:1.3s}
+.orbBig.done .pct{color:#241300;text-shadow:none}
 .orbBig.done .prog{stroke:var(--gold);opacity:1}
 .orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
 .orbBig.done .halo{animation:halo .9s ease-out both}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
+html[data-theme="siang"] .orbBig .rTick circle{opacity:.42}
 
 /* SATU SLOT teks di sisi orb — bergiliran (v17) */
 .orbSide{flex:1;min-width:0;position:relative}
@@ -471,17 +549,25 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     <!-- ================= OBROLAN ================= -->
     <section class="view on" id="v-obrolan">
 
+      <!-- bar sambungan inti — COMMS DECK -->
+      <div class="commsBar">
+        <span class="csig"><i></i><i></i><i></i><i></i></span>
+        <span class="ttl">SAMBUNGAN INTI MK1</span>
+        <span class="enc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>TERENKRIPSI</span>
+        <span class="lat" id="clat">LAT 41MS</span>
+      </div>
+
       <!-- brief harian -->
       <div class="card brief" style="margin-top:12px">
         <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></svg>HARI INI<span class="tg2">RINGKASAN AVI</span></div>
-        <div class="brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><circle cx="15.5" cy="15" r="1.6" fill="var(--gold)" stroke="none"/></svg></span><div><b>2 jadwal</b><small>Rapat tim pagi · Review desain sore</small></div></div>
-        <div class="brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0 1 12 0c0 4.6 1.8 5.8 1.8 5.8H4.2S6 14.1 6 9.5"/><path d="M10.4 19.5a1.9 1.9 0 0 0 3.2 0"/><circle cx="18.5" cy="4.5" r="1.4" fill="var(--gold)" stroke="none"/></svg></span><div><b>1 pengingat</b><small>Bayar listrik — Jumat depan</small></div></div>
-        <div class="brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.8 4.8l1.4 1.4M17.8 17.8l1.4 1.4M2.5 12h2M19.5 12h2M4.8 19.2l1.4-1.4M17.8 6.2l1.4-1.4"/></svg></span><div><b>Cerah 31°</b><small>Langit bersih sepanjang hari, Pak</small></div></div>
+        <div class="brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><circle cx="15.5" cy="15" r="1.6" fill="var(--gold)" stroke="none"/></svg></span><div><b>2 jadwal</b><small>Rapat tim pagi · Review desain sore</small></div><span class="bmeta">HARI INI</span></div>
+        <div class="brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0 1 12 0c0 4.6 1.8 5.8 1.8 5.8H4.2S6 14.1 6 9.5"/><path d="M10.4 19.5a1.9 1.9 0 0 0 3.2 0"/><circle cx="18.5" cy="4.5" r="1.4" fill="var(--gold)" stroke="none"/></svg></span><div><b>1 pengingat</b><small>Bayar listrik — Jumat depan</small></div><span class="bmeta">JUMAT</span></div>
+        <div class="brow"><span class="bic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.8 4.8l1.4 1.4M17.8 17.8l1.4 1.4M2.5 12h2M19.5 12h2M4.8 19.2l1.4-1.4M17.8 6.2l1.4-1.4"/></svg></span><div><b>Cerah 31°</b><small>Langit bersih sepanjang hari, Pak</small></div><span class="bmeta">CUACA</span></div>
         <div class="cap">Saya rangkum otomatis setiap pagi — tanpa Pak minta.</div>
       </div>
 
       <!-- percakapan: terbuka tenang sebagai ASISTEN -->
-      <div class="msg" id="greetMsg"><span class="mav"></span><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div>
+      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
 
       <!-- panel kerja agent: AGENT DI DALAM AVI -->
       <div id="stgWork">
@@ -522,7 +608,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
         </div>
       </div>
 
-      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div>
+      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
 
       <div style="height:8px" id="chatEnd"></div>
     </section>
@@ -602,19 +688,23 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB PRISM — melayang bersih di atas papan ketik; SATU SLOT teks di sebelahnya -->
+  <!-- ORB MK-VII REACTOR — melayang bersih di atas papan ketik; SATU SLOT teks di sebelahnya -->
   <div id="orbDock">
     <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
       <svg width="112" height="112" viewBox="0 0 112 112">
+        <circle class="trk" cx="56" cy="56" r="55"/>
+        <g class="rSeg"><circle cx="56" cy="56" r="55"/></g>
+        <g class="rTick"><circle cx="56" cy="56" r="47.5"/></g>
+        <g class="rArc"><circle class="a1" cx="56" cy="56" r="42.5"/><circle class="a2" cx="56" cy="56" r="42.5"/></g>
         <g transform="rotate(-19 56 56)">
-          <ellipse class="eA" cx="56" cy="56" rx="54" ry="18"/>
-          <g class="satA"><circle cx="110" cy="56" r="2.7"/></g>
-          <g class="satB"><circle cx="2" cy="56" r="1.8"/></g>
+          <ellipse class="eA" cx="56" cy="56" rx="54" ry="17"/>
+          <g class="satA"><circle cx="110" cy="56" r="2.6"/></g>
+          <g class="satB"><circle cx="2" cy="56" r="1.7"/></g>
         </g>
-        <circle class="prog" id="orbProg" cx="56" cy="56" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+        <circle class="prog" id="orbProg" cx="56" cy="56" r="51.5" stroke-dasharray="323.6" stroke-dashoffset="323.6"/>
         <circle class="halo" cx="56" cy="56" r="54"/>
       </svg>
-      <div class="core"><div class="swirl"></div><div class="shine"></div><span class="pct" id="stgPct">0%</span></div>
+      <div class="core"><div class="swirl"></div><div class="nuc"></div><div class="shine"></div><span class="pct" id="stgPct">0%</span></div>
     </div>
     <div class="orbSide" id="orbSide">
       <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div></div>
@@ -702,7 +792,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v26 · PRISM — TEMA AURORA BARU · IKON SVG DUOTONE · DOCK KAPSUL MELAYANG · KAPSUL KOMANDO · ORB PRISM DI ATAS PAPAN KETIK · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
+<div class="note">v27 · NEXUS — COMMS DECK OBROLAN · ORB REACTOR MK-VII · PESAN BER-META · GARIS EVENT SISTEM · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -711,6 +801,9 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 /* ---- toast ---- */
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
+
+/* ---- latensi inti berdenyut — tanda vital sambungan (v27) ---- */
+setInterval(()=>{const l=$('#clat');if(!l)return;l.textContent='LAT '+(34+Math.floor(Math.random()*26))+'MS';l.classList.remove('tick');void l.offsetWidth;l.classList.add('tick')},2400);
 
 /* ---- tema: toggle malam/siang dengan ikon svg ---- */
 const IC_MOON='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/><circle cx="17" cy="6.5" r="1.2" fill="var(--gold)" stroke="none"/></svg>';
@@ -758,18 +851,29 @@ function slotSent(txt){
 }
 function state(cls,tx){const w=$('#orbIdle');if(!w)return;w.className=cls||'';w.textContent=tx}
 
-/* ---- jawaban AVI DI ATAS orb — gelembung beravatar dalam obrolan (v16) ---- */
+/* ---- jawaban AVI DI ATAS orb — gelembung beravatar + META dalam obrolan (v16·v27) ---- */
+const META_AVI='<div class="mmeta"><b>AVI</b><span>· INTI MK1</span></div>';
 function aviReply(txt){
   const m=$('main'),end=$('#chatEnd');
   const typ=document.createElement('div');
   typ.className='msg';
-  typ.innerHTML='<span class="mav"></span><div class="bub"><span class="dots"><i></i><i></i><i></i></span></div>';
+  typ.innerHTML='<span class="mav"></span><div class="mcol">'+META_AVI+'<div class="bub"><span class="dots"><i></i><i></i><i></i></span></div></div>';
   end.parentNode.insertBefore(typ,end);
   m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   setTimeout(()=>{
-    typ.innerHTML='<span class="mav"></span><div class="bub">'+txt+'</div>';
+    const b=typ.querySelector('.bub');if(b)b.innerHTML=txt;
     m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   },950);
+}
+/* ---- garis event sistem ◈ — log komms di tengah obrolan (v27) ---- */
+function evtLine(txt,gold,refSel){
+  const m=$('main');
+  const d=document.createElement('div');
+  d.className='evt'+(gold?' gold':'');
+  d.innerHTML='<i></i><span><b>◈</b>'+txt+'<b>◈</b></span><i></i>';
+  const ref=refSel?$(refSel):$('#chatEnd');
+  if(ref&&ref.parentNode)ref.parentNode.insertBefore(d,ref);else if(m)m.appendChild(d);
+  if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
 }
 
 /* ---- kirim: perintah DI SAMPING orb; tugas berat membangunkan agent ---- */
@@ -829,7 +933,7 @@ $$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
 }));
 
 /* ============ MESIN: AGENT HIDUP DI DALAM AVI ============ */
-const CP=2*Math.PI*50; /* ring prog orb r=50 */
+const CP=2*Math.PI*51.5; /* ring prog orb r=51.5 */
 let pct=0,taskActive=false,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false,taskName='';
 const stepNames=['Kumpulkan bahan & data…','Rapikan & susun…','Susun PDF & periksa…'];
 const stepEls=$$('#stgSteps .st');
@@ -886,6 +990,7 @@ function startTask(name){
   $('#doneCard').style.display='none';
   $('#followMsg').style.display='none';
   $('#hdOrb').classList.add('work');
+  evtLine('AGENT DIMBANGKITKAN — TANGAN KERJA AVI AKTIF',false,'#stgWork');
   logPush();render();
   aviReply('Siap, Pak. Saya pakai tangan agent saya untuk urus ini — pantau saja di sini.');
   const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
@@ -904,6 +1009,7 @@ function finish(){
   $('#doneName').textContent=fn+'.PDF';
   $('#doneCard').style.display='block';
   $('#followMsg').style.display='flex';
+  evtLine('TUGAS TUNTAS — DOKUMEN SIAP DI OBROLAN',true,'#followMsg');
   $('#hdOrb').classList.remove('work');
   const nd=$('#navDot');if(nd)nd.classList.remove('show');
   const st=$('#strip');st.classList.add('ok');
@@ -953,6 +1059,7 @@ function doStop(){
   setTimeout(()=>{st.classList.remove('on')},3800);
   const sh=$('#shRun');
   if(sh){sh.classList.add('stopped');const s2=$('#shStepTx');if(s2)s2.textContent='Dihentikan oleh Pak — 4 KR terpakai.'}
+  evtLine('TUGAS DIHENTIKAN OLEH PAK — AVI KEMBALI SIAGA',false,'#stgWork');
   setTimeout(collapseWork,1200);
   toast('Saya berhenti, Pak');
 }
