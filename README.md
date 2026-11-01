@@ -8,10 +8,42 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 | Jalur | Isi |
 |---|---|
 | `app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) |
-| `public/avi-agent.html` | Mockup/preview tampilan MK-II v23 — satu file, self-contained |
+| `public/avi-agent.html` | Mockup/preview tampilan MK-II v24 — satu file, self-contained |
 | `.github/workflows/build-android.yml` | CI build APK (jalan saat `app/**` berubah) |
 
-## Preview v23 — NADI (denyut ruangan)
+## Preview v24 — PRECISION HUD (rombak total, referensi film asli)
+
+Masukan Pak: **"anda gak ada referensi tema UI lain ?? saya dari minta
+rombak tapi perubahan anda cuma kecil kecil"**. Maka v24 TIDAK menambal
+v23 — bahasa visualnya diganti total, dan kali ini dibangun di atas
+**referensi eksternal asli**: arsip [HUDS+GUIS](https://www.hudsandguis.com)
+— layar HUD Territory Studio untuk Avengers / Age of Ultron + HUD helm
+Iron Man 3 — diunduh dan dianalisis sebelum satu baris pun ditulis.
+
+Yang mati dari v23: kartu kaca membulat + blur, inti cair heliks,
+plexus, lantai Tron, aurora blob, sudut potong. Yang hidup (bahasa film):
+
+1. **Panel presisi flat** — garis 1px, nol blur, nol shadow; tick sudut
+   TL/BR sebagai tanda tangan instrumen.
+2. **Orb = reticle derajat** (HUD helm MK-III) — cincin tick 72 titik,
+   label derajat 000/090/180/270, busur sian+emas berlawanan arah, tick
+   silang, inti putih panas; waveform radial 28 batang saat AVI bicara;
+   ring kemajuan segmen saat kerja; emas mengambil alih saat tuntas.
+3. **Obrolan = log transmisi** — rel node + header mono
+   "AVI · MK-II // ASISTEN"; pesan MATERIALIZING (sapuan clip-path).
+4. **Latar = ruang ukur** — kanvas titik-matriks berdenyut, dua garis
+   silang horizontal, satu sapuan pindai, RAIL PENGGARIS skala vertikal
+   bernomor + kursor berlian kedua sisi, gugus data sudut hidup
+   (ID/GRID/jam/MEM/NET/PUSTAKA + bar EQ).
+5. **Tipografi Michroma** (Eurostile — huruf khas UI film) untuk judul.
+6. **Komposer presisi** — prompt ">" berkedip; tombol kirim kotak rata
+   yang menyala emas saat Pak menulis.
+7. Strip kendali & semua bar kemajuan jadi **segmen tick**.
+
+Arahan lama tetap: TANPA riwayat total; inti di atas papan ketik; satu
+slot perintah di samping orb; jawaban AVI di obrolan (di atas orb);
+**asisten dulu, agent cadangan** — agent hanya bangun untuk tugas berat,
+minta izin di 60%, tuntas = kartu PDF di obrolan.
 
 Masukan Pak: **"masih monoton.... masih ada riyawat"**. Diagnosis v22:
 (1) sisa riwayat masih terlihat — ikon ⧗, seksi RIWAYAT di TUGAS,
@@ -35,9 +67,6 @@ Masukan Pak: **"masih monoton.... masih ada riyawat"**. Diagnosis v22:
 4. **Identitas v22 dipertahankan** — inti cair energi ganda (sian =
    pikiran, emas = tindakan) + giroskop dua orbit bersatelit.
 
-Arahan lama tetap: **asisten dulu, agent sekadar cadangan**; inti AVI di
-atas papan ketik; perintah Pak satu slot "TERKIRIM ✓" di samping orb;
-jawaban AVI di obrolan (di atas orb) dengan efek mengetik; pesan sebagai
 log transmisi + panel sudut potong (v20); SYSRAIL telemetri hidup;
 tema AUTO ikut waktu (malam = HUD gelap, siang = HUD terang — dua-duanya
 Jarvis); tanpa jam, tanpa chip saran, tanpa lampiran; tanpa audit billing.
