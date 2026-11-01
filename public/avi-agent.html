@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · v19 REACTOR</title>
+<title>AVI — Asisten Pribadi · v20 COCKPIT HUD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -106,10 +106,20 @@ html[data-theme="siang"] .vig{box-shadow:inset 0 0 110px rgba(23,54,84,.28)}
 .hudC{position:absolute;inset:0;z-index:1;pointer-events:none;font:600 7.5px var(--mono);letter-spacing:1.4px;color:var(--dim2)}
 .hudC s{position:absolute;text-decoration:none;opacity:.6;writing-mode:vertical-rl;display:flex;align-items:center;gap:6px}
 .hudC s::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--cyan);box-shadow:0 0 5px var(--glow);animation:blink 2.6s infinite}
-.hudC .c1{left:4px;top:22%}
-.hudC .c3{right:4px;top:30%}
+.hudC .c1{left:4px;top:20%}
+.hudC .c3{right:4px;top:28%}
 .hudC .c3::before{background:var(--gold);animation-delay:1.2s}
+.hudC .cb{position:absolute;width:15px;height:15px;border:1.5px solid var(--cyan);opacity:.55}
+.hudC .cb.tl{left:6px;top:6px;border-right:none;border-bottom:none}
+.hudC .cb.tr{right:6px;top:6px;border-left:none;border-bottom:none}
+.hudC .cb.bl{left:6px;bottom:58px;border-right:none;border-top:none}
+.hudC .cb.br{right:6px;bottom:58px;border-left:none;border-top:none}
 html[data-theme="siang"] .hudC{color:#41607E}
+html[data-theme="siang"] .hudC .cb{border-color:#2C6B94}
+/* rail telemetri samping — garis ukur di kedua sisi layar */
+.railL,.railR{position:absolute;top:15%;bottom:26%;width:9px;z-index:1;pointer-events:none;opacity:.5}
+.railL{left:5px;border-right:1px solid var(--line2);background:repeating-linear-gradient(180deg,var(--line2) 0 1px,transparent 1px 14px) right/4px 100% no-repeat}
+.railR{right:5px;border-left:1px solid var(--line2);background:repeating-linear-gradient(180deg,var(--line2) 0 1px,transparent 1px 14px) left/4px 100% no-repeat}
 
 header,main,.composer,nav,#strip{position:relative;z-index:2}
 
@@ -229,8 +239,27 @@ html.kb #orbWrap{transform:scale(.66)}
 .orbBig.done .oHalo{animation:burst 1s ease-out both}
 @keyframes burst{0%{box-shadow:0 0 0 0 rgba(245,181,74,.55);opacity:1}100%{box-shadow:0 0 0 52px rgba(245,181,74,0);opacity:1}}
 
-/* sisi orb — SATU slot teks */
-.orbSide{flex:1;min-width:0;position:relative}
+/* sisi orb — SATU slot teks dalam bingkai sudut */
+.orbSide{flex:1;min-width:0;position:relative;padding-left:13px}
+.orbSide::before{content:'';position:absolute;left:0;top:3px;bottom:3px;width:8px;
+  border-left:1px solid var(--line2);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+/* konsol mini di kiri orb — batang energi bernafas */
+.oCon{display:flex;align-items:flex-end;gap:3px;height:46px;flex:none;opacity:.65}
+.oCon i{width:4px;height:60%;background:var(--cyan);box-shadow:0 0 6px var(--glow);transform-origin:bottom;animation:con 2.8s ease-in-out infinite}
+.oCon i:nth-child(2){height:85%;animation-delay:.45s;background:var(--gold);box-shadow:0 0 6px var(--goldSoft)}
+.oCon i:nth-child(3){height:50%;animation-delay:.9s}
+.oCon i:nth-child(4){height:70%;animation-delay:1.35s;background:var(--gold);box-shadow:0 0 6px var(--goldSoft)}
+@keyframes con{50%{transform:scaleY(.5)}}
+/* sysrail — strip telemetri di bawah header, selalu hidup */
+#sysrail{flex:none;display:flex;align-items:center;gap:16px;padding:5px 16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--pan);backdrop-filter:blur(8px);position:relative;z-index:2}
+#sysrail .srt{font:700 7.5px var(--mono);letter-spacing:1.6px;color:var(--dim2)}
+#sysrail .srt.l{margin-right:auto;animation:blink 3.4s infinite}
+#sysrail .srt.r{margin-left:auto;color:var(--green)}
+#sysrail .sg{display:flex;flex-direction:column;line-height:1.2}
+#sysrail .sg b{font:700 11px var(--mono);color:var(--cyan)}
+#sysrail .sg b small{font-size:7px;letter-spacing:.5px}
+#sysrail .sg:nth-of-type(2) b{color:var(--gold)}
+#sysrail .sg small{font:700 6.5px var(--mono);letter-spacing:1.8px;color:var(--dim2)}
 #orbLine{transition:opacity .18s ease;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #orbLine .tg{display:block;font:700 8px var(--mono);letter-spacing:2px;margin-bottom:3px;transition:color .5s}
 #orbLine .tg:empty{display:none}
@@ -263,20 +292,25 @@ html.kb #orbWrap{transform:scale(.66)}
 #histBar .ch{transition:transform .3s}
 #histBar.open .ch{transform:rotate(180deg)}
 
-/* pesan — gelembung; AVI muncul dengan efek mengetik */
-.msg{display:flex;gap:8px;margin-top:10px;animation:naik .45s cubic-bezier(.22,1,.36,1) both}
+/* pesan — LOG TRANSMISI: rel node di kiri + panel sudut potong */
+.msg{display:flex;gap:9px;margin-top:14px;animation:naik .45s cubic-bezier(.22,1,.36,1) both}
 @keyframes naik{from{opacity:0;transform:translateY(10px)}}
-.msg.me{justify-content:flex-end}
-.mav{width:26px;height:26px;flex:none;border-radius:50%;position:relative;margin-top:2px;
-  background:radial-gradient(circle at 35% 30%,#CFF6FF 0%,var(--cyan) 55%,#0A4E63 100%);
-  box-shadow:0 0 10px var(--glow)}
-.mav::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px dashed var(--line2);animation:putar 9s linear infinite}
-.bub{max-width:78%;background:var(--pan);border:1px solid var(--line);border-left:2px solid var(--cyan);
-  border-radius:4px 14px 14px 14px;padding:9px 12px;font-size:13.5px;backdrop-filter:blur(8px)}
-.msg.me .bub{background:var(--goldSoft);border:1px solid var(--goldSoft);border-right:2px solid var(--gold);
-  border-radius:14px 4px 14px 14px}
+.msg.me{flex-direction:row-reverse}
+.nail{width:13px;flex:none;position:relative}
+.nail i{display:block;width:7px;height:7px;margin-top:5px;transform:rotate(45deg);background:var(--cyan);box-shadow:0 0 8px var(--glow)}
+.nail::after{content:'';position:absolute;left:3px;top:16px;bottom:-17px;width:1px;background:linear-gradient(180deg,var(--line2),transparent)}
+.mbody{min-width:0;max-width:82%}
+.who{display:block;font:700 8px var(--mono);letter-spacing:2.2px;color:var(--cyan);margin-bottom:4px}
+.msg.me .mbody{display:flex;flex-direction:column;align-items:flex-end}
+.msg.me .nail i{background:var(--gold);box-shadow:0 0 8px var(--goldSoft)}
+.msg.me .who{color:var(--gold)}
+.bub{position:relative;max-width:100%;background:var(--pan);border:1px solid var(--line);border-left:2px solid var(--cyan);
+  padding:10px 13px;font-size:13.5px;backdrop-filter:blur(8px);
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+.msg.me .bub{border:1px solid var(--goldSoft);border-right:2px solid var(--gold);
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
 .bub.tw::after{content:'▌';color:var(--cyan);animation:blink .8s infinite;font-size:12px}
-.bub.tgetik{display:flex;gap:5px;align-items:center;padding:12px 14px}
+.bub.tgetik{display:flex;gap:5px;align-items:center;padding:13px 14px}
 .bub.tgetik i{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:lompat 1.1s ease-in-out infinite}
 .bub.tgetik i:nth-child(2){animation-delay:.16s}
 .bub.tgetik i:nth-child(3){animation-delay:.32s}
@@ -447,8 +481,22 @@ input[type=range]{width:100%;accent-color:var(--cyan)}
 @media(max-width:460px){.note{display:none}}
 html[data-theme="siang"] .note{color:rgba(50,80,110,.5)}
 
+/* ============ SUDUT TEKNOLOGI: panel pojok potong, bukan bulat ============ */
+.card,.btn,.srow,.hrow,.stat,.qc2,.opt,.qc,.logbox,.file,.bic,.hic,.swic,.fic,.vtag,.pill,.themeBtn,.toast,.cbtn,.cinWrap,.soonTag{border-radius:0}
+.card{clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.btn,.pill,.themeBtn,.vtag{clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+.cinWrap{clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+.cbtn{clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
+.toast{clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+#histPanel,#sheet .shpan{border-radius:0}
+/* kurung sudut kartu pindah ke pojok SISI (pojok potong bebas) */
+.card.hol::before{top:-1px;right:-1px;left:auto;border-left:none;border-right:1.5px solid var(--cyan);border-top:1.5px solid var(--cyan);border-top-right-radius:0}
+.card.hol::after{bottom:-1px;left:-1px;right:auto;border-right:none;border-left:1.5px solid var(--cyan);border-bottom:1.5px solid var(--cyan);border-bottom-left-radius:0}
+.card.holG::before{border-color:var(--gold)}.card.holG::after{border-color:var(--gold)}
+
 /* ---------- BOOT: urutan menyala AVI ---------- */
 .app.boot header{animation:turun .55s .05s cubic-bezier(.22,1,.36,1) both}
+.app.boot #sysrail{animation:naik .6s .3s cubic-bezier(.22,1,.36,1) both}
 @keyframes turun{from{opacity:0;transform:translateY(-10px)}}
 .app.boot #orbWrap{animation:ignite 1.05s .18s cubic-bezier(.2,.85,.3,1.14) both}
 @keyframes ignite{0%{transform:scale(.2);opacity:0;filter:brightness(3)}55%{transform:scale(1.12);opacity:1;filter:brightness(1.8)}100%{transform:scale(1);opacity:1;filter:brightness(1)}}
@@ -468,9 +516,11 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
   <div class="bgFloor"></div>
   <div class="vig"></div>
   <div class="scan"></div>
-  <div class="hudC">
+  <div class="railL" aria-hidden="true"></div><div class="railR" aria-hidden="true"></div>
+  <div class="hudC" aria-hidden="true">
     <s class="c1">MK-II · ASISTEN PRIBADI</s>
     <s class="c3">MEM <b id="hudMem">62</b>% · NET <b id="hudNet">41</b>MS</s>
+    <i class="cb tl"></i><i class="cb tr"></i><i class="cb bl"></i><i class="cb br"></i>
   </div>
 
   <!-- HEADER -->
@@ -482,6 +532,16 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
       <button class="pill" id="hdPill"><i></i><span id="hdPillTx">SIAP, PAK</span></button>
     </div>
   </header>
+
+  <!-- SYSRAIL: telemetri inti selalu hidup di bawah header -->
+  <div id="sysrail">
+    <span class="srt l">SYS/MK-II</span>
+    <div class="sg"><b id="srv1">98<small>%</small></b><small>REAKTOR</small></div>
+    <div class="sg"><b id="srv2">41<small>°</small></b><small>TERMAL</small></div>
+    <div class="sg"><b id="srv3">62<small>%</small></b><small>MEM</small></div>
+    <div class="sg"><b id="srv4">41<small>MS</small></b><small>NET</small></div>
+    <span class="srt r">ONLINE ●</span>
+  </div>
 
   <!-- STRIP KENDALI: hanya muncul saat ada tugas agent yang berjalan -->
   <div id="strip">
@@ -511,9 +571,9 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
       </div>
 
       <!-- percakapan: sapaan + obrolan asisten sehari-hari (bukan agent) -->
-      <div class="msg" id="greetMsg"><span class="mav"></span><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div>
-      <div class="msg me"><div class="bub">Ingatkan saya bayar listrik Jumat ya, AVI.</div></div>
-      <div class="msg"><span class="mav"></span><div class="bub">Siap, Pak — saya ingatkan Jumat pagi, sebelum jam kerja. Kalau sudah bayar, bilang saja biar saya batalkan.</div></div>
+      <div class="msg" id="greetMsg"><div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
+      <div class="msg me"><div class="nail"><i></i></div><div class="mbody"><span class="who">PAK</span><div class="bub">Ingatkan saya bayar listrik Jumat ya, AVI.</div></div></div>
+      <div class="msg"><div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub">Siap, Pak — saya ingatkan Jumat pagi, sebelum jam kerja. Kalau sudah bayar, bilang saja biar saya batalkan.</div></div></div>
 
       <!-- panel kerja agent: TERTUTUP — hanya terbuka saat Pak memberi tugas berat -->
       <div id="stgWork">
@@ -554,7 +614,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
         </div>
       </div>
 
-      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="bub">Laporannya sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div>
+      <div class="msg" id="followMsg" style="display:none"><div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub">Laporannya sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
 
       <div style="height:8px" id="chatEnd"></div>
     </section>
@@ -656,6 +716,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
 
   <!-- REAKTOR AVI — wajah teknologi yang hidup; SATU slot teks di sebelahnya -->
   <div id="orbDock">
+    <div class="oCon" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div id="orbWrap">
       <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
         <div class="oHalo"></div>
@@ -763,7 +824,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
   </div>
 </div>
 
-<div class="note">v19 · REAKTOR MK-II: ORB TEKNOLOGI + PLEXUS HIDUP · SATU SLOT TEKS DI SAMPING ORB · JAWABAN AVI DI ATAS ORB · ASISTEN DULU, AGENT CADANGAN · JARVIS · STARK HUD · SIRI</div>
+<div class="note">v20 · COCKPIT HUD: LOG TRANSMISI + PANEL SUDUT POTONG + SYSRAIL + RAIL TELEMETRI · SATU SLOT DI SAMPING ORB · JAWABAN AVI DI ATAS ORB · ASISTEN DULU, AGENT CADANGAN · JARVIS · STARK HUD</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -858,7 +919,7 @@ function sentShow(txt){
 }
 function tgetikShow(){
   const s=$('#v-obrolan'),d=document.createElement('div');
-  d.className='msg';d.innerHTML='<span class="mav"></span><div class="bub tgetik"><i></i><i></i><i></i></div>';
+  d.className='msg';d.innerHTML='<div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub tgetik"><i></i><i></i><i></i></div></div>';
   const end=$('#chatEnd');if(end)s.insertBefore(d,end);else s.appendChild(d);
   const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   return d;
@@ -876,7 +937,7 @@ function typeInto(el,txt){
 function chatReply(txt){
   const s=$('#v-obrolan'),d=document.createElement('div');
   d.className='msg';
-  d.innerHTML='<span class="mav"></span><div class="bub"></div>';
+  d.innerHTML='<div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub"></div>';
   const bb=d.querySelector('.bub');
   const end=$('#chatEnd');if(end)s.insertBefore(d,end);else s.appendChild(d);
   typeInto(bb,txt);
@@ -982,6 +1043,9 @@ setInterval(()=>{
   $('#gv2').textContent=ter+'°';
   $('#g2c').setAttribute('stroke-dashoffset',(119.4*(1-ter/60)).toFixed(1));
   $('#memTx').textContent=mem+'%';$('#latTx').textContent=lat+'ms';
+  const s1=$('#srv1'),s2=$('#srv2'),s3=$('#srv3'),s4=$('#srv4');
+  if(s1)s1.innerHTML=rek+'<small>%</small>';if(s2)s2.innerHTML=ter+'<small>°</small>';
+  if(s3)s3.innerHTML=mem+'<small>%</small>';if(s4)s4.innerHTML=lat+'<small>MS</small>';
   const hm=$('#hudMem'),hn=$('#hudNet');if(hm)hm.textContent=mem;if(hn)hn.textContent=lat;
 },2000);
 
