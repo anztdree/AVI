@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · NEXUS v29</title>
+<title>AVI — Asisten Pribadi · HOLO GYRO v29</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v27 — "NEXUS" : FOKUS TAMPILAN OBROLAN + ORB REAKTOR
+   AVI v29 — "HOLO GYRO" : ORB 3D SESUNGGUHNYA (ANTI-MONOTON)
    Masukan Pak: "fokus ke tampilan obrolan .. masih terlaluu
    sederhana orb juga jauh dari tema teknologi modern".
    ⇒ Dua target, rombak dalam:
@@ -18,12 +18,14 @@
        (label AVI · INTI MK1), bubble kaca dgn sudut bracket
        teknis, garis event sistem ◈ saat agent bangun/stop/tuntas,
        brief dgn tag meta emas per baris.
-     · ORB     : MK-IX TRI-COIL CORE — inti TIDAK BIRU POLOS lg:
-       pusat putih menyala, plasma sian hanya di tengah, tepi navy
-       gelap; ISI BERSTRUKTUR rujukan arc-reactor & containment
-       sci-fi: 10 koil reaktor mengelilingi pupil, filamen plasma
-       (1 emas), mesh segitiga, partikel orbit; iris emas saat
-       tuntas.
+     · ORB     : MK-X HOLO GYRO — bukan lagi tumpukan lingkaran
+       datar (itu yang bikin monoton). Ini bola HUD 3D SESUNGGUH:
+       bola kawat bujur+lintang berputar pada sumbunya, TIGA cincin
+       giroskop miring beririsan (masing-masing punya sumbu &
+       kecepatan sendiri), bidang pemindai emas menyapu kutub ke
+       kutub, radar ping mengembang, inti plasma berdenyut.
+       Siluetnya BERUBAH TERUS tiap detik — tak ada dua detik sama.
+       Rujukan: holo-table Jarvis/Iron Man & giroskop navigasi.
    Yang TETAP = arahan Pak yang sudah disetujui:
    · Nuansa Jarvis: orb hidup, sian #22D3EE + emas #F5B54A,
      telemetri MK1 = tanda vital.
@@ -289,78 +291,101 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ ORB MK-VIII — LENS CORE (v28) : SVG presisi, tanpa blur ============ */
+/* ============ ORB MK-X — HOLO GYRO (v29) : bola 3D sesungguhnya + giroskop 3 sumbu ============
+   Antara-antara: siluet berubah terus — cincin miring beririsan berputar di sumbu berbeda,
+   bola kawat berputar, bidang imbas emas menyapu kutub, ping radar, inti plasma. */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;align-items:center;gap:16px;padding:2px 18px 6px}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
 html.kb .orbBig{transform:scale(.66)}
 .orbBig svg{position:absolute;inset:0;overflow:visible}
-.orbBig .trk{fill:none;stroke:var(--line2);stroke-width:1;opacity:.5}
-/* lapis 1 — segmen HUD, CW */
-.orbBig .rSeg{transform-origin:56px 56px;animation:spin 24s linear infinite}
-.orbBig .rSeg circle{fill:none;stroke:var(--cyan);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:62 22.82;opacity:.75;transition:stroke .4s}
-/* lapis 2 — bezel tick halus, CCW */
-.orbBig .rTick{transform-origin:56px 56px;animation:spinR 40s linear infinite}
-.orbBig .rTick circle{fill:none;stroke:var(--cyan);stroke-width:4;stroke-dasharray:1 3.71;opacity:.4}
-/* lapis 3 — arc ganda sian+emas, CW */
-.orbBig .rArc{transform-origin:56px 56px;animation:spin 11s linear infinite}
-.orbBig .rArc .a1{fill:none;stroke:var(--gold);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:64 221.9;opacity:.95}
-.orbBig .rArc .a2{fill:none;stroke:var(--cyan);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:34 251.9;stroke-dashoffset:-130;opacity:.8}
-.orbBig .eA{fill:none;stroke:var(--cyan);stroke-width:1;opacity:.4}
-.orbBig .satA{transform-origin:56px 56px;animation:spin 9s linear infinite}
-.orbBig .satB{transform-origin:56px 56px;animation:spinR 15s linear infinite}
-.orbBig .satA circle{fill:var(--gold);filter:drop-shadow(0 0 4px rgba(245,181,74,.9))}
-.orbBig .satB circle{fill:var(--cyan)}
-/* isi lensa — mesh containment + filamen plasma + koil reaktor + partikel (mk-ix) */
-.orbBig .meshR{fill:url(#pMesh);opacity:.5}
-.orbBig .lensF{transform-origin:56px 56px;animation:spin 22s linear infinite}
-.orbBig .fila{fill:none;stroke:rgba(223,249,255,.5);stroke-width:1;stroke-linecap:round}
-.orbBig .fila.gold{stroke:rgba(245,181,74,.62)}
-.orbBig .coil{transform-origin:56px 56px;animation:spinR 30s linear infinite}
-.orbBig .coilSeg{fill:rgba(8,60,76,.9);stroke:rgba(150,240,255,.55);stroke-width:.7}
-.orbBig .darkRing{fill:none;stroke:rgba(3,18,26,.5);stroke-width:2}
-.orbBig .inPar circle{fill:#DFF9FF}
-.orbBig .op1{transform-origin:56px 56px;animation:spin 12s linear infinite}
-.orbBig .op2{transform-origin:56px 56px;animation:spinR 9s linear infinite}
-.orbBig .op3{transform-origin:56px 56px;animation:spin 15s linear infinite}
-.orbBig.work .lensF{animation-duration:4.5s}
-.orbBig.work .coilSeg{animation:cblink .9s ease-in-out infinite alternate}
-@keyframes cblink{from{fill-opacity:.45;stroke-opacity:.5}to{fill-opacity:1;stroke-opacity:1}}
-.orbBig.done .meshR{opacity:.22}
-.orbBig.done .coilSeg{fill:#6B4408;stroke:rgba(255,217,138,.75)}
-.orbBig.done .fila{stroke:rgba(255,233,176,.6)}
-.orbBig.done .fila.gold{stroke:rgba(255,246,220,.8)}
-.orbBig.done .inPar circle{fill:#FFE9B0}
-/* lensa inti — iris gradien + pupil menyala + crosshair (presisi, tidak berkabut) */
-.orbBig .gRing{fill:none;stroke:rgba(34,211,238,.16);stroke-width:5}
-.orbBig .lens{filter:drop-shadow(0 0 11px rgba(34,211,238,.42))}
-.orbBig .irisC{transition:fill .4s}
-.orbBig .lensEdge{fill:none;stroke:rgba(190,247,255,.6);stroke-width:1.2}
-.orbBig .lensRing{fill:none;stroke:rgba(190,247,255,.28);stroke-width:.8}
-.orbBig .lensRing2{fill:none;stroke:rgba(190,247,255,.34);stroke-width:.8;stroke-dasharray:3 5}
-.orbBig .hair{stroke:rgba(220,252,255,.2);stroke-width:.7}
-.orbBig .spec{fill:rgba(255,255,255,.16)}
-.orbBig .pupil{transform-origin:56px 56px;animation:pPulse 2.6s ease-in-out infinite}
-@keyframes pPulse{0%,100%{transform:scale(.82);opacity:.85}50%{transform:scale(1.08);opacity:1}}
-.orbBig .bDot{transform-origin:56px 56px;animation:spin 18s linear infinite}
-.orbBig .bDot circle{fill:var(--gold)}
+.panggung3d{position:absolute;inset:0;perspective:340px}
+.hgyro{position:absolute;inset:0;transform-style:preserve-3d;animation:hTilt 13s ease-in-out infinite;will-change:transform}
+@keyframes hTilt{0%,100%{transform:rotateX(54deg) rotateZ(0deg)}50%{transform:rotateX(66deg) rotateZ(26deg)}}
+/* — cincin giroskop: TIGA sumbu berbeda, masing-masing arc emas+sian & satelit — */
+.gring{position:absolute;left:50%;top:50%;border-radius:50%;transform-style:preserve-3d;will-change:transform}
+.gring i,.gring b,.gring u{position:absolute;border-radius:50%}
+.gring i{inset:0;border:1px solid rgba(34,211,238,.3)}
+.gring b{inset:0;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
+  background:conic-gradient(from 20deg,transparent 0 56%,rgba(245,181,74,.95) 68%,rgba(140,238,255,.92) 77%,transparent 86%)}
+.gring u{top:-2.5px;left:50%;width:5px;height:5px;margin-left:-2.5px;background:var(--gold);box-shadow:0 0 7px rgba(245,181,74,.95)}
+.gring u.c{background:#9BEBFF;box-shadow:0 0 6px rgba(34,211,238,.9)}
+.gx{width:84px;height:84px;margin:-42px 0 0 -42px;animation:gxA 7.5s linear infinite}
+.gy{width:98px;height:98px;margin:-49px 0 0 -49px;animation:gyA 11s linear infinite reverse}
+.gz{width:72px;height:72px;margin:-36px 0 0 -36px;animation:gzA 9s linear infinite}
+@keyframes gxA{from{transform:rotateY(57deg) rotateZ(0deg)}to{transform:rotateY(57deg) rotateZ(360deg)}}
+@keyframes gyA{from{transform:rotateX(64deg) rotateZ(0deg)}to{transform:rotateX(64deg) rotateZ(360deg)}}
+@keyframes gzA{from{transform:rotateX(80deg) rotateY(18deg) rotateZ(0deg)}to{transform:rotateX(80deg) rotateY(18deg) rotateZ(-360deg)}}
+/* — bola kawat: 6 bujur + 3 lintang, berputar pada sumbunya — */
+.hglobe{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;transform-style:preserve-3d;animation:hgSpin 15s linear infinite;will-change:transform}
+@keyframes hgSpin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+.hglobe .mer{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(34,211,238,.34)}
+.hglobe .mer:nth-child(2){transform:rotateY(30deg)}
+.hglobe .mer:nth-child(3){transform:rotateY(60deg)}
+.hglobe .mer:nth-child(4){transform:rotateY(90deg)}
+.hglobe .mer:nth-child(5){transform:rotateY(120deg)}
+.hglobe .mer:nth-child(6){transform:rotateY(150deg)}
+.hglobe .par{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(34,211,238,.3)}
+.hglobe .par.p1{transform:rotateX(90deg) translateZ(19.5px) scale(.74)}
+.hglobe .par.p2{transform:rotateX(90deg) translateZ(-19.5px) scale(.74)}
+.hglobe .par.p3{transform:rotateX(90deg)}
+/* — bidang imbas emas menyapu kutub→kutub (tanda vital pemindaian) — */
+.hscan{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
+  border:1px solid rgba(245,181,74,.62);box-shadow:0 0 9px rgba(245,181,74,.32);
+  animation:hScan 5.6s linear infinite;will-change:transform,opacity}
+@keyframes hScan{
+  0%{transform:rotateX(90deg) translateZ(27px) scale(.16);opacity:0}
+  10%{opacity:.95}
+  25%{transform:rotateX(90deg) translateZ(15px) scale(.74)}
+  50%{transform:rotateX(90deg) translateZ(0px) scale(1)}
+  75%{transform:rotateX(90deg) translateZ(-15px) scale(.74)}
+  90%{opacity:.95}
+  100%{transform:rotateX(90deg) translateZ(-27px) scale(.16);opacity:0}}
+/* — inti plasma: selalu menghadap Pak (di luar kemiringan) — */
+.gcore{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;
+  background:radial-gradient(circle at 40% 34%,#F4FFFF 0%,#B4F4FD 28%,#2FC4E2 56%,#07566C 82%,#042430 100%);
+  box-shadow:0 0 15px rgba(34,211,238,.55),inset 0 0 6px rgba(190,249,255,.55);
+  animation:coreBreath 3.2s ease-in-out infinite}
+@keyframes coreBreath{0%,100%{transform:scale(.93)}50%{transform:scale(1.06)}}
+.gcore span{position:absolute;inset:1px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 66%,rgba(255,255,255,.62) 78%,transparent 90%);
+  animation:coreSweep 4.4s linear infinite}
+@keyframes coreSweep{to{transform:rotate(360deg)}}
+/* — ping radar 2D mengembang — */
+.hping{position:absolute;inset:6px;border-radius:50%;border:1.5px solid rgba(34,211,238,.5);opacity:0;pointer-events:none;
+  animation:hPing 4.6s cubic-bezier(.22,.61,.36,1) infinite}
+.hping.d2{animation-delay:2.3s}
+@keyframes hPing{0%{transform:scale(.52);opacity:0}12%{opacity:.7}100%{transform:scale(1.14);opacity:0}}
+/* — lapisan HUD 2D: cincin progres + persen — */
 .orbBig .prog{fill:none;stroke:var(--cyan);stroke-width:2.4;stroke-linecap:round;opacity:0;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .4s,opacity .4s;filter:drop-shadow(0 0 5px var(--glow))}
-.pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#04222C;opacity:0;transition:.3s}
-/* state KERJA — lensa overdrive */
-.orbBig.work .rSeg{animation-duration:7s}
-.orbBig.work .rTick{animation-duration:12s}
-.orbBig.work .rArc{animation-duration:3.2s}
-.orbBig.work .pupil{animation-duration:.85s}
+.pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#04222C;opacity:0;transition:.3s;text-shadow:0 0 8px rgba(255,255,255,.4)}
+.orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
+@keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
+/* — state KERJA: overdrive, semua lapisan ngebut — */
+.orbBig.work .hgyro{animation-duration:5.6s}
+.orbBig.work .hglobe{animation-duration:5.4s}
+.orbBig.work .gx{animation-duration:2.5s}
+.orbBig.work .gy{animation-duration:3.7s}
+.orbBig.work .gz{animation-duration:2.9s}
+.orbBig.work .hscan{animation-duration:2.2s}
+.orbBig.work .gcore{animation-duration:1.3s;background:radial-gradient(circle at 40% 34%,#FFFFFF 0%,#D6FBFF 24%,#3BD4F0 52%,#08607A 82%,#042430 100%);box-shadow:0 0 24px rgba(34,211,238,.9),inset 0 0 8px rgba(220,252,255,.7)}
+.orbBig.work .gcore span{animation-duration:1.2s}
+.orbBig.work .hping{animation-duration:2.1s;border-color:rgba(245,181,74,.55)}
 .orbBig.work .prog,.orbBig.work .pct{opacity:1}
-/* state TUNTAS — lensa emas */
-.orbBig.done .irisC{fill:url(#gIrisG)}
-.orbBig.done .rSeg circle,.orbBig.done .rArc .a1{stroke:var(--gold)}
-.orbBig.done .lens{filter:drop-shadow(0 0 12px rgba(245,181,74,.5))}
+/* — state TUNTAS: seluruh giroskop mengemas jadi emas — */
+.orbBig.done .gring i,.orbBig.done .hglobe .mer,.orbBig.done .hglobe .par{border-color:rgba(245,181,74,.52)}
+.orbBig.done .gring b{background:conic-gradient(from 20deg,transparent 0 56%,rgba(255,236,190,.95) 68%,rgba(245,181,74,.9) 77%,transparent 86%)}
+.orbBig.done .gcore{background:radial-gradient(circle at 40% 34%,#FFF9E6 0%,#FFE3A6 28%,#F0AE3C 56%,#8A5A10 82%,#3A2705 100%);box-shadow:0 0 20px rgba(245,181,74,.75),inset 0 0 6px rgba(255,244,214,.6)}
+.orbBig.done .hscan{border-color:rgba(255,236,190,.75);box-shadow:0 0 9px rgba(245,181,74,.4)}
+.orbBig.done .hping{border-color:rgba(245,181,74,.6)}
+.orbBig.done .gx u{background:#FFE9B0;box-shadow:0 0 7px rgba(245,181,74,.95)}
 .orbBig.done .pct{color:#241300}
 .orbBig.done .prog{stroke:var(--gold);opacity:1}
-.orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
 .orbBig.done .halo{animation:halo .9s ease-out both}
-@keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
-html[data-theme="siang"] .orbBig .rTick circle{opacity:.46}
+/* — tema siang: garis lebih tegas di latar terang — */
+html[data-theme="siang"] .orbBig .gring i{border-color:rgba(12,110,136,.42)}
+html[data-theme="siang"] .orbBig .hglobe .mer,html[data-theme="siang"] .orbBig .hglobe .par{border-color:rgba(12,110,136,.46)}
 
 /* SATU SLOT teks di sisi orb — bergiliran (v17) */
 .orbSide{flex:1;min-width:0;position:relative}
@@ -699,82 +724,32 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-VIII LENS CORE — melayang bersih di atas papan ketik; SATU SLOT teks di sebelahnya -->
+  <!-- ORB MK-X HOLO GYRO — bola 3D sesungguhnya di atas papan ketik; SATU slot teks di sebelahnya -->
   <div id="orbDock">
     <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
+      <div class="panggung3d">
+        <div class="hgyro">
+          <div class="gring gx"><i></i><b></b><u></u></div>
+          <div class="gring gy"><i></i><b></b><u class="c"></u></div>
+          <div class="gring gz"><i></i><b></b><u></u></div>
+          <div class="hglobe">
+            <i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i>
+            <i class="par p1"></i><i class="par p2"></i><i class="par p3"></i>
+          </div>
+          <div class="hscan"></div>
+        </div>
+        <div class="gcore"><span></span></div>
+      </div>
       <svg width="112" height="112" viewBox="0 0 112 112">
-        <defs>
-          <radialGradient id="gIris" cx="50%" cy="44%" r="62%">
-            <stop offset="0%" stop-color="#FFFFFF"/><stop offset="18%" stop-color="#E8FDFF"/>
-            <stop offset="40%" stop-color="#9FEEFB"/><stop offset="60%" stop-color="#35C6E0"/>
-            <stop offset="80%" stop-color="#0A5568"/><stop offset="100%" stop-color="#041E29"/>
-          </radialGradient>
-          <radialGradient id="gIrisG" cx="50%" cy="42%" r="62%">
-            <stop offset="0%" stop-color="#FFF9E8"/><stop offset="26%" stop-color="#FFE2A3"/>
-            <stop offset="52%" stop-color="#F0AE3C"/><stop offset="78%" stop-color="#8A5A10"/>
-            <stop offset="100%" stop-color="#3A2705"/>
-          </radialGradient>
-          <radialGradient id="gPupil" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#FFFFFF"/><stop offset="52%" stop-color="#DCF9FF"/>
-            <stop offset="100%" stop-color="rgba(190,247,255,0)"/>
-          </radialGradient>
-          <clipPath id="clipLens"><circle cx="56" cy="56" r="39.5"/></clipPath>
-          <pattern id="pMesh" width="9" height="9" patternUnits="userSpaceOnUse">
-            <path d="M0 0L9 9M9 0L0 9M0 4.5h9" fill="none" stroke="rgba(160,240,255,.16)" stroke-width=".6"/>
-          </pattern>
-        </defs>
-        <circle class="trk" cx="56" cy="56" r="55"/>
-        <g class="rSeg"><circle cx="56" cy="56" r="53.5"/></g>
-        <g class="rTick"><circle cx="56" cy="56" r="50"/></g>
-        <g class="rArc"><circle class="a1" cx="56" cy="56" r="43"/><circle class="a2" cx="56" cy="56" r="43"/></g>
-        <circle class="gRing" cx="56" cy="56" r="42.5"/>
-        <g transform="rotate(-19 56 56)">
-          <ellipse class="eA" cx="56" cy="56" rx="54" ry="16"/>
-          <g class="satA"><circle cx="110" cy="56" r="2.6"/></g>
-          <g class="satB"><circle cx="2" cy="56" r="1.7"/></g>
-        </g>
-        <g class="lens">
-          <circle class="irisC" cx="56" cy="56" r="40" fill="url(#gIris)"/>
-          <rect class="meshR" x="16" y="16" width="80" height="80" clip-path="url(#clipLens)"/>
-          <g class="lensF" clip-path="url(#clipLens)">
-            <path class="fila" d="M20 52 Q 42 24 76 36 Q 88 41 92 50"/>
-            <path class="fila" d="M22 62 Q 48 90 86 66"/>
-            <path class="fila gold" d="M28 36 Q 60 16 84 42"/>
-          </g>
-          <g class="coil">
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(36 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(72 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(108 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(144 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(180 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(216 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(252 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(288 56 56)"/>
-            <rect class="coilSeg" x="53.1" y="19.6" width="5.8" height="4.2" rx="1.2" transform="rotate(324 56 56)"/>
-          </g>
-          <circle class="darkRing" cx="56" cy="56" r="37.6"/>
-          <circle class="lensEdge" cx="56" cy="56" r="40"/>
-          <circle class="lensRing" cx="56" cy="56" r="30"/>
-          <circle class="lensRing2" cx="56" cy="56" r="18.5"/>
-          <g clip-path="url(#clipLens)"><path class="hair" d="M14 56h84M56 14v84"/></g>
-          <g clip-path="url(#clipLens)">
-            <g class="op1"><circle cx="56" cy="25" r="1.1"/></g>
-            <g class="op2"><circle cx="87" cy="56" r=".9"/></g>
-            <g class="op3"><circle cx="30" cy="70" r=".9"/></g>
-          </g>
-          <ellipse class="spec" cx="45" cy="39" rx="11" ry="6.5" transform="rotate(-24 45 39)"/>
-          <g class="pupil"><circle cx="56" cy="56" r="13" fill="url(#gPupil)"/><circle cx="56" cy="56" r="4.6" fill="#FFFFFF"/></g>
-        </g>
-        <g class="bDot"><circle cx="96" cy="56" r="1.8"/></g>
         <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
-        <circle class="halo" cx="56" cy="56" r="54"/>
       </svg>
+      <div class="hping"></div><div class="hping d2"></div>
+      <div class="halo"></div>
       <span class="pct" id="stgPct">0%</span>
     </div>
     <div class="orbSide" id="orbSide">
       <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div></div>
-      <div id="orbIdle">MK1 · REAKTOR STABIL · NET AKTIF · MEMORI 62%</div>
+      <div id="orbIdle">MK1 · GIRO STABIL · ORBIT AKTIF · MEMORI 62%</div>
     </div>
   </div>
 
@@ -858,7 +833,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v29 · NEXUS — COMMS DECK OBROLAN · ORB TRI-COIL CORE MK-IX · PESAN BER-META · GARIS EVENT SISTEM · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
+<div class="note">v29 · HOLO GYRO — ORB 3D SESUNGGUHNYA · BOLA KAWAT + GIROSKOP 3 SUMBU · BIDANG IMBAS EMAS · PING RADAR · SILUET BERUBAH TERUS · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1189,7 +1164,7 @@ $('#btnMic').addEventListener('click',lvOpen);
 $('#orbBig').addEventListener('click',lvOpen);
 $('#lvClose').addEventListener('click',lvClose);
 
-/* mulai: asisten tenang — brief + sapaan; orb prism menemani di atas papan ketik */
+/* mulai: asisten tenang — brief + sapaan; orb holo-gyro menemani di atas papan ketik */
 $('#app').classList.add('live');
 render();
 moveInd($('.navbtn.on'));
