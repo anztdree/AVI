@@ -3,22 +3,25 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v15</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v16</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v15 — TEKS TERKIRIM DI SEBELAH ORB (BUKAN DI ATAS ORB)
-   · Koreksi arahan Pak (v14 keliru): teks yang dikirim / hasil voice
-     itu tampilnya DI SEBELAH orb — bukan di atas orb (bukan masuk
-     ke obrolan atas). Perintah Pak jelas sejak awal.
-   · Kini di sisi orb: tanda TERKIRIM ✓ + teks yang Pak kirim (emas),
-     di bawahnya balasan singkat AVI (sian) — persis di sebelah orb,
-     di atas papan ketik. Orb tetap melayang tanpa banner (v14).
-   · Hasil mode suara juga muncul DI SEBELAH orb saat ditutup.
-   · Obrolan atas tetap = obrolan saat ini (v10); riwayat tersembunyi
-     di atas; kartu kerja agent mengalir di dalam obrolan.
+   AVI v16 — ASISTEN DULU, AGENT SEKADAR CADANGAN
+   · Arahan Pak: fokus utama adalah ASISTEN — agent hanya TERKADANG,
+     cuma cadangan. Maka mockup kini TERBUKA dalam wujud asisten yang
+     tenang: tanpa tugas berjalan, tanpa %, tanpa strip — hanya
+     sapaan, obrolan, dan orb yang bernafas. Agent baru bangun saat
+     Pak memberi tugas berat (coba ketik "buatkan laporan…") — dan
+     setelah tuntas, AVI kembali penuh sebagai asisten.
+   · Banner di belakang orb DIHAPUS TOTAL (kata Pak jelek): tidak ada
+     lingkaran kabut, tidak ada latar — orb benar-benar bersih.
+   · Teks yang dikirim tetap DI SAMPING orb (TERKIRIM ✓), tetapi
+     JAWABAN AVI muncul DI ATAS orb — di dalam obrolan, sebagai
+     gelembung beravatar. Sisi orb hanya untuk perintah Pak.
+   · Obrolan atas = obrolan saat ini (v10); riwayat tersembunyi di atas.
    · Arahan v10 (dipertahankan): yang tampil hanya ORB + OBROLAN
      SAAT INI; riwayat chat TERSEMBUNYI DI ATAS (histBar sticky).
    · Aliran kerja agent mengalir DI DALAM obrolan, tepat di bawah
@@ -161,7 +164,7 @@ main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:0 16px 10px}
 .orbBig.done .pct{color:#241300}
 .orbBig.done .r2{opacity:.8}
 @keyframes putar{to{transform:rotate(360deg)}}
-/* sisi orb: teks terkirim + balasan AVI + status MK1 — DI SEBELAH orb */
+/* sisi orb: perintah terkirim Pak + status MK1 — DI SEBELAH orb */
 .orbSide{flex:1;min-width:0;position:relative}
 #orbIdle{font:600 8px var(--mono);letter-spacing:2.2px;color:var(--dim2);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s}
@@ -173,8 +176,6 @@ main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:0 16px 10px}
 #orbSent .tag i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-right:5px;vertical-align:1px}
 #orbSentTx{font-size:13.5px;font-weight:600;color:var(--gold);margin-top:3px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#orbReplyTx{display:none;font-size:12.5px;color:var(--cyan);margin-top:4px}
-#orbReplyTx.show{display:block}
 
 /* ---- panel kerja agent: mengalir DI DALAM obrolan — di dalam AVI ---- */
 #stgWork{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.32,.72,.24,1),opacity .4s,margin .4s;margin-top:0}
@@ -266,15 +267,11 @@ html[data-theme="siang"] #histPanel{box-shadow:0 18px 50px rgba(40,60,90,.25)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* dock v15: orb melayang di atas papan ketik — teks terkirim DI SEBELAH orb */
+/* dock v16: orb melayang BERSIH di atas papan ketik — TANPA apa pun
+   di belakangnya (kata Pak: banner gelap itu jelek) */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;align-items:center;gap:16px;padding:0 16px}
-#orbDock::before{content:'';position:absolute;top:50%;left:74px;transform:translate(-50%,-50%);
-  width:210px;height:210px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,var(--auro1) 0%,rgba(34,211,238,.04) 44%,transparent 68%)}
-html[data-theme="siang"] #orbDock::before{background:radial-gradient(circle,var(--auro1) 0%,rgba(14,116,144,.04) 44%,transparent 68%)}
 #orbBig{transition:transform .28s}
 html.kb #orbBig{transform:scale(.66)}
-html.kb #orbDock::before{transform:translate(-50%,-50%) scale(.66)}
 
 /* komposer — tanpa lampiran */
 .composer{flex:none;display:flex;gap:8px;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:transparent}
@@ -405,8 +402,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     </div>
   </header>
 
-  <!-- STRIP KENDALI -->
-  <div id="strip" class="on">
+  <!-- STRIP KENDALI: hanya muncul saat ada tugas agent yang berjalan -->
+  <div id="strip">
     <span class="dot"></span>
     <span class="nm" id="stripJump" style="cursor:pointer">Laporan pengeluaran</span>
     <span class="pc" id="stPct">34%</span>
@@ -432,13 +429,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
         <div class="cap">Saya rangkum otomatis setiap pagi — tanpa Pak minta.</div>
       </div>
 
-      <!-- percakapan: sapaan AVI kini DI DALAM obrolan (bukan di sebelah orb) -->
+      <!-- percakapan: sapaan + obrolan asisten sehari-hari (bukan agent) -->
       <div class="msg" id="greetMsg"><span class="mav"></span><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div>
-      <div class="msg me"><div class="bub">AVI, tolong buatkan laporan pengeluaran bulan ini ya.</div></div>
-      <div class="msg"><span class="mav"></span><div class="bub">Siap, Pak. Saya pakai tangan agent saya untuk urus ini — kumpulkan nota, rapikan per kategori, lalu jadi PDF rapi. Pantau saja di sini.</div></div>
+      <div class="msg me"><div class="bub">Ingatkan saya bayar listrik Jumat ya, AVI.</div></div>
+      <div class="msg"><span class="mav"></span><div class="bub">Siap, Pak — saya ingatkan Jumat pagi, sebelum jam kerja. Kalau sudah bayar, bilang saja biar saya batalkan.</div></div>
 
-      <!-- panel kerja: AGENT DI DALAM AVI — mengalir dari obrolan -->
-      <div id="stgWork" class="open">
+      <!-- panel kerja agent: TERTUTUP — hanya terbuka saat Pak memberi tugas berat -->
+      <div id="stgWork">
         <div class="card hol">
           <div class="clab">AGENT AKTIF · DI DALAM AVI<span class="tg2">LIVE</span></div>
           <div class="steps" id="stgSteps">
@@ -563,7 +560,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   <div id="histPanel" class="scr">
     <div class="hhd"><b>RIWAYAT OBROLAN</b><small>hanya obrolan saat ini yang tampil</small><button class="shx" id="histX">✕</button></div>
     <div class="daylab" style="margin-top:10px">HARI INI</div>
-    <div id="histToday"><div class="empty">Masih berlangsung di bawah, Pak — jadwal & tugas hari ini.</div></div>
+    <div id="histToday"><div class="empty">Obrolan hari ini sedang berlangsung di bawah, Pak.</div></div>
     <div class="daylab">KEMARIN</div>
     <div class="hrow"><span class="hic">✉</span><div class="htx"><b>Draf email ke Bu Sari</b><small>Tuntas · terkirim setelah izin Pak</small></div><span class="arr">›</span></div>
     <div class="hrow"><span class="hic">◔</span><div class="htx"><b>Riset harga tiket Surabaya–Bali</b><small>Tuntas · 3 opsi termurah</small></div><span class="arr">›</span></div>
@@ -587,8 +584,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
       <div class="core"><span class="pct" id="stgPct">34%</span></div>
     </div>
     <div class="orbSide">
-      <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div><div id="orbReplyTx"></div></div>
-      <div id="orbIdle">MK1 · REAKTOR STABIL · NET AKTIF · MEMORI 62%</div>
+      <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div></div>
+      <div id="orbIdle">MK1 · REAKTOR STABIL · SIAP MENEMANI PAK</div>
     </div>
   </div>
 
@@ -612,14 +609,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="shpan scr">
       <div class="shhd"><b>TUGAS</b><button class="shx" id="shClose">✕</button></div>
       <div class="stats">
-        <div class="stat jl"><b id="stRun">1</b><small>JALAN</small></div>
+        <div class="stat jl"><b id="stRun">0</b><small>JALAN</small></div>
         <div class="stat"><b id="stQueue">0</b><small>ANTRE</small></div>
         <div class="stat sx"><b id="stDone">3</b><small>SELESAI</small></div>
         <div class="stat kr"><b id="stKr">11</b><small>KR PAKAI</small></div>
       </div>
       <div class="shsec">
         <div class="clab">SEDANG BERJALAN</div>
-        <div class="srow" id="shRun">
+        <div class="empty" id="runEmpty">Tidak ada yang berjalan — saya siaga, Pak.</div>
+        <div class="srow" id="shRun" style="display:none">
           <div class="swic" style="font:700 8px var(--mono)">DOC</div>
           <div class="swb">
             <b>Laporan pengeluaran bulan ini</b>
@@ -677,7 +675,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   </div>
 </div>
 
-<div class="note">v15 · TEKS TERKIRIM DI SEBELAH ORB — BUKAN DI ATAS ORB · ORB MELAYANG DI ATAS PAPAN KETIK · RIWAYAT TERSEMBUNYI DI ATAS · AGENT DI DALAM AVI · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
+<div class="note">v16 · ASISTEN DULU — AGENT SEKADAR CADANGAN · PERINTAH DI SAMPING ORB, JAWABAN AVI DI OBROLAN · ORB BERSIH TANPA BANNER · RIWAYAT TERSEMBUNYI DI ATAS · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -712,20 +710,60 @@ $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
 }));
 $('#hdPill').addEventListener('click',openSheet);
 
-/* ---- obrolan: teks yang dikirim tampil DI SEBELAH orb — bukan di atas ---- */
-function sentShow(txt,reply){
+/* ---- obrolan: perintah Pak DI SAMPING orb — jawaban AVI DI ATAS orb (obrolan) ---- */
+function sentShow(txt){
   const s=$('#orbSent');if(!s)return;
   s.classList.add('show');
   $('#orbSentTx').textContent=txt;
-  const rp=$('#orbReplyTx');
-  if(reply){rp.textContent=reply;rp.classList.add('show')}
-  else{rp.classList.remove('show');
-    setTimeout(()=>{rp.textContent='Baik, Pak — sudah saya catat. Saya urus sekarang.';rp.classList.add('show')},650)}
+}
+function chatReply(txt){
+  const s=$('#v-obrolan'),d=document.createElement('div');
+  d.className='msg';
+  d.innerHTML='<span class="mav"></span><div class="bub"></div>';
+  d.querySelector('.bub').textContent=txt;
+  const end=$('#chatEnd');if(end)s.insertBefore(d,end);else s.appendChild(d);
+  const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
+}
+function pickReply(v){
+  const t=v.toLowerCase();
+  if(/terima kasih|makasih/.test(t))return 'Dengan senang hati, Pak — saya di sini kapan pun.';
+  if(/ingat|pengingat/.test(t))return 'Siap, Pak — saya ingatkan tepat waktunya nanti.';
+  if(/\?/.test(v))return 'Biar saya periksa dulu ya, Pak — sebentar saya jawab.';
+  const pool=['Baik, Pak — sudah saya catat.','Siap, Pak — saya pegang itu.','Noted, Pak — biar saya yang ingat.'];
+  return pool[replyIdx++%pool.length];
+}
+function startTask(title){
+  running=true;fin=false;done=false;stopped=false;paused=false;gateUp=false;gateDone=false;pct=0;logIdx=0;
+  $('#stgWork').classList.add('open');
+  $('#doneCard').style.display='none';$('#followMsg').style.display='none';
+  const re=$('#runEmpty');if(re)re.style.display='none';
+  const sj=$('#stripJump');if(sj)sj.textContent=title.length>26?title.slice(0,25)+'…':title;
+  const st=$('#strip');st.classList.remove('ok','bad');st.classList.add('on');
+  const sp0=$('#stPct');if(sp0)sp0.textContent='0%';
+  $('#btnSPause').textContent='JEDA';
+  stepEls.forEach(el=>{el.classList.remove('done','run');const s=el.querySelector('.s');if(s)s.textContent='ANTRE'});
+  $('#stgLog').innerHTML='<div><b>[tangan-avi]</b> memanggil agent — '+title.toLowerCase()+'</div>';
+  $('#gate').classList.remove('show');
+  const sh=$('#shRun');
+  if(sh){sh.style.display='flex';sh.classList.remove('ok','stopped');
+    const s2=$('#shStepTx');if(s2)s2.textContent=stepNames[0];
+    const sp2=$('#shRun .sst');if(sp2){sp2.className='sst run';sp2.textContent='0%'}
+    const sl=$('#shLihat');if(sl)sl.textContent='LIHAT'}
+  const sr=$('#stRun');if(sr)sr.textContent='1';
+  const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
+  render();
+  toast('Agent saya saya bangun untuk ini, Pak — pantau di obrolan');
 }
 $('#btnSend').addEventListener('click',()=>{
   const i=$('#cin'),v=i.value.trim();
   if(!v){toast('Tulis dulu, Pak');return}
   sentShow(v);i.value='';
+  const isTask=/\b(buatkan|buat|rekap|laporan|riset|analisa|kerjakan|siapkan)\b/i.test(v);
+  setTimeout(()=>{
+    if(isTask&&!running){chatReply('Siap, Pak — urusan berat seperti ini saya pakai tangan agent saya. Pantau saja di sini.');setTimeout(()=>startTask(v),1000)}
+    else if(isTask&&running){chatReply('Masih ada tugas yang berjalan, Pak — ini saya antrekan begitu selesai.')}
+    else chatReply(pickReply(v));
+  },750);
 });
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
 
@@ -776,7 +814,7 @@ $$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
 
 /* ============ MESIN: AGENT HIDUP DI DALAM AVI ============ */
 const CP=2*Math.PI*50; /* ring prog orb r=50 */
-let pct=34,sec=48,kr=2,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false;
+let pct=0,sec=0,kr=2,running=false,gateUp=false,gateDone=false,paused=false,stopped=false,fin=false,done=false,replyIdx=0;
 const stepNames=['Kumpulkan catatan & nota…','Rapikan per kategori…','Susun PDF & periksa…'];
 const stepEls=$$('#stgSteps .st');
 const logLines=[
@@ -800,28 +838,31 @@ function pill(cls,tx){const p=$('#hdPill');p.className='pill'+(cls?' '+cls:'');$
 function state(cls,tx){const w=$('#orbIdle');if(!w)return;w.className=cls||'';w.textContent=tx}
 function render(){
   const ob=$('#orbBig');
-  ob.classList.toggle('work',!stopped&&!fin&&!done);
+  const act=running&&!stopped&&!fin&&!done;
+  ob.classList.toggle('work',act);
   const off=CP*(1-pct/100);
   $('#orbProg').setAttribute('stroke-dashoffset',off.toFixed(1));
   $('#stgPct').textContent=Math.round(pct)+'%';
   $('#barTx').style.width=pct+'%';
   $('#stPct').textContent=Math.round(pct)+'%';
   const step=stepNames[pct<33?0:pct<66?1:2];
-  if(!stopped&&!fin&&!done)state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK');
+  if(act)state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK');
   const sp=$('#shRun .sst.run');if(sp)sp.textContent=Math.round(pct)+'%';
   const sb=$('#shBarTx');if(sb)sb.style.width=pct+'%';
-  const ss=$('#shStepTx');if(ss&&!stopped&&!done)ss.textContent=step;
-  const nd=$('#navDot');if(nd)nd.classList.toggle('show',!stopped&&!done);
-  pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'KERJA · '+Math.round(pct)+'%');
+  const ss=$('#shStepTx');if(ss&&act)ss.textContent=step;
+  const nd=$('#navDot');if(nd)nd.classList.toggle('show',act);
+  if(stopped)pill('','DIHENTIKAN');
+  else if(fin)pill('done','SELESAI');
+  else if(running)pill('work','KERJA · '+Math.round(pct)+'%');
+  else pill('','SIAP, PAK');
 }
 function collapseWork(){const w=$('#stgWork');w.classList.remove('open')}
 function finish(){
-  fin=true;done=true;render();
+  fin=true;done=true;running=false;render();
   const sp=$('#shRun .sst.run');if(sp){sp.textContent='TUNTAS';sp.classList.remove('run');sp.classList.add('ok')}
   const ob=$('#orbBig');ob.classList.remove('work');ob.classList.add('done');
   $('#stgPct').textContent='✓';
   state('done','TUNTAS ✓ · SAYA MENEMANI PAK');
-  $('#app').classList.remove('live');
   const sd=$('#stDone');if(sd)sd.textContent=String(+sd.textContent+1);
   const sk=$('#stKr');if(sk)sk.textContent=String(+sk.textContent+9);
   const sr=$('#stRun');if(sr)sr.textContent='0';
@@ -846,7 +887,7 @@ function finish(){
   setTimeout(()=>{pill('','SIAP, PAK')},3500);
 }
 setInterval(()=>{
-  if(paused||stopped||fin||gateUp||done)return;
+  if(!running||paused||stopped||fin||gateUp||done)return;
   pct+=0.55;sec+=1;
   const wantLog=Math.min(logLines.length,Math.floor(pct/13));
   while(logIdx<wantLog)logPush();
@@ -872,9 +913,8 @@ function setPaused(v){paused=v;$('#btnSPause').textContent=v?'LANJUT':'JEDA';toa
 $('#btnSPause').addEventListener('click',()=>{if(stopped||fin)return;setPaused(!paused)});
 function doStop(){
   if(fin)return;
-  stopped=true;paused=false;render();
+  stopped=true;paused=false;running=false;render();
   const sr=$('#stRun');if(sr)sr.textContent='0';
-  $('#app').classList.remove('live');
   const ob=$('#orbBig');ob.classList.remove('work');
   state('','MK1 · SIAGA · MENUNGGU PERINTAH PAK');
   $('#hdOrb').classList.remove('work');
@@ -927,17 +967,17 @@ function lvOpen(){lvBars();lv.classList.add('open');$('#app').classList.add('liv
   lvT.push(setTimeout(()=>{st.textContent='MENDENGARKAN…'},5800));
 }
 function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[];
-  /* hasil voice tampil DI SEBELAH orb sebagai teks terkirim */
+  /* perintah dari voice → DI SAMPING orb; jawaban AVI → obrolan (di atas orb) */
   const shown=$$('#lvLog .lvln.show');
   if(shown.length){
     const q=shown[0].cloneNode(true);const sq=q.querySelector('small');if(sq)sq.remove();
     const qtx=q.textContent.trim().replace(/^["\u201C]|["\u201D]$/g,'');
-    let rtx=null;
+    if(qtx)sentShow(qtx);
     if(shown.length>1){const r=shown[1].cloneNode(true);const sr=r.querySelector('small');if(sr)sr.remove();
-      rtx=r.textContent.trim().replace(/^["\u201C]|["\u201D]$/g,'')}
-    if(qtx)sentShow(qtx,rtx||undefined);
+      const rtx=r.textContent.trim().replace(/^["\u201C]|["\u201D]$/g,'');
+      if(rtx)chatReply(rtx)}
   }
-  if(!done&&!stopped&&!fin){$('#app').classList.add('live');state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK')}
+  if(running&&!done&&!stopped&&!fin){state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK')}
   else state('','MK1 · REAKTOR STABIL · SIAP MENEMANI PAK');
 }
 $('#btnMic').addEventListener('click',lvOpen);
