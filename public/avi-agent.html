@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · Tampilan Utuh v11</title>
+<title>AVI — Asisten Pribadi · Tampilan Utuh v12</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v11 — ORB MENEMANI DI ATAS PAPAN KETIK
-   · Arahan Pak: saat mengetik, orb AVI tampil DI ATAS PAPAN KETIK —
-     kehadiran tidak hilang: bar orb kecil bernyawa menempel di
-     atas komposer, labelnya mengikuti kondisi (mendengar / kerja %).
-     Papan ketik nyata ditangani: interactive-widget=resizes-content
-     + visualViewport → tinggi ruang mengecil, komposer & orb selalu
-     di atas keyboard.
+   AVI v12 — ORB SELALU DI ATAS PAPAN KETIK
+   · Koreksi arahan Pak (v11 keliru): orb TIDAK BOLEH tersembunyi.
+     Bar orb kecil bernyawa SEKARANG SELALU tampil menempel di atas
+     komposer — bukan hanya saat mengetik. Kehadiran AVI tidak pernah
+     hilang dari sisi tangan Pak; labelnya ikut kondisi:
+     KERJA · NN% · TETAP MENEMANI / AVI SIAGA / TUNTAS.
+     Papan ketik nyata tetap ditangani: interactive-widget=resizes
+     -content + visualViewport → komposer & orb selalu di atas keyboard.
    · Arahan Pak v10 (dipertahankan): orb DISSETUJUI — yang tampil
      hanya ORB + OBROLAN SAAT INI; riwayat chat TERSEMBUNYI DI ATAS.
    · Kaya & hidup: latar berlapis, orb kehadiran besar, detail
@@ -262,11 +263,9 @@ html[data-theme="siang"] #histPanel{box-shadow:0 18px 50px rgba(40,60,90,.25)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* orb di atas papan ketik — menemani saat Pak mengetik (v11) */
-#kbOrb{flex:none;display:flex;align-items:center;gap:9px;padding:0 20px;height:34px;
-  opacity:0;transform:translateY(8px);transition:.28s;pointer-events:none}
-#kbOrb.on{opacity:1;transform:none}
-#kbOrb .ko{width:22px;height:22px;border-radius:50%;flex:none;
+/* orb SELALU di atas papan ketik — kehadiran permanen (v12) */
+#kbOrb{flex:none;display:flex;align-items:center;gap:10px;padding:6px 20px 4px;height:38px}
+#kbOrb .ko{width:24px;height:24px;border-radius:50%;flex:none;
   background:radial-gradient(circle at 35% 32%,#BDF3FF 0%,var(--cyan) 45%,#0B5E75 100%);
   box-shadow:0 0 14px var(--glow),inset 0 0 5px rgba(255,255,255,.4);animation:nafas 2.2s ease-in-out infinite}
 #kbOrb .kotx{font:700 8.5px var(--mono);letter-spacing:2px;color:var(--dim2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -592,8 +591,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
     <div class="hcap">Semua tersimpan aman, Pak — muncul saat dibutuhkan.<span class="vtag soon">BUKA PENUH — COMING SOON</span></div>
   </div>
 
-  <!-- orb di atas papan ketik: muncul saat Pak mengetik -->
-  <div id="kbOrb" aria-hidden="true"><span class="ko"></span><span class="kotx" id="kbTx">SAYA DENGAR, PAK…</span></div>
+  <!-- orb SELALU di atas papan ketik: kehadiran AVI permanen -->
+  <div id="kbOrb" aria-hidden="true"><span class="ko"></span><span class="kotx" id="kbTx">SIAP MENEMANI, PAK</span></div>
 
   <!-- komposer: TANPA LAMPIRAN -->
   <div class="composer">
@@ -680,7 +679,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;heigh
   </div>
 </div>
 
-<div class="note">v11 · ORB + OBROLAN SAAT INI · ORB MENEMANI DI ATAS PAPAN KETIK · RIWAYAT TERSEMBUNYI DI ATAS · AGENT DI DALAM AVI · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
+<div class="note">v12 · ORB + OBROLAN SAAT INI · ORB SELALU DI ATAS PAPAN KETIK · RIWAYAT TERSEMBUNYI DI ATAS · AGENT DI DALAM AVI · JARVIS · SIRI · SNAPSHOT · PI · SESAME</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -728,11 +727,9 @@ $('#histX').addEventListener('click',hCloseS);
 hBg.addEventListener('click',hCloseS);
 hPan.addEventListener('click',e=>{const r=e.target.closest('.hrow');if(r)toast('Percakapan lama — pratinjau penuh COMING SOON, Pak')});
 
-/* ---- orb di atas papan ketik (v11) ---- */
+/* ---- orb SELALU di atas papan ketik (v12) ---- */
 const kbOrb=$('#kbOrb'),cin=$('#cin');
-cin.addEventListener('focus',()=>{kbOrb.classList.add('on');
-  const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'})});
-cin.addEventListener('blur',()=>kbOrb.classList.remove('on'));
+cin.addEventListener('focus',()=>{const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'})});
 if(window.visualViewport){const vv=window.visualViewport;
   const setVH=()=>document.documentElement.style.setProperty('--vvh',vv.height+'px');
   vv.addEventListener('resize',setVH);setVH()}
@@ -805,7 +802,7 @@ function render(){
   const nd=$('#navDot');if(nd)nd.classList.toggle('show',!stopped&&!done);
   pill(stopped?'':(fin?'done':'work'),stopped?'DIHENTIKAN':fin?'SELESAI':'KERJA · '+Math.round(pct)+'%');
   if(kbOrb){kbOrb.classList.toggle('work',!stopped&&!fin&&!done);
-    $('#kbTx').textContent=stopped?'AVI SIAGA · MENEMANI PAK':(fin||done)?'SAYA MENEMANI, PAK':'KERJA · '+Math.round(pct)+'% · TETAP MENEMANI'}
+    $('#kbTx').textContent=stopped?'AVI SIAGA · MENEMANI PAK':(fin||done)?'TUNTAS · SAYA MENEMANI, PAK':'KERJA · '+Math.round(pct)+'% · TETAP MENEMANI'}
 }
 function collapseWork(){const w=$('#stgWork');w.classList.remove('open')}
 function finish(){
