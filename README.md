@@ -8,33 +8,29 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 | Jalur | Isi |
 |---|---|
 | `app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) |
-| `public/avi-agent.html` | Mockup/preview tampilan MK1 v17 — satu file, self-contained |
+| `public/avi-agent.html` | Mockup/preview tampilan MK1 v18 — satu file, self-contained |
 | `.github/workflows/build-android.yml` | CI build APK (jalan saat `app/**` berubah) |
 
-## Preview v17 — LEMBUT, HIDUP, SATU SUARA
+## Preview v18 — JARVIS SIANG & MALAM: DUA-DUANYA HUD
 
-Koreksi atas masukan Pak (logika tema kaku, orb jelek, dua teks output tidak
-estetik):
+Masukan Pak: **ini asisten tema JARVIS — bukan tema polos "kek kebun" tanpa
+animasi**. Betul, maka v18:
 
-1. **Tema tidak kaku** — ada mode **AUTO** yang mengikuti waktu
-   (18.00–06.00 malam, sisanya siang); tombol menyeberang
-   AUTO→MALAM→SIANG, dan setiap perpindahan warna dianimasikan
-   crossfade halus — tidak ada tema yang "menukap" mendadak.
-2. **Orb diulang total** — wajah AVI berlapis: inti bercahaya dengan
-   plasma yang berputar & kilau kaca, dua cincin halus berlawanan arah,
-   satu titik emas yang mengorbit, cahaya yang menempel erat ke orb
-   (bukan banner), dan badan yang melayang lembut. Saat kerja makin
-   cepat & terang; saat tuntas memerah emas lalu kembali tenang.
-3. **Satu slot teks di samping orb** — telemetri MK1, TERKIRIM ✓, dan
-   status kerja bergiliran di SLOT YANG SAMA; tidak pernah ada dua teks
-   bersamaan. Jawaban AVI tetap muncul DI ATAS orb — di dalam obrolan,
-   kini didahului indikator mengetik tiga titik.
+1. **Tema siang diulang** — bukan putih polos, melainkan HUD holografik
+   terang: latar biru-langit teknologi, grid hologram yang terlihat,
+   aurora bercahaya, partikel, dan berkas pindai yang menyapu ruangan.
+   Siang tetap JARVIS.
+2. **Animasi di semua lapis** — berkas pindai menyapu tiap ±8 detik,
+   garis energi di bawah header bernafas, nama AVI berkilau, nav aktif
+   berdenyut, komposer menyala saat fokus, dan orb kini punya cincin
+   derajat + sapuan radar (makin cepat saat kerja, emas saat tuntas).
+3. Slot teks **satu** di samping orb, jawaban AVI **di atas orb**
+   (obrolan, dengan indikator mengetik), asisten dulu — semua arahan
+   sebelumnya dipertahankan.
 
-Arahan lama dipertahankan: **asisten dulu, agent sekadar cadangan** —
-mockup terbuka dalam wujud asisten tenang; agent baru bangun saat Pak
-memberi tugas berat (coba ketik "buatkan laporan pengeluaran") dan
-kembali jadi asisten setelah tuntas. Riwayat chat tetap tersembunyi di
-atas (v10); tanpa lampiran; tanpa audit billing.
+Arahan lama tetap: **asisten dulu, agent sekadar cadangan**; tema AUTO
+ikut waktu dengan crossfade halus; riwayat chat tersembunyi di atas (v10);
+tanpa lampiran; tanpa audit billing.
 
 ## Melihat preview tampilan
 
@@ -49,7 +45,7 @@ ketik nyata di HP ditangani rapi (`interactive-widget=resizes-content` +
 
 ## Status
 
-Tahap desain: mockup v17 (tema auto ikut waktu + crossfade; orb hidup
-bertingkat; satu slot teks di samping orb; jawaban AVI di obrolan).
+Tahap desain: mockup v18 (siang & malam dua-duanya HUD Jarvis; animasi
+di semua lapis; satu slot teks di samping orb; jawaban AVI di obrolan).
 Implementasi desain terbaru ke aplikasi Android menyusul setelah desain
 disetujui.
