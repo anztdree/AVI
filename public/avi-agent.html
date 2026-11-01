@@ -3,32 +3,34 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · v22 HELIX CORE</title>
+<title>AVI — Asisten Pribadi · v23 NADI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v22 — HELIX CORE
-   Kata Pak: "orb emang mirip jarvis!! tapi kita jadi gak punya
-   identitas sendiri dan keliatan banget orb jadul!!! tanpa
-   riwayat — tema monoton dari tadi." Diagnosis v21: meniru
-   reaktor busur Stark terlalu harfiah — koil 12 segmen, tick
-   radar, inti putih — itu bahasa 2008, bukan identitas AVI.
-   v22 membangun IDENTITAS SENDIRI: ENERGI GANDA AVI.
-   1) INTI CAIR — bola energi dengan pusaran conic dua warna:
-      SIAN = pikiran, EMAS = tindakan. Bahasa modern (energi
-      cair yang mengalir), bukan koil logam 2008.
-   2) GIROSKOP AVI — dua cincin orbit miring + satelit energi
-      (satu emas, satu sian) mengelilingi inti — tanda tangan
-      visual AVI sendiri, bukan salinan reaktor Stark.
-   3) Busur presisi dipangkas: satu busur sian + satu emas +
-      ring kemajuan. Koil, tick radar, sapuan — dihapus.
-   4) Koreografi 6 keadaan tetap: SIAGA/MIKIR/BICARA/DENGAR/
-      KERJA/TUNTAS + denyut ACK + parallax menoleh ke kursor.
-   5) Tema makin hidup: glob aurora melayang, transisi antar
-      tab bernyawa, riwayat pindah ke ikon ⧗ di header —
-      obrolan bersih tanpa pita riwayat.
+   AVI v23 — NADI (denyut ruangan)
+   Kata Pak: "masih monoton.... masih ada riyawat".
+   Diagnosis v22: (1) sisa riwayat MASIH terlihat — ikon ⧗ di
+   header, seksi RIWAYAT di sheet TUGAS, "Simpan riwayat" di
+   KENDALI, bahkan obrolan contoh yang sudah terisi saat aplikasi
+   dibuka; (2) yang hidup cuma orb — panel, obrolan, komposer
+   mati semua.
+   v23:
+   1) TANPA RIWAYAT TOTAL — semua jejak riwayat dihapus: ikon
+      ⧗, panel melorot, seksi RIWAYAT di TUGAS, dan obrolan
+      contoh. Obrolan dibuka BERSIH: hanya brief + sapaan hidup.
+      Hasil kerja hidup di obrolan, titik.
+   2) RUANGAN BERNADI — seluruh ruang merespons keadaan AVI
+      sebagai satu nadi: MIKIR (sapuan melambat, plexus cepat),
+      BICARA (aurora lebih jenuh), KERJA (sapuan 2x cepat,
+      lantai grid mengalir deras, plexus menyala), TUNTAS
+      (siram emas sekali lalu tenang).
+   3) DENYUT DI SEMUA LAPIS — scanline HUD di seluruh kaca,
+      sapuan cahaya saat pindah tab, kilat node di rel saat
+      pesan tiba, gelembung menyala saat AVI mengetik, tombol
+      kirim menyala emas saat Pak menulis, nav aktif berdenyut,
+      sempalan HELIX ganda berputar berlawanan di dalam inti.
    Tata arah lama tetap: perintah DI SAMPING orb (satu slot),
    jawaban AVI di obrolan (di atas orb), asisten dulu — agent
    hanya bangun saat diberi tugas berat.
@@ -81,6 +83,10 @@ input{font-family:inherit;color:var(--txt);background:none;border:none;outline:n
   transform:translateZ(0);display:flex;flex-direction:column}
 @media(min-width:460px){.app{border-radius:26px;border:1px solid var(--line2);height:min(900px,calc(var(--vvh,100vh) - 30px))}}
 .app.live{box-shadow:0 0 0 1px var(--line2),0 0 70px var(--glow)}
+/* LAPIS 0 — scanline HUD melintang seluruh kaca (tekstur teknologi) */
+.app::after{content:'';position:absolute;inset:0;z-index:40;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(214,236,255,.017) 0 1px,transparent 1px 3px)}
+html[data-theme="siang"] .app::after{background:repeating-linear-gradient(0deg,rgba(9,44,74,.022) 0 1px,transparent 1px 3px)}
 
 /* LAPIS 1 — aurora (napas ruangan) */
 .bgA{position:absolute;inset:0;z-index:0;pointer-events:none;
@@ -112,6 +118,23 @@ html[data-theme="siang"] .bgFloor{opacity:.65}
 /* LAPIS 5 — vignette */
 .vig{position:absolute;inset:0;z-index:1;pointer-events:none;box-shadow:inset 0 0 90px rgba(0,0,0,.5)}
 html[data-theme="siang"] .vig{box-shadow:inset 0 0 110px rgba(23,54,84,.28)}
+/* LAPIS 5.5 — NADI: ruangan merespons keadaan AVI (satu nadi dgn inti) */
+.bgA{transition:filter .7s ease}
+#bgCv{transition:opacity .7s ease}
+.scan{transition:opacity .6s ease}
+.bgFloor{transition:opacity .7s ease}
+.app.st-think .scan{animation-duration:13s}
+.app.st-think #bgCv{opacity:.95}
+.app.st-speak .bgA{filter:saturate(1.35) brightness(1.04)}
+.app.st-work .bgA{filter:saturate(1.3) brightness(1.06)}
+.app.st-work .scan{opacity:.9;animation-duration:4.2s}
+.app.st-work .bgFloor{opacity:.85;animation-duration:2.8s}
+.app.st-work #bgCv{opacity:1}
+.app.st-work .railL,.app.st-work .railR{opacity:.95}
+.app[data-view="kendali"] .bgFloor{opacity:.85}
+.app.st-done::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(64% 54% at 50% 62%,var(--auro2),transparent 72%);animation:siram 1.5s ease-out both}
+@keyframes siram{0%{opacity:0}24%{opacity:1}100%{opacity:0}}
 /* LAPIS 6 — telemetri sudut HUD kecil */
 .hudC{position:absolute;inset:0;z-index:1;pointer-events:none;font:600 7.5px var(--mono);letter-spacing:1.4px;color:var(--dim2)}
 .hudC s{position:absolute;text-decoration:none;opacity:.6;writing-mode:vertical-rl;display:flex;align-items:center;gap:6px}
@@ -182,7 +205,13 @@ header::after{content:'';position:absolute;left:14px;right:14px;bottom:0;height:
 #strip.bad .pc,#strip.bad .bar b{color:var(--red);background:var(--red)}
 
 main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:0 16px 10px}
-.view{display:none}.view.on{display:block;animation:naik .38s cubic-bezier(.22,1,.36,1)}
+.view{display:none;position:relative}
+.view.on{display:block;animation:naik .38s cubic-bezier(.22,1,.36,1)}
+/* sapuan cahaya tiap tab dibuka — pindah ruang terasa */
+.view.on::after{content:'';position:absolute;inset:-6px 0;pointer-events:none;z-index:3;
+  background:linear-gradient(180deg,transparent,var(--auro1) 46%,transparent);
+  animation:sapu .8s ease-out both}
+@keyframes sapu{0%{transform:translateY(-104%);opacity:1}100%{transform:translateY(104%);opacity:0}}
 
 /* ================= INTI AVI v22 — HELIX CORE ================= */
 #orbWrap{flex:none;transform-origin:left 82%;transition:transform .32s cubic-bezier(.22,1,.36,1)}
@@ -242,6 +271,12 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .coreBall .cg::before{content:'';position:absolute;inset:3px;border-radius:50%;mix-blend-mode:screen;
   background:conic-gradient(from 90deg,transparent 0deg,rgba(255,255,255,.6) 60deg,transparent 140deg,rgba(255,240,200,.65) 210deg,transparent 300deg);
   filter:blur(4px);animation:putar 7s linear infinite}
+/* sempalan HELIX ganda di dalam inti — dua energi berputar berlawanan */
+.coreHx{position:absolute;inset:0;z-index:5;pointer-events:none}
+.coreHx circle{fill:none;stroke-width:1.5;stroke-linecap:round;transform-box:view-box;transform-origin:center}
+.coreHx .h1{stroke:var(--gold);stroke-dasharray:30 120;opacity:.8;animation:putar 4.6s linear infinite}
+.coreHx .h2{stroke:#9BEAFB;stroke-dasharray:22 128;opacity:.65;animation:putar 7.2s linear infinite reverse}
+html[data-theme="siang"] .coreHx .h2{stroke:#046FA8}
 @keyframes nafas2{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 /* — lapis 4: persen / tanda tuntas — */
 #stgPct{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;
@@ -291,6 +326,7 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .orbBig.done .oR.b{border-color:rgba(245,181,74,.24)}
 .orbBig.done .oR.a::after,.orbBig.done .oR.b::after{background:var(--gold);box-shadow:0 0 12px var(--goldSoft),0 0 4px var(--gold)}
 .orbBig.done #stgPct{opacity:1;color:var(--gold);text-shadow:0 0 14px var(--goldSoft)}
+.orbBig.done .coreHx .h1,.orbBig.done .coreHx .h2{stroke:var(--gold)}
 .orbBig.done .burstR{animation:burst2 1s ease-out both}
 @keyframes burst2{0%{transform:scale(.75);opacity:.85}100%{transform:scale(1.9);opacity:0}}
 /* — ACK: denyut singkat saat Pak mengirim perintah — */
@@ -329,6 +365,7 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .card.hol::after{bottom:-1px;right:-1px;border-bottom:1.5px solid var(--cyan);border-right:1.5px solid var(--cyan);border-bottom-right-radius:16px}
 .card.holG::before{border-color:var(--gold)}.card.holG::after{border-color:var(--gold)}
 .clab{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.clab::before{content:'';width:16px;height:1px;flex:none;background:linear-gradient(90deg,var(--cyan),transparent)}
 .clab .tg2{margin-left:auto;font:700 8.5px var(--mono);letter-spacing:1px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:6px;padding:2.5px 7px;animation:blink 1.6s infinite}
 .brow{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
 .brow+.brow{border-top:1px solid var(--line)}
@@ -336,6 +373,10 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .brow b{font-size:13px;font-weight:600;display:block}
 .brow small{color:var(--dim);font-size:11.5px}
 .cap{margin-top:8px;font-size:10.5px;color:var(--dim2);font-style:italic}
+/* zona punya warna sendiri: brief bernuansa emas (ringkasan pagi) */
+.brief{border-top:1.5px solid var(--goldSoft);
+  background:linear-gradient(180deg,rgba(245,181,74,.05),transparent 36%),var(--pan)}
+html[data-theme="siang"] .brief{background:linear-gradient(180deg,rgba(169,106,8,.055),transparent 36%),var(--pan)}
 
 /* pesan — LOG TRANSMISI: rel node di kiri + panel sudut potong */
 .msg{display:flex;gap:9px;margin-top:14px;animation:naik .45s cubic-bezier(.22,1,.36,1) both}
@@ -355,6 +396,10 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .msg.me .bub{border:1px solid var(--goldSoft);border-right:2px solid var(--gold);
   clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
 .bub.tw::after{content:'▌';color:var(--cyan);animation:blink .8s infinite;font-size:12px}
+.bub.tw{box-shadow:0 0 18px var(--cyanSoft)}
+/* kilat node — pesan baru tiba dgn denyut energi di rel transmisi */
+.msg.fresh .nail i{animation:denyutN .95s cubic-bezier(.2,.8,.3,1) both}
+@keyframes denyutN{0%{box-shadow:0 0 0 0 var(--glow);transform:rotate(45deg) scale(2)}100%{box-shadow:0 0 0 16px transparent;transform:rotate(45deg) scale(1)}}
 .bub.tgetik{display:flex;gap:5px;align-items:center;padding:13px 14px}
 .bub.tgetik i{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:lompat 1.1s ease-in-out infinite}
 .bub.tgetik i:nth-child(2){animation-delay:.16s}
@@ -395,26 +440,9 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .vtag.soon{color:var(--dim2);border:1px dashed var(--line2)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 
-/* ---------- riwayat panel ---------- */
-#histBg{position:absolute;inset:0;z-index:8;background:rgba(2,6,12,.5);opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(2px)}
-#histBg.open{opacity:1;pointer-events:auto}
-#histPanel{position:absolute;left:0;right:0;top:0;max-height:72%;z-index:9;background:var(--pan2);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line2);border-radius:0 0 20px 20px;padding:14px 16px 18px;overflow-y:auto;
-  transform:translateY(-102%);transition:transform .45s cubic-bezier(.22,1,.36,1);box-shadow:0 18px 50px rgba(0,0,0,.45)}
-#histPanel.open{transform:translateY(0)}
-.hhd{display:flex;align-items:center;gap:8px}
-.hhd b{font-family:var(--disp);font-size:11px;letter-spacing:2px}
-.hhd small{color:var(--dim2);font-size:9.5px;flex:1}
+/* ---------- panel riwayat DIHAPUS TOTAL (permintaan Pak v23) ---------- */
 .shx{width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);color:var(--dim);font-size:11px;flex:none}
-.daylab{font:700 8.5px var(--mono);letter-spacing:2px;color:var(--dim2);margin:12px 0 5px}
-.hrow{display:flex;align-items:center;gap:10px;background:var(--pan);border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin-bottom:6px}
-.hic{width:28px;height:28px;flex:none;border-radius:8px;background:var(--cyanSoft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--cyan)}
-.htx{flex:1;min-width:0}
-.htx b{font-size:12.5px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.htx small{color:var(--dim);font-size:10.5px}
-.arr{color:var(--dim2)}
 .empty{color:var(--dim2);font-size:11.5px;font-style:italic;padding:6px 2px}
-.hcap{margin-top:12px;font-size:10.5px;color:var(--dim);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
 /* ---------- komposer ---------- */
 .composer{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px 8px;position:relative;z-index:2}
@@ -426,8 +454,11 @@ html[data-theme="siang"] .coreBall::before{mix-blend-mode:normal;background:coni
 .cinWrap input{width:100%;font-size:13.5px}
 .cbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;color:var(--dim);flex:none;transition:.2s;background:var(--pan)}
 .cbtn:hover{color:var(--cyan);border-color:var(--cyan)}
-.cbtn.send{background:var(--cyan);color:#03222E;border-color:var(--cyan);box-shadow:0 0 14px var(--glow)}
+.cbtn.send{background:var(--cyan);color:#03222E;border-color:var(--cyan);box-shadow:0 0 14px var(--glow);animation:nafasKirim 3.4s ease-in-out infinite}
 .cbtn.send:hover{color:#03222E;filter:brightness(1.1)}
+.cbtn.send.rdy{animation:none;transform:scale(1.07);border-color:var(--gold);box-shadow:0 0 22px var(--glow),0 0 10px var(--goldSoft)}
+@keyframes nafasKirim{0%,100%{box-shadow:0 0 9px var(--glow)}50%{box-shadow:0 0 20px var(--glow)}}
+#cin{caret-color:var(--cyan)}
 
 /* ---------- nav ---------- */
 nav{flex:none;display:flex;z-index:2;border-top:1px solid var(--line);background:var(--pan);backdrop-filter:blur(10px);padding:4px 10px calc(6px + env(safe-area-inset-bottom))}
@@ -435,7 +466,8 @@ nav{flex:none;display:flex;z-index:2;border-top:1px solid var(--line);background
 .navbtn::after{content:'';position:absolute;left:26%;right:26%;bottom:2px;height:2px;border-radius:2px;
   background:var(--cyan);transform:scaleX(0);transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px var(--glow)}
 .navbtn.on{color:var(--cyan)}
-.navbtn.on::after{transform:scaleX(1)}
+.navbtn.on::after{transform:scaleX(1);animation:navN 2.6s ease-in-out infinite}
+@keyframes navN{0%,100%{opacity:1}50%{opacity:.5}}
 .navbtn .dot{position:absolute;top:6px;right:24%;width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:0;transition:.3s;box-shadow:0 0 6px var(--gold)}
 .navbtn .dot.show{opacity:1;animation:blink 1s infinite}
 
@@ -536,7 +568,7 @@ html[data-theme="siang"] .note{color:rgba(50,80,110,.5)}
 .cinWrap{clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
 .cbtn{clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)}
 .toast{clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
-#histPanel,#sheet .shpan{border-radius:0}
+#sheet .shpan{border-radius:0}
 /* kurung sudut kartu pindah ke pojok SISI (pojok potong bebas) */
 .card.hol::before{top:-1px;right:-1px;left:auto;border-left:none;border-right:1.5px solid var(--cyan);border-top:1.5px solid var(--cyan);border-top-right-radius:0}
 .card.hol::after{bottom:-1px;left:-1px;right:auto;border-right:none;border-left:1.5px solid var(--cyan);border-bottom:1.5px solid var(--cyan);border-bottom-left-radius:0}
@@ -556,7 +588,7 @@ html[data-theme="siang"] .note{color:rgba(50,80,110,.5)}
 try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dataset.theme='siang'}catch(e){}</script>
 </head>
 <body>
-<div class="app boot live" id="app">
+<div class="app boot live" id="app" data-view="obrolan">
 
   <!-- latar ruang AVI: plexus + lantai holo + pindai + vignette -->
   <div class="bgA"></div>
@@ -577,7 +609,6 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
     <div class="orb" id="hdOrb"></div>
     <div class="brand"><b>AVI</b><small>ASISTEN PRIBADI</small></div>
     <div class="hdR">
-      <button class="themeBtn" id="btnHist" aria-label="Riwayat obrolan" title="Riwayat obrolan">⧗</button>
       <button class="themeBtn" id="btnTheme" aria-label="Ganti tema">☾</button>
       <button class="pill" id="hdPill"><i></i><span id="hdPillTx">SIAP, PAK</span></button>
     </div>
@@ -617,10 +648,8 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
         <div class="cap">Saya rangkum otomatis setiap pagi — tanpa Pak minta.</div>
       </div>
 
-      <!-- percakapan: sapaan + obrolan asisten sehari-hari (bukan agent) -->
+      <!-- obrolan BERSIH — hanya sapaan hidup, TANPA riwayat (v23) -->
       <div class="msg" id="greetMsg"><div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
-      <div class="msg me"><div class="nail"><i></i></div><div class="mbody"><span class="who">PAK</span><div class="bub">Ingatkan saya bayar listrik Jumat ya, AVI.</div></div></div>
-      <div class="msg"><div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub">Siap, Pak — saya ingatkan Jumat pagi, sebelum jam kerja. Kalau sudah bayar, bilang saja biar saya batalkan.</div></div></div>
 
       <!-- panel kerja agent: TERTUTUP — hanya terbuka saat Pak memberi tugas berat -->
       <div id="stgWork">
@@ -706,7 +735,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
         <div class="swrow"><div><b>Rapikan otomatis</b><small>Berkas hasil langsung ke folder rapi</small></div><button class="tg on"></button></div>
         <div class="swrow"><div><b>Tanya sebelum kirim</b><small>Semua pesan keluar saya perlihatkan dulu</small></div><button class="tg on"></button></div>
         <div class="swrow"><div><b>Pembayaran</b><small>Selalu minta izin — terkunci</small></div><button class="tg lock on"></button></div>
-        <div class="swrow"><div><b>Simpan riwayat</b><small>Untuk pelajaran & memory jangka panjang</small></div><button class="tg on"></button></div>
+        <div class="swrow"><div><b>Memori jangka panjang</b><small>AVI mengingat konteks & kebiasaan Pak</small></div><button class="tg on"></button></div>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="clab">BATAS KR HARIAN — <span id="krOut" style="color:var(--gold)">20 KR</span></div>
@@ -727,7 +756,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
           net aktif · latensi 41ms · mem 62%<br/>
           agent: 1 instance hidup di dalam AVI<br/>
           kebijakan: BAKU · batas 20 KR<br/>
-          riwayat tersimpan · memory aktif
+          memori aktif · inti selaras
         </div>
       </div>
       <div class="card" style="margin-top:12px">
@@ -735,7 +764,6 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
         <div class="soon">
           <div class="sc"><b>Kalender & Email</b><small>COMING SOON</small></div>
           <div class="sc"><b>Koneksi Rumah</b><small>COMING SOON</small></div>
-          <div class="sc"><b>Percakapan Tersimpan</b><small>COMING SOON</small></div>
           <div class="sc"><b>Profil Pak</b><small>COMING SOON</small></div>
         </div>
       </div>
@@ -743,25 +771,9 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
     </section>
   </main>
 
-  <!-- RIWAYAT CHAT: tersembunyi di atas, melorot saat dipanggil -->
-  <div id="histBg"></div>
-  <div id="histPanel" class="scr">
-    <div class="hhd"><b>RIWAYAT OBROLAN</b><small>hanya obrolan saat ini yang tampil</small><button class="shx" id="histX">✕</button></div>
-    <div class="daylab" style="margin-top:10px">HARI INI</div>
-    <div id="histToday"><div class="empty">Obrolan hari ini sedang berlangsung di bawah, Pak.</div></div>
-    <div class="daylab">KEMARIN</div>
-    <div class="hrow"><span class="hic">✉</span><div class="htx"><b>Draf email ke Bu Sari</b><small>Tuntas · terkirim setelah izin Pak</small></div><span class="arr">›</span></div>
-    <div class="hrow"><span class="hic">◔</span><div class="htx"><b>Riset harga tiket Surabaya–Bali</b><small>Tuntas · 3 opsi termurah</small></div><span class="arr">›</span></div>
-    <div class="daylab">SENIN</div>
-    <div class="hrow"><span class="hic">▤</span><div class="htx"><b>Rekap pengeluaran mingguan</b><small>Tuntas · PDF 1 halaman</small></div><span class="arr">›</span></div>
-    <div class="daylab">MINGGU LALU</div>
-    <div class="hrow"><span class="hic">✦</span><div class="htx"><b>Ide nama produk baru</b><small>Tuntas · 12 opsi + alasan</small></div><span class="arr">›</span></div>
-    <div class="hrow"><span class="hic">✉</span><div class="htx"><b>Balasan penawaran PT Sinar</b><small>Draf · menunggu tinjauan Pak</small></div><span class="arr">›</span></div>
-    <div class="hrow"><span class="hic">▤</span><div class="htx"><b>Cek stok gudang</b><small>Tuntas · tabel rapi</small></div><span class="arr">›</span></div>
-    <div class="hcap">Semua tersimpan aman, Pak — muncul saat dibutuhkan.<span class="vtag soon">BUKA PENUH — COMING SOON</span></div>
-  </div>
+  <!-- panel riwayat DIHAPUS TOTAL (v23) — obrolan adalah satu-satunya tempat -->
 
-  <!-- INTI AVI v22 — inti cair dua energi + giroskop; SATU slot teks di sebelahnya -->
+  <!-- INTI AVI v23 — inti cair dua energi + giroskop + heliks; SATU slot teks di sebelahnya -->
   <div id="orbDock">
     <div id="orbWrap">
       <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
@@ -786,7 +798,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
           <circle class="burstR" cx="80" cy="80" r="66" fill="none"/>
         </svg>
         <div class="orbRings" aria-hidden="true"><i class="oR c"></i><i class="oR a"></i><i class="oR b"></i></div>
-        <div class="coreBall" aria-hidden="true"><b class="cg"></b></div>
+        <div class="coreBall" aria-hidden="true"><b class="cg"></b><svg class="coreHx" viewBox="0 0 64 64" aria-hidden="true"><circle class="h1" cx="32" cy="32" r="24"/><circle class="h2" cx="32" cy="32" r="19"/></svg></div>
         <div id="stgPct"></div>
       </div>
     </div>
@@ -847,21 +859,9 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
           <button class="qc2 qadd" data-t="Pengingat"><b>Pengingat</b><small>Diingatkan tepat waktu</small></button>
         </div>
       </div>
-      <div class="shsec">
+      <div class="shsec" style="padding-bottom:26px">
         <div class="clab">JADWAL OTOMATIS<span class="tg2">COMING SOON</span></div>
         <div class="swrow"><div><b>Rekap tiap pagi</b><small>Brief ringkas di sapaan, Pak</small></div><button class="tg jtg on"></button></div>
-      </div>
-      <div class="shsec" style="padding-bottom:26px">
-        <div class="clab">RIWAYAT</div>
-        <div class="daylab">HARI INI</div>
-        <div class="srow" id="shResRow">
-          <div class="swic" style="font:700 8px var(--mono)">✓</div>
-          <div class="swb"><b>Rekap rapat pagi</b><small><span class="sst ok">SELESAI</span> PDF · 6 KR</small></div><span class="arr">›</span>
-        </div>
-        <div class="daylab">KEMARIN</div>
-        <div class="srow"><div class="swic" style="font:700 8px var(--mono)">✉</div><div class="swb"><b>Draf email ke Bu Sari</b><small><span class="sst ok">SELESAI</span> · 3 KR</small></div><span class="arr">›</span></div>
-        <div class="daylab">SENIN</div>
-        <div class="srow"><div class="swic" style="font:700 8px var(--mono)">▤</div><div class="swb"><b>Rekap pengeluaran mingguan</b><small><span class="sst ok">SELESAI</span> PDF · 7 KR</small></div><span class="arr">›</span></div>
       </div>
     </div>
   </div>
@@ -881,7 +881,7 @@ try{var _h=new Date().getHours();if(!(_h>=18||_h<6))document.documentElement.dat
   </div>
 </div>
 
-<div class="note">v22 · HELIX CORE — INTI CAIR ENERGI GANDA (SIAN PIKIRAN + EMAS TINDAKAN) · GIROSKOP DUA ORBIT + SATELIT · KOREOGRAFI 6 KEADAAN · DENYUT ACK + PARALLAX · SATU SLOT DI SAMPING ORB · JAWABAN DI ATAS ORB · ASISTEN DULU, AGENT CADANGAN</div>
+<div class="note">v23 · NADI — OBROLAN SELALU BERSIH · RUANGAN BERNADI (LATAR IKUT TEMPO AVI: MIKIR/BICARA/KERJA/TUNTAS) · INTI CAIR ENERGI GANDA + HELIKS · SAPUAN TAB · KILAT NODE PESAN · SATU SLOT DI SAMPING ORB · JAWABAN DI ATAS ORB · ASISTEN DULU, AGENT CADANGAN</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -919,7 +919,7 @@ const greetTxt=(function(){
 })();
 
 /* ---- PLEXUS: partikel terhubung garis (logika animasi ruangan) ---- */
-const cv=$('#bgCv'),c2=cv.getContext('2d');let P=[],colC='#22D3EE',colG='#F5B54A';
+const cv=$('#bgCv'),c2=cv.getContext('2d');let P=[],colC='#22D3EE',colG='#F5B54A';let cvSpeed=1;
 function cvColors(){const s=getComputedStyle(document.documentElement);
   colC=s.getPropertyValue('--cyan').trim()||colC;colG=s.getPropertyValue('--gold').trim()||colG}
 function cvSize(){const a=$('#app');cv.width=a.clientWidth;cv.height=a.clientHeight;
@@ -929,7 +929,7 @@ function cvSize(){const a=$('#app');cv.width=a.clientWidth;cv.height=a.clientHei
 function cvTick(){
   if(!document.hidden&&P.length){
     c2.clearRect(0,0,cv.width,cv.height);
-    for(const p of P){p.x+=p.vx;p.y+=p.vy;
+    for(const p of P){p.x+=p.vx*cvSpeed;p.y+=p.vy*cvSpeed;
       if(p.x<-9)p.x=cv.width+9;if(p.x>cv.width+9)p.x=-9;
       if(p.y<-9)p.y=cv.height+9;if(p.y>cv.height+9)p.y=-9;
       c2.beginPath();c2.arc(p.x,p.y,p.r,0,6.29);
@@ -937,7 +937,7 @@ function cvTick(){
     c2.lineWidth=.6;
     for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){
       const a=P[i],b=P[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
-      if(d<7400){c2.strokeStyle=colC;c2.globalAlpha=(1-d/7400)*.10;
+      if(d<7400){c2.strokeStyle=colC;c2.globalAlpha=(1-d/7400)*(.10+(cvSpeed-1)*.05);
         c2.beginPath();c2.moveTo(a.x,a.y);c2.lineTo(b.x,b.y);c2.stroke()}}
     c2.globalAlpha=1}
   requestAnimationFrame(cvTick)}
@@ -950,12 +950,17 @@ $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
   $$('.navbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-'+b.dataset.v).classList.add('on');
+  $('#app').dataset.view=b.dataset.v;
 }));
 $('#hdPill').addEventListener('click',openSheet);
 
 /* ---- orb MERESPONS PAK: keadaan, denyut ACK, parallax menoleh ---- */
-function orbState(s){const ob=$('#orbBig');if(!ob)return;
-  ob.classList.remove('think','speak','listen');if(s)ob.classList.add(s)}
+function orbState(s){const ob=$('#orbBig'),ap=$('#app');if(!ob)return;
+  ob.classList.remove('think','speak','listen');if(s)ob.classList.add(s);
+  /* NADI: ruangan ikut keadaan inti */
+  ap.classList.remove('st-think','st-speak','st-listen','st-done');
+  if(s)ap.classList.add('st-'+s);
+  cvSpeed=s==='think'?1.9:s==='speak'?1.5:s==='listen'?1.25:1}
 function ack(){const ob=$('#orbBig');if(!ob)return;
   ob.classList.remove('ack');void ob.offsetWidth;ob.classList.add('ack');
   setTimeout(()=>ob.classList.remove('ack'),850)}
@@ -994,7 +999,7 @@ function sentShow(txt){
 }
 function tgetikShow(){
   const s=$('#v-obrolan'),d=document.createElement('div');
-  d.className='msg';d.innerHTML='<div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub tgetik"><i></i><i></i><i></i></div></div>';
+  d.className='msg fresh';d.innerHTML='<div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub tgetik"><i></i><i></i><i></i></div></div>';
   const end=$('#chatEnd');if(end)s.insertBefore(d,end);else s.appendChild(d);
   const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   return d;
@@ -1011,7 +1016,7 @@ function typeInto(el,txt){
 }
 function chatReply(txt){
   const s=$('#v-obrolan'),d=document.createElement('div');
-  d.className='msg';
+  d.className='msg fresh';
   d.innerHTML='<div class="nail"><i></i></div><div class="mbody"><span class="who">AVI · ASISTEN</span><div class="bub"></div>';
   const bb=d.querySelector('.bub');
   const end=$('#chatEnd');if(end)s.insertBefore(d,end);else s.appendChild(d);
@@ -1054,7 +1059,7 @@ function startTask(title){
 $('#btnSend').addEventListener('click',()=>{
   const i=$('#cin'),v=i.value.trim();
   if(!v){toast('Tulis dulu, Pak');return}
-  sentShow(v);i.value='';ack();orbState('think');
+  sentShow(v);i.value='';$('#btnSend').classList.remove('rdy');ack();orbState('think');
   const isTask=/\b(buatkan|buat|rekap|laporan|riset|analisa|kerjakan|siapkan)\b/i.test(v);
   const tp=tgetikShow();
   setTimeout(()=>{
@@ -1066,14 +1071,7 @@ $('#btnSend').addEventListener('click',()=>{
 });
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnSend').click()});
 
-/* ---- riwayat: ikon ⧗ di header — obrolan tetap bersih ---- */
-const hPan=$('#histPanel'),hBg=$('#histBg');
-function hOpen(){hPan.classList.add('open');hBg.classList.add('open');hPan.scrollTop=0}
-function hCloseS(){hPan.classList.remove('open');hBg.classList.remove('open')}
-$('#btnHist').addEventListener('click',hOpen);
-$('#histX').addEventListener('click',hCloseS);
-hBg.addEventListener('click',hCloseS);
-hPan.addEventListener('click',e=>{const r=e.target.closest('.hrow');if(r)toast('Percakapan lama — pratinjau penuh COMING SOON, Pak')});
+/* ---- riwayat DIHAPUS TOTAL (v23) — obrolan adalah satu-satunya tempat ---- */
 
 /* ---- papan ketik: --vvh + fokus = obrolan terkini ---- */
 const cin=$('#cin');
@@ -1082,6 +1080,8 @@ if(window.visualViewport){const vv=window.visualViewport;
   const setVH=()=>{document.documentElement.style.setProperty('--vvh',vv.height+'px');
     document.documentElement.classList.toggle('kb',vv.height<window.innerHeight-140)};
   vv.addEventListener('resize',setVH);setVH()}
+/* tombol kirim hidup — menyala emas saat Pak mulai menulis */
+cin.addEventListener('input',()=>$('#btnSend').classList.toggle('rdy',!!cin.value.trim()));
 
 /* ---- sheet ---- */
 const sheet=$('#sheet');
@@ -1094,9 +1094,9 @@ function jump(sel){
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-obrolan').classList.add('on');
   $$('.navbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='obrolan'));
+  $('#app').dataset.view='obrolan';
   const el=$(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
 }
-$('#shResRow').addEventListener('click',()=>toast('Riwayat lama — pratinjau di aplikasi'));
 
 /* ---- kendali ---- */
 $$('.opt').forEach(o=>o.addEventListener('click',()=>{
@@ -1156,6 +1156,8 @@ function render(){
   const act=running&&!stopped&&!fin&&!done;
   ob.classList.toggle('work',act);
   $('#hdOrb').classList.toggle('work',act);
+  $('#app').classList.toggle('st-work',act);
+  cvSpeed=act?2.5:ob.classList.contains('think')?1.9:ob.classList.contains('speak')?1.5:ob.classList.contains('listen')?1.25:1;
   const off=CP*(1-pct/100);
   $('#orbProg').setAttribute('stroke-dashoffset',off.toFixed(1));
   $('#stgPct').textContent=Math.round(pct)+'%';
@@ -1185,9 +1187,6 @@ function finish(){
   const sd=$('#stDone');if(sd)sd.textContent=String(+sd.textContent+1);
   const sk=$('#stKr');if(sk)sk.textContent=String(+sk.textContent+9);
   const sr=$('#stRun');if(sr)sr.textContent='0';
-  const nw=document.createElement('div');
-  nw.innerHTML='<div class="srow"><div class="swic" style="font:700 8px var(--mono)">✓</div><div class="swb"><b>Laporan pengeluaran bulan ini</b><small><span class="sst ok">SELESAI</span> PDF · 9 KR</small></div><span class="arr">›</span></div>';
-  const refEl=$('#shResRow');if(refEl&&refEl.parentNode)refEl.parentNode.insertBefore(nw.firstChild,refEl);
   $('#doneCard').style.display='block';
   const fm=$('#followMsg');if(fm)fm.style.display='flex';
   $('#hdOrb').classList.remove('work');
@@ -1197,10 +1196,9 @@ function finish(){
   setTimeout(()=>{st.classList.remove('on')},4000);
   const sh=$('#shRun');
   if(sh){sh.classList.add('ok');const s2=$('#shStepTx');if(s2)s2.textContent='Tuntas — 2 halaman, angka sudah saya cek ulang.';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
-  const ht=$('#histToday');
-  if(ht){ht.innerHTML='<div class="hrow"><span class="hic">▤</span><div class="htx"><b>Laporan pengeluaran bulan ini</b><small>Baru saja · PDF jadi</small></div><span class="arr">›</span></div>'}
-  const hc=$('#histCount');if(hc)hc.textContent=String(+hc.textContent+1);
-  setTimeout(()=>{collapseWork();ob.classList.remove('done');if(orbCls==='done')orbLine('idle','','SIAGA — SISTEM NOMINAL')},3200);
+  $('#app').classList.remove('st-work');$('#app').classList.add('st-done');
+  setTimeout(()=>{collapseWork();ob.classList.remove('done');$('#app').classList.remove('st-done');
+    if(orbCls==='done')orbLine('idle','','SIAGA — SISTEM NOMINAL')},3200);
   toast('Tuntas, Pak — laporannya menunggu di obrolan');
   setTimeout(()=>{pill('','SIAP, PAK')},3500);
 }
@@ -1234,6 +1232,7 @@ function doStop(){
   stopped=true;paused=false;running=false;render();
   const sr=$('#stRun');if(sr)sr.textContent='0';
   const ob=$('#orbBig');ob.classList.remove('work');
+  $('#app').classList.remove('st-work');cvSpeed=1;
   orbLine('idle','','SIAGA — MENUNGGU PERINTAH');
   $('#hdOrb').classList.remove('work');
   const nd=$('#navDot');if(nd)nd.classList.remove('show');
