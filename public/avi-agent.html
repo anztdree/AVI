@@ -3,31 +3,30 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XI SERVO CORE v31</title>
+<title>AVI — Asisten Pribadi · MK-XII LIQUID LIGHT v32</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v31 — "MK-XI SERVO CORE" : ORB = MESIN ROBOTIK, BUKAN PLANET
-   Masukan Pak: "teknologi robotic .. bukan planet".
+   AVI v32 — "MK-XII LIQUID LIGHT" : ORB = BOLA KACA CAHAYA CAIR
+   Masukan Pak: "kenapa dari kemarin orb jeleeeeek semua".
+   DIAGNOSIS: v26-v31 gagal karena TUMPUKAN ORNAMEN CSS (cincin, gigi,
+   bilah, retikel) — saat bergerak terlihat berisik & murahan. Solusi:
+   SATU ide dieksekusi mulus — bola kaca berisi cahaya cair persis
+   bahasa orb Gemini Live / Siri (rujukan nyata), dirender CANVAS.
    ⇒ Dua target, rombak dalam:
      · OBROLAN : COMMS DECK — bar sambungan inti melekat (sinyal
        hidup + latensi berdenyut + badge enkripsi), pesan ber-META
        (label AVI · INTI MK1), bubble kaca dgn sudut bracket
        teknis, garis event sistem ◈ saat agent bangun/stop/tuntas,
        brief dgn tag meta emas per baris.
-     · ORB     : MK-XI SERVO CORE — masukan Pak "teknologi robotic
-       .. bukan planet" ⇒ bola kawat bujur/lintang (kesan planet)
-       DIGTOTAL diganti rakitan mesin robotik:
-       (1) IRIS APERTURE — 6 bilah mesin berputar melingkari inti,
-           mata robot mekanik, dipegang larik 6 baut servo emas;
-       (2) COG — gigi mesin 24T miring 3D, berlawanan arah;
-       (3) TIGA cincin giro kini TERKALIBRASI — tick skala mesin
-           mengelilingi tiap cincin;
-       (4) reticle bidik silang HUD + bidang imbas emas + radar
-           ping + inti plasma (dipertahankan — itu teknologi).
-       Siluet = mesin hidup: gigi, bilah, baut, bidik. Bukan bola.
+     · ORB     : MK-XII LIQUID LIGHT — engine canvas: bola kaca gelap
+       berisi 4 pita cahaya sutra yang MENYUSUR terus (kurva-S hidup,
+       inti putih-panas), debu emas berkelip, kilau kaca kiri-atas,
+       rim bawah bercahaya, bloom lembut. KERJA = arus deras 3.4x +
+       denyut; TUNTAS = seluruh cahaya berubah EMAS. Satu-satunya
+       ornamen di atas kaca: cincin progres tipis + angka persen.
      · PANGGUNG : orb HERO ±200px di tengah (v30), mengecil 112px
        saat papan ketik buka; STRIP RINGKASAN harian (jadwal/
        pengingat/cuaca) di bawahnya — tetap dipertahankan.
@@ -296,9 +295,13 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ ORB MK-X — HOLO GYRO (v29) : bola 3D sesungguhnya + giroskop 3 sumbu ============
-   Antara-antara: siluet berubah terus — cincin miring beririsan berputar di sumbu berbeda,
-   bola kawat berputar, bidang imbas emas menyapu kutub, ping radar, inti plasma. */
+/* ============ ORB v32 — MK-XII LIQUID LIGHT (canvas) ============
+   Rujukan nyata: orb Google Gemini Live / Siri — SATU bola kaca mulus
+   dengan aliran cahaya sutra di dalam kaca (sian→teal, aksen emas),
+   kilau kaca, debu cahaya berkelip, rim bercahaya + bloom lembut.
+   Kemewahan datang dari CAHAYA, bukan tumpukan ornamen (v26-v31 gagal
+   karena tumpukan cincin/gigi/bilah terlihat berisik saat bergerak).
+   Mesin render = canvas rAF 60fps di akhir <script>. */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
 /* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
 .heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
@@ -307,163 +310,25 @@ html.kb .heroWrap{width:112px;height:112px}
 html.kb .heroWrap .orbBig{transform:scale(1)}
 html.kb .aura{inset:-14px}
 .aura{position:absolute;inset:-38px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle at 50% 47%,rgba(34,211,238,.17) 0%,rgba(34,211,238,.06) 42%,transparent 66%);
+  background:radial-gradient(circle at 50% 47%,rgba(34,211,238,.16) 0%,rgba(34,211,238,.05) 42%,transparent 66%);
   animation:auraB 7s ease-in-out infinite}
-.aura::after{content:'';position:absolute;inset:22%;border-radius:50%;
-  background:radial-gradient(circle at 50% 45%,rgba(245,181,74,.10),transparent 62%)}
+.aura::after{content:'';position:absolute;inset:24%;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,rgba(245,181,74,.08),transparent 62%)}
 @keyframes auraB{0%,100%{opacity:.7;transform:scale(.965)}50%{opacity:1;transform:scale(1.035)}}
+html[data-theme="siang"] .aura{opacity:.55}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
-/* bezel derajat — cincin instrumen mengelilingi giro (anti-biasa) */
-.bezel{position:absolute;inset:-3px;border-radius:50%;opacity:.55;pointer-events:none;
-  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.55) 0deg .7deg,transparent .7deg 6deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
-  animation:bezSpin 90s linear infinite}
-.bezel::after{content:'';position:absolute;inset:7px;border-radius:50%;
-  background:repeating-conic-gradient(from 45deg,rgba(245,181,74,.8) 0deg 1.4deg,transparent 1.4deg 90deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px))}
-@keyframes bezSpin{to{transform:rotate(360deg)}}
-.orbBig.work .bezel{animation-duration:22s;opacity:.75}
-.orbBig.done .bezel{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.6) 0deg .7deg,transparent .7deg 6deg)}
-.orbBig svg{position:absolute;inset:0;overflow:visible}
-.panggung3d{position:absolute;inset:0;perspective:340px}
-.hgyro{position:absolute;inset:0;transform-style:preserve-3d;animation:hTilt 13s ease-in-out infinite;will-change:transform}
-@keyframes hTilt{0%,100%{transform:rotateX(54deg) rotateZ(0deg)}50%{transform:rotateX(66deg) rotateZ(26deg)}}
-/* — cincin giroskop: TIGA sumbu berbeda, masing-masing arc emas+sian & satelit — */
-.gring{position:absolute;left:50%;top:50%;border-radius:50%;transform-style:preserve-3d;will-change:transform}
-.gring i,.gring b,.gring u{position:absolute;border-radius:50%}
-.gring i{inset:0;border:1px solid rgba(34,211,238,.3)}
-/* tick kalibrasi mesin mengelilingi tiap cincin giro */
-.gring i::after{content:'';position:absolute;inset:-4px;border-radius:50%;
-  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.5) 0deg 1.7deg,transparent 1.7deg 12deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px))}
-.gring b{inset:0;
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
-  background:conic-gradient(from 20deg,transparent 0 56%,rgba(245,181,74,.95) 68%,rgba(140,238,255,.92) 77%,transparent 86%)}
-.gring u{top:-2.5px;left:50%;width:5px;height:5px;margin-left:-2.5px;background:var(--gold);box-shadow:0 0 7px rgba(245,181,74,.95)}
-.gring u.c{background:#9BEBFF;box-shadow:0 0 6px rgba(34,211,238,.9)}
-.gx{width:84px;height:84px;margin:-42px 0 0 -42px;animation:gxA 7.5s linear infinite}
-.gy{width:98px;height:98px;margin:-49px 0 0 -49px;animation:gyA 11s linear infinite reverse}
-.gz{width:72px;height:72px;margin:-36px 0 0 -36px;animation:gzA 9s linear infinite}
-@keyframes gxA{from{transform:rotateY(57deg) rotateZ(0deg)}to{transform:rotateY(57deg) rotateZ(360deg)}}
-@keyframes gyA{from{transform:rotateX(64deg) rotateZ(0deg)}to{transform:rotateX(64deg) rotateZ(360deg)}}
-@keyframes gzA{from{transform:rotateX(80deg) rotateY(18deg) rotateZ(0deg)}to{transform:rotateX(80deg) rotateY(18deg) rotateZ(-360deg)}}
-/* — COG: gigi mesin 24T miring 3D, berlawanan arah dgn giro (mesin, bukan planet) — */
-.cog{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;
-  animation:cogA 19s linear infinite reverse;will-change:transform}
-@keyframes cogA{from{transform:rotateX(62deg) rotateZ(0deg)}to{transform:rotateX(62deg) rotateZ(-360deg)}}
-.cog i{position:absolute;inset:0;border-radius:50%;
-  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.6) 0deg 4.5deg,transparent 4.5deg 15deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.4px),#000 calc(100% - 2.4px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 3.4px),#000 calc(100% - 2.4px))}
-.cog i.in{inset:7px;
-  background:repeating-conic-gradient(from 8deg,rgba(34,211,238,.5) 0deg 3deg,transparent 3deg 18deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.2px),#000 calc(100% - 1.4px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 2.2px),#000 calc(100% - 1.4px))}
-/* — IRIS APERTURE: 6 bilah mesin berputar = mata robot, dgn larik baut servo emas — */
-.iris{position:absolute;left:50%;top:50%;width:66px;height:66px;margin:-33px 0 0 -33px;z-index:2;
-  filter:drop-shadow(0 0 4px rgba(34,211,238,.3));animation:irisSpin 30s linear infinite;will-change:transform}
-@keyframes irisSpin{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.05)}100%{transform:rotate(360deg) scale(1)}}
-.iris i{position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(34,211,238,.32),rgba(34,211,238,.06) 52%,rgba(150,200,230,.14));
-  clip-path:polygon(80.7% 41.8%,101% 7%,165% 18%,165% 82%,93% 101%,78.8% 63.5%)}
-.iris i:nth-child(2){transform:rotate(60deg)}
-.iris i:nth-child(3){transform:rotate(120deg)}
-.iris i:nth-child(4){transform:rotate(180deg)}
-.iris i:nth-child(5){transform:rotate(240deg)}
-.iris i:nth-child(6){transform:rotate(300deg)}
-.irisBarrel{position:absolute;inset:-1px;border-radius:50%;
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
-  background:conic-gradient(from 0deg,rgba(140,238,255,.8),rgba(140,238,255,.15) 36%,rgba(245,181,74,.65) 62%,rgba(140,238,255,.2))}
-.irisBarrel s{position:absolute;top:50%;left:50%;width:3.5px;height:3.5px;margin:-1.75px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 5px rgba(245,181,74,.9);
-  transform:rotate(var(--a)) translateY(-32px)}
-/* — reticle bidik silang robot (HUD bidikan) — */
-.retH,.retV{position:absolute;left:50%;top:50%;z-index:1;pointer-events:none}
-.retH{width:104px;height:1px;margin-left:-52px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.38),transparent)}
-.retV{width:1px;height:104px;margin-top:-52px;background:linear-gradient(180deg,transparent,rgba(34,211,238,.38),transparent)}
-/* — bidang imbas emas menyapu kutub→kutub (tanda vital pemindaian) — */
-.hscan{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
-  border:1px solid rgba(245,181,74,.62);box-shadow:0 0 9px rgba(245,181,74,.32);
-  animation:hScan 5.6s linear infinite;will-change:transform,opacity}
-@keyframes hScan{
-  0%{transform:rotateX(90deg) translateZ(27px) scale(.16);opacity:0}
-  10%{opacity:.95}
-  25%{transform:rotateX(90deg) translateZ(15px) scale(.74)}
-  50%{transform:rotateX(90deg) translateZ(0px) scale(1)}
-  75%{transform:rotateX(90deg) translateZ(-15px) scale(.74)}
-  90%{opacity:.95}
-  100%{transform:rotateX(90deg) translateZ(-27px) scale(.16);opacity:0}}
-/* — orbit partikel mikro (3 bidang miring tambahan) — */
-.orbT{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(34,211,238,.14)}
-.orbT s{position:absolute;top:-1.5px;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#CFF6FF;box-shadow:0 0 5px rgba(190,247,255,.95)}
-.t1{width:44px;height:44px;margin:-22px 0 0 -22px;animation:tA 5.5s linear infinite}
-.t2{width:56px;height:56px;margin:-28px 0 0 -28px;animation:tB 7.5s linear infinite reverse}
-.t3{width:66px;height:66px;margin:-33px 0 0 -33px;animation:tC 9.5s linear infinite}
-@keyframes tA{from{transform:rotateY(72deg) rotateZ(0deg)}to{transform:rotateY(72deg) rotateZ(360deg)}}
-@keyframes tB{from{transform:rotateX(58deg) rotateY(22deg) rotateZ(0deg)}to{transform:rotateX(58deg) rotateY(22deg) rotateZ(360deg)}}
-@keyframes tC{from{transform:rotateX(84deg) rotateZ(0deg)}to{transform:rotateX(84deg) rotateZ(360deg)}}
-/* — inti plasma: selalu menghadap Pak (di luar kemiringan) — */
-.gcore{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;
-  background:radial-gradient(circle at 40% 34%,#F4FFFF 0%,#B4F4FD 28%,#2FC4E2 56%,#07566C 82%,#042430 100%);
-  box-shadow:0 0 15px rgba(34,211,238,.55),inset 0 0 6px rgba(190,249,255,.55);
-  animation:coreBreath 3.2s ease-in-out infinite}
-@keyframes coreBreath{0%,100%{transform:scale(.93)}50%{transform:scale(1.06)}}
-.gcore span{position:absolute;inset:1px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent 0 66%,rgba(255,255,255,.62) 78%,transparent 90%);
-  animation:coreSweep 4.4s linear infinite}
-@keyframes coreSweep{to{transform:rotate(360deg)}}
-/* — ping radar 2D mengembang — */
-.hping{position:absolute;inset:6px;border-radius:50%;border:1.5px solid rgba(34,211,238,.5);opacity:0;pointer-events:none;
-  animation:hPing 4.6s cubic-bezier(.22,.61,.36,1) infinite}
-.hping.d2{animation-delay:2.3s}
-@keyframes hPing{0%{transform:scale(.52);opacity:0}12%{opacity:.7}100%{transform:scale(1.14);opacity:0}}
-/* — lapisan HUD 2D: cincin progres + persen — */
+.orbCv{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* lapisan HUD 2D: cincin progres tipis + persen — satu-satunya ornamen di atas kaca */
 .orbBig .prog{fill:none;stroke:var(--cyan);stroke-width:2.4;stroke-linecap:round;opacity:0;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .4s,opacity .4s;filter:drop-shadow(0 0 5px var(--glow))}
-.pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#04222C;opacity:0;transition:.3s;text-shadow:0 0 8px rgba(255,255,255,.4)}
+.pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#EAFDFF;opacity:0;transition:.3s;text-shadow:0 0 10px rgba(34,211,238,.65)}
 .orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
-/* — state KERJA: overdrive, semua lapisan ngebut — */
-.orbBig.work .hgyro{animation-duration:5.6s}
-.orbBig.work .iris{animation-duration:9s;filter:drop-shadow(0 0 6px rgba(34,211,238,.5))}
-.orbBig.work .cog{animation-duration:6.5s}
-.orbBig.work .gx{animation-duration:2.5s}
-.orbBig.work .gy{animation-duration:3.7s}
-.orbBig.work .gz{animation-duration:2.9s}
-.orbBig.work .hscan{animation-duration:2.2s}
-.orbBig.work .gcore{animation-duration:1.3s;background:radial-gradient(circle at 40% 34%,#FFFFFF 0%,#D6FBFF 24%,#3BD4F0 52%,#08607A 82%,#042430 100%);box-shadow:0 0 24px rgba(34,211,238,.9),inset 0 0 8px rgba(220,252,255,.7)}
-.orbBig.work .gcore span{animation-duration:1.2s}
-.orbBig.work .hping{animation-duration:2.1s;border-color:rgba(245,181,74,.55)}
 .orbBig.work .prog,.orbBig.work .pct{opacity:1}
-/* — state TUNTAS: seluruh giroskop mengemas jadi emas — */
-.orbBig.done .gring i{border-color:rgba(245,181,74,.52)}
-.orbBig.done .gring i::after{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.7) 0deg 1.7deg,transparent 1.7deg 12deg)}
-.orbBig.done .cog i{background:repeating-conic-gradient(from 0deg,rgba(245,181,74,.75) 0deg 4.5deg,transparent 4.5deg 15deg)}
-.orbBig.done .cog i.in{background:repeating-conic-gradient(from 8deg,rgba(245,181,74,.6) 0deg 3deg,transparent 3deg 18deg)}
-.orbBig.done .iris{filter:drop-shadow(0 0 5px rgba(245,181,74,.4))}
-.orbBig.done .iris i{background:linear-gradient(160deg,rgba(245,181,74,.36),rgba(245,181,74,.07) 52%,rgba(255,236,190,.2))}
-.orbBig.done .irisBarrel{background:conic-gradient(from 0deg,rgba(255,236,190,.85),rgba(245,181,74,.2) 36%,rgba(245,181,74,.75) 62%,rgba(245,181,74,.25))}
-.orbBig.done .retH{background:linear-gradient(90deg,transparent,rgba(245,181,74,.5),transparent)}
-.orbBig.done .retV{background:linear-gradient(180deg,transparent,rgba(245,181,74,.5),transparent)}
-.orbBig.done .gring b{background:conic-gradient(from 20deg,transparent 0 56%,rgba(255,236,190,.95) 68%,rgba(245,181,74,.9) 77%,transparent 86%)}
-.orbBig.done .gcore{background:radial-gradient(circle at 40% 34%,#FFF9E6 0%,#FFE3A6 28%,#F0AE3C 56%,#8A5A10 82%,#3A2705 100%);box-shadow:0 0 20px rgba(245,181,74,.75),inset 0 0 6px rgba(255,244,214,.6)}
-.orbBig.done .hscan{border-color:rgba(255,236,190,.75);box-shadow:0 0 9px rgba(245,181,74,.4)}
-.orbBig.done .hping{border-color:rgba(245,181,74,.6)}
-.orbBig.done .gx u{background:#FFE9B0;box-shadow:0 0 7px rgba(245,181,74,.95)}
-.orbBig.done .pct{color:#241300}
+.orbBig.done .pct{color:#FFE9B0;text-shadow:0 0 10px rgba(245,181,74,.65)}
 .orbBig.done .prog{stroke:var(--gold);opacity:1}
 .orbBig.done .halo{animation:halo .9s ease-out both}
-/* — tema siang: garis lebih tegas di latar terang — */
-html[data-theme="siang"] .orbBig .gring i{border-color:rgba(12,110,136,.42)}
-html[data-theme="siang"] .orbBig .cog i{background:repeating-conic-gradient(from 0deg,rgba(12,110,136,.5) 0deg 4.5deg,transparent 4.5deg 15deg)}
-html[data-theme="siang"] .orbBig .cog i.in{background:repeating-conic-gradient(from 8deg,rgba(12,110,136,.45) 0deg 3deg,transparent 3deg 18deg)}
-html[data-theme="siang"] .orbBig .iris i{background:linear-gradient(160deg,rgba(9,125,150,.24),rgba(9,125,150,.05) 52%,rgba(20,32,50,.1))}
-html[data-theme="siang"] .orbBig .retH{background:linear-gradient(90deg,transparent,rgba(12,110,136,.4),transparent)}
-html[data-theme="siang"] .orbBig .retV{background:linear-gradient(180deg,transparent,rgba(12,110,136,.4),transparent)}
+html[data-theme="siang"] .pct{color:#073744;text-shadow:0 0 8px rgba(255,255,255,.65)}
+
 
 /* SLOT teks + STRIP RINGKASAN di bawah orb hero (v30) */
 .orbSide{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;max-width:360px;position:relative;text-align:center}
@@ -806,43 +671,24 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-X HOLO GYRO — HERO di panggung tengah, ringkasan di bawahnya (v30) -->
+  <!-- ORB MK-XII LIQUID LIGHT — bola kaca canvas, hero di panggung tengah (v32) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
       <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
-      <div class="bezel"></div>
-      <div class="panggung3d">
-        <i class="retH"></i><i class="retV"></i>
-        <div class="hgyro">
-          <div class="gring gx"><i></i><b></b><u></u></div>
-          <div class="gring gy"><i></i><b></b><u class="c"></u></div>
-          <div class="gring gz"><i></i><b></b><u></u></div>
-          <div class="cog"><i></i><i class="in"></i></div>
-          <div class="hscan"></div>
-          <div class="orbT t1"><s></s></div>
-          <div class="orbT t2"><s></s></div>
-          <div class="orbT t3"><s></s></div>
-        </div>
-        <div class="iris"><i></i><i></i><i></i><i></i><i></i><i></i>
-          <div class="irisBarrel">
-            <s style="--a:0deg"></s><s style="--a:60deg"></s><s style="--a:120deg"></s>
-            <s style="--a:180deg"></s><s style="--a:240deg"></s><s style="--a:300deg"></s>
-          </div>
-        </div>
-        <div class="gcore"><span></span></div>
-      </div>
+      <canvas class="orbCv" id="orbCv" aria-hidden="true"></canvas>
       <svg width="112" height="112" viewBox="0 0 112 112">
         <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
       </svg>
-      <div class="hping"></div><div class="hping d2"></div>
+      <div class="halo"></div>
+      <span class="pct" id="stgPct">0%</span>
       <div class="halo"></div>
       <span class="pct" id="stgPct">0%</span>
       </div>
     </div>
     <div class="orbSide" id="orbSide">
       <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div></div>
-      <div id="orbIdle">MK-XI · SERVO TERKUNCI · IRIS AKTIF · MEMORI 62%</div>
+      <div id="orbIdle">MK-XII · CAHAYA CAIR · ARUS STABIL · MEMORI 62%</div>
       <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
@@ -927,7 +773,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v31 · MK-XI SERVO CORE — MATA ROBOT MEKANIK: IRIS 6 BILAH + COG GIGI 3D + GIRO TERKALIBRASI + BIDIK SILANG · BUKAN PLANET · HERO 200PX · RINGKASAN HARIAN · 112PX SAAT KEYBOARD · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
+<div class="note">v32 · MK-XII LIQUID LIGHT — BOLA KACA CAHAYA CAIR 60FPS · RUJUKAN: ORB GEMINI LIVE / SIRI · KERJA = ARUS DERAS · TUNTAS = EMAS · HERO 200PX · RINGKASAN HARIAN · 112PX SAAT KEYBOARD · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1265,7 +1111,111 @@ moveInd($('.navbtn.on'));
 setTimeout(()=>moveInd($('.navbtn.on')),350); /* ulang setelah font termuat — indikator presisi */
 (function(){const m=$('main');if(m)m.scrollTop=m.scrollHeight})();
 /* bingkai tetap tegap: .app TIDAK BOLEH tergulik */
-(function(){const a=$('#app');a.addEventListener('scroll',()=>{if(a.scrollTop!==0)a.scrollTop=0})})();
+/* ===== MK-XII LIQUID LIGHT ENGINE — bola kaca cahaya cair (canvas 60fps) ===== */
+(function(){
+  const cv=document.getElementById('orbCv'); if(!cv) return;
+  const ob=document.getElementById('orbBig');
+  const RES=2, S=112*RES, C=S/2, R=C-5*RES;
+  cv.width=S; cv.height=S;
+  const ctx=cv.getContext('2d'), TAU=Math.PI*2, rnd=Math.random;
+  const dots=[]; for(let i=0;i<16;i++){dots.push({a:rnd()*TAU,r:R*(.16+.74*Math.sqrt(rnd())),sp:(.05+rnd()*.16)*(rnd()<.5?-1:1),ph:rnd()*TAU,tw:1.2+rnd()*2.8,g:rnd()<.45});}
+  const bands=[
+    {y:-.40,amp:.13,arc:.30,ph:0.0,sp: .55,w:7.0,ci:1,hot:0},
+    {y:-.12,amp:.17,arc:.24,ph:2.1,sp:-.42,w:8.0,ci:2,hot:1},
+    {y: .16,amp:.14,arc:.20,ph:4.0,sp: .34,w:6.5,ci:1,hot:0},
+    {y: .42,amp:.11,arc:.26,ph:5.3,sp:-.30,w:5.5,ci:3,hot:1}
+  ];
+  const PAL={
+    dark :{ink:['#FFFFFF','#D9FCFF','#22D3EE','#0E93B4'],rgb:'34,211,238', inner:'rgba(12,48,62,.94)', edge:'rgba(4,13,22,.97)', hi:'rgba(255,255,255,.95)'},
+    siang:{ink:['#FFFFFF','#D6F7FF','#22B8D6','#0C7D96'],rgb:'9,125,150',  inner:'rgba(255,255,255,.66)',edge:'rgba(196,224,236,.78)',hi:'rgba(255,255,255,.95)'},
+    done :{ink:['#FFFDF0','#FFEEC2','#F5B54A','#C9820F'],rgb:'245,181,74', inner:'rgba(66,42,9,.94)',  edge:'rgba(30,18,3,.96)',  hi:'rgba(255,246,220,.92)'}
+  };
+  let t=0,last=performance.now();
+  function pal(){return ob.classList.contains('done')?PAL.done:(document.documentElement.getAttribute('data-theme')==='siang'?PAL.siang:PAL.dark);}
+  function ribbon(b,P,boost){
+    const seg=56;
+    for(let k=-1;k<=1;k++){ /* ikatan sutra: 3 utas per pita */
+      const ph2=b.ph+k*.55, wMul=1-Math.abs(k)*.35, aMul=1-Math.abs(k)*.42;
+      for(let pass=0;pass<3;pass++){
+        ctx.beginPath();
+        for(let i=0;i<=seg;i++){
+          const u=i/seg, x=C+(u*2-1)*R*.96;
+          const y=C+b.y*R+Math.pow(2*u-1,2)*b.arc*R
+                 +Math.sin(u*6.283*1.6+ph2+t*b.sp)*b.amp*R
+                 +Math.sin(u*6.283*3.1-ph2*1.7-t*b.sp*.7)*b.amp*.38*R;
+          i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+        }
+        if(pass===0){ctx.strokeStyle=P.ink[b.ci];ctx.globalAlpha=.09*aMul*boost;ctx.lineWidth=b.w*2.6*wMul*RES;}
+        else if(pass===1){ctx.strokeStyle=P.ink[b.ci];ctx.globalAlpha=.20*aMul*boost;ctx.lineWidth=b.w*wMul*RES;}
+        else{ctx.strokeStyle=P.ink[0];ctx.globalAlpha=(b.hot?.30:.11)*aMul*boost;ctx.lineWidth=b.w*.4*wMul*RES;}
+        ctx.stroke();
+      }
+    }
+  }
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000); last=now;
+    const work=ob.classList.contains('work');
+    t+=dt*(ob.classList.contains('done')?1.5:(work?3.4:1));
+    const P=pal(), boost=work?1.35:1;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,S,S);
+    const pul=1+(work?.018:.009)*Math.sin(t*2.6);
+    ctx.translate(C,C); ctx.scale(pul,pul); ctx.translate(-C,-C);
+    ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+    /* 1. kaca dasar — gelap berisi, terang di kiri-atas */
+    let g=ctx.createRadialGradient(C-R*.3,C-R*.36,R*.1,C,C,R);
+    g.addColorStop(0,P.inner); g.addColorStop(1,P.edge);
+    ctx.beginPath(); ctx.arc(C,C,R,0,TAU); ctx.fillStyle=g; ctx.fill();
+    /* SEMUA cahaya dikurung di dalam kaca */
+    ctx.save();
+    ctx.beginPath(); ctx.arc(C,C,R-.5*RES,0,TAU); ctx.clip();
+    ctx.globalCompositeOperation='lighter';
+    /* 2. rim-light bawah — tepi bawah kaca bercahaya */
+    g=ctx.createRadialGradient(C,C+R*.75,0,C,C+R*.75,R*.8);
+    g.addColorStop(0,'rgba('+P.rgb+',.6)'); g.addColorStop(1,'rgba('+P.rgb+',0)');
+    ctx.beginPath(); ctx.arc(C,C,R,0,TAU); ctx.fillStyle=g; ctx.fill();
+    /* 3. pita cahaya sutra mengalir */
+    bands.forEach(b=>ribbon(b,P,boost));
+    /* 4. debu cahaya emas & sian berkelip */
+    dots.forEach(d=>{
+      d.a+=d.sp*dt*(work?2.2:1);
+      const x=C+Math.cos(d.a)*d.r, y=C+Math.sin(d.a)*d.r*.92;
+      ctx.globalAlpha=(.35+.65*Math.abs(Math.sin(t*d.tw+d.ph)))*(d.g?.85:.6);
+      ctx.fillStyle=d.g?'#F5C86B':'#D9FAFF';
+      ctx.beginPath(); ctx.arc(x,y,1.3*RES,0,TAU); ctx.fill();
+    });
+    ctx.restore(); /* akhir kurungan kaca */
+    /* 5. kedalaman kaca — menggelap di atas-kanan */
+    ctx.globalCompositeOperation='source-over';
+    if(P!==PAL.siang){
+      g=ctx.createRadialGradient(C+R*.42,C-R*.5,R*.1,C+R*.42,C-R*.5,R*1.25);
+      g.addColorStop(0,'rgba(2,8,16,.34)'); g.addColorStop(1,'rgba(2,8,16,0)');
+      ctx.beginPath(); ctx.arc(C,C,R,0,TAU); ctx.fillStyle=g; ctx.fill();
+    }
+    /* 6. kilau kaca kiri-atas (highlight kaca) */
+    ctx.save();
+    ctx.translate(C-R*.34,C-R*.4); ctx.rotate(-.5);
+    g=ctx.createLinearGradient(0,-R*.15,0,R*.15);
+    g.addColorStop(0,P.hi); g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.globalAlpha=.85; ctx.fillStyle=g;
+    ctx.beginPath(); ctx.ellipse(0,0,R*.3,R*.13,0,0,TAU); ctx.fill();
+    ctx.globalAlpha=.6;
+    ctx.beginPath(); ctx.ellipse(R*.16,R*.3,R*.09,R*.045,0,0,TAU); ctx.fill();
+    ctx.restore();
+    /* 7. rim bercahaya + bloom luar lembut */
+    ctx.globalCompositeOperation='lighter';
+    ctx.shadowColor='rgba('+P.rgb+',.85)'; ctx.shadowBlur=9*RES;
+    ctx.strokeStyle='rgba('+P.rgb+',.55)'; ctx.lineWidth=1.6*RES;
+    ctx.beginPath(); ctx.arc(C,C,R-.8*RES,0,TAU); ctx.stroke();
+    ctx.shadowBlur=0;
+    g=ctx.createRadialGradient(C,C,R*.92,C,C,R*1.14);
+    g.addColorStop(0,'rgba('+P.rgb+',.28)'); g.addColorStop(1,'rgba('+P.rgb+',0)');
+    ctx.beginPath(); ctx.arc(C,C,R*1.14,0,TAU); ctx.fillStyle=g; ctx.fill();
+    ctx.globalCompositeOperation='source-over'; ctx.globalAlpha=1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
 </script>
 </body>
 </html>
