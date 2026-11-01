@@ -52,39 +52,3 @@ prompt
 server.log
 # Skills directory
 /skills/
-# artefak alat lokal — bukan sumber AVI
-tool-results/
-worklog.md
-
-# K19-hygiene: duplikat lama & artefak non-AVI — TETAP di luar repo
-/android/
-/docs/
-/log/
-/src/app/api/
-app/src/main/java/com/anztdree/avi/image/
-
-# === SANDBOX Next.js/bun — BUKAN BAGIAN AVI, jangan pernah ikut ke GitHub ===
-/package.json
-/bun.lock
-/tsconfig.json
-/next.config.ts
-/postcss.config.mjs
-/tailwind.config.ts
-/eslint.config.mjs
-/components.json
-/Caddyfile
-/prisma/
-/db/
-/examples/
-/src/
-/tests/
-/scripts/
-/.zscripts/
-/mini-services/
-/public/logo.svg
-/public/robots.txt
-/.github/workflows/diag-*.yml
-# symlink wrapper preview (bukan modul Android)
-/app/layout.tsx
-/app/page.tsx
-/app/globals.css
