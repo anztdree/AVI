@@ -8,36 +8,32 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 | Jalur | Isi |
 |---|---|
 | `app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) |
-| `public/avi-agent.html` | Mockup/preview tampilan MK1 v10 — satu file, self-contained |
-| `preview/` | Tangkapan layar preview v10 |
+| `public/avi-agent.html` | Mockup/preview tampilan MK1 v11 — satu file, self-contained |
 | `.github/workflows/build-android.yml` | CI build APK (jalan saat `app/**` berubah) |
 
-## Preview v10 — orb + obrolan saat ini
+## Preview v11 — orb + obrolan saat ini + orb di atas papan ketik
 
-Prinsip v10: yang tampil hanya **orb AVI + obrolan saat ini** — riwayat chat
+Prinsip: yang tampil hanya **orb AVI + obrolan saat ini** — riwayat chat
 **tersembunyi di atas** (afordansi tipis di puncak → panel melorot saat
-dipanggil). Kemampuan agent tidak pernah jadi mode terpisah: saat kerja
-berat, aliran kerja agent mengalir **dari dalam AVI**
+dipanggil). Saat Pak mengetik, **orb menemani di atas papan ketik** —
+kehadiran AVI tidak pernah hilang, labelnya ikut hidup
+("KERJA · 37% · TETAP MENEMANI"). Kemampuan agent tidak pernah jadi mode
+terpisah: aliran kerja agent mengalir **dari dalam AVI**
 ("AGENT AKTIF · DI DALAM AVI") — lengkap dengan langkah, log live, dan
 pintu izin emas "AVI minta izin, Pak".
-
-| Obrolan + orb | Riwayat tersembunyi |
-|---|---|
-| ![Obrolan](preview/01-obrolan.png) | ![Riwayat](preview/02-riwayat-tersembunyi.png) |
-
-| Izin agent di dalam AVI | Mobile |
-|---|---|
-| ![Izin](preview/03-izin-agent.png) | ![Mobile](preview/04-mobile.png) |
 
 ## Melihat preview tampilan
 
 Buka `public/avi-agent.html` langsung di browser — tidak perlu install apa pun.
 Interaksi yang jalan di mockup: alur laporan pengeluaran (jeda/stop, izin di
-60%, hasil PDF), panel riwayat tersembunyi, mode suara (ketuk orb), tema
-siang/malam. Fitur bertanda COMING SOON belum diimplementasi.
+60%, hasil PDF), panel riwayat tersembunyi, orb menemani saat mengetik
+(ketuk kolom tulis), mode suara (ketuk orb), tema siang/malam. Papan ketik
+nyata di HP ditangani rapi (`interactive-widget=resizes-content` +
+`visualViewport`) sehingga komposer dan orb selalu berada di atas keyboard.
+Fitur bertanda COMING SOON belum diimplementasi.
 
 ## Status
 
-Tahap desain: mockup v10 (orb + obrolan saat ini; riwayat chat tersembunyi
-di atas). Implementasi desain terbaru ke aplikasi Android menyusul setelah
-desain disetujui.
+Tahap desain: mockup v11 (orb + obrolan saat ini; riwayat chat tersembunyi
+di atas; orb menemani di atas papan ketik). Implementasi desain terbaru ke
+aplikasi Android menyusul setelah desain disetujui.
