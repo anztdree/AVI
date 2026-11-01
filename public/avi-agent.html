@@ -3,35 +3,34 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · HERO ORB v30</title>
+<title>AVI — Asisten Pribadi · MK-XI SERVO CORE v31</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v30 — "HERO ORB" : ORB = BINTANG UTAMA, PANGGUNG TENGAH + RINGKASAN
-   Masukan Pak: "fokus ke tampilan obrolan .. masih terlaluu
-   sederhana orb juga jauh dari tema teknologi modern".
+   AVI v31 — "MK-XI SERVO CORE" : ORB = MESIN ROBOTIK, BUKAN PLANET
+   Masukan Pak: "teknologi robotic .. bukan planet".
    ⇒ Dua target, rombak dalam:
      · OBROLAN : COMMS DECK — bar sambungan inti melekat (sinyal
        hidup + latensi berdenyut + badge enkripsi), pesan ber-META
        (label AVI · INTI MK1), bubble kaca dgn sudut bracket
        teknis, garis event sistem ◈ saat agent bangun/stop/tuntas,
        brief dgn tag meta emas per baris.
-     · ORB     : MK-X HOLO GYRO — bukan lagi tumpukan lingkaran
-       datar (itu yang bikin monoton). Ini bola HUD 3D SESUNGGUH:
-       bola kawat bujur+lintang berputar pada sumbunya, TIGA cincin
-       giroskop miring beririsan (masing-masing punya sumbu &
-       kecepatan sendiri), bidang pemindai emas menyapu kutub ke
-       kutub, radar ping mengembang, inti plasma berdenyut.
-       Siluetnya BERUBAH TERUS tiap detik — tak ada dua detik sama.
-       Rujukan: holo-table Jarvis/Iron Man & giroskop navigasi.
-     · PANGGUNG (v30) : masukan Pak "bintang utamanya orb malah
-       dibikin biasa aja" ⇒ orb kini HERO ±200px di tengah panggung
-       (aura terang + bezel derajat + 3 orbit partikel mikro),
-       besar saat siaga & mengecil 112px saat papan ketik buka;
-       di bawahnya STRIP RINGKASAN harian (jadwal/pengingat/cuaca)
-       supaya layar tak lagi terasa kosong.
+     · ORB     : MK-XI SERVO CORE — masukan Pak "teknologi robotic
+       .. bukan planet" ⇒ bola kawat bujur/lintang (kesan planet)
+       DIGTOTAL diganti rakitan mesin robotik:
+       (1) IRIS APERTURE — 6 bilah mesin berputar melingkari inti,
+           mata robot mekanik, dipegang larik 6 baut servo emas;
+       (2) COG — gigi mesin 24T miring 3D, berlawanan arah;
+       (3) TIGA cincin giro kini TERKALIBRASI — tick skala mesin
+           mengelilingi tiap cincin;
+       (4) reticle bidik silang HUD + bidang imbas emas + radar
+           ping + inti plasma (dipertahankan — itu teknologi).
+       Siluet = mesin hidup: gigi, bilah, baut, bidik. Bukan bola.
+     · PANGGUNG : orb HERO ±200px di tengah (v30), mengecil 112px
+       saat papan ketik buka; STRIP RINGKASAN harian (jadwal/
+       pengingat/cuaca) di bawahnya — tetap dipertahankan.
    Yang TETAP = arahan Pak yang sudah disetujui:
    · Nuansa Jarvis: orb hidup, sian #22D3EE + emas #F5B54A,
      telemetri MK1 = tanda vital.
@@ -335,6 +334,11 @@ html.kb .aura{inset:-14px}
 .gring{position:absolute;left:50%;top:50%;border-radius:50%;transform-style:preserve-3d;will-change:transform}
 .gring i,.gring b,.gring u{position:absolute;border-radius:50%}
 .gring i{inset:0;border:1px solid rgba(34,211,238,.3)}
+/* tick kalibrasi mesin mengelilingi tiap cincin giro */
+.gring i::after{content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.5) 0deg 1.7deg,transparent 1.7deg 12deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px))}
 .gring b{inset:0;
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
   mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
@@ -347,19 +351,41 @@ html.kb .aura{inset:-14px}
 @keyframes gxA{from{transform:rotateY(57deg) rotateZ(0deg)}to{transform:rotateY(57deg) rotateZ(360deg)}}
 @keyframes gyA{from{transform:rotateX(64deg) rotateZ(0deg)}to{transform:rotateX(64deg) rotateZ(360deg)}}
 @keyframes gzA{from{transform:rotateX(80deg) rotateY(18deg) rotateZ(0deg)}to{transform:rotateX(80deg) rotateY(18deg) rotateZ(-360deg)}}
-/* — bola kawat: 6 bujur + 3 lintang, berputar pada sumbunya — */
-.hglobe{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;transform-style:preserve-3d;animation:hgSpin 15s linear infinite;will-change:transform}
-@keyframes hgSpin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
-.hglobe .mer{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(34,211,238,.34)}
-.hglobe .mer:nth-child(2){transform:rotateY(30deg)}
-.hglobe .mer:nth-child(3){transform:rotateY(60deg)}
-.hglobe .mer:nth-child(4){transform:rotateY(90deg)}
-.hglobe .mer:nth-child(5){transform:rotateY(120deg)}
-.hglobe .mer:nth-child(6){transform:rotateY(150deg)}
-.hglobe .par{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(34,211,238,.3)}
-.hglobe .par.p1{transform:rotateX(90deg) translateZ(19.5px) scale(.74)}
-.hglobe .par.p2{transform:rotateX(90deg) translateZ(-19.5px) scale(.74)}
-.hglobe .par.p3{transform:rotateX(90deg)}
+/* — COG: gigi mesin 24T miring 3D, berlawanan arah dgn giro (mesin, bukan planet) — */
+.cog{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;
+  animation:cogA 19s linear infinite reverse;will-change:transform}
+@keyframes cogA{from{transform:rotateX(62deg) rotateZ(0deg)}to{transform:rotateX(62deg) rotateZ(-360deg)}}
+.cog i{position:absolute;inset:0;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.6) 0deg 4.5deg,transparent 4.5deg 15deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.4px),#000 calc(100% - 2.4px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.4px),#000 calc(100% - 2.4px))}
+.cog i.in{inset:7px;
+  background:repeating-conic-gradient(from 8deg,rgba(34,211,238,.5) 0deg 3deg,transparent 3deg 18deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.2px),#000 calc(100% - 1.4px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 2.2px),#000 calc(100% - 1.4px))}
+/* — IRIS APERTURE: 6 bilah mesin berputar = mata robot, dgn larik baut servo emas — */
+.iris{position:absolute;left:50%;top:50%;width:66px;height:66px;margin:-33px 0 0 -33px;z-index:2;
+  filter:drop-shadow(0 0 4px rgba(34,211,238,.3));animation:irisSpin 30s linear infinite;will-change:transform}
+@keyframes irisSpin{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.05)}100%{transform:rotate(360deg) scale(1)}}
+.iris i{position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(34,211,238,.32),rgba(34,211,238,.06) 52%,rgba(150,200,230,.14));
+  clip-path:polygon(80.7% 41.8%,101% 7%,165% 18%,165% 82%,93% 101%,78.8% 63.5%)}
+.iris i:nth-child(2){transform:rotate(60deg)}
+.iris i:nth-child(3){transform:rotate(120deg)}
+.iris i:nth-child(4){transform:rotate(180deg)}
+.iris i:nth-child(5){transform:rotate(240deg)}
+.iris i:nth-child(6){transform:rotate(300deg)}
+.irisBarrel{position:absolute;inset:-1px;border-radius:50%;
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
+  background:conic-gradient(from 0deg,rgba(140,238,255,.8),rgba(140,238,255,.15) 36%,rgba(245,181,74,.65) 62%,rgba(140,238,255,.2))}
+.irisBarrel s{position:absolute;top:50%;left:50%;width:3.5px;height:3.5px;margin:-1.75px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 5px rgba(245,181,74,.9);
+  transform:rotate(var(--a)) translateY(-32px)}
+/* — reticle bidik silang robot (HUD bidikan) — */
+.retH,.retV{position:absolute;left:50%;top:50%;z-index:1;pointer-events:none}
+.retH{width:104px;height:1px;margin-left:-52px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.38),transparent)}
+.retV{width:1px;height:104px;margin-top:-52px;background:linear-gradient(180deg,transparent,rgba(34,211,238,.38),transparent)}
 /* — bidang imbas emas menyapu kutub→kutub (tanda vital pemindaian) — */
 .hscan{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
   border:1px solid rgba(245,181,74,.62);box-shadow:0 0 9px rgba(245,181,74,.32);
@@ -403,7 +429,8 @@ html.kb .aura{inset:-14px}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
 /* — state KERJA: overdrive, semua lapisan ngebut — */
 .orbBig.work .hgyro{animation-duration:5.6s}
-.orbBig.work .hglobe{animation-duration:5.4s}
+.orbBig.work .iris{animation-duration:9s;filter:drop-shadow(0 0 6px rgba(34,211,238,.5))}
+.orbBig.work .cog{animation-duration:6.5s}
 .orbBig.work .gx{animation-duration:2.5s}
 .orbBig.work .gy{animation-duration:3.7s}
 .orbBig.work .gz{animation-duration:2.9s}
@@ -413,7 +440,15 @@ html.kb .aura{inset:-14px}
 .orbBig.work .hping{animation-duration:2.1s;border-color:rgba(245,181,74,.55)}
 .orbBig.work .prog,.orbBig.work .pct{opacity:1}
 /* — state TUNTAS: seluruh giroskop mengemas jadi emas — */
-.orbBig.done .gring i,.orbBig.done .hglobe .mer,.orbBig.done .hglobe .par{border-color:rgba(245,181,74,.52)}
+.orbBig.done .gring i{border-color:rgba(245,181,74,.52)}
+.orbBig.done .gring i::after{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.7) 0deg 1.7deg,transparent 1.7deg 12deg)}
+.orbBig.done .cog i{background:repeating-conic-gradient(from 0deg,rgba(245,181,74,.75) 0deg 4.5deg,transparent 4.5deg 15deg)}
+.orbBig.done .cog i.in{background:repeating-conic-gradient(from 8deg,rgba(245,181,74,.6) 0deg 3deg,transparent 3deg 18deg)}
+.orbBig.done .iris{filter:drop-shadow(0 0 5px rgba(245,181,74,.4))}
+.orbBig.done .iris i{background:linear-gradient(160deg,rgba(245,181,74,.36),rgba(245,181,74,.07) 52%,rgba(255,236,190,.2))}
+.orbBig.done .irisBarrel{background:conic-gradient(from 0deg,rgba(255,236,190,.85),rgba(245,181,74,.2) 36%,rgba(245,181,74,.75) 62%,rgba(245,181,74,.25))}
+.orbBig.done .retH{background:linear-gradient(90deg,transparent,rgba(245,181,74,.5),transparent)}
+.orbBig.done .retV{background:linear-gradient(180deg,transparent,rgba(245,181,74,.5),transparent)}
 .orbBig.done .gring b{background:conic-gradient(from 20deg,transparent 0 56%,rgba(255,236,190,.95) 68%,rgba(245,181,74,.9) 77%,transparent 86%)}
 .orbBig.done .gcore{background:radial-gradient(circle at 40% 34%,#FFF9E6 0%,#FFE3A6 28%,#F0AE3C 56%,#8A5A10 82%,#3A2705 100%);box-shadow:0 0 20px rgba(245,181,74,.75),inset 0 0 6px rgba(255,244,214,.6)}
 .orbBig.done .hscan{border-color:rgba(255,236,190,.75);box-shadow:0 0 9px rgba(245,181,74,.4)}
@@ -424,7 +459,11 @@ html.kb .aura{inset:-14px}
 .orbBig.done .halo{animation:halo .9s ease-out both}
 /* — tema siang: garis lebih tegas di latar terang — */
 html[data-theme="siang"] .orbBig .gring i{border-color:rgba(12,110,136,.42)}
-html[data-theme="siang"] .orbBig .hglobe .mer,html[data-theme="siang"] .orbBig .hglobe .par{border-color:rgba(12,110,136,.46)}
+html[data-theme="siang"] .orbBig .cog i{background:repeating-conic-gradient(from 0deg,rgba(12,110,136,.5) 0deg 4.5deg,transparent 4.5deg 15deg)}
+html[data-theme="siang"] .orbBig .cog i.in{background:repeating-conic-gradient(from 8deg,rgba(12,110,136,.45) 0deg 3deg,transparent 3deg 18deg)}
+html[data-theme="siang"] .orbBig .iris i{background:linear-gradient(160deg,rgba(9,125,150,.24),rgba(9,125,150,.05) 52%,rgba(20,32,50,.1))}
+html[data-theme="siang"] .orbBig .retH{background:linear-gradient(90deg,transparent,rgba(12,110,136,.4),transparent)}
+html[data-theme="siang"] .orbBig .retV{background:linear-gradient(180deg,transparent,rgba(12,110,136,.4),transparent)}
 
 /* SLOT teks + STRIP RINGKASAN di bawah orb hero (v30) */
 .orbSide{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;max-width:360px;position:relative;text-align:center}
@@ -774,18 +813,22 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
       <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
       <div class="bezel"></div>
       <div class="panggung3d">
+        <i class="retH"></i><i class="retV"></i>
         <div class="hgyro">
           <div class="gring gx"><i></i><b></b><u></u></div>
           <div class="gring gy"><i></i><b></b><u class="c"></u></div>
           <div class="gring gz"><i></i><b></b><u></u></div>
-          <div class="hglobe">
-            <i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i><i class="mer"></i>
-            <i class="par p1"></i><i class="par p2"></i><i class="par p3"></i>
-          </div>
+          <div class="cog"><i></i><i class="in"></i></div>
           <div class="hscan"></div>
           <div class="orbT t1"><s></s></div>
           <div class="orbT t2"><s></s></div>
           <div class="orbT t3"><s></s></div>
+        </div>
+        <div class="iris"><i></i><i></i><i></i><i></i><i></i><i></i>
+          <div class="irisBarrel">
+            <s style="--a:0deg"></s><s style="--a:60deg"></s><s style="--a:120deg"></s>
+            <s style="--a:180deg"></s><s style="--a:240deg"></s><s style="--a:300deg"></s>
+          </div>
         </div>
         <div class="gcore"><span></span></div>
       </div>
@@ -799,7 +842,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </div>
     <div class="orbSide" id="orbSide">
       <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div></div>
-      <div id="orbIdle">MK1 · GIRO STABIL · ORBIT AKTIF · MEMORI 62%</div>
+      <div id="orbIdle">MK-XI · SERVO TERKUNCI · IRIS AKTIF · MEMORI 62%</div>
       <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
@@ -884,7 +927,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v30 · HERO ORB — ORB BINTANG UTAMA ±200PX DI TENGAH · BEZEL DERAJAT + ORBIT PARTIKEL · STRIP RINGKASAN HARIAN · KECIL 112PX SAAT KEYBOARD · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
+<div class="note">v31 · MK-XI SERVO CORE — MATA ROBOT MEKANIK: IRIS 6 BILAH + COG GIGI 3D + GIRO TERKALIBRASI + BIDIK SILANG · BUKAN PLANET · HERO 200PX · RINGKASAN HARIAN · 112PX SAAT KEYBOARD · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
