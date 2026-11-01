@@ -8,39 +8,48 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 | Jalur | Isi |
 |---|---|
 | `app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) |
-| `public/avi-agent.html` | Mockup/preview tampilan MK1 v16 — satu file, self-contained |
+| `public/avi-agent.html` | Mockup/preview tampilan MK1 v17 — satu file, self-contained |
 | `.github/workflows/build-android.yml` | CI build APK (jalan saat `app/**` berubah) |
 
-## Preview v16 — ASISTEN DULU, AGENT SEKADAR CADANGAN
+## Preview v17 — LEMBUT, HIDUP, SATU SUARA
 
-Arahan Pak: **fokus utama adalah ASISTEN** — agent hanya terkadang, cuma
-cadangan. Maka mockup **terbuka dalam wujud asisten yang tenang**: sapaan,
-obrolan sehari-hari, dan orb yang bernafas — tanpa tugas berjalan, tanpa
-persen, tanpa strip. Agent baru bangun saat Pak memberi tugas berat
-(coba ketik "buatkan laporan pengeluaran") — kartu kerjanya mengalir di
-dalam obrolan ("AGENT AKTIF · DI DALAM AVI"), dan setelah tuntas AVI
-kembali penuh sebagai asisten.
+Koreksi atas masukan Pak (logika tema kaku, orb jelek, dua teks output tidak
+estetik):
 
-Detail tata: **orb melayang BERSIH di atas papan ketik — tanpa banner,
-tanpa apa pun di belakangnya**. Perintah Pak (teks / hasil voice) tampil
-**DI SAMPING orb** dengan tanda TERKIRIM ✓; **jawaban AVI muncul DI ATAS
-orb** — di dalam obrolan, sebagai gelembung beravatar. Riwayat chat
-tetap tersembunyi di atas (v10).
+1. **Tema tidak kaku** — ada mode **AUTO** yang mengikuti waktu
+   (18.00–06.00 malam, sisanya siang); tombol menyeberang
+   AUTO→MALAM→SIANG, dan setiap perpindahan warna dianimasikan
+   crossfade halus — tidak ada tema yang "menukap" mendadak.
+2. **Orb diulang total** — wajah AVI berlapis: inti bercahaya dengan
+   plasma yang berputar & kilau kaca, dua cincin halus berlawanan arah,
+   satu titik emas yang mengorbit, cahaya yang menempel erat ke orb
+   (bukan banner), dan badan yang melayang lembut. Saat kerja makin
+   cepat & terang; saat tuntas memerah emas lalu kembali tenang.
+3. **Satu slot teks di samping orb** — telemetri MK1, TERKIRIM ✓, dan
+   status kerja bergiliran di SLOT YANG SAMA; tidak pernah ada dua teks
+   bersamaan. Jawaban AVI tetap muncul DI ATAS orb — di dalam obrolan,
+   kini didahului indikator mengetik tiga titik.
+
+Arahan lama dipertahankan: **asisten dulu, agent sekadar cadangan** —
+mockup terbuka dalam wujud asisten tenang; agent baru bangun saat Pak
+memberi tugas berat (coba ketik "buatkan laporan pengeluaran") dan
+kembali jadi asisten setelah tuntas. Riwayat chat tetap tersembunyi di
+atas (v10); tanpa lampiran; tanpa audit billing.
 
 ## Melihat preview tampilan
 
 Buka `public/avi-agent.html` langsung di browser — tidak perlu install apa pun.
-Interaksi yang jalan di mockup: obrolan asisten (balasan AVI muncul di
-obrolan), pemicu tugas agent lewat pesan (mis. "buatkan laporan"), alur
-laporan lengkap (jeda/stop, izin di 60%, hasil PDF), panel riwayat
-tersembunyi, orb melayang di atas papan ketik (ketuk orb = mode suara;
-perintah voice tampil di samping orb), tema siang/malam. Papan ketik
-nyata di HP ditangani rapi (`interactive-widget=resizes-content` +
+Interaksi yang jalan di mockup: obrolan asisten (mengetik → balasan),
+pemicu tugas agent lewat pesan (mis. "buatkan laporan"), alur laporan
+lengkap (jeda/stop, izin di 60%, hasil PDF), panel riwayat tersembunyi,
+orb melayang di atas papan ketik (ketuk orb = mode suara; perintah voice
+tampil di samping orb), tema AUTO/malam/siang dengan crossfade. Papan
+ketik nyata di HP ditangani rapi (`interactive-widget=resizes-content` +
 `visualViewport`). Fitur bertanda COMING SOON belum diimplementasi.
 
 ## Status
 
-Tahap desain: mockup v16 (asisten dulu — agent sekadar cadangan; perintah
-di samping orb, jawaban AVI di obrolan; orb bersih tanpa banner; riwayat
-chat tersembunyi di atas). Implementasi desain terbaru ke aplikasi Android
-menyusul setelah desain disetujui.
+Tahap desain: mockup v17 (tema auto ikut waktu + crossfade; orb hidup
+bertingkat; satu slot teks di samping orb; jawaban AVI di obrolan).
+Implementasi desain terbaru ke aplikasi Android menyusul setelah desain
+disetujui.
