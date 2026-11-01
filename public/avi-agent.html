@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · HOLO GYRO v29</title>
+<title>AVI — Asisten Pribadi · HERO ORB v30</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v29 — "HOLO GYRO" : ORB 3D SESUNGGUHNYA (ANTI-MONOTON)
+   AVI v30 — "HERO ORB" : ORB = BINTANG UTAMA, PANGGUNG TENGAH + RINGKASAN
    Masukan Pak: "fokus ke tampilan obrolan .. masih terlaluu
    sederhana orb juga jauh dari tema teknologi modern".
    ⇒ Dua target, rombak dalam:
@@ -26,6 +26,12 @@
        kutub, radar ping mengembang, inti plasma berdenyut.
        Siluetnya BERUBAH TERUS tiap detik — tak ada dua detik sama.
        Rujukan: holo-table Jarvis/Iron Man & giroskop navigasi.
+     · PANGGUNG (v30) : masukan Pak "bintang utamanya orb malah
+       dibikin biasa aja" ⇒ orb kini HERO ±200px di tengah panggung
+       (aura terang + bezel derajat + 3 orbit partikel mikro),
+       besar saat siaga & mengecil 112px saat papan ketik buka;
+       di bawahnya STRIP RINGKASAN harian (jadwal/pengingat/cuaca)
+       supaya layar tak lagi terasa kosong.
    Yang TETAP = arahan Pak yang sudah disetujui:
    · Nuansa Jarvis: orb hidup, sian #22D3EE + emas #F5B54A,
      telemetri MK1 = tanda vital.
@@ -294,9 +300,33 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 /* ============ ORB MK-X — HOLO GYRO (v29) : bola 3D sesungguhnya + giroskop 3 sumbu ============
    Antara-antara: siluet berubah terus — cincin miring beririsan berputar di sumbu berbeda,
    bola kawat berputar, bidang imbas emas menyapu kutub, ping radar, inti plasma. */
-#orbDock{flex:none;position:relative;z-index:2;display:flex;align-items:center;gap:16px;padding:2px 18px 6px}
+#orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
+/* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
+.heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
+.heroWrap .orbBig{transform:scale(1.786);transform-origin:0 0}
+html.kb .heroWrap{width:112px;height:112px}
+html.kb .heroWrap .orbBig{transform:scale(1)}
+html.kb .aura{inset:-14px}
+.aura{position:absolute;inset:-38px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 50% 47%,rgba(34,211,238,.17) 0%,rgba(34,211,238,.06) 42%,transparent 66%);
+  animation:auraB 7s ease-in-out infinite}
+.aura::after{content:'';position:absolute;inset:22%;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,rgba(245,181,74,.10),transparent 62%)}
+@keyframes auraB{0%,100%{opacity:.7;transform:scale(.965)}50%{opacity:1;transform:scale(1.035)}}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
-html.kb .orbBig{transform:scale(.66)}
+/* bezel derajat — cincin instrumen mengelilingi giro (anti-biasa) */
+.bezel{position:absolute;inset:-3px;border-radius:50%;opacity:.55;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.55) 0deg .7deg,transparent .7deg 6deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  animation:bezSpin 90s linear infinite}
+.bezel::after{content:'';position:absolute;inset:7px;border-radius:50%;
+  background:repeating-conic-gradient(from 45deg,rgba(245,181,74,.8) 0deg 1.4deg,transparent 1.4deg 90deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px))}
+@keyframes bezSpin{to{transform:rotate(360deg)}}
+.orbBig.work .bezel{animation-duration:22s;opacity:.75}
+.orbBig.done .bezel{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.6) 0deg .7deg,transparent .7deg 6deg)}
 .orbBig svg{position:absolute;inset:0;overflow:visible}
 .panggung3d{position:absolute;inset:0;perspective:340px}
 .hgyro{position:absolute;inset:0;transform-style:preserve-3d;animation:hTilt 13s ease-in-out infinite;will-change:transform}
@@ -342,6 +372,15 @@ html.kb .orbBig{transform:scale(.66)}
   75%{transform:rotateX(90deg) translateZ(-15px) scale(.74)}
   90%{opacity:.95}
   100%{transform:rotateX(90deg) translateZ(-27px) scale(.16);opacity:0}}
+/* — orbit partikel mikro (3 bidang miring tambahan) — */
+.orbT{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(34,211,238,.14)}
+.orbT s{position:absolute;top:-1.5px;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#CFF6FF;box-shadow:0 0 5px rgba(190,247,255,.95)}
+.t1{width:44px;height:44px;margin:-22px 0 0 -22px;animation:tA 5.5s linear infinite}
+.t2{width:56px;height:56px;margin:-28px 0 0 -28px;animation:tB 7.5s linear infinite reverse}
+.t3{width:66px;height:66px;margin:-33px 0 0 -33px;animation:tC 9.5s linear infinite}
+@keyframes tA{from{transform:rotateY(72deg) rotateZ(0deg)}to{transform:rotateY(72deg) rotateZ(360deg)}}
+@keyframes tB{from{transform:rotateX(58deg) rotateY(22deg) rotateZ(0deg)}to{transform:rotateX(58deg) rotateY(22deg) rotateZ(360deg)}}
+@keyframes tC{from{transform:rotateX(84deg) rotateZ(0deg)}to{transform:rotateX(84deg) rotateZ(360deg)}}
 /* — inti plasma: selalu menghadap Pak (di luar kemiringan) — */
 .gcore{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;
   background:radial-gradient(circle at 40% 34%,#F4FFFF 0%,#B4F4FD 28%,#2FC4E2 56%,#07566C 82%,#042430 100%);
@@ -387,10 +426,14 @@ html.kb .orbBig{transform:scale(.66)}
 html[data-theme="siang"] .orbBig .gring i{border-color:rgba(12,110,136,.42)}
 html[data-theme="siang"] .orbBig .hglobe .mer,html[data-theme="siang"] .orbBig .hglobe .par{border-color:rgba(12,110,136,.46)}
 
-/* SATU SLOT teks di sisi orb — bergiliran (v17) */
-.orbSide{flex:1;min-width:0;position:relative}
+/* SLOT teks + STRIP RINGKASAN di bawah orb hero (v30) */
+.orbSide{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;max-width:360px;position:relative;text-align:center}
+.sumChip{display:inline-flex;align-items:center;gap:7px;font:700 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);
+  background:var(--pan);border:1px solid var(--line2);border-radius:999px;padding:6px 13px;max-width:100%}
+.sumChip i{width:5px;height:5px;border-radius:50%;background:var(--gold);flex:none;box-shadow:0 0 6px rgba(245,181,74,.8)}
+.sumChip b{color:var(--cyan);font-weight:700}
 .orbSide.sent #orbIdle{display:none}
-#orbIdle{font:600 8px var(--mono);letter-spacing:2.2px;color:var(--dim2);
+#orbIdle{font:600 9px var(--mono);letter-spacing:2.2px;color:var(--dim2);max-width:340px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s}
 #orbIdle.work{color:var(--cyan)}
 #orbIdle.done{color:var(--gold)}
@@ -724,9 +767,12 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-X HOLO GYRO — bola 3D sesungguhnya di atas papan ketik; SATU slot teks di sebelahnya -->
+  <!-- ORB MK-X HOLO GYRO — HERO di panggung tengah, ringkasan di bawahnya (v30) -->
   <div id="orbDock">
-    <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
+    <div class="heroWrap">
+      <div class="aura"></div>
+      <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
+      <div class="bezel"></div>
       <div class="panggung3d">
         <div class="hgyro">
           <div class="gring gx"><i></i><b></b><u></u></div>
@@ -737,6 +783,9 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
             <i class="par p1"></i><i class="par p2"></i><i class="par p3"></i>
           </div>
           <div class="hscan"></div>
+          <div class="orbT t1"><s></s></div>
+          <div class="orbT t2"><s></s></div>
+          <div class="orbT t3"><s></s></div>
         </div>
         <div class="gcore"><span></span></div>
       </div>
@@ -746,10 +795,12 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
       <div class="hping"></div><div class="hping d2"></div>
       <div class="halo"></div>
       <span class="pct" id="stgPct">0%</span>
+      </div>
     </div>
     <div class="orbSide" id="orbSide">
       <div id="orbSent"><span class="tag"><i></i>TERKIRIM ✓</span><div id="orbSentTx"></div></div>
       <div id="orbIdle">MK1 · GIRO STABIL · ORBIT AKTIF · MEMORI 62%</div>
+      <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
 
@@ -833,7 +884,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v29 · HOLO GYRO — ORB 3D SESUNGGUHNYA · BOLA KAWAT + GIROSKOP 3 SUMBU · BIDANG IMBAS EMAS · PING RADAR · SILUET BERUBAH TERUS · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
+<div class="note">v30 · HERO ORB — ORB BINTANG UTAMA ±200PX DI TENGAH · BEZEL DERAJAT + ORBIT PARTIKEL · STRIP RINGKASAN HARIAN · KECIL 112PX SAAT KEYBOARD · SATU SLOT TEKS · JAWABAN DI ATAS ORB · TANPA RIWAYAT · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
