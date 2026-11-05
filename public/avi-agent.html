@@ -3,22 +3,23 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XV PLASMA CORE v37</title>
+<title>AVI — Asisten Pribadi · MK-XVI MESIN CORE v38</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v37 — "MK-XV PLASMA CORE" : inti energi MURNI, tanpa wajah.
-   Riwayat penolakan Pak: rotor 12 jari-jari = KIPAS ("masih cacat
-   kaya kipas bukan orb robot"); mata optik droid = MATA DAJJAL
-   ("robotic 2 mata .. itu sama mata seperti dajjal jeleeeek").
-   ⇒ v37: kepala droid DIHAPUS TOTAL. Hidup lewat CAHAYA & gerak,
-   BUKAN mata/wajah: bola plasma bernapas + jantung putih-panas
-   berdetak + denyut reaktor + 3 busur energi di 3 bidang miring
-   (ekor komet — BUKAN jari-jari) + 1 percikan pengorbit.
+   AVI v38 — "MK-XVI MESIN CORE" : inti = bola MESIN teknologi.
+   Masukan Pak v38: "inti orb jangan biru polos tapi bulat seperti
+   mesin teknologi" + garis putus-putus di paling luar "bikin jelek".
+   ⇒ v38: (1) bezel putus-putus DIHAPUS dari tepi terluar;
+   (2) plasma sian polos diganti BOLA MESIN metal 3D — shading
+   bola, sabuk ekuator bersistel, celah ventilasi, 2 LED status
+   mikro, aperture reaktor BELAH-KETUPAT bercahaya (bentik tegas,
+   mustahil terbaca mata), glow energi tetap di belakang bola.
+   Riwayat tetap dihormati: tanpa kipas (jari-jari), tanpa mata.
    Cangkang orbit v31/v33 TETAP (dipuji Pak): 3 cincin giro 3
-   sumbu + partikel orbit + bezel derajat + radar ping.
+   sumbu + partikel orbit + radar ping.
    Dashboard obrolan v35 TETAP: bubble chassis (rel mesin,
    scanline, bracket HUD), VOX 230MS, stempel CH-01 + jam,
    TERKIRIM ✓, history maks 3, masuk pegas.
@@ -326,9 +327,9 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ ORB MK-XV — PLASMA CORE (v37) : inti cahaya + cangkang giro ============
-   Cangkang: cincin giro 3 sumbu + partikel orbit + bezel + ping radar (dipuji Pak).
-   Inti: PLASMA CORE — cahaya hidup TANPA wajah: bernapas, berdetak, memindai. */
+/* ============ ORB MK-XVI — MESIN CORE (v38) : bola mesin + cangkang giro ============
+   Cangkang: cincin giro 3 sumbu + partikel orbit + ping radar (dipuji Pak); bezel
+   putus-putus DIHAPUS (jelek). Inti: bola MESIN metal — bukan biru polos, bukan mata. */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
 /* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
 .heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
@@ -343,19 +344,7 @@ html.kb .aura{inset:-14px}
   background:radial-gradient(circle at 50% 45%,rgba(245,181,74,.10),transparent 62%)}
 @keyframes auraB{0%,100%{opacity:.7;transform:scale(.965)}50%{opacity:1;transform:scale(1.035)}}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
-/* bezel derajat — cincin instrumen mengelilingi giro (anti-biasa) */
-.bezel{position:absolute;inset:-3px;border-radius:50%;opacity:.55;pointer-events:none;
-  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.55) 0deg .7deg,transparent .7deg 6deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
-  animation:bezSpin 90s linear infinite}
-.bezel::after{content:'';position:absolute;inset:7px;border-radius:50%;
-  background:repeating-conic-gradient(from 45deg,rgba(245,181,74,.8) 0deg 1.4deg,transparent 1.4deg 90deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px))}
-@keyframes bezSpin{to{transform:rotate(360deg)}}
-.orbBig.work .bezel{animation-duration:22s;opacity:.75}
-.orbBig.done .bezel{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.6) 0deg .7deg,transparent .7deg 6deg)}
+/* (v38) bezel derajat bergaris putus-putus DIHAPUS — "bikin jelek" (Pak) */
 .orbBig svg{position:absolute;inset:0;overflow:visible}
 .panggung3d{position:absolute;inset:0;perspective:340px}
 .hgyro{position:absolute;inset:0;transform-style:preserve-3d;animation:hTilt 13s ease-in-out infinite;will-change:transform}
@@ -381,25 +370,63 @@ html.kb .aura{inset:-14px}
 @keyframes gxA{from{transform:rotateY(57deg) rotateZ(0deg)}to{transform:rotateY(57deg) rotateZ(360deg)}}
 @keyframes gyA{from{transform:rotateX(64deg) rotateZ(0deg)}to{transform:rotateX(64deg) rotateZ(360deg)}}
 @keyframes gzA{from{transform:rotateX(80deg) rotateY(18deg) rotateZ(0deg)}to{transform:rotateX(80deg) rotateY(18deg) rotateZ(-360deg)}}
-/* — MK-XV PLASMA CORE: inti energi MURNI tanpa wajah (v37).
-     Riwayat: rotor 12 jari-jari = KIPAS (ditolak); mata optik droid
-     = "mata dajjal" (ditolak). ⇒ Yang hidup adalah CAHAYA: bola
-     plasma bernapas, jantung berdetak, busur energi memindai.
-     Nol jari-jari, nol mata, nol wajah. — */
+/* — MK-XVI MESIN CORE: bola MESIN teknologi (v38).
+     Masukan Pak: inti jangan biru polos — harus bulat seperti mesin.
+     ⇒ Bola metal 3D + sabuk ekuator bersistel + ventilasi + 2 LED
+     status + aperture belah-ketupat bercahaya (bukan mata).
+     Glow energi tetap di belakang bola; busur energi & percikan
+     pengorbit tetap mengelilingi. — */
 .coreBox{position:absolute;inset:0;transform-style:preserve-3d;z-index:1}
-/* bola plasma: cahaya lembut bernapas — terang MEMENUHI bola,
-   bukan titik kecil di bola gelap (itu yang terbaca mata) */
-.plasma{position:absolute;inset:11px;border-radius:50%;
-  background:radial-gradient(circle at 44% 40%,rgba(255,255,255,.9) 0%,rgba(219,250,255,.62) 24%,rgba(34,211,238,.4) 48%,rgba(34,211,238,.12) 70%,transparent 84%);
-  box-shadow:0 0 16px 3px rgba(34,211,238,.3),0 0 44px 12px rgba(34,211,238,.13),inset 0 0 16px rgba(255,255,255,.28);
+/* halo energi di belakang bola — bernapas */
+.mhalo{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;
+  background:radial-gradient(circle,rgba(34,211,238,.26) 0%,rgba(34,211,238,.09) 52%,transparent 74%);
   animation:breath 4.4s ease-in-out infinite}
-@keyframes breath{0%,100%{transform:scale(.93);opacity:.82}50%{transform:scale(1.06);opacity:1}}
-/* jantung energi: inti putih-panas berdetak */
-.pcore{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;
-  background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#E4FDFF 34%,#7EE7F8 66%,rgba(34,211,238,.25) 100%);
-  box-shadow:0 0 14px 4px rgba(34,211,238,.55),0 0 34px 12px rgba(34,211,238,.22);
-  animation:coreBeat 4.4s ease-in-out infinite}
-@keyframes coreBeat{0%,100%{transform:scale(.9)}50%{transform:scale(1.07)}}
+@keyframes breath{0%,100%{transform:scale(.93);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+/* bola mesin: metal 3D dengan sway halus — mesin yang hidup */
+.mesin{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;z-index:1;
+  animation:msway 8s ease-in-out infinite;transform-style:preserve-3d}
+@keyframes msway{0%,100%{transform:rotateX(6deg) rotateY(-7deg)}50%{transform:rotateX(6deg) rotateY(7deg)}}
+.mball{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 33% 26%,#64809F 0%,#2E4263 34%,#15253E 62%,#0A1220 88%,#060B14 100%);
+  border:1px solid rgba(140,238,255,.38);
+  box-shadow:0 0 26px 7px rgba(34,211,238,.24),0 0 64px 18px rgba(34,211,238,.12),inset 0 -9px 16px rgba(0,0,0,.8),inset 0 6px 11px rgba(170,225,255,.22),inset 0 0 20px rgba(34,211,238,.1)}
+/* pelat armor: 2 jahitan lengkung halus (mesin, bukan wajah) */
+.mball::before{content:'';position:absolute;inset:4px;border-radius:50%;pointer-events:none;
+  border-bottom:1.1px solid rgba(150,225,255,.24);transform:rotate(24deg) scaleY(.6)}
+.mball::after{content:'';position:absolute;inset:4px;border-radius:50%;pointer-events:none;
+  border-top:1.1px solid rgba(150,225,255,.13);transform:rotate(-38deg) scaleY(.58)}
+/* rim light busur atas — kilau sian di tepi bola */
+.mrim{position:absolute;inset:-1px;border-radius:50%;
+  background:conic-gradient(from 205deg,transparent 0 40%,rgba(190,243,255,.6) 55%,transparent 72%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.2px),#000 calc(100% - 1.2px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 2.2px),#000 calc(100% - 1.2px))}
+/* sabuk ekuator mesin: pita baja bersistel halus */
+.meq{position:absolute;left:2px;right:2px;top:50%;height:13px;margin-top:-6.5px;border-radius:7px;
+  border-top:1px solid rgba(170,235,255,.55);border-bottom:1px solid rgba(170,235,255,.3);
+  background:linear-gradient(180deg,rgba(160,220,255,.2),rgba(5,10,18,.62) 55%,rgba(160,220,255,.1));
+  box-shadow:0 1px 3px rgba(0,0,0,.6),0 0 10px rgba(34,211,238,.22)}
+.meq::after{content:'';position:absolute;inset:2px 4px;border-radius:5px;
+  background:repeating-linear-gradient(90deg,rgba(190,242,255,.6) 0 1px,transparent 1px 5.5px);opacity:.65;
+  -webkit-mask:linear-gradient(180deg,transparent 0,#000 30%,#000 70%,transparent 100%);
+          mask:linear-gradient(180deg,transparent 0,#000 30%,#000 70%,transparent 100%)}
+/* aperture reaktor: BELAH-KETUPAT bercahaya — bentik tegas, bukan mata */
+.mport{position:absolute;left:50%;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;transform:rotate(45deg);border-radius:2.5px;
+  background:linear-gradient(135deg,#F4FFFF,#8BECFA 55%,#1FA9CC);
+  box-shadow:0 0 12px rgba(34,211,238,.9),0 0 26px rgba(34,211,238,.4),inset 0 0 3px rgba(255,255,255,.85);
+  animation:mportP 4.4s ease-in-out infinite}
+.mport::after{content:'';position:absolute;inset:3px;border-radius:2px;background:linear-gradient(135deg,#FFFFFF,#D2FAFF 60%,#5EDDF5)}
+@keyframes mportP{0%,100%{opacity:.75;box-shadow:0 0 8px rgba(34,211,238,.6),0 0 18px rgba(34,211,238,.25),inset 0 0 3px rgba(255,255,255,.8)}50%{opacity:1;box-shadow:0 0 13px rgba(34,211,238,.95),0 0 30px rgba(34,211,238,.5),inset 0 0 3px rgba(255,255,255,.9)}}
+/* 2 LED status mikro — lampu indikator mesin, bukan mata */
+.mled{position:absolute;width:4px;height:4px;border-radius:50%;background:#5EEAD4;box-shadow:0 0 6px rgba(94,234,212,.95),0 0 12px rgba(94,234,212,.4);
+  animation:ledB 3.4s steps(1,end) infinite}
+.mled.l1{left:10px;top:12px}
+.mled.l2{right:9px;top:16px;background:var(--gold);box-shadow:0 0 6px rgba(245,181,74,.95),0 0 12px rgba(245,181,74,.4);animation-delay:1.7s}
+@keyframes ledB{0%,70%{opacity:1}74%,82%{opacity:.2}86%,100%{opacity:1}}
+/* celah ventilasi bawah — grille mesin */
+.mvent{position:absolute;left:50%;bottom:7px;width:28px;height:6px;margin-left:-14px;border-radius:2px;
+  background:repeating-linear-gradient(90deg,rgba(0,3,7,.95) 0 2px,rgba(140,210,245,.3) 2px 3px,transparent 3px 6.5px);
+  -webkit-mask:linear-gradient(180deg,#000 20%,transparent 95%);
+          mask:linear-gradient(180deg,#000 20%,transparent 95%)}
 /* denyut reaktor: cincin cahaya mengembang tiap detak */
 .pulse{position:absolute;inset:16px;border-radius:50%;border:1px solid rgba(160,240,255,.5);opacity:0;
   animation:corePulse 4.4s ease-out infinite}
@@ -450,10 +477,12 @@ html.kb .aura{inset:-14px}
 .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#B9F1FF;opacity:0;transition:.3s;text-shadow:0 1px 5px rgba(2,14,22,.95),0 0 12px rgba(34,211,238,.35)}
 .orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
-/* — state KERJA: plasma putih-panas, busur memindai cepat — */
+/* — state KERJA: aperture membara, mesin sway cepat, busur memindai — */
 .orbBig.work .hgyro{animation-duration:5.6s}
-.orbBig.work .plasma{animation-duration:1.15s;box-shadow:0 0 22px 6px rgba(34,211,238,.5),0 0 60px 18px rgba(34,211,238,.2),inset 0 0 18px rgba(255,255,255,.42)}
-.orbBig.work .pcore{animation-duration:1.05s;background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#D8FBFF 30%,#66DFF7 62%,rgba(34,211,238,.3) 100%);box-shadow:0 0 20px 7px rgba(34,211,238,.75),0 0 48px 16px rgba(34,211,238,.3)}
+.orbBig.work .mesin{animation-duration:3.4s}
+.orbBig.work .mhalo{animation-duration:1.2s;background:radial-gradient(circle,rgba(34,211,238,.32) 0%,rgba(34,211,238,.11) 52%,transparent 74%)}
+.orbBig.work .mport{animation-duration:1.05s;opacity:1;background:linear-gradient(135deg,#FFFFFF,#D9FBFF 50%,#5EDDF5);box-shadow:0 0 15px rgba(34,211,238,.95),0 0 34px rgba(34,211,238,.55),inset 0 0 4px rgba(255,255,255,.95)}
+.orbBig.work .mled{animation-duration:.9s}
 .orbBig.work .pulse{animation-duration:1.05s;border-color:rgba(200,247,255,.65)}
 .orbBig.work .carc.a i{animation-duration:1s}
 .orbBig.work .carc.b i{animation-duration:1.4s}
@@ -467,8 +496,13 @@ html.kb .aura{inset:-14px}
 /* — state TUNTAS: inti berpijah emas TENANG — */
 .orbBig.done .gring i{border-color:rgba(245,181,74,.52)}
 .orbBig.done .gring i::after{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.7) 0deg 1.7deg,transparent 1.7deg 12deg)}
-.orbBig.done .plasma{animation-duration:5.6s;background:radial-gradient(circle at 44% 40%,rgba(255,252,240,.92) 0%,rgba(255,236,180,.6) 24%,rgba(245,181,74,.38) 48%,rgba(245,181,74,.12) 70%,transparent 84%);box-shadow:0 0 18px 4px rgba(245,181,74,.35),0 0 48px 14px rgba(245,181,74,.16),inset 0 0 16px rgba(255,248,220,.3)}
-.orbBig.done .pcore{animation-duration:5.6s;background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#FFF6DE 34%,#FFD98A 66%,rgba(245,181,74,.3) 100%);box-shadow:0 0 16px 5px rgba(245,181,74,.6),0 0 38px 14px rgba(245,181,74,.24)}
+.orbBig.done .mhalo{animation-duration:5.6s;background:radial-gradient(circle,rgba(245,181,74,.2) 0%,rgba(245,181,74,.07) 52%,transparent 74%)}
+.orbBig.done .mball{border-color:rgba(255,236,190,.45);box-shadow:0 0 26px 7px rgba(245,181,74,.28),0 0 64px 18px rgba(245,181,74,.14),inset 0 -9px 16px rgba(0,0,0,.8),inset 0 6px 11px rgba(255,236,190,.18),inset 0 0 20px rgba(245,181,74,.1)}
+.orbBig.done .mball::before{border-bottom-color:rgba(255,236,190,.3)}
+.orbBig.done .mball::after{border-top-color:rgba(255,236,190,.16)}
+.orbBig.done .mport{background:linear-gradient(135deg,#FFFFFF,#FFF3D6 50%,#FFC96A);box-shadow:0 0 12px rgba(245,181,74,.85),0 0 28px rgba(245,181,74,.45),inset 0 0 3px rgba(255,255,255,.9)}
+.orbBig.done .mled{background:#FFD98A;box-shadow:0 0 5px rgba(245,181,74,.95)}
+.orbBig.done .meq{border-top-color:rgba(255,236,190,.42);border-bottom-color:rgba(255,236,190,.24)}
 .orbBig.done .pulse{border-color:rgba(255,230,170,.55)}
 .orbBig.done .carc i{border-top-color:rgba(255,236,190,.95);border-right-color:rgba(245,181,74,.5);filter:drop-shadow(0 0 4px rgba(245,181,74,.5))}
 .orbBig.done .spark s{background:#FFF6DE;box-shadow:0 0 8px 2px rgba(245,181,74,.85),0 0 18px 6px rgba(245,181,74,.3)}
@@ -481,8 +515,14 @@ html.kb .aura{inset:-14px}
 .orbBig.done .halo{animation:halo .9s ease-out both}
 /* — tema siang: inti sian tinta di latar terang — */
 html[data-theme="siang"] .orbBig .gring i{border-color:rgba(12,110,136,.42)}
-html[data-theme="siang"] .plasma{background:radial-gradient(circle at 44% 40%,rgba(255,255,255,.95) 0%,rgba(214,246,252,.78) 24%,rgba(9,125,150,.4) 48%,rgba(9,125,150,.14) 70%,transparent 84%);box-shadow:0 0 13px 3px rgba(9,125,150,.26),0 0 34px 10px rgba(9,125,150,.13),inset 0 0 14px rgba(255,255,255,.4)}
-html[data-theme="siang"] .pcore{background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#D9F5FC 34%,#5EC4DC 66%,rgba(9,125,150,.32) 100%);box-shadow:0 0 12px 4px rgba(9,125,150,.45),0 0 26px 10px rgba(9,125,150,.2)}
+html[data-theme="siang"] .mhalo{background:radial-gradient(circle,rgba(9,125,150,.15) 0%,rgba(9,125,150,.06) 52%,transparent 74%)}
+html[data-theme="siang"] .mball{background:radial-gradient(circle at 33% 26%,#FFFFFF 0%,#E6EFF6 36%,#C2D1E0 66%,#9AAEC2 88%,#8CA1B8 100%);border-color:rgba(12,110,136,.42);box-shadow:0 0 20px 6px rgba(9,125,150,.18),0 0 44px 13px rgba(9,125,150,.1),inset 0 -9px 16px rgba(70,95,120,.35),inset 0 6px 11px rgba(255,255,255,.95)}
+html[data-theme="siang"] .mball::before{border-bottom-color:rgba(12,110,136,.3)}
+html[data-theme="siang"] .mball::after{border-top-color:rgba(12,110,136,.16)}
+html[data-theme="siang"] .meq{border-top-color:rgba(12,110,136,.42);border-bottom-color:rgba(12,110,136,.22);background:linear-gradient(180deg,rgba(12,110,136,.1),rgba(70,95,120,.28) 55%,rgba(12,110,136,.06))}
+html[data-theme="siang"] .mport{background:linear-gradient(135deg,#FFFFFF,#DCF4FB 50%,#2FA6C4);box-shadow:0 0 9px rgba(9,125,150,.55),0 0 20px rgba(9,125,150,.28),inset 0 0 3px rgba(255,255,255,.9)}
+html[data-theme="siang"] .mled{background:#0B8F70;box-shadow:0 0 4px rgba(11,143,112,.75)}
+html[data-theme="siang"] .mled.l2{background:#B06E0A;box-shadow:0 0 4px rgba(176,110,10,.75)}
 html[data-theme="siang"] .pulse{border-color:rgba(9,125,150,.4)}
 html[data-theme="siang"] .carc i{border-top-color:rgba(9,110,136,.8);border-right-color:rgba(9,125,150,.4);filter:drop-shadow(0 0 3px rgba(9,125,150,.3))}
 html[data-theme="siang"] .carc.b i{border-top-color:rgba(176,110,10,.8);border-right-color:rgba(176,110,10,.4);filter:drop-shadow(0 0 3px rgba(176,110,10,.3))}
@@ -818,12 +858,11 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-XV PLASMA CORE — HERO di panggung tengah (v37) -->
+  <!-- ORB MK-XVI MESIN CORE — HERO di panggung tengah (v38) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
       <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
-      <div class="bezel"></div>
       <div class="panggung3d">
         <div class="hgyro">
           <div class="gring gx"><i></i><b></b><u></u></div>
@@ -833,7 +872,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
           <div class="orbT t2"><s></s></div>
           <div class="orbT t3"><s></s></div>
         </div>
-        <div class="coreBox"><div class="plasma"><i class="pcore"></i></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="carc c"><i></i></div><div class="spark"><u><s></s></u></div></div>
+        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="carc c"><i></i></div><div class="spark"><u><s></s></u></div><div class="mesin"><i class="mball"></i><i class="mrim"></i><i class="meq"></i><i class="mport"></i><i class="mled l1"></i><i class="mled l2"></i><i class="mvent"></i></div></div>
       </div>
       <svg width="112" height="112" viewBox="0 0 112 112">
         <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
@@ -845,7 +884,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
       </div>
     </div>
     <div class="orbSide" id="orbSide">
-      <div id="orbIdle">MK-XV · PLASMA CORE · ENERGI STABIL · MEMORI 62%</div>
+      <div id="orbIdle">MK-XVI · MESIN CORE · INTI STABIL · MEMORI 62%</div>
       <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
@@ -930,7 +969,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v37 · MK-XV PLASMA CORE — TANPA KIPAS & TANPA MATA: PLASMA BERNAPAS · JANTUNG PUTIH-PANAS BERDETAK · 3 BUSUR ENERGI 3 SUMBU · PERCIKAN ORBIT · CANGKANG ORBIT TETAP · CHAT DASHBOARD V35 · HISTORY MAKS 3 · AGENT DI DALAM AVI</div>
+<div class="note">v38 · MK-XVI MESIN CORE — INTI BOLA MESIN (SABUK EKUATOR · VENTILASI · LED STATUS · APERTURE BELAH-KETUPAT) · BEZEL PUTUS-PUTUS DIHAPUS · 3 BUSUR ENERGI + PERCIKAN ORBIT · CHAT DASHBOARD V35 · HISTORY MAKS 3 · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -982,7 +1021,7 @@ window.addEventListener('resize',()=>moveInd($('.navbtn.on')));
 $('#hdPill').addEventListener('click',openSheet);
 
 /* ---- SATU SLOT di sisi orb (v17): telemetri/status — perintah kini di obrolan (v34) ---- */
-const IDLE_TX='MK-XV · PLASMA STABIL · NET AKTIF · MEMORI 62%';
+const IDLE_TX='MK-XVI · CORE STABIL · NET AKTIF · MEMORI 62%';
 function slotIdle(tx){
   const w=$('#orbIdle');if(w){w.className='';w.textContent=tx||IDLE_TX}
 }
@@ -1292,7 +1331,7 @@ function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[];
         setTimeout(()=>{if(!taskActive)slotIdle()},6800)}}
   }
   if(taskActive&&!done&&!stopped&&!fin){$('#app').classList.add('live');state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK')}
-  else if(!taskActive){state('','MK-XV · PLASMA STABIL · SIAP MENEMANI PAK')}
+  else if(!taskActive){state('','MK-XVI · CORE STABIL · SIAP MENEMANI PAK')}
 }
 $('#btnMic').addEventListener('click',lvOpen);
 $('#orbBig').addEventListener('click',lvOpen);
