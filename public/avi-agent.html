@@ -3,58 +3,41 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XIII ORBITAL ROTOR v34</title>
+<title>AVI — Asisten Pribadi · CHAT DASHBOARD MK1 v35</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v34 — "MK-XIII ORBITAL ROTOR" : ORB TETAP v33 · OBROLAN DIRAPIKAN
-   Masukan Pak: widget RINGKASAN "HARI INI" = "malah gak gunaaaa" +
-   "gak ada shadow opacity" + "history chat yg tampil 3 sudah termasuk
-   chat yg baru di kirim".
-   ⇒ Yang berubah di v34:
-     (1) Kartu RINGKASAN HARI INI DIHAPUS dari obrolan (ringkasan
-         tetap hidup sebagai strip mikro di bawah orb);
-     (2) Perintah Pak kini MASUK OBROLAN sebagai bubble emas kanan
-         (.msg.me, label PAK · PERINTAH) — slot "TERKIRIM" di samping
-         orb dipensiunkan supaya tidak ada teks dobel; slot di samping
-         orb kini murni telemetri/status kerja;
-     (3) HISTORY CHAT MAKS 3 item (sapaan + balasan + perintah,
-         termasuk yang baru dikirim) — yang tertua memudar keluar;
-         garis event ◈ maks 2;
-     (4) SHADOW & KEDALAMAN diperkuat pada kartu, gelembung, comms
-         bar (keluhan "gak ada shadow opacity").
-   ⇒ Dasar orb v33 (disetujui alur):
-     · OBROLAN : COMMS DECK — bar sambungan inti melekat (sinyal
-       hidup + latensi berdenyut + badge enkripsi), pesan ber-META
-       (label AVI · INTI MK1), bubble kaca dgn sudut bracket
-       teknis, garis event sistem ◈ saat agent bangun/stop/tuntas.
-       v34: perintah Pak = bubble emas kanan; history chat maks 3.
-     · ORB     : MK-XIII ORBITAL ROTOR — cangkang orbit v31 KEMBALI
-       apa adanya: 3 cincin giro terkalibrasi + 3 partikel orbit +
-       bezel derajat + radar ping. Isi dalam yang jelek DIGANTI
-       SATU jantung mesin: ROTOR giroskop — roda terbang mekanis
-       (rim keras + 12 jari-jari + hub baja + cincin encoder
-       berlawanan arah) miring 3D di tengah cincin, berputar
-       terus seperti giroskop sungguhan; NUCLEUS = titik plasma
-       kecil yang selalu menghadap Pak. Satu identitas utuh:
-       GIROSKOP LENKAP — bukan planet, bukan air, tak bertumpuk.
-     · PANGGUNG : orb HERO ±200px di tengah (v30), mengecil 112px
-       saat papan ketik buka; STRIP RINGKASAN harian (jadwal/
-       pengingat/cuaca) di bawahnya — tetap dipertahankan.
-   Yang TETAP = arahan Pak yang sudah disetujui:
-   · Nuansa Jarvis: orb hidup, sian #22D3EE + emas #F5B54A,
-     telemetri MK1 = tanda vital.
-   · TANPA RIWAYAT total (v23) · orb bersih tanpa banner di atas
-     papan ketik (v14/v16) · SATU slot teks samping orb, bergiliran
-     (v17) · perintah DI SAMPING orb, jawaban AVI DI ATAS orb (v16)
-   · ASISTEN DULU — agent bangun saat tugas berat, gate izin 60%
-     (v16) · tanpa lampiran/billing/jam · COMING SOON untuk yang
-     belum ada.
-   Rujukan: Gemini Live (orb aurora + jawaban sebagai teks),
-   iOS Liquid Glass (dock & kapsul kaca melayang), Siri glow,
-   Google Assistant Snapshot (brief), Pi (bahasa), Sesame (suara).
+   AVI v35 — "CHAT DASHBOARD MK1" : ROBOT · TEKNOLOGI · NATURAL · MEWAH
+   Masukan Pak: "fokus masih tema chat dashboard .. masih tidak
+   mencerminkan robot, teknologi, natural mewah".
+   ⇒ Yang berubah di v35 (seluruh dashboard obrolan — orb TETAP v33):
+     (1) BUBBLE CHASSIS — tiap pesan = pelat kaca mesin: rel aksen
+         sian/emas menyala di sisi bubble, scanline mikro di dalam
+         kaca, bracket HUD emas mikro di sudut, kilap kaca atas
+         (inset highlight), shadow berlapis + glow warna — MEWAH.
+     (2) STEMPEL MESIN — meta tiap pesan: AVI · INTI MK1 · CH-01 ·
+         jam (mono). Perintah Pak = PAK · PERINTAH · jam + kuitansi
+         TERKIRIM ✓ di bawah bubble emas — TEKNOLOGI.
+     (3) VOX STRIP — gelombang suara mikro yang terus hidup di tiap
+         pesan AVI (VOX MK1 · 230MS) — AVI terasa BICARA — ROBOT.
+     (4) KETIK MEKANIS — dots + label mono "MENYUSUN JAWAB…",
+         lalu pesan MENYEGEL: kedip "paket diterima" (recvP/recvG).
+     (5) DASHBOARD — bracket HUD di sudut kartu (agent & hasil),
+         garis header .clab, rel instrumen mikro kiri-kanan obrolan,
+         badge CH-01 di comms bar, garis event ◈ ber-stempel jam.
+     (6) MASUK PEGAS — animasi msgIn spring: natural, tidak kaku.
+   ⇒ Dasar v34 (tetap): widget ringkasan dihapus dari obrolan;
+     perintah Pak = bubble emas kanan; history chat maks 3
+     (termasuk pesan yang baru dikirim); garis event ◈ maks 2.
+   ⇒ ORB: MK-XIII ORBITAL ROTOR (v33, disetujui) — tidak disentuh:
+     3 cincin giro + partikel orbit + bezel derajat + radar ping +
+     rotor giroskop 12 jari-jari + encoder + hub baja + nucleus LED.
+   Nuansa Jarvis: sian #22D3EE + emas #F5B54A · Unbounded /
+   Space Grotesk / JetBrains Mono · hero 200px → 112px saat
+   keyboard · TANPA RIWAYAT-LAMPIRAN · ASISTEN DULU, agent DI
+   DALAM AVI (gate izin 60%) · COMING SOON untuk yang belum ada.
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -126,7 +109,7 @@ header,main,.composer,nav,#strip{position:relative;z-index:2}
 /* ---------- animasi masuk ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 header{animation:rise .55s cubic-bezier(.22,1,.36,1) both}
-main .card,main .msg,main .evt{animation:rise .6s cubic-bezier(.22,1,.36,1) both}
+main .card,main .evt{animation:rise .6s cubic-bezier(.22,1,.36,1) both}
 #v-kendali .card:nth-child(2){animation-delay:.06s}
 .composer{animation:rise .6s .12s cubic-bezier(.22,1,.36,1) both}
 nav{animation:rise .6s .2s cubic-bezier(.22,1,.36,1) both}
@@ -186,17 +169,26 @@ main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:2px 16px 10px}
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
   pointer-events:none}
 html[data-theme="siang"] .card{box-shadow:0 16px 40px -18px rgba(30,50,80,.45),0 3px 12px -5px rgba(30,50,80,.25)}
+/* bracket HUD di sudut kartu — bingkai instrumen (v35) */
+.card::after{content:'';position:absolute;inset:5px;border-radius:15px;pointer-events:none;opacity:.55;mix-blend-mode:screen;
+  background:
+    linear-gradient(var(--cyan),var(--cyan)) left 0 top 0/13px 1.5px no-repeat,
+    linear-gradient(var(--cyan),var(--cyan)) left 0 top 0/1.5px 13px no-repeat,
+    linear-gradient(var(--cyan),var(--cyan)) right 0 bottom 0/13px 1.5px no-repeat,
+    linear-gradient(var(--cyan),var(--cyan)) right 0 bottom 0/1.5px 13px no-repeat}
+html[data-theme="siang"] .card::after{mix-blend-mode:normal;opacity:.38}
 .clab{font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.clab::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent);opacity:.7}
 .clab svg{width:13px;height:13px;color:var(--cyan)}
 .clab .tg2{margin-left:auto;font:700 8.5px var(--mono);letter-spacing:1px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:7px;padding:2.5px 8px}
 .clab .tg2.live{color:var(--cyan);border-color:var(--cyanSoft);background:var(--cyanSoft);animation:blink 1.6s infinite}
 
-/* ---------- OBROLAN: COMMS DECK v27 ---------- */
+/* ---------- OBROLAN: COMMS DECK v35 — CHASSIS MK1 ---------- */
 /* bar sambungan inti — melekat di atas obrolan */
 .commsBar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 12px;border-radius:12px;
   background:linear-gradient(90deg,rgba(34,211,238,.10),rgba(13,21,36,.55) 42%,rgba(245,181,74,.08));
   border:1px solid var(--line);backdrop-filter:blur(14px);
-  font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);box-shadow:0 12px 26px -10px rgba(0,0,0,.7)}
+  font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);box-shadow:0 12px 26px -10px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
 .commsBar .csig{display:flex;align-items:flex-end;gap:1.5px;height:11px;flex:none}
 .commsBar .csig i{width:2.5px;border-radius:1px;background:var(--cyan);animation:sigp 1.4s ease-in-out infinite}
 .commsBar .csig i:nth-child(1){height:35%}
@@ -205,23 +197,32 @@ html[data-theme="siang"] .card{box-shadow:0 16px 40px -18px rgba(30,50,80,.45),0
 .commsBar .csig i:nth-child(4){height:100%;animation-delay:.54s;background:var(--gold)}
 @keyframes sigp{0%,100%{opacity:.28}50%{opacity:1}}
 .commsBar .ttl{color:var(--cyan);font-weight:700;white-space:nowrap}
+.commsBar .ch{color:var(--gold);font-weight:700;border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:6px;padding:2px 6px;letter-spacing:1.2px;white-space:nowrap;flex:none}
 .commsBar .enc{display:flex;align-items:center;gap:4px;color:var(--dim2);white-space:nowrap}
 .commsBar .enc svg{width:9.5px;height:9.5px}
 .commsBar .lat{margin-left:auto;color:var(--gold);font-weight:700;transition:opacity .2s}
 .commsBar .lat.tick{animation:blink .5s 1}
 html[data-theme="siang"] .commsBar{background:linear-gradient(90deg,rgba(9,125,150,.08),rgba(255,255,255,.72) 42%,rgba(176,110,10,.07))}
-/* garis event sistem ◈ — log komms di tengah obrolan */
+/* rel instrumen mikro di sisi obrolan — papan ukur (v35) */
+#v-obrolan{position:relative}
+#v-obrolan::before,#v-obrolan::after{content:'';position:absolute;top:18px;bottom:10px;width:3px;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(180deg,transparent 0 13px,var(--line2) 13px 14.5px)}
+#v-obrolan::before{left:-10px}
+#v-obrolan::after{right:-10px}
+/* garis event sistem ◈ — log komms ber-stempel jam (v35) */
 .evt{display:flex;align-items:center;gap:9px;margin-top:14px}
 .evt i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2))}
 .evt i:last-child{background:linear-gradient(90deg,var(--line2),transparent)}
 .evt span{font:700 8px var(--mono);letter-spacing:1.9px;color:var(--dim2);white-space:nowrap;display:flex;align-items:center;gap:6px}
 .evt span b{color:var(--cyan);font-weight:400;font-size:9px}
+.evt span u{font-weight:600;text-decoration:none;opacity:.75}
 .evt.gold span b{color:var(--gold)}
-/* pesan ber-meta */
-.msg{display:flex;gap:9px;margin-top:15px;align-items:flex-end}
+/* pesan ber-meta — masuk PEGAS (natural), bukan kaku (v35) */
+.msg{display:flex;gap:9px;margin-top:16px;align-items:flex-end;animation:msgIn .55s cubic-bezier(.2,1.3,.35,1) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(13px) scale(.96)}to{opacity:1;transform:none}}
 .mav{width:30px;height:30px;border-radius:50%;flex:none;position:relative;
   background:radial-gradient(circle at 34% 28%,#F0FEFF,var(--cyan) 52%,#083A4E);
-  box-shadow:0 0 14px var(--glow),inset 0 0 8px rgba(255,255,255,.45)}
+  box-shadow:0 0 14px var(--glow),inset 0 0 8px rgba(255,255,255,.45),0 4px 10px -3px rgba(0,0,0,.6)}
 .mav::before{content:'';position:absolute;inset:-3.5px;border-radius:50%;
   background:conic-gradient(from 0deg,transparent 0 68%,var(--gold) 86%,transparent 97%);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
@@ -231,26 +232,64 @@ html[data-theme="siang"] .commsBar{background:linear-gradient(90deg,rgba(9,125,1
   background:var(--gold);box-shadow:0 0 6px rgba(245,181,74,.9);border:1.5px solid var(--bg0)}
 html[data-theme="siang"] .mav::after{border-color:#FFFFFF}
 .mcol{min-width:0;max-width:86%}
-.mmeta{display:flex;align-items:center;gap:6px;font:700 8.5px var(--mono);letter-spacing:1.7px;color:var(--dim2);margin:0 4px 4px}
+.mmeta{display:flex;align-items:center;gap:6px;font:700 8.5px var(--mono);letter-spacing:1.7px;color:var(--dim2);margin:0 4px 5px}
 .mmeta b{color:var(--cyan);font-size:9.5px;letter-spacing:2.2px;font-weight:700}
+.mmeta .mts{margin-left:auto;display:flex;align-items:center;gap:5px;font-weight:600;letter-spacing:1.1px;white-space:nowrap}
+.mmeta .mts i{font-style:normal}
+.mmeta .mts .tk{color:var(--cyan);font-size:8.5px}
 .msg.me .mmeta{justify-content:flex-end}
 .msg.me .mmeta b{color:var(--gold)}
-.msg .bub{position:relative;background:linear-gradient(155deg,rgba(255,255,255,.06),rgba(255,255,255,.015) 55%),var(--pan2);
-  border:1px solid var(--line2);border-radius:5px 16px 16px 16px;padding:10px 14px;font-size:14px;backdrop-filter:blur(12px);
-  box-shadow:0 14px 30px -8px rgba(0,0,0,.68),0 3px 10px -4px rgba(0,0,0,.4)}
-.msg .bub::before{content:'';position:absolute;left:-1px;top:-1px;width:13px;height:13px;
-  border-left:2px solid var(--cyan);border-top:2px solid var(--cyan);border-radius:5px 0 0 0;opacity:.85}
+.msg.me .mmeta .mts .tk{color:var(--gold)}
+/* BUBBLE CHASSIS (v35): pelat kaca mesin — kilap atas, scanline mikro,
+   rel aksen menyala di sisi, bracket HUD emas di sudut, shadow berlapis */
+.msg .bub{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.016) 40%,rgba(34,211,238,.05)),var(--pan2);
+  border:1px solid var(--line2);border-radius:4px 16px 16px 16px;padding:11px 14px 10px 15px;font-size:14px;line-height:1.55;backdrop-filter:blur(14px);
+  box-shadow:0 18px 38px -12px rgba(0,0,0,.78),0 4px 14px -6px rgba(0,0,0,.5),0 0 28px -8px rgba(34,211,238,.24),inset 0 1px 0 rgba(255,255,255,.08)}
+/* rel mesin kiri — aksen sian bertenaga */
+.msg .bub::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2.5px;border-radius:2px;
+  background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.04));box-shadow:0 0 9px rgba(34,211,238,.45)}
+/* scanline mikro + bracket HUD emas mikro kanan-bawah */
+.msg .bub::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:screen;opacity:.9;
+  background:
+    linear-gradient(rgba(245,181,74,.8),rgba(245,181,74,.8)) calc(100% - 6px) calc(100% - 6px)/12px 1.5px no-repeat,
+    linear-gradient(rgba(245,181,74,.8),rgba(245,181,74,.8)) calc(100% - 6px) calc(100% - 6px)/1.5px 12px no-repeat,
+    repeating-linear-gradient(0deg,rgba(140,238,255,.03) 0 1px,transparent 1px 3px)}
 .msg.me{justify-content:flex-end}
-.msg.me .bub{background:linear-gradient(140deg,var(--goldSoft),rgba(245,181,74,.05));border-color:rgba(245,181,74,.4);border-radius:16px 5px 16px 16px;
-  box-shadow:0 14px 30px -8px rgba(245,181,74,.26),0 3px 10px -4px rgba(0,0,0,.4)}
-.msg.me .bub::before{left:auto;right:-1px;border-left:none;border-right:2px solid var(--gold);border-radius:0 5px 0 0}
+.msg.me .bub{background:linear-gradient(150deg,rgba(255,236,190,.16),rgba(245,181,74,.05) 55%),var(--pan2);border-color:rgba(245,181,74,.42);border-radius:16px 4px 16px 16px;padding:11px 15px 10px 14px;
+  box-shadow:0 18px 38px -12px rgba(0,0,0,.7),0 4px 14px -6px rgba(0,0,0,.45),0 0 30px -8px rgba(245,181,74,.4),inset 0 1px 0 rgba(255,244,214,.16)}
+.msg.me .bub::before{left:auto;right:0;background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.04));box-shadow:0 0 9px rgba(245,181,74,.45)}
+.msg.me .bub::after{background:
+    linear-gradient(rgba(255,236,190,.85),rgba(255,236,190,.85)) 6px 6px/12px 1.5px no-repeat,
+    linear-gradient(rgba(255,236,190,.85),rgba(255,236,190,.85)) 6px 6px/1.5px 12px no-repeat,
+    repeating-linear-gradient(0deg,rgba(255,224,150,.035) 0 1px,transparent 1px 3px)}
+html[data-theme="siang"] .msg .bub::after,html[data-theme="siang"] .msg.me .bub::after{mix-blend-mode:normal;opacity:.5}
+/* pesan MENYEGEL: kedip "paket diterima" (v35) */
+.msg .bub.recv{animation:recvP .8s ease-out 1}
+@keyframes recvP{from{border-color:rgba(34,211,238,.8);box-shadow:0 0 0 1px rgba(34,211,238,.45),0 0 34px -2px rgba(34,211,238,.5),0 18px 38px -12px rgba(0,0,0,.78)}}
+.msg.me .bub.recv{animation-name:recvG}
+@keyframes recvG{from{border-color:rgba(245,181,74,.85);box-shadow:0 0 0 1px rgba(245,181,74,.4),0 0 34px -2px rgba(245,181,74,.5),0 18px 38px -12px rgba(0,0,0,.7)}}
+/* VOX STRIP — suara AVI hidup di tiap pesan (v35) */
+.vox{display:flex;align-items:center;gap:2.5px;height:12px;margin-top:8px;opacity:.9}
+.vox i{width:2px;border-radius:1.5px;height:35%;background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.2));animation:voxw 1.15s ease-in-out infinite}
+.vox i:nth-child(3n){background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.22))}
+.vox i:nth-child(2){animation-delay:.14s}.vox i:nth-child(3){animation-delay:.28s}
+.vox i:nth-child(4){animation-delay:.42s}.vox i:nth-child(5){animation-delay:.56s}
+.vox i:nth-child(6){animation-delay:.7s}.vox i:nth-child(7){animation-delay:.84s}
+.vox i:nth-child(8){animation-delay:.98s}.vox i:nth-child(9){animation-delay:1.12s}
+.vox i:nth-child(10){animation-delay:1.26s}
+@keyframes voxw{0%,100%{height:32%}50%{height:92%}}
+.vox em{font:600 7.5px var(--mono);font-style:normal;letter-spacing:1.7px;color:var(--dim2);margin-left:7px}
+/* kuitansi kirim Pak (v35) */
+.rcpt{margin:4px 6px 0 0;font:700 7.5px var(--mono);letter-spacing:1.5px;color:var(--dim2);display:flex;justify-content:flex-end;gap:5px}
+.rcpt b{color:var(--gold);font-weight:700}
 /* v34: pesan tertua memudar keluar (history maks 3) */
-.msg.gone{opacity:0;transform:translateY(-8px) scale(.97);transition:opacity .26s,transform .26s}
+.msg.gone{animation:none;opacity:0;transform:translateY(-8px) scale(.97);transition:opacity .26s,transform .26s}
 .dots{display:inline-flex;gap:4px;padding:3px 2px;align-items:center}
 .dots i{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:dotp 1s ease-in-out infinite}
 .dots i:nth-child(2){animation-delay:.15s}
 .dots i:nth-child(3){animation-delay:.3s}
 @keyframes dotp{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}
+.typ{font:600 8px var(--mono);font-style:normal;letter-spacing:1.8px;color:var(--dim2);margin-left:9px}
 
 /* ---------- panel kerja agent (di dalam obrolan — agent di dalam AVI) ---------- */
 #stgWork{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.32,.72,.24,1),opacity .4s,margin .4s;margin-top:0}
@@ -632,12 +671,13 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
       <div class="commsBar">
         <span class="csig"><i></i><i></i><i></i><i></i></span>
         <span class="ttl">SAMBUNGAN INTI MK1</span>
+        <span class="ch">CH-01</span>
         <span class="enc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>TERENKRIPSI</span>
         <span class="lat" id="clat">LAT 41MS</span>
       </div>
 
       <!-- percakapan: terbuka tenang sebagai ASISTEN (widget ringkasan DIHAPUS — v34) -->
-      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
+      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · <i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
 
       <!-- panel kerja agent: AGENT DI DALAM AVI -->
       <div id="stgWork">
@@ -678,7 +718,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
         </div>
       </div>
 
-      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
+      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · <i class="fmt">--:--</i></span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
 
       <div style="height:8px" id="chatEnd"></div>
     </section>
@@ -870,7 +910,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v34 · MK-XIII ORBITAL ROTOR + OBROLAN BERSIH: WIDGET RINGKASAN DIHAPUS · HISTORY CHAT MAKS 3 TERMASUK PERINTAH BARU (BUBBLE EMAS KANAN) · SHADOW & KEDALAMAN DIPERKUAT · ROTOR GIROSKOP · HERO 200PX · 112PX SAAT KEYBOARD · TANPA RIWAYAT-LAMPILAN BERLEBIH · AGENT DI DALAM AVI</div>
+<div class="note">v35 · CHAT DASHBOARD MK1 — ROBOT · TEKNOLOGI · NATURAL · MEWAH: BUBBLE CHASSIS (REL MESIN · SCANLINE · BRACKET HUD · VOX 230MS) · STEMPEL CH-01 & JAM · TERKIRIM ✓ · KARTU BRACKET + SHADOW BERLAPIS · ORB MK-XIII ROTOR · HISTORY MAKS 3 · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -879,6 +919,12 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 /* ---- toast ---- */
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
+
+/* ---- stempel mesin: jam + VOX (v35) ---- */
+function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+const VOX='<div class="vox">'+'<i></i>'.repeat(10)+'<em>VOX MK1 · 230MS</em></div>';
+function addVox(bub){if(bub&&!bub.querySelector('.vox'))bub.insertAdjacentHTML('beforeend',VOX)}
+addVox(document.querySelector('#followMsg .bub'));
 
 /* ---- latensi inti berdenyut — tanda vital sambungan (v27) ---- */
 setInterval(()=>{const l=$('#clat');if(!l)return;l.textContent='LAT '+(34+Math.floor(Math.random()*26))+'MS';l.classList.remove('tick');void l.offsetWidth;l.classList.add('tick')},2400);
@@ -900,7 +946,8 @@ $('#btnTheme').addEventListener('click',()=>{
 (function(){
   const h=new Date().getHours();
   const w=h<4?'malam':h<10?'pagi':h<15?'siang':h<19?'sore':'malam';
-  $('#greetBub').textContent='Selamat '+w+', Pak. Ada yang bisa saya urus hari ini?';
+  $('#greetBub').innerHTML='Selamat '+w+', Pak. Ada yang bisa saya urus hari ini?'+VOX;
+  const gt=$('#greetT');if(gt)gt.textContent=nowT();
 })();
 
 /* ---- navigasi: dock + indikator geser ---- */
@@ -921,19 +968,20 @@ function slotIdle(tx){
 }
 function state(cls,tx){const w=$('#orbIdle');if(!w)return;w.className=cls||'';w.textContent=tx}
 
-/* ---- jawaban AVI DI ATAS orb — gelembung beravatar + META dalam obrolan (v16·v27) ---- */
-const META_AVI='<div class="mmeta"><b>AVI</b><span>· INTI MK1</span></div>';
+/* ---- jawaban AVI DI ATAS orb — gelembung beravatar + META dalam obrolan (v16·v27·v35) ---- */
+const META_AVI='<div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · '+nowT()+'</span></div>';
 function aviReply(txt){
   const m=$('main'),end=$('#chatEnd');
   const typ=document.createElement('div');
   typ.className='msg';
   seqMsg(typ);
-  typ.innerHTML='<span class="mav"></span><div class="mcol">'+META_AVI+'<div class="bub"><span class="dots"><i></i><i></i><i></i></span></div></div>';
+  typ.innerHTML='<span class="mav"></span><div class="mcol">'+META_AVI+'<div class="bub"><span class="dots"><i></i><i></i><i></i></span><em class="typ">MENYUSUN JAWAB…</em></div></div>';
   end.parentNode.insertBefore(typ,end);
   trimChat();
   m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   setTimeout(()=>{
-    const b=typ.querySelector('.bub');if(b)b.innerHTML=txt;
+    const b=typ.querySelector('.bub');
+    if(b){b.innerHTML=txt+VOX;b.classList.add('recv');setTimeout(()=>b.classList.remove('recv'),850)}
     m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   },950);
 }
@@ -942,19 +990,20 @@ function evtLine(txt,gold,refSel){
   const m=$('main');
   const d=document.createElement('div');
   d.className='evt'+(gold?' gold':'');
-  d.innerHTML='<i></i><span><b>◈</b>'+txt+'<b>◈</b></span><i></i>';
+  d.innerHTML='<i></i><span><b>◈</b>'+txt+' <u>'+nowT()+'</u><b>◈</b></span><i></i>';
   const ref=refSel?$(refSel):$('#chatEnd');
   if(ref&&ref.parentNode)ref.parentNode.insertBefore(d,ref);else if(m)m.appendChild(d);
   trimChat();
   if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
 }
-/* ---- perintah Pak = bubble emas kanan, masuk history (v34) ---- */
+/* ---- perintah Pak = bubble emas kanan, masuk history (v34·v35) ---- */
 function meBubble(txt){
   const end=$('#chatEnd');if(!end)return;
   const d=document.createElement('div');
   d.className='msg me';
-  d.innerHTML='<div class="mcol"><div class="mmeta"><b>PAK</b><span>· PERINTAH</span></div><div class="bub"></div></div>';
-  d.querySelector('.bub').textContent=txt;
+  d.innerHTML='<div class="mcol"><div class="mmeta"><b>PAK</b><span>· PERINTAH</span><span class="mts">'+nowT()+'</span></div><div class="bub"></div><div class="rcpt">TERKIRIM<b>✓</b></div></div>';
+  const b=d.querySelector('.bub');b.textContent=txt;
+  b.classList.add('recv');setTimeout(()=>b.classList.remove('recv'),850);
   seqMsg(d);
   end.parentNode.insertBefore(d,end);
   trimChat();
@@ -1112,6 +1161,7 @@ function finish(){
   const fm=$('#followMsg'),ce=$('#chatEnd');
   if(fm&&ce)ce.parentNode.insertBefore(fm,ce); /* urutan baca: balasan tuntas di ujung (v34) */
   fm.style.display='flex';
+  const ft=fm.querySelector('.fmt');if(ft)ft.textContent=nowT();
   seqMsg(fm);
   trimChat();
   evtLine('TUGAS TUNTAS — DOKUMEN SIAP DI OBROLAN',true,'#followMsg');
