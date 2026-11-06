@@ -3,27 +3,28 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XIX HUD SENTRI v41</title>
+<title>AVI — Asisten Pribadi · MK-XX SEGITIGA HIDUP v42</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v41 — "MK-XIX HUD SENTRI" : jawaban atas referensi GIF Pak
-   "orb luarnya natural, hanya garis luarnya tidak cocok".
-   ⇒ v41: (A) CANGKANG BARU ala HUD GIF — multi-lapis busur
-   TERSEGMENTASI bercelah, tiap lapis beda arah, beda laju, beda
-   tekstur: kurung tebal ujung putih-panas (laju VARIABEL: melaju
-   lalu menahan), busur tipis arah lawan beraksen emas, band
-   rambut kalibrasi berputar DETAK steps, pita data titik,
-   sapuan radar tumbuh-menyusut, 3 node cahaya pengorbit TANPA
-   rel garis. (B) DIHAPUS persis atas kritik "garis luar":
-   3 garis lingkaran utuh tipis (giro), rel orbT tipis, dan
-   ping radar mengembang — tak ada lagi lingkaran utuh di luar.
-   (C) INTI TETAP: lensa reaktor Konsep 2 + plasma morf v40
-   (6 karakter gerak anti-monoton dipertahankan semua).
-   Riwayat dihormati: tanpa kipas, tanpa mata, tanpa garis
-   putus-putus di tepi terluar.
+   AVI v42 — "MK-XX SEGITIGA HIDUP" : evolusi v41 dari masukan
+   terbaru Pak: "yang terasa hidup tuh segitiganya… ada seperti
+   janin yang bergerak".
+   ⇒ v42: NYAWA PINDAH KE SEGITIGA — segitiga kaca diperbesar
+   jadi RAHIM (ruang amnion terpotong bentuk segitiga) berisi
+   JANIN yang benar-benar bergerak: tubuh morf menggeliat,
+   kepala putih-panas berdetak JANTUNG (dua denyut lalu diam),
+   tali pusar energi mengalir dari puncak segitiga, melayang
+   amnion pelan, TENDA sesekali + riak cairan. Ketuk orb →
+   janin TERKEJUT. Kerja → janin geram. Tuntas → emas tenang.
+   Bola plasma bebas v40 DIPENSIUNKAN — bukan itu yang hidup.
+   Cangkang v41 tetap (referensi GIF Pak "orb luarnya natural"):
+   kurung tebal laju variabel, busur lawan arah aksen emas,
+   band rambut detak steps, pita data titik, sapuan radar
+   tumbuh-menyusut, 3 node pengorbit — tanpa garis lingkaran
+   utuh di luar, tanpa ping, tanpa kipas, tanpa mata.
    Dashboard obrolan v35 TETAP: bubble chassis (rel mesin,
    scanline, bracket HUD), VOX 230MS, stempel CH-01 + jam,
    TERKIRIM ✓, history maks 3, masuk pegas.
@@ -331,9 +332,10 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ ORB MK-XIX — HUD SENTRI (v41) : cangkang ala GIF referensi Pak ============
-   Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
-   Inti lensa reaktor (konsep 2) + plasma morf v40 tetap hidup. */
+/* ============ ORB MK-XX — HUD SENTRI + SEGITIGA HIDUP (v42) ============
+   Cangkang v41 tetap: busur tersegmentasi beda arah/beda laju — TANPA garis
+   lingkaran utuh (ditolak). Inti v42: segitiga = rahim, janin bergerak di
+   dalamnya (masukan Pak: "yang terasa hidup tuh segitiganya"). */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
 /* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
 .heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
@@ -419,11 +421,10 @@ html.kb .aura{inset:-14px}
 .hnode.w2 s{top:-1.5px;width:3px;height:3px;background:var(--gold);box-shadow:0 0 6px 1px rgba(245,181,74,.85);animation-delay:1.2s}
 .hnode.w3 s{top:-1.5px;width:3px;height:3px;background:#CFF6FF;box-shadow:0 0 5px 1px rgba(34,211,238,.8);animation-delay:2.1s}
 @keyframes hBlink{0%,100%{opacity:1}50%{opacity:.45}}
-/* — MK-XVIII PLASMA HIDUP: lensa reaktor konsep 2 yang DIBERI NYAWA (v40).
-     Masukan Pak: "monoton, animasi & bentuk itu-itu mulu".
-     ⇒ 6 karakter gerak berbeda: plasma morf (organik), pindai linier,
-     baut hex bergiliran, detak steps, busur emas berlawanan, rel hanyut.
-     Wajah mesin tetap: cakram gelap, bingkai busur, segitiga kaca. — */
+/* — v42 CORE: lensa reaktor konsep 2 tetap mesin, NYAWA pindah ke segitiga.
+     Masukan Pak: "yang terasa hidup tuh segitiganya… seperti janin bergerak".
+     ⇒ bola plasma bebas v40 dipensiunkan (bukan itu yang terasa hidup);
+     hidup kini milik janin di rahim segitiga — lihat blok SEGITIGA HIDUP. — */
 .coreBox{position:absolute;inset:0;z-index:1}
 /* halo energi di belakang lensa — bernapas (redam, jangan cuci wajah) */
 .mhalo{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;
@@ -469,40 +470,82 @@ html.kb .aura{inset:-14px}
 .lring{position:absolute;inset:10px;border-radius:50%;border:1px solid rgba(130,238,255,.5);
   box-shadow:0 0 9px rgba(34,211,238,.4),inset 0 0 9px rgba(34,211,238,.22);
   animation:breath 4.4s ease-in-out infinite}
-/* wajah lensa: pembatas bulat — di dalamnya plasma HIDUP */
+/* wajah lensa: pembatas bulat — nyawa pindah ke segitiga di belakangnya (v42) */
 .lface{position:absolute;inset:5px;border-radius:50%;overflow:hidden}
-/* DUA BOLA PLASMA MORF — bentuk berubah terus, fase tak sinkron (anti-monoton) */
-.lblob{position:absolute;left:50%;top:50%;width:27px;height:27px;margin:-13.5px 0 0 -13.5px;
-  background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#BDF5FF 30%,rgba(94,225,248,.85) 55%,rgba(34,211,238,.25) 82%,transparent 100%);
-  filter:blur(.3px) drop-shadow(0 0 7px rgba(94,229,252,.75));
-  animation:blobA 7.4s ease-in-out infinite}
-.lblob.b2{width:16px;height:16px;margin:-8px 0 0 -8px;
-  background:radial-gradient(circle at 45% 40%,#FFFFFF 0%,#FFE9BC 34%,rgba(245,181,74,.78) 62%,rgba(245,181,74,.15) 85%,transparent 100%);
-  filter:blur(.3px) drop-shadow(0 0 6px rgba(245,181,74,.6));
-  animation:blobB 9.6s ease-in-out infinite}
-@keyframes blobA{
-  0%,100%{border-radius:62% 38% 54% 46%/48% 58% 42% 52%;transform:translate(-2.5px,1.5px) rotate(0deg) scale(1)}
-  22%{border-radius:42% 58% 47% 53%/60% 40% 55% 45%;transform:translate(2.5px,-2px) rotate(70deg) scale(1.1)}
-  47%{border-radius:55% 45% 63% 37%/42% 57% 43% 58%;transform:translate(-1px,2.5px) rotate(150deg) scale(.92)}
-  74%{border-radius:47% 53% 40% 60%/56% 44% 60% 40%;transform:translate(2px,1px) rotate(230deg) scale(1.06)}}
-@keyframes blobB{
-  0%,100%{border-radius:55% 45% 42% 58%/50% 52% 48% 50%;transform:translate(7px,5px) scale(.9)}
-  30%{border-radius:44% 56% 60% 40%/58% 42% 52% 48%;transform:translate(-7px,3px) rotate(120deg) scale(1.15)}
-  60%{border-radius:60% 40% 50% 50%/44% 56% 44% 56%;transform:translate(4px,-7px) rotate(240deg) scale(.85)}
-  82%{border-radius:48% 52% 44% 56%/54% 46% 58% 42%;transform:translate(-4px,-3px) rotate(310deg) scale(1.08)}}
 /* garis pindai horizontal — gerak LINIER melintasi wajah */
 .lscan{position:absolute;left:2px;right:2px;top:0;height:9px;margin-top:-4.5px;border-radius:4px;
   background:linear-gradient(180deg,transparent,rgba(160,244,255,.3) 42%,rgba(255,255,255,.55) 50%,rgba(160,244,255,.3) 58%,transparent);
   mix-blend-mode:screen;opacity:0;animation:lscan 6.4s ease-in-out infinite}
 @keyframes lscan{0%,64%{transform:translateY(5px);opacity:0}72%{opacity:.95}90%{opacity:.85}100%{transform:translateY(49px);opacity:0}}
-/* reticle segitiga KACA tipis — identitas konsep 2, plasma bersinar di baliknya */
-.ltri{position:absolute;left:50%;top:50%;width:21px;height:19px;margin:-11px 0 0 -10.5px}
-/* (v41) filter drop-shadow di ltri DIHAPUS — picu artefak raster segitiga raksasa di 3D context */
+/* ================= v42 MK-XX "SEGITIGA HIDUP": segitiga = RAHIM, janin bergerak =================
+   Masukan Pak: "yang terasa hidup tuh segitiganya… ada seperti janin yang bergerak".
+   ⇒ segitiga diperbesar jadi panggung kehidupan: kaca bawah + rahim amnion
+   (clip-path segitiga) + janin hidup + tali pusar energi + bingkai kaca bernapas.
+   CATATAN v41 tetap berlaku: JANGAN memasang filter drop-shadow pada .ltri/.womb
+   (riwayat artefak raster 3D); filter hanya pada .fetus yang mungil — aman di 2D. */
+.ltri{position:absolute;left:50%;top:50%;width:31px;height:28px;margin:-14px 0 0 -15.5px;
+  animation:triSway 7.2s ease-in-out infinite}
+@keyframes triSway{0%,100%{transform:rotate(-1.5deg) translateY(.3px)}50%{transform:rotate(1.7deg) translateY(-.5px)}}
 .ltri b{position:absolute;inset:0;display:block;
   background:linear-gradient(180deg,rgba(232,253,255,.95),rgba(125,233,249,.7) 55%,rgba(24,169,206,.85));
   clip-path:polygon(50% 0,100% 100%,0 100%)}
 .ltri b::after{content:'';position:absolute;inset:1.4px 1.4px .5px;display:block;
   background:rgba(4,20,31,.6);clip-path:polygon(50% 0,100% 100%,0 100%)}
+/* rahim: ruang amnion di atas kaca, terpotong bentuk segitiga */
+.ltri .womb{position:absolute;inset:0;display:block;clip-path:polygon(50% 0,100% 100%,0 100%);
+  background:linear-gradient(180deg,rgba(6,26,40,.34),rgba(3,16,26,.72) 72%)}
+/* cahaya amnion berpindah pelan — cairan yang hidup */
+.ltri .amnio{position:absolute;left:50%;top:60%;width:27px;height:21px;margin:-10.5px 0 0 -13.5px;border-radius:50%;
+  background:radial-gradient(circle,rgba(94,229,252,.32) 0%,rgba(34,211,238,.11) 55%,transparent 80%);
+  animation:amnioDrift 9.5s ease-in-out infinite}
+@keyframes amnioDrift{0%,100%{transform:translate(-2px,0) scale(1)}38%{transform:translate(2.5px,-1.5px) scale(1.12)}70%{transform:translate(-1px,1.5px) scale(.94)}}
+/* JANIN — bentuk kecil yang benar-benar bergerak */
+.fetus{position:absolute;left:50%;top:64%;width:13px;height:14px;margin:-8px 0 0 -6.5px;
+  filter:drop-shadow(0 0 5px rgba(148,242,255,.85)) drop-shadow(0 0 12px rgba(34,211,238,.38));
+  animation:fFloat 7.6s ease-in-out infinite}
+@keyframes fFloat{0%,100%{transform:translate(-1.4px,.5px) rotate(-5deg)}30%{transform:translate(1.6px,-1px) rotate(4deg)}58%{transform:translate(-.7px,1.5px) rotate(-2.5deg)}80%{transform:translate(1.1px,.3px) rotate(5deg)}}
+/* tubuh morf kacang — menggeliat perlahan */
+.fetus .fbody{position:absolute;left:2px;top:3.5px;width:9px;height:10.5px;display:block;
+  background:radial-gradient(circle at 40% 32%,#FFFFFF 0%,#CFF7FF 34%,rgba(94,229,252,.85) 62%,rgba(34,211,238,.3) 100%);
+  border-radius:58% 42% 52% 48%/62% 55% 45% 38%;
+  animation:fCurl 6.9s ease-in-out infinite}
+@keyframes fCurl{0%,100%{border-radius:58% 42% 52% 48%/62% 55% 45% 38%;transform:rotate(0deg) scale(1)}
+  28%{border-radius:42% 58% 60% 40%/52% 42% 58% 48%;transform:rotate(-15deg) scale(1.06)}
+  62%{border-radius:52% 48% 40% 60%/58% 62% 38% 42%;transform:rotate(11deg) scale(.96)}}
+/* kepala putih-panas — DETAK JANTUNG: dua denyut cepat lalu sejenak diam */
+.fetus .fhead{position:absolute;left:1.5px;top:1px;width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#E9FDFF 45%,rgba(190,247,255,.9) 70%,rgba(94,229,252,.4) 100%);
+  box-shadow:0 0 6px 1px rgba(255,255,255,.65);
+  animation:fHeart 4.4s ease-in-out infinite}
+@keyframes fHeart{0%,58%,100%{transform:scale(1)}62%{transform:scale(1.2)}67%{transform:scale(1.03)}72%{transform:scale(1.15)}78%{transform:scale(1)}}
+/* tungkai TENDA — sesekali mendorong cairan */
+.fetus .fkick{position:absolute;right:.5px;top:8.5px;width:3.2px;height:3.2px;border-radius:50%;
+  background:#EAFBFF;box-shadow:0 0 5px 1px rgba(94,229,252,.9);
+  opacity:.6;animation:fKick 6.8s cubic-bezier(.3,0,.2,1) infinite}
+@keyframes fKick{0%,54%{transform:translate(0,0);opacity:.55}57%{transform:translate(2.6px,-2.4px);opacity:1}59%{transform:translate(1px,-.6px);opacity:.85}62%{transform:translate(2.2px,1.6px);opacity:1}65%,100%{transform:translate(0,0);opacity:.55}}
+/* riak tenda menjalar di cairan */
+.fetus .fkickR{position:absolute;right:-1.5px;top:7.5px;width:6px;height:6px;border-radius:50%;
+  border:1px solid rgba(190,247,255,.85);opacity:0;
+  animation:fKickR 6.8s cubic-bezier(.3,0,.2,1) infinite}
+@keyframes fKickR{0%,54%{opacity:0;transform:scale(.35)}57.5%{opacity:.9;transform:scale(1.1)}66%,100%{opacity:0;transform:scale(2.6)}}
+/* tali pusar energi: mengalir dari puncak segitiga ke kepala janin */
+.ltri .fcord{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ltri .fcord .cp{fill:none;stroke:rgba(170,246,255,.5);stroke-width:.9;stroke-linecap:round;
+  stroke-dasharray:3 2.6;animation:cordFlow 2.8s linear infinite}
+@keyframes cordFlow{to{stroke-dashoffset:-11.2}}
+.ltri .fcord g{transform-origin:15.5px 1.6px;animation:cordSway 7.2s ease-in-out infinite}
+@keyframes cordSway{0%,100%{transform:rotate(-2.4deg)}50%{transform:rotate(2.4deg)}}
+/* bingkai kaca segitiga di atas rahim — bernapas sinkron dengan detak jantung */
+.ltri .tframe{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ltri .tframe .tg{fill:none;stroke:rgba(94,229,252,.3);stroke-width:2.6}
+.ltri .tframe .tf{fill:none;stroke:rgba(222,251,255,.92);stroke-width:1.05}
+.ltri .tframe polygon{animation:tBreath 4.4s ease-in-out infinite}
+@keyframes tBreath{0%,58%,100%{opacity:.72}62%{opacity:1}78%{opacity:.86}}
+/* TERKEJUT saat orb diketuk — janin tersentak, cairan berkilau sekejap */
+.orbBig.startle .fetus{animation:fFloat 7.6s ease-in-out infinite,fStartle .9s cubic-bezier(.34,1.56,.64,1) 1}
+@keyframes fStartle{0%{transform:translate(0,0) scale(1)}20%{transform:translate(2.6px,-2.6px) scale(1.16) rotate(7deg)}44%{transform:translate(-2px,1.4px) scale(.96) rotate(-5deg)}68%{transform:translate(1.4px,-.6px) scale(1.06) rotate(2deg)}100%{transform:translate(0,0)}}
+.orbBig.startle .womb{animation:wombFlash .9s ease-out 1}
+@keyframes wombFlash{0%{filter:brightness(1.9) saturate(1.35)}100%{filter:brightness(1) saturate(1)}}
 /* 6 BAUT HEX di bezel — berkedip bergiliran seperti pemeriksaan sistem */
 .lbol{position:absolute;width:4.5px;height:5px;
   background:linear-gradient(160deg,#D9F9FF,#4FCDE6);
@@ -561,8 +604,15 @@ html.kb .aura{inset:-14px}
 .orbBig.work .hud{animation-duration:9s}
 .orbBig.work .lens{animation-duration:3.6s}
 .orbBig.work .mhalo{animation-duration:1.2s;background:radial-gradient(circle,rgba(34,211,238,.32) 0%,rgba(34,211,238,.11) 52%,transparent 74%)}
-.orbBig.work .lblob{animation-duration:2.3s;filter:blur(.3px) drop-shadow(0 0 11px rgba(140,244,255,.95))}
-.orbBig.work .lblob.b2{animation-duration:3s;filter:blur(.3px) drop-shadow(0 0 8px rgba(255,214,140,.8))}
+/* v42 kerja: janin GERAM — semua laju naik, cahaya makin terang */
+.orbBig.work .fetus{animation-duration:3.1s;filter:drop-shadow(0 0 8px rgba(160,244,255,1)) drop-shadow(0 0 16px rgba(34,211,238,.5))}
+.orbBig.work .fetus .fbody{animation-duration:2.5s}
+.orbBig.work .fetus .fhead{animation-duration:1.05s}
+.orbBig.work .fetus .fkick{animation-duration:2.3s}
+.orbBig.work .fetus .fkickR{animation-duration:2.3s}
+.orbBig.work .ltri .amnio{animation-duration:4.2s}
+.orbBig.work .ltri .fcord .cp{stroke:rgba(190,247,255,.78);animation-duration:1.1s}
+.orbBig.work .ltri .tframe .tf{stroke:rgba(190,247,255,.95)}
 .orbBig.work .lscan{animation-duration:2.5s}
 .orbBig.work .ltick{animation-duration:9s;opacity:.9}
 .orbBig.work .lseg{animation-duration:4.6s;filter:drop-shadow(0 0 7px rgba(34,211,238,.8))}
@@ -596,8 +646,16 @@ html.kb .aura{inset:-14px}
 .orbBig.done .lseg2{background:conic-gradient(from 140deg,transparent 0 24deg,rgba(94,225,248,.8) 38deg,rgba(190,247,255,.45) 46deg,transparent 58deg,transparent 200deg,rgba(94,225,248,.4) 212deg,transparent 224deg);filter:drop-shadow(0 0 4px rgba(94,225,248,.4))}
 .orbBig.done .ltick{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.6) 0deg 1.2deg,transparent 1.2deg 9deg)}
 .orbBig.done .lring{border-color:rgba(255,224,150,.6);box-shadow:0 0 9px rgba(245,181,74,.45),inset 0 0 9px rgba(245,181,74,.25)}
-.orbBig.done .lblob{animation-duration:9s;background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#FFEFC8 30%,rgba(255,214,140,.85) 55%,rgba(245,181,74,.25) 82%,transparent 100%);filter:blur(.3px) drop-shadow(0 0 8px rgba(255,214,140,.8))}
-.orbBig.done .lblob.b2{animation-duration:11s;background:radial-gradient(circle at 45% 40%,#FFFFFF 0%,#D9F9FF 34%,rgba(94,225,248,.65) 62%,transparent 100%);filter:blur(.3px) drop-shadow(0 0 6px rgba(160,244,255,.55))}
+/* v42 tuntas: janin EMAS TENANG */
+.orbBig.done .fetus{animation-duration:9.5s;filter:drop-shadow(0 0 6px rgba(255,224,150,.85)) drop-shadow(0 0 13px rgba(245,181,74,.4))}
+.orbBig.done .fetus .fbody{animation-duration:8.4s;background:radial-gradient(circle at 40% 32%,#FFFFFF 0%,#FFEFC8 34%,rgba(255,214,140,.85) 62%,rgba(245,181,74,.3) 100%)}
+.orbBig.done .fetus .fhead{background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#FFF6DE 45%,rgba(255,236,190,.9) 70%,rgba(245,181,74,.4) 100%);box-shadow:0 0 6px 1px rgba(255,244,214,.7)}
+.orbBig.done .fetus .fkick{background:#FFF6DE;box-shadow:0 0 5px 1px rgba(255,214,140,.9)}
+.orbBig.done .fetus .fkickR{border-color:rgba(255,236,190,.85)}
+.orbBig.done .ltri .amnio{background:radial-gradient(circle,rgba(255,214,140,.28) 0%,rgba(245,181,74,.1) 55%,transparent 80%)}
+.orbBig.done .ltri .fcord .cp{stroke:rgba(255,236,190,.55)}
+.orbBig.done .ltri .tframe .tg{stroke:rgba(245,181,74,.32)}
+.orbBig.done .ltri .tframe .tf{stroke:rgba(255,240,200,.92)}
 .orbBig.done .lscan{background:linear-gradient(180deg,transparent,rgba(255,224,160,.3) 42%,rgba(255,240,200,.6) 50%,rgba(255,224,160,.3) 58%,transparent)}
 .orbBig.done .lbol{background:linear-gradient(160deg,#FFF3D2,#F5B54A)}
 .orbBig.done .lbkt{border-color:rgba(255,224,150,.6)}
@@ -634,8 +692,16 @@ html[data-theme="siang"] .lseg{background:conic-gradient(from -58deg,rgba(10,125
 html[data-theme="siang"] .lseg2{background:conic-gradient(from 140deg,transparent 0 24deg,rgba(176,110,10,.75) 38deg,rgba(176,110,10,.4) 46deg,transparent 58deg,transparent 200deg,rgba(176,110,10,.35) 212deg,transparent 224deg);filter:drop-shadow(0 0 3px rgba(176,110,10,.3))}
 html[data-theme="siang"] .ltick{background:repeating-conic-gradient(from 0deg,rgba(12,110,136,.5) 0deg 1.2deg,transparent 1.2deg 9deg)}
 html[data-theme="siang"] .lring{border-color:rgba(12,110,136,.52);box-shadow:0 0 7px rgba(9,125,150,.28),inset 0 0 7px rgba(9,125,150,.14)}
-html[data-theme="siang"] .lblob{background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#C9EEF9 30%,rgba(14,147,180,.8) 55%,rgba(9,125,150,.18) 82%,transparent 100%);filter:blur(.3px) drop-shadow(0 0 5px rgba(9,125,150,.45))}
-html[data-theme="siang"] .lblob.b2{background:radial-gradient(circle at 45% 40%,#FFFFFF 0%,#F4E3C2 34%,rgba(176,110,10,.65) 62%,transparent 100%);filter:blur(.3px) drop-shadow(0 0 4px rgba(176,110,10,.4))}
+/* v42 tema siang: janin tinta teal di kaca terang */
+html[data-theme="siang"] .fetus{filter:drop-shadow(0 0 4px rgba(9,125,150,.5))}
+html[data-theme="siang"] .fetus .fbody{background:radial-gradient(circle at 40% 32%,#FFFFFF 0%,#C9EEF9 30%,rgba(14,147,180,.85) 60%,rgba(9,125,150,.4) 100%)}
+html[data-theme="siang"] .fetus .fhead{background:radial-gradient(circle at 42% 36%,#FFFFFF 0%,#EAF7FC 45%,rgba(160,225,240,.95) 70%,rgba(9,125,150,.35) 100%);box-shadow:0 0 5px 1px rgba(9,125,150,.4)}
+html[data-theme="siang"] .fetus .fkick{background:#0E93B4;box-shadow:0 0 4px 1px rgba(9,125,150,.6)}
+html[data-theme="siang"] .ltri .womb{background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(214,232,242,.66) 72%)}
+html[data-theme="siang"] .ltri .amnio{background:radial-gradient(circle,rgba(9,125,150,.3) 0%,rgba(9,125,150,.1) 55%,transparent 80%)}
+html[data-theme="siang"] .ltri .fcord .cp{stroke:rgba(9,110,136,.62)}
+html[data-theme="siang"] .ltri .tframe .tg{stroke:rgba(9,125,150,.26)}
+html[data-theme="siang"] .ltri .tframe .tf{stroke:rgba(9,110,136,.8)}
 html[data-theme="siang"] .lscan{background:linear-gradient(180deg,transparent,rgba(9,125,150,.25) 42%,rgba(9,125,150,.45) 50%,rgba(9,125,150,.25) 58%,transparent);mix-blend-mode:multiply}
 html[data-theme="siang"] .lbol{background:linear-gradient(160deg,#0E93B4,#0B6E8A)}
 html[data-theme="siang"] .lbol.h4{background:linear-gradient(160deg,#B06E0A,#8A5606)}
@@ -978,7 +1044,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung tengah (v41 · cangkang HUD ala GIF Pak, inti plasma konsep 2 tetap) -->
+  <!-- ORB MK-XX SEGITIGA HIDUP — HERO di panggung tengah (v42 · cangkang HUD v41 tetap; inti: rahim amnion + janin bergerak, masukan Pak) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
@@ -988,7 +1054,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
           <i class="harc k1"></i><i class="harc k2"></i><i class="harc htick"></i><i class="harc hdata"></i><i class="harc hsweep"></i>
           <i class="hnode w1"><s></s></i><i class="hnode w2"><s></s></i><i class="hnode w3"><s></s></i>
         </div>
-        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="lblob"></i><i class="lblob b2"></i><i class="lscan"></i></i><i class="ltri"><b></b></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
+        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="lscan"></i></i><i class="ltri"><b></b><i class="womb"><i class="amnio"></i><svg class="fcord" viewBox="0 0 31 28" aria-hidden="true"><g><path class="cp" d="M15.5 1.6 C 13.6 6.2, 17.6 8.6, 14 12.6"/></g></svg><i class="fetus"><b class="fbody"></b><b class="fhead"></b><b class="fkick"></b><i class="fkickR"></i></i></i><svg class="tframe" viewBox="0 0 31 28" aria-hidden="true"><polygon class="tg" points="15.5,1.6 29.2,26.8 1.8,26.8"/><polygon class="tf" points="15.5,1.6 29.2,26.8 1.8,26.8"/></svg></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
       </div>
       <svg width="112" height="112" viewBox="0 0 112 112">
         <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
@@ -999,7 +1065,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
       </div>
     </div>
     <div class="orbSide" id="orbSide">
-      <div id="orbIdle">MK-XIX · HUD SENTRI · KALIBRASI HALUS · MEMORI 62%</div>
+      <div id="orbIdle">MK-XX · SEGITIGA HIDUP · JANIN STABIL · MEMORI 62%</div>
       <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
@@ -1084,7 +1150,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v41 · MK-XIX HUD SENTRI — CANGKANG HUD NATURAL (REFERENSI GIF PAK): KURUNG TEBAL LAJU VARIABEL · BUSUR LAWAN ARAH AKSEN EMAS · BAND RAMBUT DETAK STEPS · PITA DATA TITIK · SAPUAN TUMBUH-MENYUSUT · 3 NODE PENGORBIT · GARIS LINGKARAN UTUH & PING DIHAPUS · INTI PLASMA KONSEP 2 TETAP · CHAT DASHBOARD V35 · AGENT DI DALAM AVI</div>
+<div class="note">v42 · MK-XX SEGITIGA HIDUP — MASUKAN PAK: "YANG TERASA HIDUP TUH SEGITIGANYA… SEPERTI JANIN YANG BERGERAK" ⇒ SEGITIGA JADI RAHIM AMNION · JANIN: TUBUH MORF MENGGELIAT + KEPALA DETAK JANTUNG + TALI PUSAR ENERGI + MELAYANG AMNION + TENDA DAN RIAK CAIRAN · KETUK ORB = JANIN TERKEJUT · CANGKANG HUD SENTRI V41 TETAP · CHAT DASHBOARD V35 · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1136,7 +1202,7 @@ window.addEventListener('resize',()=>moveInd($('.navbtn.on')));
 $('#hdPill').addEventListener('click',openSheet);
 
 /* ---- SATU SLOT di sisi orb (v17): telemetri/status — perintah kini di obrolan (v34) ---- */
-const IDLE_TX='MK-XIX · HUD SENTRI · NET AKTIF · MEMORI 62%';
+const IDLE_TX='MK-XX · SEGITIGA HIDUP · NET AKTIF · MEMORI 62%';
 function slotIdle(tx){
   const w=$('#orbIdle');if(w){w.className='';w.textContent=tx||IDLE_TX}
 }
@@ -1446,10 +1512,10 @@ function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[];
         setTimeout(()=>{if(!taskActive)slotIdle()},6800)}}
   }
   if(taskActive&&!done&&!stopped&&!fin){$('#app').classList.add('live');state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK')}
-  else if(!taskActive){state('','MK-XIX · HUD SENTRI · SIAP MENEMANI PAK')}
+  else if(!taskActive){state('','MK-XX · SEGITIGA HIDUP · SIAP MENEMANI PAK')}
 }
 $('#btnMic').addEventListener('click',lvOpen);
-$('#orbBig').addEventListener('click',lvOpen);
+$('#orbBig').addEventListener('click',()=>{lvOpen();const ob=$('#orbBig');ob.classList.remove('startle');void ob.offsetWidth;ob.classList.add('startle');clearTimeout(ob._st);ob._st=setTimeout(()=>ob.classList.remove('startle'),950)});
 $('#lvClose').addEventListener('click',lvClose);
 
 /* mulai: asisten tenang — orb holo-gyro menemani di atas papan ketik */
