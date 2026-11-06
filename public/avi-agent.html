@@ -3,63 +3,66 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XIX HUD SENTRI v41</title>
+<title>AVI — Asisten Pribadi · MK-XX ATELIER v42</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v41 — "MK-XIX HUD SENTRI" : jawaban atas referensi GIF Pak
-   "orb luarnya natural, hanya garis luarnya tidak cocok".
-   ⇒ v41: (A) CANGKANG BARU ala HUD GIF — multi-lapis busur
-   TERSEGMENTASI bercelah, tiap lapis beda arah, beda laju, beda
-   tekstur: kurung tebal ujung putih-panas (laju VARIABEL: melaju
-   lalu menahan), busur tipis arah lawan beraksen emas, band
-   rambut kalibrasi berputar DETAK steps, pita data titik,
-   sapuan radar tumbuh-menyusut, 3 node cahaya pengorbit TANPA
-   rel garis. (B) DIHAPUS persis atas kritik "garis luar":
-   3 garis lingkaran utuh tipis (giro), rel orbT tipis, dan
-   ping radar mengembang — tak ada lagi lingkaran utuh di luar.
-   (C) INTI TETAP: lensa reaktor Konsep 2 + plasma morf v40
-   (6 karakter gerak anti-monoton dipertahankan semua).
-   Riwayat dihormati: tanpa kipas, tanpa mata, tanpa garis
-   putus-putus di tepi terluar.
-   Dashboard obrolan v35 TETAP: bubble chassis (rel mesin,
-   scanline, bracket HUD), VOX 230MS, stempel CH-01 + jam,
-   TERKIRIM ✓, history maks 3, masuk pegas.
-   Nuansa Jarvis: sian #22D3EE + emas #F5B54A · Unbounded /
-   Space Grotesk / JetBrains Mono · hero 200px → 112px saat
-   keyboard · TANPA RIWAYAT-LAMPIRAN · ASISTEN DULU, agent DI
-   DALAM AVI (gate izin 60%) · COMING SOON untuk yang belum ada.
+   AVI v42 — "MK-XX ATELIER" : TEMA & TATA LETAK OBROLAN
+   DIRANCANG ULANG atas masukan Pak — "tema dan tata letak
+   maupun UI dari tampilan chat masih tidak sinkron, tidak mewah".
+
+   Prinsip ATELIER (mewah = tenang, bukan ramai):
+   (1) SATU bahasa visual untuk semuanya — kaca pekat, garis rambut,
+       grid blueprint samar bermask radial, aksen DISIPLIN:
+       sian = sistem/AVI · emas = Pak/aksi · mint = tuntas.
+   (2) Bubble OBROLAN dibersihkan total: scanline, bracket HUD,
+       rel mesin, dan strip VOX DIHAPUS — tersisa kaca rapi,
+       satu aksen tepi tipis, meta ringkas (nama + jam).
+   (3) Hierarki tipografi jelas: Unbounded hanya untuk nama,
+       Space Grotesk untuk isi, JetBrains Mono hanya untuk
+       telemetri kecil — tidak lagi semua huruf besar semua tempat.
+   (4) Chip sapaan cepat, status sambungan satu baris tenang,
+       riwayat obrolan lebih panjang (10) agar percakapan hidup.
+   (5) ORB MK-XIX v41 (cangkang HUD SENTRI + inti plasma konsep 2)
+       TETAP UTUH — urusan orb sudah selesai, tidak disentuh sama
+       sekali (CSS & HTML disalin apa adanya dari v41).
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg0:#04060C; --bg1:#0B1220;
-  --pan:rgba(13,21,36,.62); --pan2:rgba(21,32,52,.78); --pan3:#0D1526;
-  --line:rgba(150,180,225,.13); --line2:rgba(150,180,225,.26);
+  --bg0:#05070D; --bg1:#0A111E;
+  --pan:rgba(12,19,32,.58); --pan2:rgba(17,26,44,.74); --pan3:#0C1424;
+  --line:rgba(150,180,225,.12); --line2:rgba(150,180,225,.24);
   --cyan:#22D3EE; --gold:#F5B54A; --mint:#5EEAD4; --red:#FB7185;
-  --cyanSoft:rgba(34,211,238,.11); --goldSoft:rgba(245,181,74,.13);
-  --glow:rgba(34,211,238,.22);
-  --gline:linear-gradient(135deg,rgba(34,211,238,.55),rgba(34,211,238,.07) 34%,rgba(150,180,225,.13) 56%,rgba(245,181,74,.42));
-  --txt:#EDF4FF; --dim:#93A4C4; --dim2:#5D6F94;
+  --cyanSoft:rgba(34,211,238,.10); --goldSoft:rgba(245,181,74,.12);
+  --glow:rgba(34,211,238,.2);
+  --gridLn:rgba(150,180,225,.045); --gridLn2:rgba(150,180,225,.085);
+  --gline:linear-gradient(135deg,rgba(34,211,238,.5),rgba(34,211,238,.06) 36%,rgba(150,180,225,.12) 58%,rgba(245,181,74,.4));
+  --txt:#EAF2FC; --dim:#8FA3C2; --dim2:#5F7194;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Unbounded',sans-serif; --ui:'Space Grotesk',sans-serif;
 }
 html[data-theme="siang"]{
-  --bg0:#E9EEF6; --bg1:#F7FAFD;
-  --pan:rgba(255,255,255,.70); --pan2:rgba(255,255,255,.90); --pan3:#FFFFFF;
-  --line:rgba(20,32,50,.10); --line2:rgba(20,32,50,.22);
-  --cyan:#097D96; --gold:#B06E0A; --mint:#0B8F70; --red:#DC4B5E;
-  --cyanSoft:rgba(9,125,150,.10); --goldSoft:rgba(176,110,10,.11);
-  --glow:rgba(9,125,150,.16);
-  --gline:linear-gradient(135deg,rgba(9,125,150,.40),rgba(9,125,150,.06) 38%,rgba(20,32,50,.12) 58%,rgba(176,110,10,.32));
-  --txt:#131D2C; --dim:#4D5E7A; --dim2:#8B99B3;
+  --bg0:#E8EDF5; --bg1:#F8FBFE;
+  --pan:rgba(255,255,255,.66); --pan2:rgba(255,255,255,.9); --pan3:#FFFFFF;
+  --line:rgba(21,33,52,.11); --line2:rgba(21,33,52,.22);
+  --cyan:#0A7D96; --gold:#B06E0A; --mint:#0B8F70; --red:#DC4B5E;
+  --cyanSoft:rgba(9,125,150,.09); --goldSoft:rgba(176,110,10,.1);
+  --glow:rgba(9,125,150,.15);
+  --gridLn:rgba(21,33,52,.055); --gridLn2:rgba(21,33,52,.09);
+  --gline:linear-gradient(135deg,rgba(9,125,150,.38),rgba(9,125,150,.06) 38%,rgba(21,33,52,.12) 58%,rgba(176,110,10,.3));
+  --txt:#141E2E; --dim:#4C5D7A; --dim2:#8A98B2;
 }
 html,body{height:100%}
-body{background:#02040A;color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.5;overflow:hidden;
+body{background:#03050A;color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.5;overflow:hidden;
   display:flex;align-items:center;justify-content:center}
-html[data-theme="siang"] body{background:#D9E3EF}
-::selection{background:var(--goldSoft)}
+html[data-theme="siang"] body{background:#DCE5F0}
+body::before{content:'';position:fixed;left:50%;top:44%;width:940px;height:940px;transform:translate(-50%,-50%);
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(34,211,238,.055),rgba(245,181,74,.028) 44%,transparent 68%)}
+html[data-theme="siang"] body::before{background:radial-gradient(circle,rgba(255,255,255,.5),rgba(9,125,150,.05) 46%,transparent 70%)}
+::selection{background:rgba(245,181,74,.25)}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input{font-family:inherit;color:var(--txt);background:none;border:none;outline:none}
 .scr{scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
@@ -70,33 +73,31 @@ input{font-family:inherit;color:var(--txt);background:none;border:none;outline:n
 /* ---------- bingkai ---------- */
 .app{position:relative;width:min(420px,100vw);height:min(900px,var(--vvh,100vh));overflow:hidden;
   transform:translateZ(0);display:flex;flex-direction:column;transition:background .4s}
-@media(min-width:460px){.app{border-radius:28px;border:1px solid var(--line2);height:min(900px,calc(var(--vvh,100vh) - 30px))}}
-.app.live{box-shadow:0 0 0 1px var(--line2),0 0 70px var(--glow)}
+@media(min-width:460px){.app{border-radius:30px;border:1px solid var(--line2);height:min(900px,calc(var(--vvh,100vh) - 30px));
+  box-shadow:0 44px 110px -34px rgba(0,0,0,.85),0 0 90px -40px var(--glow)}}
+.app.live{box-shadow:0 0 0 1px var(--line2),0 0 80px -20px var(--glow)}
 
-/* LAPIS AURORA PRISM — 3 blob hidup (pengganti grid v25) */
-.bgAur{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
-  background:linear-gradient(180deg,var(--bg0),var(--bg1) 130%)}
-.bgAur i{position:absolute;border-radius:50%;filter:blur(66px);mix-blend-mode:screen}
-.b1{width:470px;height:470px;left:-150px;top:-170px;
-  background:radial-gradient(circle at 42% 42%,rgba(34,211,238,.30),transparent 66%);animation:drift1 21s ease-in-out infinite alternate}
-.b2{width:430px;height:430px;right:-170px;top:20%;
-  background:radial-gradient(circle at 58% 42%,rgba(139,92,246,.20),transparent 66%);animation:drift2 26s ease-in-out infinite alternate}
-.b3{width:380px;height:380px;left:10%;bottom:-170px;
-  background:radial-gradient(circle,rgba(245,181,74,.15),transparent 66%);animation:drift3 18s ease-in-out infinite alternate}
-@keyframes drift1{to{transform:translate(74px,54px) scale(1.14)}}
-@keyframes drift2{to{transform:translate(-64px,74px) scale(.93)}}
-@keyframes drift3{to{transform:translate(56px,-64px) scale(1.12)}}
-html[data-theme="siang"] .bgAur i{mix-blend-mode:normal;opacity:.55}
-/* LAPIS starfield — serbuk cahaya berkelip (pengganti partikel naik) */
-.bgSt{position:absolute;inset:0;z-index:0;pointer-events:none}
-.bgSt i{position:absolute;width:2px;height:2px;border-radius:50%;background:#D6F6FF;
-  box-shadow:0 0 7px rgba(34,211,238,.9);opacity:0;animation:twk var(--d,6s) ease-in-out infinite;animation-delay:var(--dl,0s)}
-@keyframes twk{0%,100%{opacity:0}45%{opacity:.75}70%{opacity:.25}}
-html[data-theme="siang"] .bgSt{display:none}
-/* LAPIS vignette */
-.vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 100px rgba(0,0,0,.55)}
-html[data-theme="siang"] .vig{box-shadow:inset 0 0 90px rgba(120,140,170,.22)}
-
+/* ---------- latar ATELIER: grid blueprint + dua pendaran tenang ---------- */
+.bgFx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:linear-gradient(180deg,var(--bg0),var(--bg1) 135%)}
+.bgFx i{position:absolute;border-radius:50%;filter:blur(72px)}
+.gA{width:560px;height:560px;left:50%;top:-270px;margin-left:-280px;
+  background:radial-gradient(circle,rgba(34,211,238,.12),transparent 62%);animation:gA 20s ease-in-out infinite alternate}
+.gB{width:480px;height:480px;right:-190px;bottom:-210px;
+  background:radial-gradient(circle,rgba(245,181,74,.09),transparent 64%);animation:gA 27s ease-in-out infinite alternate-reverse}
+@keyframes gA{to{transform:translate(46px,42px) scale(1.12)}}
+html[data-theme="siang"] .bgFx i{opacity:.5}
+.gridL{position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--gridLn) 1px,transparent 1px),
+    linear-gradient(90deg,var(--gridLn) 1px,transparent 1px),
+    linear-gradient(var(--gridLn2) 1px,transparent 1px),
+    linear-gradient(90deg,var(--gridLn2) 1px,transparent 1px);
+  background-size:26px 26px,26px 26px,130px 130px,130px 130px;
+  -webkit-mask:radial-gradient(130% 84% at 50% 26%,#000 22%,transparent 76%);
+          mask:radial-gradient(130% 84% at 50% 26%,#000 22%,transparent 76%)}
+.vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 110px rgba(0,0,0,.5)}
+html[data-theme="siang"] .vig{box-shadow:inset 0 0 90px rgba(120,140,170,.2)}
 header,main,.composer,nav,#strip{position:relative;z-index:2}
 
 /* ---------- animasi masuk ---------- */
@@ -107,8 +108,11 @@ main .card,main .evt{animation:rise .6s cubic-bezier(.22,1,.36,1) both}
 .composer{animation:rise .6s .12s cubic-bezier(.22,1,.36,1) both}
 nav{animation:rise .6s .2s cubic-bezier(.22,1,.36,1) both}
 
-/* ---------- header ---------- */
-header{display:flex;align-items:center;gap:11px;padding:14px 16px 10px}
+/* ---------- header: bar kaca tenang ---------- */
+header{display:flex;align-items:center;gap:12px;padding:14px 18px 12px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 82%)}
+html[data-theme="siang"] header{background:linear-gradient(180deg,rgba(255,255,255,.55),transparent 85%)}
 .mark{position:relative;width:34px;height:34px;flex:none}
 .mark::before{content:'';position:absolute;inset:0;border-radius:50%;
   background:conic-gradient(from 0deg,transparent 0 58%,var(--cyan) 80%,transparent 94%);
@@ -120,23 +124,22 @@ header{display:flex;align-items:center;gap:11px;padding:14px 16px 10px}
   box-shadow:0 0 14px var(--glow);animation:nafas 3.8s ease-in-out infinite}
 .mark.work i{animation:nafas 1.05s ease-in-out infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes spinR{to{transform:rotate(-360deg)}}
 @keyframes nafas{0%,100%{transform:scale(1);box-shadow:0 0 12px var(--glow)}50%{transform:scale(1.07);box-shadow:0 0 24px var(--glow)}}
-.brand b{font-family:var(--disp);font-size:14.5px;font-weight:800;letter-spacing:4px;display:block;line-height:1.15;
-  background:linear-gradient(92deg,var(--txt) 30%,var(--cyan) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.brand small{font:600 8.5px var(--mono);letter-spacing:3px;color:var(--dim2)}
+.brand b{font-family:var(--disp);font-size:15px;font-weight:800;letter-spacing:5px;display:block;line-height:1.15;
+  background:linear-gradient(92deg,var(--txt) 26%,var(--cyan) 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand small{font:600 8px var(--mono);letter-spacing:3.2px;color:var(--dim2);display:block;margin-top:2px}
 .hdR{margin-left:auto;display:flex;align-items:center;gap:8px}
-.icobtn{width:34px;height:34px;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);transition:.2s;background:var(--pan)}
+.icobtn{width:38px;height:38px;border-radius:13px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);transition:.2s;background:var(--pan)}
 .icobtn:hover{color:var(--gold);border-color:var(--line2)}
-.pill{border:1px solid var(--line2);border-radius:999px;padding:6px 12px;font-size:10.5px;font-weight:700;letter-spacing:1.4px;color:var(--dim);display:flex;align-items:center;gap:7px;transition:.25s;background:var(--pan)}
+.pill{border:1px solid var(--line2);border-radius:999px;padding:7px 13px;font-size:10.5px;font-weight:700;letter-spacing:1.4px;color:var(--dim);display:flex;align-items:center;gap:7px;transition:.25s;background:var(--pan)}
 .pill i{width:6px;height:6px;border-radius:50%;background:var(--dim2);flex:none}
-.pill.work{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px var(--glow)} .pill.work i{background:var(--cyan);animation:blink 1s infinite}
-.pill.done{border-color:var(--mint);color:var(--mint)} .pill.done i{background:var(--mint)}
+.pill.work{border-color:rgba(34,211,238,.55);color:var(--cyan);box-shadow:0 0 16px -4px var(--glow)} .pill.work i{background:var(--cyan);animation:blink 1s infinite}
+.pill.done{border-color:rgba(94,234,212,.55);color:var(--mint)} .pill.done i{background:var(--mint)}
 @keyframes blink{50%{opacity:.25}}
 
 /* ---------- strip kendali ---------- */
-#strip{display:none;align-items:center;gap:8px;margin:0 16px 8px;padding:8px 12px;border-radius:14px;
-  border:1px solid var(--line2);background:var(--pan);backdrop-filter:blur(10px);flex:none;animation:rise .3s both}
+#strip{display:none;align-items:center;gap:8px;margin:0 18px 8px;padding:8px 12px;border-radius:14px;
+  border:1px solid var(--line2);background:var(--pan);backdrop-filter:blur(12px);flex:none;animation:rise .3s both}
 #strip.on{display:flex}
 #strip .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:blink 1s infinite;flex:none}
 #strip .nm{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:104px}
@@ -150,69 +153,50 @@ header{display:flex;align-items:center;gap:11px;padding:14px 16px 10px}
 #strip.bad .dot{background:var(--red);animation:none}
 #strip.bad .pc{color:var(--red)} #strip.bad .bar b{background:var(--red)}
 
-main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:2px 16px 10px}
+main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:0 18px 8px}
 .view{display:none}.view.on{display:block}
 
-/* ---------- KARTU PRISMA — border gradien + SHADOW TAJAM (v34) ---------- */
-.card{position:relative;border-radius:20px;padding:14px 15px;
-  background:linear-gradient(155deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 46%),var(--pan);
-  backdrop-filter:blur(16px);box-shadow:0 18px 44px -12px rgba(0,0,0,.72),0 4px 16px -6px rgba(0,0,0,.45)}
-.card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);
+/* ---------- kartu ATELIER: kaca pekat + garis tepi gradien ---------- */
+.card{position:relative;border-radius:20px;padding:15px 16px;border:1px solid transparent;
+  background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.012) 48%),var(--pan);
+  backdrop-filter:blur(18px);
+  box-shadow:0 24px 50px -20px rgba(0,0,0,.65),0 6px 18px -10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05)}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.8;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
   pointer-events:none}
-html[data-theme="siang"] .card{box-shadow:0 16px 40px -18px rgba(30,50,80,.45),0 3px 12px -5px rgba(30,50,80,.25)}
-/* bracket HUD di sudut kartu — bingkai instrumen (v35) */
-.card::after{content:'';position:absolute;inset:5px;border-radius:15px;pointer-events:none;opacity:.55;mix-blend-mode:screen;
-  background:
-    linear-gradient(var(--cyan),var(--cyan)) left 0 top 0/13px 1.5px no-repeat,
-    linear-gradient(var(--cyan),var(--cyan)) left 0 top 0/1.5px 13px no-repeat,
-    linear-gradient(var(--cyan),var(--cyan)) right 0 bottom 0/13px 1.5px no-repeat,
-    linear-gradient(var(--cyan),var(--cyan)) right 0 bottom 0/1.5px 13px no-repeat}
-html[data-theme="siang"] .card::after{mix-blend-mode:normal;opacity:.38}
-.clab{font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+html[data-theme="siang"] .card{box-shadow:0 18px 42px -20px rgba(30,50,80,.4),0 4px 12px -8px rgba(30,50,80,.22),inset 0 1px 0 rgba(255,255,255,.85)}
+.clab{font-size:9.5px;font-weight:700;letter-spacing:2px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:10px}
 .clab::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent);opacity:.7}
 .clab svg{width:13px;height:13px;color:var(--cyan)}
 .clab .tg2{margin-left:auto;font:700 8.5px var(--mono);letter-spacing:1px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:7px;padding:2.5px 8px}
 .clab .tg2.live{color:var(--cyan);border-color:var(--cyanSoft);background:var(--cyanSoft);animation:blink 1.6s infinite}
 
-/* ---------- OBROLAN: COMMS DECK v35 — CHASSIS MK1 ---------- */
-/* bar sambungan inti — melekat di atas obrolan */
-.commsBar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 12px;border-radius:12px;
-  background:linear-gradient(90deg,rgba(34,211,238,.10),rgba(13,21,36,.55) 42%,rgba(245,181,74,.08));
-  border:1px solid var(--line);backdrop-filter:blur(14px);
-  font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);box-shadow:0 12px 26px -10px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
-.commsBar .csig{display:flex;align-items:flex-end;gap:1.5px;height:11px;flex:none}
-.commsBar .csig i{width:2.5px;border-radius:1px;background:var(--cyan);animation:sigp 1.4s ease-in-out infinite}
-.commsBar .csig i:nth-child(1){height:35%}
-.commsBar .csig i:nth-child(2){height:58%;animation-delay:.18s}
-.commsBar .csig i:nth-child(3){height:78%;animation-delay:.36s}
-.commsBar .csig i:nth-child(4){height:100%;animation-delay:.54s;background:var(--gold)}
-@keyframes sigp{0%,100%{opacity:.28}50%{opacity:1}}
-.commsBar .ttl{color:var(--cyan);font-weight:700;white-space:nowrap}
-.commsBar .ch{color:var(--gold);font-weight:700;border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:6px;padding:2px 6px;letter-spacing:1.2px;white-space:nowrap;flex:none}
-.commsBar .enc{display:flex;align-items:center;gap:4px;color:var(--dim2);white-space:nowrap}
-.commsBar .enc svg{width:9.5px;height:9.5px}
-.commsBar .lat{margin-left:auto;color:var(--gold);font-weight:700;transition:opacity .2s}
-.commsBar .lat.tick{animation:blink .5s 1}
-html[data-theme="siang"] .commsBar{background:linear-gradient(90deg,rgba(9,125,150,.08),rgba(255,255,255,.72) 42%,rgba(176,110,10,.07))}
-/* rel instrumen mikro di sisi obrolan — papan ukur (v35) */
-#v-obrolan{position:relative}
-#v-obrolan::before,#v-obrolan::after{content:'';position:absolute;top:18px;bottom:10px;width:3px;pointer-events:none;opacity:.5;
-  background:repeating-linear-gradient(180deg,transparent 0 13px,var(--line2) 13px 14.5px)}
-#v-obrolan::before{left:-10px}
-#v-obrolan::after{right:-10px}
-/* garis event sistem ◈ — log komms ber-stempel jam (v35) */
-.evt{display:flex;align-items:center;gap:9px;margin-top:14px}
-.evt i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2))}
-.evt i:last-child{background:linear-gradient(90deg,var(--line2),transparent)}
-.evt span{font:700 8px var(--mono);letter-spacing:1.9px;color:var(--dim2);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.evt span b{color:var(--cyan);font-weight:400;font-size:9px}
-.evt span u{font-weight:600;text-decoration:none;opacity:.75}
-.evt.gold span b{color:var(--gold)}
-/* pesan ber-meta — masuk PEGAS (natural), bukan kaku (v35) */
-.msg{display:flex;gap:9px;margin-top:16px;align-items:flex-end;animation:msgIn .55s cubic-bezier(.2,1.3,.35,1) both}
-@keyframes msgIn{from{opacity:0;transform:translateY(13px) scale(.96)}to{opacity:1;transform:none}}
+/* ---------- status sambungan: SATU baris tenang ---------- */
+.comms{display:flex;align-items:center;gap:8px;margin-top:12px;padding:8px 13px;border-radius:12px;
+  border:1px solid var(--line);background:var(--pan);backdrop-filter:blur(12px);
+  font:600 8.5px var(--mono);letter-spacing:1.7px;color:var(--dim2);white-space:nowrap;
+  box-shadow:0 10px 24px -14px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04)}
+.comms>span{white-space:nowrap}
+.comms .dot{width:5px;height:5px;border-radius:50%;background:var(--mint);flex:none;
+  box-shadow:0 0 8px rgba(94,234,212,.7);animation:blink 2.6s infinite}
+.comms s{width:3px;height:3px;border-radius:50%;background:var(--dim2);opacity:.45;text-decoration:none;flex:none}
+.comms .lat{margin-left:auto;color:var(--gold);font-weight:700;letter-spacing:1.2px;transition:opacity .2s}
+.comms .lat.tick{animation:blink .5s 1}
+
+/* ---------- sapaan cepat: chip elegan ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;animation:msgIn .55s .22s cubic-bezier(.22,1,.36,1) both}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border-radius:999px;
+  border:1px solid var(--line2);background:var(--pan);backdrop-filter:blur(10px);
+  font:500 12.5px var(--ui);letter-spacing:.3px;color:var(--dim);transition:.25s}
+.chip svg{width:13px;height:13px;color:var(--gold);flex:none}
+.chip:hover{color:var(--txt);border-color:rgba(34,211,238,.5);box-shadow:0 0 20px -6px var(--glow);transform:translateY(-1px)}
+.chip:active{transform:translateY(0)}
+
+/* ---------- pesan: kaca bersih, SATU aksen tepi, meta ringkas ---------- */
+.msg{display:flex;gap:10px;margin-top:18px;align-items:flex-end;animation:msgIn .5s cubic-bezier(.22,1,.36,1) both}
+#greetMsg{margin-top:14px}
+@keyframes msgIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
 .mav{width:30px;height:30px;border-radius:50%;flex:none;position:relative;
   background:radial-gradient(circle at 34% 28%,#F0FEFF,var(--cyan) 52%,#083A4E);
   box-shadow:0 0 14px var(--glow),inset 0 0 8px rgba(255,255,255,.45),0 4px 10px -3px rgba(0,0,0,.6)}
@@ -220,62 +204,35 @@ html[data-theme="siang"] .commsBar{background:linear-gradient(90deg,rgba(9,125,1
   background:conic-gradient(from 0deg,transparent 0 68%,var(--gold) 86%,transparent 97%);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
           mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
-  animation:spin 6s linear infinite}
+  animation:spin 7s linear infinite}
 .mav::after{content:'';position:absolute;right:-1px;top:-1px;width:7px;height:7px;border-radius:50%;
   background:var(--gold);box-shadow:0 0 6px rgba(245,181,74,.9);border:1.5px solid var(--bg0)}
 html[data-theme="siang"] .mav::after{border-color:#FFFFFF}
-.mcol{min-width:0;max-width:86%}
-.mmeta{display:flex;align-items:center;gap:6px;font:700 8.5px var(--mono);letter-spacing:1.7px;color:var(--dim2);margin:0 4px 5px}
-.mmeta b{color:var(--cyan);font-size:9.5px;letter-spacing:2.2px;font-weight:700}
-.mmeta .mts{margin-left:auto;display:flex;align-items:center;gap:5px;font-weight:600;letter-spacing:1.1px;white-space:nowrap}
+.mcol{min-width:0;max-width:85%}
+.mmeta{display:flex;align-items:center;gap:7px;font:600 8.5px var(--mono);letter-spacing:1.9px;color:var(--dim2);margin:0 6px 6px}
+.mmeta b{color:var(--cyan);font-size:9.5px;letter-spacing:2.4px;font-weight:700}
+.mmeta .mts{margin-left:auto;display:flex;align-items:center;gap:5px;font-weight:600;letter-spacing:1.2px;white-space:nowrap}
 .mmeta .mts i{font-style:normal}
-.mmeta .mts .tk{color:var(--cyan);font-size:8.5px}
 .msg.me .mmeta{justify-content:flex-end}
 .msg.me .mmeta b{color:var(--gold)}
-.msg.me .mmeta .mts .tk{color:var(--gold)}
-/* BUBBLE CHASSIS (v35): pelat kaca mesin — kilap atas, scanline mikro,
-   rel aksen menyala di sisi, bracket HUD emas di sudut, shadow berlapis */
-.msg .bub{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.016) 40%,rgba(34,211,238,.05)),var(--pan2);
-  border:1px solid var(--line2);border-radius:4px 16px 16px 16px;padding:11px 14px 10px 15px;font-size:14px;line-height:1.55;backdrop-filter:blur(14px);
-  box-shadow:0 18px 38px -12px rgba(0,0,0,.78),0 4px 14px -6px rgba(0,0,0,.5),0 0 28px -8px rgba(34,211,238,.24),inset 0 1px 0 rgba(255,255,255,.08)}
-/* rel mesin kiri — aksen sian bertenaga */
-.msg .bub::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2.5px;border-radius:2px;
-  background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.04));box-shadow:0 0 9px rgba(34,211,238,.45)}
-/* scanline mikro + bracket HUD emas mikro kanan-bawah */
-.msg .bub::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:screen;opacity:.9;
-  background:
-    linear-gradient(rgba(245,181,74,.8),rgba(245,181,74,.8)) calc(100% - 6px) calc(100% - 6px)/12px 1.5px no-repeat,
-    linear-gradient(rgba(245,181,74,.8),rgba(245,181,74,.8)) calc(100% - 6px) calc(100% - 6px)/1.5px 12px no-repeat,
-    repeating-linear-gradient(0deg,rgba(140,238,255,.03) 0 1px,transparent 1px 3px)}
+.bub{position:relative;background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.014) 46%,rgba(34,211,238,.04)),var(--pan2);
+  border:1px solid var(--line2);border-radius:4px 18px 18px 18px;padding:12px 16px;font-size:14.5px;line-height:1.65;backdrop-filter:blur(16px);
+  box-shadow:0 20px 42px -18px rgba(0,0,0,.7),0 4px 14px -8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07)}
+.bub::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.05))}
 .msg.me{justify-content:flex-end}
-.msg.me .bub{background:linear-gradient(150deg,rgba(255,236,190,.16),rgba(245,181,74,.05) 55%),var(--pan2);border-color:rgba(245,181,74,.42);border-radius:16px 4px 16px 16px;padding:11px 15px 10px 14px;
-  box-shadow:0 18px 38px -12px rgba(0,0,0,.7),0 4px 14px -6px rgba(0,0,0,.45),0 0 30px -8px rgba(245,181,74,.4),inset 0 1px 0 rgba(255,244,214,.16)}
-.msg.me .bub::before{left:auto;right:0;background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.04));box-shadow:0 0 9px rgba(245,181,74,.45)}
-.msg.me .bub::after{background:
-    linear-gradient(rgba(255,236,190,.85),rgba(255,236,190,.85)) 6px 6px/12px 1.5px no-repeat,
-    linear-gradient(rgba(255,236,190,.85),rgba(255,236,190,.85)) 6px 6px/1.5px 12px no-repeat,
-    repeating-linear-gradient(0deg,rgba(255,224,150,.035) 0 1px,transparent 1px 3px)}
-html[data-theme="siang"] .msg .bub::after,html[data-theme="siang"] .msg.me .bub::after{mix-blend-mode:normal;opacity:.5}
-/* pesan MENYEGEL: kedip "paket diterima" (v35) */
+.msg.me .bub{background:linear-gradient(150deg,rgba(255,236,190,.13),rgba(245,181,74,.04) 55%),var(--pan2);
+  border-color:rgba(245,181,74,.38);border-radius:18px 4px 18px 18px}
+.msg.me .bub::before{left:auto;right:0;background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.05))}
+html[data-theme="siang"] .msg .bub{background:linear-gradient(165deg,#FFFFFF,#F3F7FC 62%);
+  box-shadow:0 16px 34px -18px rgba(30,50,80,.35),0 3px 10px -7px rgba(30,50,80,.2)}
+html[data-theme="siang"] .msg.me .bub{background:linear-gradient(150deg,#FFF7E6,#FCF3DD 62%)}
 .msg .bub.recv{animation:recvP .8s ease-out 1}
-@keyframes recvP{from{border-color:rgba(34,211,238,.8);box-shadow:0 0 0 1px rgba(34,211,238,.45),0 0 34px -2px rgba(34,211,238,.5),0 18px 38px -12px rgba(0,0,0,.78)}}
+@keyframes recvP{from{border-color:rgba(34,211,238,.75);box-shadow:0 0 0 1px rgba(34,211,238,.35),0 0 30px -4px rgba(34,211,238,.45),0 20px 42px -18px rgba(0,0,0,.7)}}
 .msg.me .bub.recv{animation-name:recvG}
-@keyframes recvG{from{border-color:rgba(245,181,74,.85);box-shadow:0 0 0 1px rgba(245,181,74,.4),0 0 34px -2px rgba(245,181,74,.5),0 18px 38px -12px rgba(0,0,0,.7)}}
-/* VOX STRIP — suara AVI hidup di tiap pesan (v35) */
-.vox{display:flex;align-items:center;gap:2.5px;height:12px;margin-top:8px;opacity:.9}
-.vox i{width:2px;border-radius:1.5px;height:35%;background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.2));animation:voxw 1.15s ease-in-out infinite}
-.vox i:nth-child(3n){background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.22))}
-.vox i:nth-child(2){animation-delay:.14s}.vox i:nth-child(3){animation-delay:.28s}
-.vox i:nth-child(4){animation-delay:.42s}.vox i:nth-child(5){animation-delay:.56s}
-.vox i:nth-child(6){animation-delay:.7s}.vox i:nth-child(7){animation-delay:.84s}
-.vox i:nth-child(8){animation-delay:.98s}.vox i:nth-child(9){animation-delay:1.12s}
-.vox i:nth-child(10){animation-delay:1.26s}
-@keyframes voxw{0%,100%{height:32%}50%{height:92%}}
-.vox em{font:600 7.5px var(--mono);font-style:normal;letter-spacing:1.7px;color:var(--dim2);margin-left:7px}
-/* kuitansi kirim Pak (v35) */
+@keyframes recvG{from{border-color:rgba(245,181,74,.8);box-shadow:0 0 0 1px rgba(245,181,74,.32),0 0 30px -4px rgba(245,181,74,.42),0 20px 42px -18px rgba(0,0,0,.7)}}
 .rcpt{margin:4px 6px 0 0;font:700 7.5px var(--mono);letter-spacing:1.5px;color:var(--dim2);display:flex;justify-content:flex-end;gap:5px}
 .rcpt b{color:var(--gold);font-weight:700}
-/* v34: pesan tertua memudar keluar (history maks 3) */
 .msg.gone{animation:none;opacity:0;transform:translateY(-8px) scale(.97);transition:opacity .26s,transform .26s}
 .dots{display:inline-flex;gap:4px;padding:3px 2px;align-items:center}
 .dots i{width:5px;height:5px;border-radius:50%;background:var(--cyan);animation:dotp 1s ease-in-out infinite}
@@ -283,14 +240,22 @@ html[data-theme="siang"] .msg .bub::after,html[data-theme="siang"] .msg.me .bub:
 .dots i:nth-child(3){animation-delay:.3s}
 @keyframes dotp{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}
 .typ{font:600 8px var(--mono);font-style:normal;letter-spacing:1.8px;color:var(--dim2);margin-left:9px}
+/* garis event sistem — satu pita mini di tengah obrolan */
+.evt{display:flex;align-items:center;gap:9px;margin-top:16px;opacity:.9}
+.evt i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2))}
+.evt i:last-child{background:linear-gradient(90deg,var(--line2),transparent)}
+.evt span{font:600 7.5px var(--mono);letter-spacing:2px;color:var(--dim2);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.evt span b{color:var(--cyan);font-weight:400;font-size:9px}
+.evt span u{font-weight:600;text-decoration:none;opacity:.75}
+.evt.gold span b{color:var(--gold)}
 
-/* ---------- panel kerja agent (di dalam obrolan — agent di dalam AVI) ---------- */
+/* ---------- panel kerja agent ---------- */
 #stgWork{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.32,.72,.24,1),opacity .4s,margin .4s;margin-top:0}
-#stgWork.open{max-height:560px;opacity:1;margin-top:12px}
+#stgWork.open{max-height:560px;opacity:1;margin-top:14px}
 .steps{position:relative}
 .steps::before{content:'';position:absolute;left:10px;top:18px;bottom:18px;width:1px;background:linear-gradient(180deg,var(--cyan),var(--gold));opacity:.22}
 .steps .st{display:flex;align-items:center;gap:10px;padding:7.5px 0;font-size:13.5px;font-weight:500}
-.steps .st i{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-style:normal;color:var(--dim2);flex:none;font-family:var(--mono);background:var(--pan3);position:relative;z-index:1}
+.steps .st i{width:21px;height:21px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-style:normal;color:var(--dim2);flex:none;font-family:var(--mono);background:var(--pan3);position:relative;z-index:1}
 .steps .st .s{margin-left:auto;font:700 9px var(--mono);letter-spacing:1px;color:var(--dim2);flex:none}
 .steps .st.run i{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px var(--glow)}
 .steps .st.run .s{color:var(--cyan)}
@@ -302,14 +267,14 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 #stgLog .ok{color:var(--mint)}
 
 /* gate izin */
-#gate{display:none;margin-top:11px;background:var(--goldSoft);border:1px solid rgba(245,181,74,.5);border-radius:14px;padding:10px 12px;box-shadow:0 0 24px var(--goldSoft);position:relative;overflow:hidden}
+#gate{display:none;margin-top:11px;background:var(--goldSoft);border:1px solid rgba(245,181,74,.45);border-radius:14px;padding:10px 12px;box-shadow:0 0 24px -8px rgba(245,181,74,.4);position:relative;overflow:hidden}
 #gate::after{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(245,181,74,.9),transparent);animation:scanG 2.1s linear infinite}
 @keyframes scanG{0%{transform:translateY(0)}100%{transform:translateY(74px)}}
 #gate.show{display:block}
 #gate b{font-size:12.5px;font-weight:600;display:block}
 #gate small{color:var(--dim);font-size:11px;display:block;margin-top:1px}
 #gate .gbtns{display:flex;gap:8px;margin-top:9px}
-.btn{border:1px solid var(--line2);border-radius:11px;padding:8px 13px;font-size:11.5px;font-weight:700;letter-spacing:1px;transition:.2s;text-align:center;background:var(--pan2)}
+.btn{border:1px solid var(--line2);border-radius:12px;padding:8px 13px;font-size:11.5px;font-weight:700;letter-spacing:1px;transition:.2s;text-align:center;background:var(--pan2)}
 .btn:hover{border-color:var(--cyan);color:var(--cyan)}
 .btn.gold{background:linear-gradient(135deg,#FFD98A,var(--gold) 60%,#C77E12);border-color:transparent;color:#1B1204;box-shadow:0 4px 16px var(--goldSoft)}
 .btn.gold:hover{filter:brightness(1.07);color:#1B1204}
@@ -331,7 +296,7 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ ORB MK-XIX — HUD SENTRI (v41) : cangkang ala GIF referensi Pak ============
+/* ============ ORB MK-XIX — HUD SENTRI (v41) : TETAP, TIDAK DISENTUH ============
    Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
    Inti lensa reaktor (konsep 2) + plasma morf v40 tetap hidup. */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
@@ -663,35 +628,35 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 #orbIdle.work{color:var(--cyan)}
 #orbIdle.done{color:var(--gold)}
 
-/* ---------- komposer: KAPSUL KOMANDO (input+mik+send satu kapsul) ---------- */
-.composer{flex:none;display:flex;padding:8px 16px calc(6px + env(safe-area-inset-bottom))}
-.cmd{flex:1;display:flex;align-items:center;gap:7px;padding:7px 7px 7px 17px;border-radius:999px;position:relative;
-  background:linear-gradient(150deg,rgba(255,255,255,.06),rgba(255,255,255,.015) 50%),var(--pan);backdrop-filter:blur(16px);
-  border:1px solid var(--line2);transition:box-shadow .3s,border-color .3s}
-.cmd::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.55;
+/* ---------- komposer: kapsul kaca tenang ---------- */
+.composer{flex:none;display:flex;padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+.cmd{flex:1;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 18px;border-radius:999px;position:relative;
+  background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(255,255,255,.014) 50%),var(--pan);backdrop-filter:blur(18px);
+  border:1px solid var(--line2);transition:border-color .3s,box-shadow .3s}
+.cmd::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.5;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none}
-.cmd:focus-within{border-color:rgba(34,211,238,.5);box-shadow:0 0 0 1px rgba(34,211,238,.25),0 0 30px var(--glow)}
-.cmd input{flex:1;font:500 14px var(--ui);min-width:0}
+.cmd:focus-within{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 1px rgba(34,211,238,.18),0 0 34px -8px var(--glow)}
+.cmd input{flex:1;font:500 14.5px var(--ui);min-width:0}
 .cmd input::placeholder{color:var(--dim2)}
 .cmd .cbtn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--line);color:var(--dim);transition:.2s;background:var(--pan2)}
 .cmd .cbtn:hover{color:var(--cyan);border-color:var(--cyan)}
-.cmd .send{border:none;background:linear-gradient(135deg,#7FEDFB,var(--cyan) 52%,#0A93B4);color:#032730;box-shadow:0 4px 18px var(--glow)}
-.cmd .send:hover{filter:brightness(1.1);color:#032730}
-.cmd .send.rdy{animation:sendp 1.9s ease-in-out infinite}
-@keyframes sendp{0%,100%{box-shadow:0 4px 18px var(--glow)}50%{box-shadow:0 4px 30px rgba(245,181,74,.5);filter:brightness(1.12)}}
+.cmd .send{border:1px solid var(--line2);background:var(--pan2);color:var(--dim2);transition:.25s}
+.cmd .send:hover{color:var(--txt);border-color:var(--line2)}
+.cmd .send.rdy{border:none;background:linear-gradient(135deg,#FFE3A6,var(--gold) 55%,#D18A1F);color:#241703;box-shadow:0 4px 20px -4px rgba(245,181,74,.45)}
+.cmd .send.rdy:hover{filter:brightness(1.07);color:#241703}
 
-/* ---------- NAV: DOCK KAPSUL MELAYANG + indikator geser ---------- */
+/* ---------- NAV: dock kapsul melayang + indikator geser ---------- */
 nav{flex:none;display:flex;justify-content:center;padding:4px 16px calc(10px + env(safe-area-inset-bottom))}
 .dock{position:relative;display:flex;gap:2px;padding:5px;border-radius:999px;
-  background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.015) 50%),var(--pan);
-  backdrop-filter:blur(16px);border:1px solid var(--line2);box-shadow:0 18px 44px -18px rgba(0,0,0,.6)}
-.dock::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.6;
+  background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(255,255,255,.014) 50%),var(--pan);
+  backdrop-filter:blur(18px);border:1px solid var(--line2);box-shadow:0 18px 44px -18px rgba(0,0,0,.6)}
+.dock::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.55;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none}
 #dockInd{position:absolute;top:5px;bottom:5px;left:5px;width:96px;border-radius:999px;z-index:0;
-  background:linear-gradient(135deg,var(--cyanSoft),rgba(245,181,74,.08));
-  border:1px solid rgba(34,211,238,.4);box-shadow:0 0 20px var(--glow),inset 0 0 14px rgba(34,211,238,.10);
+  background:linear-gradient(135deg,var(--cyanSoft),rgba(245,181,74,.07));
+  border:1px solid rgba(34,211,238,.35);box-shadow:0 0 18px -4px var(--glow),inset 0 0 14px rgba(34,211,238,.08);
   transition:left .4s cubic-bezier(.3,1.35,.4,1),width .4s cubic-bezier(.3,1.35,.4,1)}
 html[data-theme="siang"] #dockInd{border-color:rgba(9,125,150,.4)}
 .dbtn{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:10px 17px;border-radius:999px;
@@ -744,7 +709,7 @@ html[data-theme="siang"] #dockInd{border-color:rgba(9,125,150,.4)}
 
 /* ---------- kendali ---------- */
 .opt{flex:1;border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--dim);background:var(--pan2);transition:.2s}
-.opt.on{border-color:var(--cyan);color:var(--cyan);background:var(--cyanSoft);box-shadow:0 0 14px var(--glow)}
+.opt.on{border-color:var(--cyan);color:var(--cyan);background:var(--cyanSoft);box-shadow:0 0 14px -4px var(--glow)}
 .optrow{display:flex;gap:8px}
 .tg{width:40px;height:22px;border-radius:999px;background:var(--pan3);border:1px solid var(--line2);position:relative;flex:none;transition:.2s}
 .tg::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--dim2);transition:.2s}
@@ -778,7 +743,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
 #liveov{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg0);opacity:0;pointer-events:none;transition:opacity .35s}
 #liveov::before{content:'';position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(52% 40% at 50% 38%,var(--cyanSoft),transparent 72%),
-             radial-gradient(40% 30% at 68% 76%,var(--goldSoft),transparent 74%);animation:drift1 9s ease-in-out infinite alternate}
+             radial-gradient(40% 30% at 68% 76%,var(--goldSoft),transparent 74%);animation:gA 9s ease-in-out infinite alternate}
 #liveov.open{opacity:1;pointer-events:auto}
 #lvClose{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);color:var(--dim);font-size:14px;z-index:2}
 .lvorbig{position:relative;width:132px;height:132px;border-radius:50%;overflow:visible}
@@ -806,20 +771,30 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
 .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(14px);background:var(--pan3);border:1px solid var(--line2);color:var(--txt);padding:10px 17px;border-radius:14px;font-size:12.5px;font-weight:600;opacity:0;transition:.3s;z-index:90;pointer-events:none;max-width:86%;text-align:center;box-shadow:0 14px 40px -12px rgba(0,0,0,.5)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:460px){.note{display:none}}
+
+/* ---------- layar pendek (desktop preview/HP landscape): panggung orb merapat ---------- */
+@media(max-height:720px){
+  .heroWrap{width:150px;height:150px}
+  .heroWrap .orbBig{transform:scale(1.34)}
+  .aura{inset:-26px}
+  #orbDock{gap:4px;padding:2px 18px 4px}
+  #orbIdle{display:none}
+  .chips{margin-top:12px;gap:7px}
+  .chip{padding:7px 12px;font-size:11.5px}
+  .comms{margin-top:10px;padding:7px 12px;letter-spacing:1.4px}
+}
+
+/* ---------- aksesibilitas: hormati reduced-motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+}
 </style>
 </head>
 <body>
 <div class="app" id="app">
 
-  <!-- latar PRISM: aurora 3 blob + starfield + vignette -->
-  <div class="bgAur"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
-  <div class="bgSt">
-    <i style="left:9%;top:14%;--d:5.5s;--dl:.2s"></i><i style="left:22%;top:34%;--d:7s;--dl:1.4s"></i>
-    <i style="left:35%;top:8%;--d:6s;--dl:2.8s"></i><i style="left:48%;top:26%;--d:8s;--dl:.8s"></i>
-    <i style="left:61%;top:12%;--d:5s;--dl:3.6s"></i><i style="left:72%;top:38%;--d:7.5s;--dl:2s"></i>
-    <i style="left:84%;top:18%;--d:6.5s;--dl:4.4s"></i><i style="left:92%;top:48%;--d:5.8s;--dl:1s"></i>
-    <i style="left:16%;top:56%;--d:7.2s;--dl:3.2s"></i><i style="left:55%;top:60%;--d:6.2s;--dl:5s"></i>
-  </div>
+  <!-- latar ATELIER: grid blueprint bermask + dua pendaran tenang + vignette -->
+  <div class="bgFx"><i class="gA"></i><i class="gB"></i><div class="gridL"></div></div>
   <div class="vig"></div>
 
   <!-- HEADER -->
@@ -847,17 +822,25 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     <!-- ================= OBROLAN ================= -->
     <section class="view on" id="v-obrolan">
 
-      <!-- bar sambungan inti — COMMS DECK -->
-      <div class="commsBar">
-        <span class="csig"><i></i><i></i><i></i><i></i></span>
-        <span class="ttl">SAMBUNGAN INTI MK1</span>
-        <span class="ch">CH-01</span>
-        <span class="enc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>TERENKRIPSI</span>
+      <!-- status sambungan: satu baris tenang -->
+      <div class="comms">
+        <span class="dot"></span>
+        <span>TERHUBUNG</span><s></s>
+        <span>TERENKRIPSI</span><s></s>
+        <span>CH-01</span>
         <span class="lat" id="clat">LAT 41MS</span>
       </div>
 
-      <!-- percakapan: terbuka tenang sebagai ASISTEN (widget ringkasan DIHAPUS — v34) -->
-      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · <i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
+      <!-- percakapan: sapaan pembuka -->
+      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span class="mts"><i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
+
+      <!-- sapaan cepat -->
+      <div class="chips" id="chips">
+        <button class="chip" data-t="Rekap rapat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Rekap rapat</button>
+        <button class="chip" data-t="Draf email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7.5l7.5 5.5 7.5-5.5"/></svg>Draf email</button>
+        <button class="chip" data-t="Laporan pengeluaran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V16M9.3 19.5v-8M14.7 19.5V9M20 19.5V5"/></svg>Laporan pengeluaran</button>
+        <button class="chip" data-t="Pengingat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 7.5-2.5 7.5h17S18 14.5 18 8.5"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg>Pengingat</button>
+      </div>
 
       <!-- panel kerja agent: AGENT DI DALAM AVI -->
       <div id="stgWork">
@@ -898,14 +881,14 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
         </div>
       </div>
 
-      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · <i class="fmt">--:--</i></span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
+      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span class="mts"><i class="fmt">--:--</i></span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
 
-      <div style="height:8px" id="chatEnd"></div>
+      <div style="height:4px" id="chatEnd"></div>
     </section>
 
     <!-- ================= KENDALI ================= -->
     <section class="view" id="v-kendali">
-      <div class="card" style="margin-top:10px">
+      <div class="card" style="margin-top:12px">
         <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.4-9.3-9A5.3 5.3 0 0 1 12 6.6a5.3 5.3 0 0 1 9.3 4.9c-1.8 4.6-9.3 9-9.3 9z"/><circle cx="12" cy="11" r="1.4" fill="var(--gold)" stroke="none"/></svg>JANTUNG MK1</div>
         <div class="gauges">
           <div class="gauge">
@@ -930,7 +913,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
         </div>
       </div>
       <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3l7.5 3.2v5c0 4.6-3.2 7.6-7.5 9.3-4.3-1.7-7.5-4.7-7.5-9.3v-5z"/><path d="M9 11.8l2.2 2.2 4-4.2"/></svg>OTORITAS AVI</div>
+        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3.2v5c0 4.6-3.2 7.6-7.5 9.3-4.3-1.7-7.5-4.7-7.5-9.3v-5z"/><path d="M9 11.8l2.2 2.2 4-4.2"/></svg>OTORITAS AVI</div>
         <div class="optrow">
           <button class="opt" data-a="AMAN">AMAN</button>
           <button class="opt on" data-a="BAKU">BAKU</button>
@@ -978,7 +961,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung tengah (v41 · cangkang HUD ala GIF Pak, inti plasma konsep 2 tetap) -->
+  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung tengah (v41 · TIDAK DISENTUH) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
@@ -1004,7 +987,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </div>
   </div>
 
-  <!-- komposer: KAPSUL KOMANDO — TANPA LAMPIRAN -->
+  <!-- komposer: kapsul kaca — TANPA LAMPIRAN -->
   <div class="composer">
     <div class="cmd">
       <input id="cin" placeholder="Tulis apa saja, Pak…"/>
@@ -1084,7 +1067,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v41 · MK-XIX HUD SENTRI — CANGKANG HUD NATURAL (REFERENSI GIF PAK): KURUNG TEBAL LAJU VARIABEL · BUSUR LAWAN ARAH AKSEN EMAS · BAND RAMBUT DETAK STEPS · PITA DATA TITIK · SAPUAN TUMBUH-MENYUSUT · 3 NODE PENGORBIT · GARIS LINGKARAN UTUH & PING DIHAPUS · INTI PLASMA KONSEP 2 TETAP · CHAT DASHBOARD V35 · AGENT DI DALAM AVI</div>
+<div class="note">MK-XX ATELIER v42 · TEMA &amp; TATA LETAK OBROLAN DIRANCANG ULANG · CANGKANG &amp; INTI ORB MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1094,13 +1077,10 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
 
-/* ---- stempel mesin: jam + VOX (v35) ---- */
+/* ---- stempel mesin: jam (v42: strip VOX dihapus — mewah itu tenang) ---- */
 function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
-const VOX='<div class="vox">'+'<i></i>'.repeat(10)+'<em>VOX MK1 · 230MS</em></div>';
-function addVox(bub){if(bub&&!bub.querySelector('.vox'))bub.insertAdjacentHTML('beforeend',VOX)}
-addVox(document.querySelector('#followMsg .bub'));
 
-/* ---- latensi inti berdenyut — tanda vital sambungan (v27) ---- */
+/* ---- latensi inti berdenyut — tanda vital sambungan ---- */
 setInterval(()=>{const l=$('#clat');if(!l)return;l.textContent='LAT '+(34+Math.floor(Math.random()*26))+'MS';l.classList.remove('tick');void l.offsetWidth;l.classList.add('tick')},2400);
 
 /* ---- tema: toggle malam/siang dengan ikon svg ---- */
@@ -1113,16 +1093,19 @@ $('#btnTheme').addEventListener('click',()=>{
   const toSiang=h.dataset.theme==='malam';
   h.dataset.theme=toSiang?'siang':'malam';
   applyThemeIcon();
-  toast(toSiang?'Tema siang — fajar prism, lembut':'Tema malam — aurora, nuansa Jarvis');
+  toast(toSiang?'Tema siang — fajar atelier, lembut':'Tema malam — kaca biru tua, nuansa Jarvis');
 });
 
 /* ---- sapaan per waktu ---- */
 (function(){
   const h=new Date().getHours();
   const w=h<4?'malam':h<10?'pagi':h<15?'siang':h<19?'sore':'malam';
-  $('#greetBub').innerHTML='Selamat '+w+', Pak. Ada yang bisa saya urus hari ini?'+VOX;
+  $('#greetBub').innerHTML='Selamat '+w+', Pak. Ada yang bisa saya urus hari ini?';
   const gt=$('#greetT');if(gt)gt.textContent=nowT();
 })();
+
+/* ---- sapaan cepat: chip = perintah langsung ---- */
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{$('#cin').value=c.dataset.t;handleSend()}));
 
 /* ---- navigasi: dock + indikator geser ---- */
 function moveInd(btn){const ind=$('#dockInd');if(!ind||!btn)return;ind.style.left=btn.offsetLeft+'px';ind.style.width=btn.offsetWidth+'px'}
@@ -1135,15 +1118,15 @@ $$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
 window.addEventListener('resize',()=>moveInd($('.navbtn.on')));
 $('#hdPill').addEventListener('click',openSheet);
 
-/* ---- SATU SLOT di sisi orb (v17): telemetri/status — perintah kini di obrolan (v34) ---- */
+/* ---- SATU SLOT di sisi orb (v17): telemetri/status ---- */
 const IDLE_TX='MK-XIX · HUD SENTRI · NET AKTIF · MEMORI 62%';
 function slotIdle(tx){
   const w=$('#orbIdle');if(w){w.className='';w.textContent=tx||IDLE_TX}
 }
 function state(cls,tx){const w=$('#orbIdle');if(!w)return;w.className=cls||'';w.textContent=tx}
 
-/* ---- jawaban AVI DI ATAS orb — gelembung beravatar + META dalam obrolan (v16·v27·v35) ---- */
-const META_AVI='<div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · '+nowT()+'</span></div>';
+/* ---- jawaban AVI DI ATAS orb — gelembung beravatar + meta ringkas ---- */
+const META_AVI='<div class="mmeta"><b>AVI</b><span class="mts">'+nowT()+'</span></div>';
 function aviReply(txt){
   const m=$('main'),end=$('#chatEnd');
   const typ=document.createElement('div');
@@ -1155,11 +1138,11 @@ function aviReply(txt){
   m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   setTimeout(()=>{
     const b=typ.querySelector('.bub');
-    if(b){b.innerHTML=txt+VOX;b.classList.add('recv');setTimeout(()=>b.classList.remove('recv'),850)}
+    if(b){b.textContent=txt;b.classList.add('recv');setTimeout(()=>b.classList.remove('recv'),850)}
     m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
   },950);
 }
-/* ---- garis event sistem ◈ — log komms di tengah obrolan (v27) ---- */
+/* ---- garis event sistem ◈ — log komms di tengah obrolan ---- */
 function evtLine(txt,gold,refSel){
   const m=$('main');
   const d=document.createElement('div');
@@ -1170,12 +1153,12 @@ function evtLine(txt,gold,refSel){
   trimChat();
   if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
 }
-/* ---- perintah Pak = bubble emas kanan, masuk history (v34·v35) ---- */
+/* ---- perintah Pak = bubble emas kanan ---- */
 function meBubble(txt){
   const end=$('#chatEnd');if(!end)return;
   const d=document.createElement('div');
   d.className='msg me';
-  d.innerHTML='<div class="mcol"><div class="mmeta"><b>PAK</b><span>· PERINTAH</span><span class="mts">'+nowT()+'</span></div><div class="bub"></div><div class="rcpt">TERKIRIM<b>✓</b></div></div>';
+  d.innerHTML='<div class="mcol"><div class="mmeta"><b>PAK</b><span class="mts">'+nowT()+'</span></div><div class="bub"></div><div class="rcpt">TERKIRIM<b>✓</b></div></div>';
   const b=d.querySelector('.bub');b.textContent=txt;
   b.classList.add('recv');setTimeout(()=>b.classList.remove('recv'),850);
   seqMsg(d);
@@ -1183,7 +1166,7 @@ function meBubble(txt){
   trimChat();
   const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
 }
-/* ---- HISTORY CHAT MAKS 3 — termasuk pesan yg baru dikirim (v34) ---- */
+/* ---- RIWAYAT CHAT — cukup panjang agar percakapan terasa hidup (v42: 10) ---- */
 let msgSeq=0;
 function seqMsg(el){if(el)el.dataset.seq=String(++msgSeq)}
 function trimChat(){
@@ -1191,13 +1174,13 @@ function trimChat(){
   const live=[...sec.querySelectorAll('.msg')]
     .filter(el=>el.style.display!=='none'&&el.dataset.seq!==undefined)
     .sort((a,b)=>(+a.dataset.seq)-(+b.dataset.seq));
-  while(live.length>3){
+  while(live.length>10){
     const old=live.shift();
     old.classList.add('gone');
     setTimeout(()=>old.remove(),280);
   }
   const evts=[...sec.querySelectorAll('.evt')];
-  while(evts.length>2)evts.shift().remove();
+  while(evts.length>3)evts.shift().remove();
 }
 
 /* ---- kirim: perintah = bubble emas di obrolan; tugas berat membangunkan agent ---- */
@@ -1333,7 +1316,7 @@ function finish(){
   $('#doneName').textContent=fn+'.PDF';
   $('#doneCard').style.display='block';
   const fm=$('#followMsg'),ce=$('#chatEnd');
-  if(fm&&ce)ce.parentNode.insertBefore(fm,ce); /* urutan baca: balasan tuntas di ujung (v34) */
+  if(fm&&ce)ce.parentNode.insertBefore(fm,ce); /* urutan baca: balasan tuntas di ujung */
   fm.style.display='flex';
   const ft=fm.querySelector('.fmt');if(ft)ft.textContent=nowT();
   seqMsg(fm);
@@ -1452,9 +1435,9 @@ $('#btnMic').addEventListener('click',lvOpen);
 $('#orbBig').addEventListener('click',lvOpen);
 $('#lvClose').addEventListener('click',lvClose);
 
-/* mulai: asisten tenang — orb holo-gyro menemani di atas papan ketik */
+/* mulai: asisten tenang — orb menemani di atas papan ketik */
 $('#app').classList.add('live');
-seqMsg($('#greetMsg')); /* sapaan = pesan tertua dalam history */
+seqMsg($('#greetMsg')); /* sapaan = pesan tertua dalam riwayat */
 render();
 moveInd($('.navbtn.on'));
 setTimeout(()=>moveInd($('.navbtn.on')),350); /* ulang setelah font termuat — indikator presisi */
