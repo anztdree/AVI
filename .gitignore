@@ -52,29 +52,3 @@ prompt
 server.log
 # Skills directory
 /skills/
-# ==========================================================
-# REPO GITHUB = MURNI PROYEK APK AVI (+ mockup desain public/)
-# Plumbing sandbox web (bun + Next.js) & duplikat lama
-# HANYA LOKAL — jangan terseret komit otomatis lagi.
-# ==========================================================
-/src/
-/db/
-/prisma/
-/examples/
-/mini-services/
-/scripts/
-/tests/
-/.zscripts/
-/tool-results/
-/log/
-/android/
-/Caddyfile
-/worklog.md
-/package.json
-/bun.lock
-/next.config.ts
-/tailwind.config.ts
-/postcss.config.mjs
-/tsconfig.json
-/eslint.config.mjs
-/components.json
