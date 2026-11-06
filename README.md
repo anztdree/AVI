@@ -11,7 +11,7 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 | `build.gradle.kts` `settings.gradle.kts` `gradle.properties` | Proyek Gradle root (memetakan modul `:app` → `android-app/`) |
 | `.github/workflows/build-android.yml` | CI build APK (jalan saat `android-app/**` berubah, hasil APK di Releases) |
 | `.github/workflows/diag-*.yml` | Workflow diagnosa API (Gemini, 429, agent tools) |
-| `public/*.html` | Mockup/preview tampilan — satu file, self-contained: `avi-agent.html` (MK-XIX), `orb-lab.html` & `orb-lab2.html` (lab rancang inti orb) |
+| `public/avi-agent.html` | **Contoh display** — mockup tampilan AVI (MK-XIX) sebelum dikemas jadi APK; satu file, self-contained |
 | `docs/` `preview/` | Rencana/riwayat/spesifikasi + tangkapan layar |
 
 > Catatan: file sandbox web di komputer kerja (`src/`, `package.json`, `bun.lock`,
