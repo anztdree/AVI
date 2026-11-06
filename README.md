@@ -12,7 +12,7 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 | `.github/workflows/build-android.yml` | CI build APK (jalan saat `android-app/**` berubah, hasil APK di Releases) |
 | `.github/workflows/diag-*.yml` | Workflow diagnosa API (Gemini, 429, agent tools) |
 | `public/avi-agent.html` | **Contoh display** — mockup tampilan AVI (MK-XIX) sebelum dikemas jadi APK; satu file, self-contained |
-| `docs/` `preview/` | Rencana/riwayat/spesifikasi + tangkapan layar |
+| `docs/` | Rencana/riwayat/spesifikasi proyek |
 
 > Catatan: file sandbox web di komputer kerja (`src/`, `package.json`, `bun.lock`,
 > konfigurasi Next.js/Tailwind, dll.) bersifat **lokal saja** — sengaja tidak
