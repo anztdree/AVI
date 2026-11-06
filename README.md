@@ -7,9 +7,16 @@ Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
 
 | Jalur | Isi |
 |---|---|
-| `app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) |
-| `public/avi-agent.html` | Mockup/preview tampilan MK-II v26 — satu file, self-contained |
-| `.github/workflows/build-android.yml` | CI build APK (jalan saat `app/**` berubah) |
+| `android-app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) — modul `:app` |
+| `build.gradle.kts` `settings.gradle.kts` `gradle.properties` | Proyek Gradle root (memetakan modul `:app` → `android-app/`) |
+| `.github/workflows/build-android.yml` | CI build APK (jalan saat `android-app/**` berubah, hasil APK di Releases) |
+| `.github/workflows/diag-*.yml` | Workflow diagnosa API (Gemini, 429, agent tools) |
+| `public/*.html` | Mockup/preview tampilan — satu file, self-contained: `avi-agent.html` (MK-XIX), `orb-lab.html` & `orb-lab2.html` (lab rancang inti orb) |
+| `docs/` `preview/` | Rencana/riwayat/spesifikasi + tangkapan layar |
+
+> Catatan: file sandbox web di komputer kerja (`src/`, `package.json`, `bun.lock`,
+> konfigurasi Next.js/Tailwind, dll.) bersifat **lokal saja** — sengaja tidak
+> di-track agar repo tetap murni proyek APK AVI + mockup desain.
 
 ## Preview v26 — "PRISM" : TEMA BARU + IKON BARU + TATA LETAK BARU
 
