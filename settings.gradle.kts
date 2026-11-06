@@ -13,4 +13,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "AVI"
+// modul Android dipindah ke android-app/ agar tidak bentrok dengan folder app/ milik Next.js
 include(":app")
+project(":app").projectDir = file("android-app")

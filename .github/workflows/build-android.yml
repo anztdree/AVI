@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "app/**"
+      - "android-app/**"
       - "build.gradle.kts"
       - "settings.gradle.kts"
       - "gradle.properties"
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: AVI-release-apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: android-app/build/outputs/apk/release/app-release.apk
 
       - name: Perbarui Release v1.0.0 dengan APK terbaru
         env:
@@ -66,12 +66,12 @@ jobs:
           # === Nama file UNIK per build: versi + kode build + hash commit ===
           # Supaya setiap pembaruan TERLIHAT jelas di halaman Release
           # (nama file lama selalu berbeda dari yang baru).
-          VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts | head -1)
-          CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' app/build.gradle.kts | head -1)
+          VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' android-app/build.gradle.kts | head -1)
+          CODE=$(grep -oP 'versionCode\s*=\s*\K[0-9]+' android-app/build.gradle.kts | head -1)
           SHORT="${GITHUB_SHA::7}"
           APK_NAME="AVI-v${VERSION}-${CODE}-${SHORT}.apk"
           echo "Nama APK build ini: $APK_NAME"
-          cp "app/build/outputs/apk/release/app-release.apk" "/tmp/$APK_NAME"
+          cp "android-app/build/outputs/apk/release/app-release.apk" "/tmp/$APK_NAME"
 
           gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 || {
             gh release create v1.0.0 \
