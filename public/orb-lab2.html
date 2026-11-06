@@ -36,11 +36,13 @@
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Unbounded',sans-serif; --ui:'Space Grotesk',sans-serif;
 }
+html{scroll-behavior:smooth}
 html,body{min-height:100%}
 body{background:linear-gradient(180deg,var(--bg0),var(--bg1) 140%);color:var(--txt);
   font-family:var(--ui);font-size:14px;line-height:1.5;
-  display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+  display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;overflow-x:hidden;overflow-x:clip}
 ::selection{background:rgba(245,181,74,.25)}
+a:focus-visible,button:focus-visible{outline:2px solid rgba(34,211,238,.65);outline-offset:2px;border-radius:8px}
 
 .bgAur{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 .bgAur i{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:screen}
@@ -62,6 +64,11 @@ body{background:linear-gradient(180deg,var(--bg0),var(--bg1) 140%);color:var(--t
   animation:twk var(--d,6s) ease-in-out infinite;animation-delay:var(--dl,0s)}
 @keyframes twk{0%,100%{opacity:0}45%{opacity:.7}70%{opacity:.2}}
 .vig{position:fixed;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 110px rgba(0,0,0,.6)}
+.bgGrid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(120,160,220,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,220,.055) 1px,transparent 1px);
+  background-size:44px 44px;
+  -webkit-mask:radial-gradient(ellipse 85% 62% at 50% 0%,#000 0%,transparent 80%);
+          mask:radial-gradient(ellipse 85% 62% at 50% 0%,#000 0%,transparent 80%)}
 header,main,footer{position:relative;z-index:2}
 
 /* ---------- header ---------- */
@@ -81,9 +88,35 @@ header p b{color:#C9E9FF;font-weight:600}
   font:600 11px var(--mono);color:var(--dim);letter-spacing:.08em}
 .howto u{text-decoration:none;color:#BFF1FF;border:1px solid var(--line2);
   border-radius:6px;padding:2.5px 7px;background:rgba(34,211,238,.06)}
+/* ---------- topbar tempel ---------- */
+.topbar{position:sticky;top:0;z-index:50;width:100%;
+  background:linear-gradient(180deg,rgba(5,9,17,.92),rgba(5,9,17,.78));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.topbar::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent 4%,rgba(34,211,238,.38) 30%,rgba(245,181,74,.38) 62%,transparent 96%)}
+.tbIn{max-width:1240px;margin:0 auto;padding:9px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tbChip{display:inline-flex;align-items:center;gap:7px;font:700 9.5px/1 var(--mono);letter-spacing:.2em;
+  color:var(--gold);border:1px solid rgba(245,181,74,.38);border-radius:999px;padding:6px 11px;
+  background:rgba(245,181,74,.07);text-transform:uppercase}
+.tbChip::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 8px rgba(245,181,74,.9);animation:twk 2.4s ease-in-out infinite}
+.jump{display:inline-flex;gap:7px;margin-left:auto}
+.jump a{display:inline-flex;align-items:center;gap:6px;font:700 10px var(--mono);letter-spacing:.16em;
+  color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;
+  padding:6px 11px;background:rgba(150,180,225,.04);transition:.25s}
+.jump a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac,#22D3EE);
+  box-shadow:0 0 6px var(--ac,#22D3EE);opacity:.55;transition:.25s}
+.jump a[data-fam="c"]{--ac:#22D3EE}.jump a[data-fam="d"]{--ac:#F5B54A}.jump a[data-fam="f"]{--ac:#5EEAD4}
+.jump a:hover{color:#C9E9FF;border-color:var(--line2)}
+.jump a.on{color:#04121C;border-color:transparent;box-shadow:0 0 14px rgba(34,211,238,.4)}
+.jump a.on[data-fam="c"]{background:linear-gradient(135deg,#7DE9F9,#22D3EE)}
+.jump a.on[data-fam="d"]{background:linear-gradient(135deg,#FFD98F,#F5B54A);box-shadow:0 0 14px rgba(245,181,74,.4)}
+.jump a.on[data-fam="f"]{background:linear-gradient(135deg,#9FF5E0,#5EEAD4);box-shadow:0 0 14px rgba(94,234,212,.4)}
+.jump a.on::before{background:#04121C;box-shadow:none;opacity:.85}
+.topbar.nojump .jump{display:none}
 /* segmented toggle */
-.seg{display:inline-flex;border:1px solid var(--line2);border-radius:11px;overflow:hidden;
-  margin-top:16px;background:var(--pan)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:11px;overflow:hidden;background:var(--pan)}
 .seg button{font:700 10.5px var(--mono);letter-spacing:.16em;color:var(--dim);
   padding:9px 16px;background:none;border:none;cursor:pointer;transition:.25s}
 .seg button[aria-pressed="true"]{color:#04121C;background:linear-gradient(135deg,#7DE9F9,#22D3EE);
@@ -93,15 +126,21 @@ header p b{color:#C9E9FF;font-weight:600}
 /* ---------- grid ---------- */
 main{max-width:1240px;width:100%;margin:0 auto;padding:22px 22px 30px;flex:1}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:18px}
-.gdiv{grid-column:1/-1;display:flex;align-items:center;gap:13px;margin-top:10px;
-  font:700 10.5px var(--mono);letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
-.gdiv::before,.gdiv::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent)}
-.gdiv small{color:var(--dim2);letter-spacing:.14em}
+.gdiv{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:20px;scroll-margin-top:84px;
+  font:700 10.5px var(--mono);letter-spacing:.22em;color:var(--fc,#F5B54A);text-transform:uppercase}
+.gdiv::before{content:'';width:26px;height:1px;flex:none;background:linear-gradient(90deg,transparent,var(--fc,#F5B54A))}
+.gdiv::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--fc,#F5B54A),transparent)}
+.gdiv small{font:600 9px var(--mono);color:var(--dim2);letter-spacing:.14em}
+.gnum{font:800 15px var(--disp);color:rgba(237,244,255,.16);letter-spacing:.04em}
+.gtag{font:600 9px var(--mono);letter-spacing:.16em;color:var(--dim2);border:1px solid var(--line);
+  border-radius:999px;padding:3px 8px;background:rgba(150,180,225,.05);flex:none}
+.gd{color:var(--dim2);letter-spacing:.09em;font-weight:600;font-size:10px;text-transform:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.gdiv.f-c{--fc:#22D3EE}.gdiv.f-d{--fc:#F5B54A}.gdiv.f-f{--fc:#5EEAD4}
 .card{position:relative;border:1px solid var(--line);border-radius:20px;
   background:linear-gradient(180deg,var(--pan),rgba(8,13,24,.5));
   padding:20px 18px 18px;display:flex;flex-direction:column;align-items:center;
-  overflow:hidden;animation:rise .6s cubic-bezier(.22,1,.36,1) both;
-  transition:border-color .3s,box-shadow .3s,transform .3s}
+  overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .3s}
 .card:hover{border-color:rgba(34,211,238,.4);box-shadow:0 0 34px rgba(34,211,238,.13);
   transform:translateY(-3px)}
 .card::before,.card::after{content:'';position:absolute;width:15px;height:15px;
@@ -115,6 +154,30 @@ main{max-width:1240px;width:100%;margin:0 auto;padding:22px 22px 30px;flex:1}
   border-radius:7px;padding:5px 9px}
 .vchip.g{color:#FFE9BC;border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.08)}
 .shellTag{font:600 9px var(--mono);letter-spacing:.2em;color:var(--dim2);text-transform:uppercase}
+/* aksen per keluarga */
+.card.f-d:hover{border-color:rgba(245,181,74,.45);box-shadow:0 0 34px rgba(245,181,74,.12)}
+.card.f-f:hover{border-color:rgba(94,234,212,.42);box-shadow:0 0 34px rgba(94,234,212,.11)}
+.card.f-d::before,.card.f-d::after{border-color:rgba(245,181,74,.5)}
+.card.f-f::before,.card.f-f::after{border-color:rgba(94,234,212,.5)}
+.f-d .vchip{color:#FFE9BC;border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.08)}
+.f-f .vchip{color:#C9FBEA;border-color:rgba(94,234,212,.45);background:rgba(94,234,212,.08)}
+/* muncul saat digulir */
+.js .card{opacity:0;transform:translateY(22px)}
+.js .card.in{opacity:1;transform:none;
+  transition:opacity .65s cubic-bezier(.22,1,.36,1) calc(var(--i,0)*70ms),transform .65s cubic-bezier(.22,1,.36,1) calc(var(--i,0)*70ms)}
+/* tombol ke atas */
+.toTop{position:fixed;right:18px;bottom:18px;z-index:60;width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:#BFF1FF;
+  background:rgba(10,17,30,.82);border:1px solid var(--line2);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  opacity:0;pointer-events:none;transform:translateY(10px);transition:.3s}
+.toTop.show{opacity:1;pointer-events:auto;transform:none}
+.toTop:hover{border-color:rgba(34,211,238,.5);box-shadow:0 0 18px rgba(34,211,238,.25);color:#fff}
+.toTop svg{width:17px;height:17px}
+/* baris statistik header */
+.stats{margin-top:15px;display:flex;gap:7px;flex-wrap:wrap}
+.stats i{font:600 9.5px var(--mono);font-style:normal;letter-spacing:.16em;color:var(--dim2);
+  border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:rgba(150,180,225,.04)}
 
 /* ---------- panggung ---------- */
 .stage{position:relative;width:238px;height:238px;margin:14px 0 4px;flex:none}
@@ -338,20 +401,43 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
 .footIn .r{color:var(--dim2)}
 
 @media(max-width:640px){
-  header{padding-top:24px}
-  main{padding:18px 14px 22px}
+  header{padding-top:22px}
+  main{padding:16px 14px 22px}
   .grid{grid-template-columns:1fr}
   .stage{width:222px;height:222px}
+  .tbIn{padding:8px 14px;gap:9px}
+  .tbChip{display:none}
+  .jump{margin-left:0}
+  .gdiv{gap:8px;margin-top:14px}
+  .gd{display:none}
+  .gnum{font-size:13px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-play-state:paused !important}
+  .js .card{opacity:1 !important;transform:none !important;transition:none !important}
 }
 </style>
 </head>
 <body>
 <div class="bgAur"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+<div class="bgGrid"></div>
 <div class="bgSt" id="stars"></div>
 <div class="vig"></div>
+
+<nav class="topbar" id="topbar" aria-label="Navigasi lab">
+  <div class="tbIn">
+    <span class="tbChip">LAB ORB 2</span>
+    <div class="seg" role="tablist">
+      <button id="tabL2" aria-pressed="true" onclick="lab(2)">9 CUSTOM BARU</button>
+      <button id="tabL1" aria-pressed="false" onclick="lab(1)">GALERI PENUH A–F</button>
+    </div>
+    <div class="jump" id="jump" aria-label="Lompat ke keluarga varian">
+      <a href="#sec-c" data-fam="c">C · BUSUR</a>
+      <a href="#sec-d" data-fam="d">D · TRIAD</a>
+      <a href="#sec-f" data-fam="f">F · MORF</a>
+    </div>
+  </div>
+</nav>
 
 <header>
   <span class="labChip">LAB ORB 2 · RALAT FAVORIT</span>
@@ -363,9 +449,8 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     <u>C1</u><u>C2</u><u>C3</u><u>D1</u><u>D2</u><u>D3</u><u>F1</u><u>F2</u><u>F3</u>
     <span>— boleh campur elemen antar kode</span>
   </div>
-  <div class="seg" role="tablist">
-    <button id="tabL2" aria-pressed="true" onclick="lab(2)">9 CUSTOM BARU</button>
-    <button id="tabL1" aria-pressed="false" onclick="lab(1)">GALERI PENUH A–F</button>
+  <div class="stats" aria-hidden="true">
+    <i>9 TAKE</i><i>3 KELUARGA</i><i>CANGKANG V41 IDENTIK</i><i>INTI TERPILIH → MK-XIX</i>
   </div>
 </header>
 
@@ -373,10 +458,10 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
   <!-- ================= LAB 2 : 9 CUSTOM ================= -->
   <div class="grid" id="g2">
 
-    <div class="gdiv">Ralat C · Tiga Busur Tajam <small>3 take</small></div>
+    <div class="gdiv f-c" id="sec-c"><span class="gnum">01</span>Ralat C · Tiga Busur Tajam <span class="gtag">3 take</span><span class="gd">kurung ganda · panah kompas · triga tik</span></div>
 
     <!-- C1 KURUNG GANDA -->
-    <section class="card">
+    <section class="card f-c">
       <div class="crow"><span class="vchip">C1</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -426,7 +511,7 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     </section>
 
     <!-- C2 PANAH KOMPAS -->
-    <section class="card">
+    <section class="card f-c">
       <div class="crow"><span class="vchip">C2</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -468,7 +553,7 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     </section>
 
     <!-- C3 TRIGA TIK -->
-    <section class="card">
+    <section class="card f-c">
       <div class="crow"><span class="vchip">C3</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -509,10 +594,10 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
       </div>
     </section>
 
-    <div class="gdiv">Ralat D · Triad Node <small>3 take</small></div>
+    <div class="gdiv f-d" id="sec-d"><span class="gnum">02</span>Ralat D · Triad Node <span class="gtag">3 take</span><span class="gd">heksagram · komet · resonansi</span></div>
 
     <!-- D1 HEKSAGRAM DINAMIS -->
-    <section class="card">
+    <section class="card f-d">
       <div class="crow"><span class="vchip g">D1</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -573,7 +658,7 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     </section>
 
     <!-- D2 KOMET TRIAD -->
-    <section class="card">
+    <section class="card f-d">
       <div class="crow"><span class="vchip g">D2</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -615,7 +700,7 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     </section>
 
     <!-- D3 TRIAD RESONANSI -->
-    <section class="card">
+    <section class="card f-d">
       <div class="crow"><span class="vchip g">D3</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -655,10 +740,10 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
       </div>
     </section>
 
-    <div class="gdiv">Ralat F · Morf Lingkar⇄Segitiga <small>3 take</small></div>
+    <div class="gdiv f-f" id="sec-f"><span class="gnum">03</span>Ralat F · Morf Lingkar⇄Segitiga <span class="gtag">3 take</span><span class="gd">tiga wajah · isi kaca · detak</span></div>
 
     <!-- F1 MORF TIGA WAJAH -->
-    <section class="card">
+    <section class="card f-f">
       <div class="crow"><span class="vchip g">F1</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -704,7 +789,7 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     </section>
 
     <!-- F2 MORF ISI KACA -->
-    <section class="card">
+    <section class="card f-f">
       <div class="crow"><span class="vchip g">F2</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -751,7 +836,7 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
     </section>
 
     <!-- F3 MORF DETAK -->
-    <section class="card">
+    <section class="card f-f">
       <div class="crow"><span class="vchip g">F3</span><span class="shellTag">cangkang v41</span></div>
       <div class="stage">
         <div class="aura"></div>
@@ -1049,6 +1134,10 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
   </div>
 </footer>
 
+<button class="toTop" id="toTop" aria-label="Kembali ke atas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
 <script>
 /* serbuk bintang */
 (function(){
@@ -1060,6 +1149,35 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
   }
   w.innerHTML=h;
 })();
+document.documentElement.classList.add('js');
+/* kartu muncul berjenjang saat digulir */
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('#g2 .card,#g1 .card'));
+  cards.forEach(function(c,i){c.style.setProperty('--i',i%3)});
+  if(!('IntersectionObserver' in window)){cards.forEach(function(c){c.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+  cards.forEach(function(c){io.observe(c)});
+})();
+/* lompatan aktif mengikuti gulir */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.jump a'));
+  if(!links.length)return;
+  var secs=['sec-c','sec-d','sec-f'].map(function(id){return document.getElementById(id)}).filter(Boolean);
+  function upd(){
+    var y=scrollY+innerHeight*.22,cur='sec-c';
+    for(var i=0;i<secs.length;i++){if(secs[i].offsetTop<=y)cur=secs[i].id}
+    links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur)});
+  }
+  addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+})();
+/* tombol ke atas */
+(function(){
+  var b=document.getElementById('toTop');
+  addEventListener('scroll',function(){b.classList.toggle('show',scrollY>620)},{passive:true});
+  b.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
+})();
 /* toggle lab 2 / lab 1 */
 function lab(n){
   var g2=document.getElementById('g2'),g1=document.getElementById('g1');
@@ -1069,6 +1187,8 @@ function lab(n){
   g1.style.display=on2?'none':'';
   b2.setAttribute('aria-pressed',on2?'true':'false');
   b1.setAttribute('aria-pressed',on2?'false':'true');
+  document.getElementById('topbar').classList.toggle('nojump',!on2);
+  if(!on2){[].forEach.call(g1.querySelectorAll('.card'),function(c){c.classList.add('in')});}
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
