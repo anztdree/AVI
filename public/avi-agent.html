@@ -3,15 +3,19 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XX SEGITIGA HIDUP v42</title>
+<title>AVI — Asisten Pribadi · MK-XX v43 AURUM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v42 — "MK-XX SEGITIGA HIDUP" : evolusi v41 dari masukan
-   terbaru Pak: "yang terasa hidup tuh segitiganya… ada seperti
-   janin yang bergerak".
+   AVI v43 — "AURUM" : tema, tata letak & UI TAMPILAN OBROLAN
+   dirombak MEWAH (masukan Pak: "tema, tata letak, UI chat masih
+   tidak sinkron, tidak mewah") — emas champagne + gading di
+   malam biru tua, hero sapaan agung, chip saran cepat, bubble
+   kaca tenang TANPA scanline/bracket, garis hari, grain film
+   halus, satu bahasa visual dengan orb. ORB MK-XX v42 SEGITIGA
+   HIDUP: TIDAK DISENTUH.
    ⇒ v42: NYAWA PINDAH KE SEGITIGA — segitiga kaca diperbesar
    jadi RAHIM (ruang amnion terpotong bentuk segitiga) berisi
    JANIN yang benar-benar bergerak: tubuh morf menggeliat,
@@ -35,31 +39,31 @@
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg0:#04060C; --bg1:#0B1220;
-  --pan:rgba(13,21,36,.62); --pan2:rgba(21,32,52,.78); --pan3:#0D1526;
-  --line:rgba(150,180,225,.13); --line2:rgba(150,180,225,.26);
-  --cyan:#22D3EE; --gold:#F5B54A; --mint:#5EEAD4; --red:#FB7185;
-  --cyanSoft:rgba(34,211,238,.11); --goldSoft:rgba(245,181,74,.13);
-  --glow:rgba(34,211,238,.22);
-  --gline:linear-gradient(135deg,rgba(34,211,238,.55),rgba(34,211,238,.07) 34%,rgba(150,180,225,.13) 56%,rgba(245,181,74,.42));
-  --txt:#EDF4FF; --dim:#93A4C4; --dim2:#5D6F94;
+  --bg0:#05070C; --bg1:#0B0F19;
+  --pan:rgba(15,19,29,.60); --pan2:rgba(22,27,38,.82); --pan3:#0F141E;
+  --line:rgba(216,210,192,.09); --line2:rgba(216,210,192,.19);
+  --cyan:#56D5EA; --gold:#EAC883; --mint:#5EEAD4; --red:#FB7185;
+  --cyanSoft:rgba(86,213,234,.10); --goldSoft:rgba(234,200,131,.13);
+  --glow:rgba(86,213,234,.20);
+  --gline:linear-gradient(135deg,rgba(86,213,234,.38),rgba(86,213,234,.05) 34%,rgba(216,210,192,.10) 56%,rgba(234,200,131,.40));
+  --txt:#F1EEE5; --dim:#9AA1AE; --dim2:#636A78;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --disp:'Unbounded',sans-serif; --ui:'Space Grotesk',sans-serif;
 }
 html[data-theme="siang"]{
-  --bg0:#E9EEF6; --bg1:#F7FAFD;
-  --pan:rgba(255,255,255,.70); --pan2:rgba(255,255,255,.90); --pan3:#FFFFFF;
-  --line:rgba(20,32,50,.10); --line2:rgba(20,32,50,.22);
-  --cyan:#097D96; --gold:#B06E0A; --mint:#0B8F70; --red:#DC4B5E;
-  --cyanSoft:rgba(9,125,150,.10); --goldSoft:rgba(176,110,10,.11);
-  --glow:rgba(9,125,150,.16);
-  --gline:linear-gradient(135deg,rgba(9,125,150,.40),rgba(9,125,150,.06) 38%,rgba(20,32,50,.12) 58%,rgba(176,110,10,.32));
-  --txt:#131D2C; --dim:#4D5E7A; --dim2:#8B99B3;
+  --bg0:#EAE7DE; --bg1:#F8F6F0;
+  --pan:rgba(255,255,255,.72); --pan2:rgba(255,255,255,.92); --pan3:#FFFFFF;
+  --line:rgba(58,52,38,.10); --line2:rgba(58,52,38,.20);
+  --cyan:#0A7D96; --gold:#A6741F; --mint:#0B8F70; --red:#DC4B5E;
+  --cyanSoft:rgba(10,125,150,.09); --goldSoft:rgba(166,116,31,.11);
+  --glow:rgba(10,125,150,.15);
+  --gline:linear-gradient(135deg,rgba(10,125,150,.36),rgba(10,125,150,.05) 38%,rgba(58,52,38,.12) 58%,rgba(166,116,31,.34));
+  --txt:#211E15; --dim:#5D5A4C; --dim2:#8F8B7B;
 }
 html,body{height:100%}
-body{background:#02040A;color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.5;overflow:hidden;
+body{background:#030408;color:var(--txt);font-family:var(--ui);font-size:14px;line-height:1.5;overflow:hidden;
   display:flex;align-items:center;justify-content:center}
-html[data-theme="siang"] body{background:#D9E3EF}
+html[data-theme="siang"] body{background:#D8D4C8}
 ::selection{background:var(--goldSoft)}
 button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input{font-family:inherit;color:var(--txt);background:none;border:none;outline:none}
@@ -78,25 +82,30 @@ input{font-family:inherit;color:var(--txt);background:none;border:none;outline:n
 .bgAur{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
   background:linear-gradient(180deg,var(--bg0),var(--bg1) 130%)}
 .bgAur i{position:absolute;border-radius:50%;filter:blur(66px);mix-blend-mode:screen}
-.b1{width:470px;height:470px;left:-150px;top:-170px;
-  background:radial-gradient(circle at 42% 42%,rgba(34,211,238,.30),transparent 66%);animation:drift1 21s ease-in-out infinite alternate}
-.b2{width:430px;height:430px;right:-170px;top:20%;
-  background:radial-gradient(circle at 58% 42%,rgba(139,92,246,.20),transparent 66%);animation:drift2 26s ease-in-out infinite alternate}
-.b3{width:380px;height:380px;left:10%;bottom:-170px;
-  background:radial-gradient(circle,rgba(245,181,74,.15),transparent 66%);animation:drift3 18s ease-in-out infinite alternate}
+.b1{width:500px;height:500px;left:-160px;top:-180px;
+  background:radial-gradient(circle at 42% 42%,rgba(86,213,234,.17),transparent 66%);animation:drift1 30s ease-in-out infinite alternate}
+.b2{width:440px;height:440px;right:-180px;top:22%;
+  background:radial-gradient(circle at 58% 42%,rgba(234,200,131,.09),transparent 66%);animation:drift2 36s ease-in-out infinite alternate}
+.b3{width:400px;height:400px;left:12%;bottom:-180px;
+  background:radial-gradient(circle,rgba(120,150,200,.08),transparent 66%);animation:drift3 26s ease-in-out infinite alternate}
 @keyframes drift1{to{transform:translate(74px,54px) scale(1.14)}}
 @keyframes drift2{to{transform:translate(-64px,74px) scale(.93)}}
 @keyframes drift3{to{transform:translate(56px,-64px) scale(1.12)}}
 html[data-theme="siang"] .bgAur i{mix-blend-mode:normal;opacity:.55}
 /* LAPIS starfield — serbuk cahaya berkelip (pengganti partikel naik) */
 .bgSt{position:absolute;inset:0;z-index:0;pointer-events:none}
-.bgSt i{position:absolute;width:2px;height:2px;border-radius:50%;background:#D6F6FF;
-  box-shadow:0 0 7px rgba(34,211,238,.9);opacity:0;animation:twk var(--d,6s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+.bgSt i{position:absolute;width:1.6px;height:1.6px;border-radius:50%;background:#EAF6F2;
+  box-shadow:0 0 6px rgba(150,230,245,.6);opacity:0;animation:twk var(--d,6s) ease-in-out infinite;animation-delay:var(--dl,0s)}
 @keyframes twk{0%,100%{opacity:0}45%{opacity:.75}70%{opacity:.25}}
 html[data-theme="siang"] .bgSt{display:none}
 /* LAPIS vignette */
 .vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 100px rgba(0,0,0,.55)}
 html[data-theme="siang"] .vig{box-shadow:inset 0 0 90px rgba(120,140,170,.22)}
+/* LAPIS grain — serat film super halus (mewah, bukan plastik) */
+.grain{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.055;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  background-size:160px 160px}
+html[data-theme="siang"] .grain{opacity:.045;mix-blend-mode:multiply}
 
 header,main,.composer,nav,#strip{position:relative;z-index:2}
 
@@ -123,13 +132,13 @@ header{display:flex;align-items:center;gap:11px;padding:14px 16px 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes spinR{to{transform:rotate(-360deg)}}
 @keyframes nafas{0%,100%{transform:scale(1);box-shadow:0 0 12px var(--glow)}50%{transform:scale(1.07);box-shadow:0 0 24px var(--glow)}}
-.brand b{font-family:var(--disp);font-size:14.5px;font-weight:800;letter-spacing:4px;display:block;line-height:1.15;
-  background:linear-gradient(92deg,var(--txt) 30%,var(--cyan) 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.brand small{font:600 8.5px var(--mono);letter-spacing:3px;color:var(--dim2)}
+.brand b{font-family:var(--disp);font-size:15px;font-weight:700;letter-spacing:5px;display:block;line-height:1.15;
+  background:linear-gradient(92deg,var(--txt) 38%,var(--gold) 96%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand small{font:600 7.5px var(--mono);letter-spacing:3.6px;color:var(--dim2);margin-top:2px;display:block}
 .hdR{margin-left:auto;display:flex;align-items:center;gap:8px}
 .icobtn{width:34px;height:34px;border-radius:12px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);transition:.2s;background:var(--pan)}
 .icobtn:hover{color:var(--gold);border-color:var(--line2)}
-.pill{border:1px solid var(--line2);border-radius:999px;padding:6px 12px;font-size:10.5px;font-weight:700;letter-spacing:1.4px;color:var(--dim);display:flex;align-items:center;gap:7px;transition:.25s;background:var(--pan)}
+.pill{border:1px solid var(--line2);border-radius:999px;padding:6px 13px;font-size:10px;font-weight:700;letter-spacing:1.8px;color:var(--dim);display:flex;align-items:center;gap:7px;transition:.25s;background:transparent}
 .pill i{width:6px;height:6px;border-radius:50%;background:var(--dim2);flex:none}
 .pill.work{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 14px var(--glow)} .pill.work i{background:var(--cyan);animation:blink 1s infinite}
 .pill.done{border-color:var(--mint);color:var(--mint)} .pill.done i{background:var(--mint)}
@@ -151,112 +160,75 @@ header{display:flex;align-items:center;gap:11px;padding:14px 16px 10px}
 #strip.bad .dot{background:var(--red);animation:none}
 #strip.bad .pc{color:var(--red)} #strip.bad .bar b{background:var(--red)}
 
-main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:2px 16px 10px}
+main{flex:1;overflow-y:auto;position:relative;z-index:2;padding:2px 18px 12px}
 .view{display:none}.view.on{display:block}
 
-/* ---------- KARTU PRISMA — border gradien + SHADOW TAJAM (v34) ---------- */
-.card{position:relative;border-radius:20px;padding:14px 15px;
+/* ---------- KARTU AURUM — kaca tenang, TANPA bracket HUD (v43) ---------- */
+.card{position:relative;border-radius:22px;padding:15px 16px;
   background:linear-gradient(155deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 46%),var(--pan);
-  backdrop-filter:blur(16px);box-shadow:0 18px 44px -12px rgba(0,0,0,.72),0 4px 16px -6px rgba(0,0,0,.45)}
+  backdrop-filter:blur(16px);box-shadow:0 20px 46px -14px rgba(0,0,0,.7),0 4px 16px -6px rgba(0,0,0,.45)}
 .card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
   pointer-events:none}
-html[data-theme="siang"] .card{box-shadow:0 16px 40px -18px rgba(30,50,80,.45),0 3px 12px -5px rgba(30,50,80,.25)}
-/* bracket HUD di sudut kartu — bingkai instrumen (v35) */
-.card::after{content:'';position:absolute;inset:5px;border-radius:15px;pointer-events:none;opacity:.55;mix-blend-mode:screen;
-  background:
-    linear-gradient(var(--cyan),var(--cyan)) left 0 top 0/13px 1.5px no-repeat,
-    linear-gradient(var(--cyan),var(--cyan)) left 0 top 0/1.5px 13px no-repeat,
-    linear-gradient(var(--cyan),var(--cyan)) right 0 bottom 0/13px 1.5px no-repeat,
-    linear-gradient(var(--cyan),var(--cyan)) right 0 bottom 0/1.5px 13px no-repeat}
-html[data-theme="siang"] .card::after{mix-blend-mode:normal;opacity:.38}
-.clab{font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+html[data-theme="siang"] .card{box-shadow:0 16px 40px -18px rgba(30,50,80,.4),0 3px 12px -5px rgba(30,50,80,.22)}
+.clab{font-size:9.5px;font-weight:700;letter-spacing:2.4px;color:var(--dim2);display:flex;align-items:center;gap:7px;margin-bottom:10px}
 .clab::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent);opacity:.7}
-.clab svg{width:13px;height:13px;color:var(--cyan)}
+.clab svg{width:13px;height:13px;color:var(--gold)}
 .clab .tg2{margin-left:auto;font:700 8.5px var(--mono);letter-spacing:1px;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:7px;padding:2.5px 8px}
 .clab .tg2.live{color:var(--cyan);border-color:var(--cyanSoft);background:var(--cyanSoft);animation:blink 1.6s infinite}
 
-/* ---------- OBROLAN: COMMS DECK v35 — CHASSIS MK1 ---------- */
-/* bar sambungan inti — melekat di atas obrolan */
-.commsBar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:9px;margin-top:10px;padding:7px 12px;border-radius:12px;
-  background:linear-gradient(90deg,rgba(34,211,238,.10),rgba(13,21,36,.55) 42%,rgba(245,181,74,.08));
-  border:1px solid var(--line);backdrop-filter:blur(14px);
-  font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);box-shadow:0 12px 26px -10px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
-.commsBar .csig{display:flex;align-items:flex-end;gap:1.5px;height:11px;flex:none}
-.commsBar .csig i{width:2.5px;border-radius:1px;background:var(--cyan);animation:sigp 1.4s ease-in-out infinite}
-.commsBar .csig i:nth-child(1){height:35%}
-.commsBar .csig i:nth-child(2){height:58%;animation-delay:.18s}
-.commsBar .csig i:nth-child(3){height:78%;animation-delay:.36s}
-.commsBar .csig i:nth-child(4){height:100%;animation-delay:.54s;background:var(--gold)}
-@keyframes sigp{0%,100%{opacity:.28}50%{opacity:1}}
-.commsBar .ttl{color:var(--cyan);font-weight:700;white-space:nowrap}
-.commsBar .ch{color:var(--gold);font-weight:700;border:1px solid var(--goldSoft);background:var(--goldSoft);border-radius:6px;padding:2px 6px;letter-spacing:1.2px;white-space:nowrap;flex:none}
-.commsBar .enc{display:flex;align-items:center;gap:4px;color:var(--dim2);white-space:nowrap}
-.commsBar .enc svg{width:9.5px;height:9.5px}
-.commsBar .lat{margin-left:auto;color:var(--gold);font-weight:700;transition:opacity .2s}
-.commsBar .lat.tick{animation:blink .5s 1}
-html[data-theme="siang"] .commsBar{background:linear-gradient(90deg,rgba(9,125,150,.08),rgba(255,255,255,.72) 42%,rgba(176,110,10,.07))}
-/* rel instrumen mikro di sisi obrolan — papan ukur (v35) */
-#v-obrolan{position:relative}
-#v-obrolan::before,#v-obrolan::after{content:'';position:absolute;top:18px;bottom:10px;width:3px;pointer-events:none;opacity:.5;
-  background:repeating-linear-gradient(180deg,transparent 0 13px,var(--line2) 13px 14.5px)}
-#v-obrolan::before{left:-10px}
-#v-obrolan::after{right:-10px}
+/* ---------- OBROLAN AURUM v43 — garis hari, TANPA comms deck ---------- */
+.dayline{display:flex;flex-direction:column;align-items:center;gap:5px;margin-top:18px;animation:rise .6s .05s cubic-bezier(.22,1,.36,1) both}
+.dayline .dl-d{display:flex;align-items:center;gap:10px;font:700 8.5px var(--mono);letter-spacing:2.6px;color:var(--dim)}
+.dayline .dl-d::before,.dayline .dl-d::after{content:'';width:38px;height:1px}
+.dayline .dl-d::before{background:linear-gradient(90deg,transparent,var(--line2))}
+.dayline .dl-d::after{background:linear-gradient(90deg,var(--line2),transparent)}
+.dayline .dl-d i{font-style:normal;color:var(--gold)}
+.dayline .dl-sub{font:600 7.5px var(--mono);letter-spacing:2.2px;color:var(--dim2)}
+.dayline .dl-sub i{font-style:normal}
 /* garis event sistem ◈ — log komms ber-stempel jam (v35) */
 .evt{display:flex;align-items:center;gap:9px;margin-top:14px}
 .evt i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2))}
 .evt i:last-child{background:linear-gradient(90deg,var(--line2),transparent)}
 .evt span{font:700 8px var(--mono);letter-spacing:1.9px;color:var(--dim2);white-space:nowrap;display:flex;align-items:center;gap:6px}
-.evt span b{color:var(--cyan);font-weight:400;font-size:9px}
+.evt span b{color:var(--gold);font-weight:400;font-size:9px}
 .evt span u{font-weight:600;text-decoration:none;opacity:.75}
 .evt.gold span b{color:var(--gold)}
-/* pesan ber-meta — masuk PEGAS (natural), bukan kaku (v35) */
-.msg{display:flex;gap:9px;margin-top:16px;align-items:flex-end;animation:msgIn .55s cubic-bezier(.2,1.3,.35,1) both}
+/* pesan ber-meta — masuk PEGAS (natural); bubble kaca TENANG (v43) */
+.msg{display:flex;gap:10px;margin-top:18px;align-items:flex-end;animation:msgIn .55s cubic-bezier(.2,1.3,.35,1) both}
 @keyframes msgIn{from{opacity:0;transform:translateY(13px) scale(.96)}to{opacity:1;transform:none}}
-.mav{width:30px;height:30px;border-radius:50%;flex:none;position:relative;
+.mav{width:32px;height:32px;border-radius:50%;flex:none;position:relative;
   background:radial-gradient(circle at 34% 28%,#F0FEFF,var(--cyan) 52%,#083A4E);
-  box-shadow:0 0 14px var(--glow),inset 0 0 8px rgba(255,255,255,.45),0 4px 10px -3px rgba(0,0,0,.6)}
-.mav::before{content:'';position:absolute;inset:-3.5px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent 0 68%,var(--gold) 86%,transparent 97%);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
-          mask:radial-gradient(farthest-side,transparent calc(100% - 1.6px),#000 0);
-  animation:spin 6s linear infinite}
+  box-shadow:0 0 16px var(--glow),inset 0 0 8px rgba(255,255,255,.45),0 4px 12px -3px rgba(0,0,0,.6)}
+.mav::before{content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 72%,var(--gold) 88%,transparent 97%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1.5px),#000 0);
+          mask:radial-gradient(farthest-side,transparent calc(100% - 1.5px),#000 0);
+  animation:spin 7s linear infinite}
 .mav::after{content:'';position:absolute;right:-1px;top:-1px;width:7px;height:7px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 6px rgba(245,181,74,.9);border:1.5px solid var(--bg0)}
+  background:var(--gold);box-shadow:0 0 6px rgba(234,200,131,.9);border:1.5px solid var(--bg0)}
 html[data-theme="siang"] .mav::after{border-color:#FFFFFF}
-.mcol{min-width:0;max-width:86%}
-.mmeta{display:flex;align-items:center;gap:6px;font:700 8.5px var(--mono);letter-spacing:1.7px;color:var(--dim2);margin:0 4px 5px}
-.mmeta b{color:var(--cyan);font-size:9.5px;letter-spacing:2.2px;font-weight:700}
+.mcol{min-width:0;max-width:85%}
+.mmeta{display:flex;align-items:center;gap:7px;font:600 8.5px var(--mono);letter-spacing:1.8px;color:var(--dim2);margin:0 6px 6px}
+.mmeta b{color:var(--gold);font-size:9.5px;letter-spacing:2.6px;font-weight:700}
 .mmeta .mts{margin-left:auto;display:flex;align-items:center;gap:5px;font-weight:600;letter-spacing:1.1px;white-space:nowrap}
 .mmeta .mts i{font-style:normal}
-.mmeta .mts .tk{color:var(--cyan);font-size:8.5px}
 .msg.me .mmeta{justify-content:flex-end}
-.msg.me .mmeta b{color:var(--gold)}
-.msg.me .mmeta .mts .tk{color:var(--gold)}
-/* BUBBLE CHASSIS (v35): pelat kaca mesin — kilap atas, scanline mikro,
-   rel aksen menyala di sisi, bracket HUD emas di sudut, shadow berlapis */
-.msg .bub{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.016) 40%,rgba(34,211,238,.05)),var(--pan2);
-  border:1px solid var(--line2);border-radius:4px 16px 16px 16px;padding:11px 14px 10px 15px;font-size:14px;line-height:1.55;backdrop-filter:blur(14px);
-  box-shadow:0 18px 38px -12px rgba(0,0,0,.78),0 4px 14px -6px rgba(0,0,0,.5),0 0 28px -8px rgba(34,211,238,.24),inset 0 1px 0 rgba(255,255,255,.08)}
-/* rel mesin kiri — aksen sian bertenaga */
-.msg .bub::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2.5px;border-radius:2px;
-  background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,.04));box-shadow:0 0 9px rgba(34,211,238,.45)}
-/* scanline mikro + bracket HUD emas mikro kanan-bawah */
-.msg .bub::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:screen;opacity:.9;
-  background:
-    linear-gradient(rgba(245,181,74,.8),rgba(245,181,74,.8)) calc(100% - 6px) calc(100% - 6px)/12px 1.5px no-repeat,
-    linear-gradient(rgba(245,181,74,.8),rgba(245,181,74,.8)) calc(100% - 6px) calc(100% - 6px)/1.5px 12px no-repeat,
-    repeating-linear-gradient(0deg,rgba(140,238,255,.03) 0 1px,transparent 1px 3px)}
+.msg.me .mmeta b{color:var(--txt)}
+/* BUBBLE KACA TENANG (v43): radius lunak, kilau tepi atas —
+   TANPA scanline, TANPA bracket, TANPA rel mesin (bersih = mewah) */
+.msg .bub{position:relative;background:linear-gradient(158deg,rgba(255,255,255,.07),rgba(255,255,255,.015) 46%),var(--pan2);
+  border:1px solid var(--line2);border-radius:6px 20px 20px 20px;padding:13px 16px;font-size:14.5px;line-height:1.62;backdrop-filter:blur(16px);
+  box-shadow:0 20px 44px -14px rgba(0,0,0,.72),0 4px 16px -6px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07)}
+.msg .bub::before{content:'';position:absolute;left:10%;right:10%;top:-1px;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.22) 50%,transparent)}
 .msg.me{justify-content:flex-end}
-.msg.me .bub{background:linear-gradient(150deg,rgba(255,236,190,.16),rgba(245,181,74,.05) 55%),var(--pan2);border-color:rgba(245,181,74,.42);border-radius:16px 4px 16px 16px;padding:11px 15px 10px 14px;
-  box-shadow:0 18px 38px -12px rgba(0,0,0,.7),0 4px 14px -6px rgba(0,0,0,.45),0 0 30px -8px rgba(245,181,74,.4),inset 0 1px 0 rgba(255,244,214,.16)}
-.msg.me .bub::before{left:auto;right:0;background:linear-gradient(180deg,var(--gold),rgba(245,181,74,.04));box-shadow:0 0 9px rgba(245,181,74,.45)}
-.msg.me .bub::after{background:
-    linear-gradient(rgba(255,236,190,.85),rgba(255,236,190,.85)) 6px 6px/12px 1.5px no-repeat,
-    linear-gradient(rgba(255,236,190,.85),rgba(255,236,190,.85)) 6px 6px/1.5px 12px no-repeat,
-    repeating-linear-gradient(0deg,rgba(255,224,150,.035) 0 1px,transparent 1px 3px)}
-html[data-theme="siang"] .msg .bub::after,html[data-theme="siang"] .msg.me .bub::after{mix-blend-mode:normal;opacity:.5}
+.msg.me .bub{background:linear-gradient(150deg,rgba(234,200,131,.15),rgba(234,200,131,.03) 55%),var(--pan2);border-color:rgba(234,200,131,.36);border-radius:20px 6px 20px 20px;
+  box-shadow:0 20px 44px -14px rgba(0,0,0,.68),0 4px 16px -6px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,244,214,.14)}
+.msg.me .bub::before{background:linear-gradient(90deg,transparent,rgba(255,236,190,.3) 50%,transparent)}
+html[data-theme="siang"] .msg .bub{background:linear-gradient(158deg,rgba(255,255,255,.95),rgba(255,255,255,.72) 46%),var(--pan2);box-shadow:0 16px 40px -18px rgba(30,50,80,.4),0 3px 12px -5px rgba(30,50,80,.22)}
+html[data-theme="siang"] .msg.me .bub{background:linear-gradient(150deg,rgba(166,116,31,.12),rgba(255,255,255,.75) 55%),var(--pan2);border-color:rgba(166,116,31,.35)}
 /* pesan MENYEGEL: kedip "paket diterima" (v35) */
 .msg .bub.recv{animation:recvP .8s ease-out 1}
 @keyframes recvP{from{border-color:rgba(34,211,238,.8);box-shadow:0 0 0 1px rgba(34,211,238,.45),0 0 34px -2px rgba(34,211,238,.5),0 18px 38px -12px rgba(0,0,0,.78)}}
@@ -285,6 +257,26 @@ html[data-theme="siang"] .msg .bub::after,html[data-theme="siang"] .msg.me .bub:
 @keyframes dotp{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}
 .typ{font:600 8px var(--mono);font-style:normal;letter-spacing:1.8px;color:var(--dim2);margin-left:9px}
 
+/* ---------- HERO SAPAAN — panggung terang di kepala obrolan (v43 AURUM) ---------- */
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 6px 6px;animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.hero .h-tag{display:inline-flex;align-items:center;gap:8px;font:700 8px var(--mono);letter-spacing:2.6px;color:var(--dim);
+  border:1px solid var(--line);border-radius:999px;padding:5px 13px;background:var(--pan);box-shadow:0 8px 20px -12px rgba(0,0,0,.6)}
+.hero .h-tag i{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 7px rgba(234,200,131,.8);animation:blink 2.8s ease-in-out infinite}
+.hero h1{font-family:var(--disp);font-weight:300;font-size:clamp(20px,6vw,23px);line-height:1.3;letter-spacing:.4px;margin-top:15px;text-wrap:balance;
+  background:linear-gradient(180deg,#FFFFFF 0%,var(--txt) 42%,#E6C489 135%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{margin-top:8px;font-size:13.5px;color:var(--dim)}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:334px;margin-top:20px}
+.chip{display:flex;align-items:center;gap:9px;padding:12px 13px;border-radius:15px;text-align:left;
+  font-size:12.5px;font-weight:600;color:var(--dim);line-height:1.3;
+  background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 50%),var(--pan);
+  border:1px solid var(--line);backdrop-filter:blur(12px);transition:.22s cubic-bezier(.3,1,.4,1)}
+.chip i{width:6px;height:6px;flex:none;transform:rotate(45deg);border-radius:1.5px;background:var(--gold);box-shadow:0 0 8px rgba(234,200,131,.5)}
+.chip:hover{border-color:rgba(234,200,131,.5);color:var(--txt);transform:translateY(-1.5px);
+  box-shadow:0 12px 26px -12px rgba(0,0,0,.65),0 0 20px -6px rgba(234,200,131,.3)}
+.chip:active{transform:translateY(0) scale(.98)}
+html[data-theme="siang"] .hero h1{background:linear-gradient(180deg,#3B362A 0%,#221F17 45%,#8A6420 140%);-webkit-background-clip:text;background-clip:text}
+
 /* ---------- panel kerja agent (di dalam obrolan — agent di dalam AVI) ---------- */
 #stgWork{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.32,.72,.24,1),opacity .4s,margin .4s;margin-top:0}
 #stgWork.open{max-height:560px;opacity:1;margin-top:12px}
@@ -312,8 +304,8 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 #gate .gbtns{display:flex;gap:8px;margin-top:9px}
 .btn{border:1px solid var(--line2);border-radius:11px;padding:8px 13px;font-size:11.5px;font-weight:700;letter-spacing:1px;transition:.2s;text-align:center;background:var(--pan2)}
 .btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.btn.gold{background:linear-gradient(135deg,#FFD98A,var(--gold) 60%,#C77E12);border-color:transparent;color:#1B1204;box-shadow:0 4px 16px var(--goldSoft)}
-.btn.gold:hover{filter:brightness(1.07);color:#1B1204}
+.btn.gold{background:linear-gradient(135deg,#F8E7BD,var(--gold) 58%,#C79A45);border-color:transparent;color:#241A06;box-shadow:0 4px 18px var(--goldSoft)}
+.btn.gold:hover{filter:brightness(1.06);color:#241A06}
 .btn.red{border-color:rgba(251,113,133,.4);color:var(--red)}
 .btn.red:hover{border-color:var(--red);color:var(--red)}
 
@@ -719,12 +711,12 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 
 /* SLOT teks + STRIP RINGKASAN di bawah orb hero (v30) */
 .orbSide{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;max-width:360px;position:relative;text-align:center}
-.sumChip{display:inline-flex;align-items:center;gap:7px;font:700 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);
+.sumChip{display:inline-flex;align-items:center;gap:7px;font:700 8px var(--mono);letter-spacing:1.3px;color:var(--dim);
   background:var(--pan);border:1px solid var(--line2);border-radius:999px;padding:6px 13px;max-width:100%;
   box-shadow:0 10px 22px -10px rgba(0,0,0,.6)}
 .sumChip i{width:5px;height:5px;border-radius:50%;background:var(--gold);flex:none;box-shadow:0 0 6px rgba(245,181,74,.8)}
 .sumChip b{color:var(--cyan);font-weight:700}
-#orbIdle{font:600 9px var(--mono);letter-spacing:2.2px;color:var(--dim2);max-width:340px;
+#orbIdle{font:600 8.5px var(--mono);letter-spacing:2.4px;color:var(--dim2);max-width:340px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s}
 #orbIdle.work{color:var(--cyan)}
 #orbIdle.done{color:var(--gold)}
@@ -742,8 +734,8 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 .cmd input::placeholder{color:var(--dim2)}
 .cmd .cbtn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--line);color:var(--dim);transition:.2s;background:var(--pan2)}
 .cmd .cbtn:hover{color:var(--cyan);border-color:var(--cyan)}
-.cmd .send{border:none;background:linear-gradient(135deg,#7FEDFB,var(--cyan) 52%,#0A93B4);color:#032730;box-shadow:0 4px 18px var(--glow)}
-.cmd .send:hover{filter:brightness(1.1);color:#032730}
+.cmd .send{border:none;background:linear-gradient(135deg,#F8E7BD,var(--gold) 52%,#C79A45);color:#241A06;box-shadow:0 4px 18px var(--goldSoft)}
+.cmd .send:hover{filter:brightness(1.07);color:#241A06}
 .cmd .send.rdy{animation:sendp 1.9s ease-in-out infinite}
 @keyframes sendp{0%,100%{box-shadow:0 4px 18px var(--glow)}50%{box-shadow:0 4px 30px rgba(245,181,74,.5);filter:brightness(1.12)}}
 
@@ -756,15 +748,15 @@ nav{flex:none;display:flex;justify-content:center;padding:4px 16px calc(10px + e
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none}
 #dockInd{position:absolute;top:5px;bottom:5px;left:5px;width:96px;border-radius:999px;z-index:0;
-  background:linear-gradient(135deg,var(--cyanSoft),rgba(245,181,74,.08));
-  border:1px solid rgba(34,211,238,.4);box-shadow:0 0 20px var(--glow),inset 0 0 14px rgba(34,211,238,.10);
+  background:linear-gradient(135deg,var(--goldSoft),rgba(234,200,131,.04));
+  border:1px solid rgba(234,200,131,.38);box-shadow:0 0 20px rgba(234,200,131,.16),inset 0 0 14px rgba(234,200,131,.07);
   transition:left .4s cubic-bezier(.3,1.35,.4,1),width .4s cubic-bezier(.3,1.35,.4,1)}
-html[data-theme="siang"] #dockInd{border-color:rgba(9,125,150,.4)}
+html[data-theme="siang"] #dockInd{border-color:rgba(166,116,31,.45)}
 .dbtn{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:10px 17px;border-radius:999px;
   font-size:10.5px;font-weight:700;letter-spacing:1.6px;color:var(--dim2);transition:color .25s}
 .dbtn svg{width:15px;height:15px;transition:filter .25s}
-.dbtn.on{color:var(--cyan)}
-.dbtn.on svg{filter:drop-shadow(0 0 6px var(--glow))}
+.dbtn.on{color:var(--txt)}
+.dbtn.on svg{filter:drop-shadow(0 0 6px rgba(234,200,131,.45))}
 .dbtn .dot{display:none;position:absolute;top:7px;right:10px;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--goldSoft)}
 .dbtn .dot.show{display:block}
 
@@ -810,12 +802,12 @@ html[data-theme="siang"] #dockInd{border-color:rgba(9,125,150,.4)}
 
 /* ---------- kendali ---------- */
 .opt{flex:1;border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--dim);background:var(--pan2);transition:.2s}
-.opt.on{border-color:var(--cyan);color:var(--cyan);background:var(--cyanSoft);box-shadow:0 0 14px var(--glow)}
+.opt.on{border-color:rgba(234,200,131,.55);color:var(--gold);background:var(--goldSoft);box-shadow:0 0 16px rgba(234,200,131,.14)}
 .optrow{display:flex;gap:8px}
 .tg{width:40px;height:22px;border-radius:999px;background:var(--pan3);border:1px solid var(--line2);position:relative;flex:none;transition:.2s}
 .tg::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--dim2);transition:.2s}
-.tg.on{background:var(--cyanSoft);border-color:var(--cyan)}
-.tg.on::after{left:20px;background:var(--cyan)}
+.tg.on{background:var(--goldSoft);border-color:rgba(234,200,131,.55)}
+.tg.on::after{left:20px;background:var(--gold)}
 .swrow{display:flex;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
 .swrow:first-of-type{border-top:none}
 .swrow b{font-size:13.5px;font-weight:600}
@@ -825,7 +817,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;bord
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--gold);border:2px solid var(--bg1);box-shadow:0 0 8px var(--goldSoft)}
 .seg{display:flex;background:var(--pan2);border-radius:12px;padding:3px;gap:3px}
 .seg .qc{flex:1;padding:7px 4px;border-radius:10px;font-size:10.5px;font-weight:700;letter-spacing:.5px;color:var(--dim);transition:.2s}
-.seg .qc.on{background:var(--cyan);color:#032730}
+.seg .qc.on{background:var(--gold);color:#241A06}
 .gauges{display:flex;gap:14px;align-items:center}
 .gauge{text-align:center}
 .gauge svg{transform:rotate(-90deg)}
@@ -887,6 +879,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     <i style="left:16%;top:56%;--d:7.2s;--dl:3.2s"></i><i style="left:55%;top:60%;--d:6.2s;--dl:5s"></i>
   </div>
   <div class="vig"></div>
+  <div class="grain"></div>
 
   <!-- HEADER -->
   <header>
@@ -913,17 +906,27 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     <!-- ================= OBROLAN ================= -->
     <section class="view on" id="v-obrolan">
 
-      <!-- bar sambungan inti — COMMS DECK -->
-      <div class="commsBar">
-        <span class="csig"><i></i><i></i><i></i><i></i></span>
-        <span class="ttl">SAMBUNGAN INTI MK1</span>
-        <span class="ch">CH-01</span>
-        <span class="enc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>TERENKRIPSI</span>
-        <span class="lat" id="clat">LAT 41MS</span>
+      <!-- garis hari — pembuka tenang (v43 AURUM) -->
+      <div class="dayline">
+        <span class="dl-d"><i>HARI INI</i></span>
+        <span class="dl-sub">TERENKRIPSI UJUNG-KE-UJUNG · <i id="clat">LAT 41MS</i></span>
+      </div>
+
+      <!-- hero sapaan — panggung agung (v43 AURUM) -->
+      <div class="hero">
+        <span class="h-tag"><i></i>MK-XX · INTI MK1 · SIAGA</span>
+        <h1 id="greetH">Selamat malam, Pak</h1>
+        <p>Ada yang bisa saya urus hari ini?</p>
+        <div class="chips">
+          <button class="chip" data-t="Buatkan dokumen PDF dari catatan hari ini"><i></i>Buat dokumen PDF</button>
+          <button class="chip" data-t="Rekap rapat jadi poin keputusan"><i></i>Rekap rapat</button>
+          <button class="chip" data-t="Draf email untuk Bapak Dirut"><i></i>Draf email</button>
+          <button class="chip" data-t="Ingatkan saya bayar listrik hari Jumat"><i></i>Pengingat</button>
+        </div>
       </div>
 
       <!-- percakapan: terbuka tenang sebagai ASISTEN (widget ringkasan DIHAPUS — v34) -->
-      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · <i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
+      <div class="msg" id="greetMsg"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span class="mts"><i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Semua sistem normal, Pak. Tinggal bilang — saya urus.</div></div></div>
 
       <!-- panel kerja agent: AGENT DI DALAM AVI -->
       <div id="stgWork">
@@ -964,7 +967,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
         </div>
       </div>
 
-      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · <i class="fmt">--:--</i></span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
+      <div class="msg" id="followMsg" style="display:none"><span class="mav"></span><div class="mcol"><div class="mmeta"><b>AVI</b><span class="mts"><i class="fmt">--:--</i></span></div><div class="bub">Sudah jadi, Pak. Mau saya kirim ke email, atau ada yang mau diubah dulu?</div></div></div>
 
       <div style="height:8px" id="chatEnd"></div>
     </section>
@@ -1150,7 +1153,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v42 · MK-XX SEGITIGA HIDUP — MASUKAN PAK: "YANG TERASA HIDUP TUH SEGITIGANYA… SEPERTI JANIN YANG BERGERAK" ⇒ SEGITIGA JADI RAHIM AMNION · JANIN: TUBUH MORF MENGGELIAT + KEPALA DETAK JANTUNG + TALI PUSAR ENERGI + MELAYANG AMNION + TENDA DAN RIAK CAIRAN · KETUK ORB = JANIN TERKEJUT · CANGKANG HUD SENTRI V41 TETAP · CHAT DASHBOARD V35 · AGENT DI DALAM AVI</div>
+<div class="note">v43 · AURUM — TEMA, TATA LETAK &amp; UI TAMPILAN OBROLAN DIROMBAK MEWAH (MASUKAN PAK: "MASIH TIDAK SINKRON, TIDAK MEWAH") · EMAS CHAMPAGNE + GADING · GARIS HARI + HERO SAPAAN + CHIP SARAN CEPAT · BUBBLE KACA TENANG TANPA SCANLINE/BRACKET · ORB MK-XX V42 SEGITIGA HIDUP TIDAK DISENTUH · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1162,7 +1165,7 @@ $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toa
 
 /* ---- stempel mesin: jam + VOX (v35) ---- */
 function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
-const VOX='<div class="vox">'+'<i></i>'.repeat(10)+'<em>VOX MK1 · 230MS</em></div>';
+const VOX='<div class="vox">'+'<i></i>'.repeat(10)+'<em>VOX · 230MS</em></div>';
 function addVox(bub){if(bub&&!bub.querySelector('.vox'))bub.insertAdjacentHTML('beforeend',VOX)}
 addVox(document.querySelector('#followMsg .bub'));
 
@@ -1186,7 +1189,8 @@ $('#btnTheme').addEventListener('click',()=>{
 (function(){
   const h=new Date().getHours();
   const w=h<4?'malam':h<10?'pagi':h<15?'siang':h<19?'sore':'malam';
-  $('#greetBub').innerHTML='Selamat '+w+', Pak. Ada yang bisa saya urus hari ini?'+VOX;
+  const gh=$('#greetH');if(gh)gh.textContent='Selamat '+w+', Pak';
+  $('#greetBub').innerHTML='Semua sistem normal, Pak. Dua jadwal dan satu pengingat saya pegang — tinggal bilang.'+VOX;
   const gt=$('#greetT');if(gt)gt.textContent=nowT();
 })();
 
@@ -1209,7 +1213,7 @@ function slotIdle(tx){
 function state(cls,tx){const w=$('#orbIdle');if(!w)return;w.className=cls||'';w.textContent=tx}
 
 /* ---- jawaban AVI DI ATAS orb — gelembung beravatar + META dalam obrolan (v16·v27·v35) ---- */
-const META_AVI='<div class="mmeta"><b>AVI</b><span>· INTI MK1</span><span class="mts">CH-01 · '+nowT()+'</span></div>';
+const META_AVI='<div class="mmeta"><b>AVI</b><span class="mts"><i>'+nowT()+'</i></span></div>';
 function aviReply(txt){
   const m=$('main'),end=$('#chatEnd');
   const typ=document.createElement('div');
@@ -1241,7 +1245,7 @@ function meBubble(txt){
   const end=$('#chatEnd');if(!end)return;
   const d=document.createElement('div');
   d.className='msg me';
-  d.innerHTML='<div class="mcol"><div class="mmeta"><b>PAK</b><span>· PERINTAH</span><span class="mts">'+nowT()+'</span></div><div class="bub"></div><div class="rcpt">TERKIRIM<b>✓</b></div></div>';
+  d.innerHTML='<div class="mcol"><div class="mmeta"><b>PAK</b><span class="mts">'+nowT()+'</span></div><div class="bub"></div><div class="rcpt">TERKIRIM<b>✓</b></div></div>';
   const b=d.querySelector('.bub');b.textContent=txt;
   b.classList.add('recv');setTimeout(()=>b.classList.remove('recv'),850);
   seqMsg(d);
@@ -1285,6 +1289,12 @@ function handleSend(){
 $('#btnSend').addEventListener('click',handleSend);
 $('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')handleSend()});
 $('#cin').addEventListener('input',()=>$('#btnSend').classList.toggle('rdy',$('#cin').value.trim().length>0));
+
+/* ---- chip saran cepat: langsung jadi perintah (v43 AURUM) ---- */
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{
+  if(taskActive){toast('Tunggu tugas yang jalan tuntas dulu, Pak');return}
+  $('#cin').value=c.dataset.t;handleSend();
+}));
 
 /* ---- papan ketik: --vvh + fokus = obrolan terkini ---- */
 const cin=$('#cin');
