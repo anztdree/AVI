@@ -1,0 +1,1057 @@
+     1→<!DOCTYPE html>
+     2→<html lang="id">
+     3→<head>
+     4→<meta charset="utf-8"/>
+     5→<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+     6→<title>AVI — LAB ORB 2 · Ralat C·D·F</title>
+     7→<link rel="preconnect" href="https://fonts.googleapis.com"/>
+     8→<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+     9→<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+    10→<style>
+    11→/* ============================================================
+    12→   LAB ORB 2 — Pak: "var D F C itu bagus, coba custom lagi"
+    13→   ⇒ 3 favorit digarap lebih dalam, 3 take per varian (9 orb):
+    14→     C — TIGA BUSUR TAJAM
+    15→        C1 KURUNG GANDA   : kurung luar+ dalam berlawanan, steps(3)
+    16→        C2 PANAH KOMPAS   : panah menunjuk keluar + sapuan emas lompat sudut
+    17→        C3 TRIGA TIK      : kurung + garis sisi berkilat tiap mendarat
+    18→     D — TRIAD NODE
+    19→        D1 HEKSAGRAM DINAMIS : dua segitiga lawan arah (6 node)
+    20→        D2 KOMET TRIAD       : ekor komet + isi samar + kedip bergiliran
+    21→        D3 TRIAD RESONANSI   : jari-jari ke pusat + orbit bernafas
+    22→     F — MORF LINGKAR⇄SEGITIGA
+    23→        F1 MORF TIGA WAJAH : lingkaran⇄segitiga⇄heksagon berantai
+    24→        F2 MORF ISI KACA   : bentuk TERISI ikut berubah + bayangan wujud lain
+    25→        F3 MORF DETAK      : ganti wujud SNAP per detak + rotasi steps(12)
+    26→   Cangkang luar tetap v41 identik. Tombol atas: lihat galeri A–F lama.
+    27→   ============================================================ */
+    28→*{box-sizing:border-box;margin:0;padding:0}
+    29→:root{
+    30→  --bg0:#04060C; --bg1:#0B1220;
+    31→  --pan:rgba(13,21,36,.62); --pan2:rgba(21,32,52,.78);
+    32→  --line:rgba(150,180,225,.13); --line2:rgba(150,180,225,.26);
+    33→  --cyan:#22D3EE; --gold:#F5B54A; --mint:#5EEAD4;
+    34→  --glow:rgba(34,211,238,.22);
+    35→  --txt:#EDF4FF; --dim:#93A4C4; --dim2:#5D6F94;
+    36→  --mono:'JetBrains Mono',ui-monospace,monospace;
+    37→  --disp:'Unbounded',sans-serif; --ui:'Space Grotesk',sans-serif;
+    38→}
+    39→html,body{min-height:100%}
+    40→body{background:linear-gradient(180deg,var(--bg0),var(--bg1) 140%);color:var(--txt);
+    41→  font-family:var(--ui);font-size:14px;line-height:1.5;
+    42→  display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+    43→::selection{background:rgba(245,181,74,.25)}
+    44→
+    45→.bgAur{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    46→.bgAur i{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:screen}
+    47→.b1{width:520px;height:520px;left:-160px;top:-190px;
+    48→  background:radial-gradient(circle at 42% 42%,rgba(34,211,238,.26),transparent 66%);
+    49→  animation:drift1 23s ease-in-out infinite alternate}
+    50→.b2{width:460px;height:460px;right:-180px;top:24%;
+    51→  background:radial-gradient(circle at 58% 42%,rgba(139,92,246,.17),transparent 66%);
+    52→  animation:drift2 27s ease-in-out infinite alternate}
+    53→.b3{width:420px;height:420px;left:8%;bottom:-190px;
+    54→  background:radial-gradient(circle,rgba(245,181,74,.13),transparent 66%);
+    55→  animation:drift3 19s ease-in-out infinite alternate}
+    56→@keyframes drift1{to{transform:translate(80px,60px) scale(1.14)}}
+    57→@keyframes drift2{to{transform:translate(-70px,80px) scale(.93)}}
+    58→@keyframes drift3{to{transform:translate(60px,-70px) scale(1.12)}}
+    59→.bgSt{position:fixed;inset:0;z-index:0;pointer-events:none}
+    60→.bgSt i{position:absolute;width:2px;height:2px;border-radius:50%;background:#D6F6FF;
+    61→  box-shadow:0 0 7px rgba(34,211,238,.9);opacity:0;
+    62→  animation:twk var(--d,6s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+    63→@keyframes twk{0%,100%{opacity:0}45%{opacity:.7}70%{opacity:.2}}
+    64→.vig{position:fixed;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 110px rgba(0,0,0,.6)}
+    65→header,main,footer{position:relative;z-index:2}
+    66→
+    67→/* ---------- header ---------- */
+    68→header{max-width:1240px;width:100%;margin:0 auto;padding:32px 22px 6px;
+    69→  animation:rise .55s cubic-bezier(.22,1,.36,1) both}
+    70→.labChip{display:inline-flex;align-items:center;gap:8px;font:700 10.5px/1 var(--mono);
+    71→  letter-spacing:.22em;color:var(--gold);border:1px solid rgba(245,181,74,.4);
+    72→  border-radius:999px;padding:7px 13px;background:rgba(245,181,74,.07);text-transform:uppercase}
+    73→.labChip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);
+    74→  box-shadow:0 0 8px rgba(245,181,74,.9);animation:twk 2.4s ease-in-out infinite}
+    75→header h1{font-family:var(--disp);font-weight:800;font-size:clamp(20px,3.3vw,30px);
+    76→  letter-spacing:.02em;margin-top:14px;line-height:1.16}
+    77→header h1 em{font-style:normal;color:var(--cyan);text-shadow:0 0 22px var(--glow)}
+    78→header p{color:var(--dim);max-width:700px;margin-top:10px;font-size:13.5px}
+    79→header p b{color:#C9E9FF;font-weight:600}
+    80→.howto{margin-top:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    81→  font:600 11px var(--mono);color:var(--dim);letter-spacing:.08em}
+    82→.howto u{text-decoration:none;color:#BFF1FF;border:1px solid var(--line2);
+    83→  border-radius:6px;padding:2.5px 7px;background:rgba(34,211,238,.06)}
+    84→/* segmented toggle */
+    85→.seg{display:inline-flex;border:1px solid var(--line2);border-radius:11px;overflow:hidden;
+    86→  margin-top:16px;background:var(--pan)}
+    87→.seg button{font:700 10.5px var(--mono);letter-spacing:.16em;color:var(--dim);
+    88→  padding:9px 16px;background:none;border:none;cursor:pointer;transition:.25s}
+    89→.seg button[aria-pressed="true"]{color:#04121C;background:linear-gradient(135deg,#7DE9F9,#22D3EE);
+    90→  box-shadow:0 0 16px rgba(34,211,238,.45)}
+    91→.seg button[aria-pressed="false"]:hover{color:#C9E9FF}
+    92→
+    93→/* ---------- grid ---------- */
+    94→main{max-width:1240px;width:100%;margin:0 auto;padding:22px 22px 30px;flex:1}
+    95→.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:18px}
+    96→.gdiv{grid-column:1/-1;display:flex;align-items:center;gap:13px;margin-top:10px;
+    97→  font:700 10.5px var(--mono);letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+    98→.gdiv::before,.gdiv::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent)}
+    99→.gdiv small{color:var(--dim2);letter-spacing:.14em}
+   100→.card{position:relative;border:1px solid var(--line);border-radius:20px;
+   101→  background:linear-gradient(180deg,var(--pan),rgba(8,13,24,.5));
+   102→  padding:20px 18px 18px;display:flex;flex-direction:column;align-items:center;
+   103→  overflow:hidden;animation:rise .6s cubic-bezier(.22,1,.36,1) both;
+   104→  transition:border-color .3s,box-shadow .3s,transform .3s}
+   105→.card:hover{border-color:rgba(34,211,238,.4);box-shadow:0 0 34px rgba(34,211,238,.13);
+   106→  transform:translateY(-3px)}
+   107→.card::before,.card::after{content:'';position:absolute;width:15px;height:15px;
+   108→  border:1.5px solid rgba(34,211,238,.5);pointer-events:none;opacity:.85}
+   109→.card::before{left:9px;top:9px;border-right:0;border-bottom:0;border-radius:4px 0 0 0}
+   110→.card::after{right:9px;top:9px;border-left:0;border-bottom:0;border-radius:0 4px 0 0}
+   111→@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+   112→.crow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+   113→.vchip{font:700 10.5px/1 var(--mono);letter-spacing:.18em;color:#BFF1FF;
+   114→  border:1px solid rgba(34,211,238,.45);background:rgba(34,211,238,.08);
+   115→  border-radius:7px;padding:5px 9px}
+   116→.vchip.g{color:#FFE9BC;border-color:rgba(245,181,74,.45);background:rgba(245,181,74,.08)}
+   117→.shellTag{font:600 9px var(--mono);letter-spacing:.2em;color:var(--dim2);text-transform:uppercase}
+   118→
+   119→/* ---------- panggung ---------- */
+   120→.stage{position:relative;width:238px;height:238px;margin:14px 0 4px;flex:none}
+   121→.orb{position:absolute;left:50%;top:50%;width:112px;height:112px;
+   122→  margin:-56px 0 0 -56px;transform:scale(2.125);transform-origin:center}
+   123→.orb svg{position:absolute;inset:0;overflow:visible}
+   124→.aura{position:absolute;inset:-38px;border-radius:50%;pointer-events:none;
+   125→  background:radial-gradient(circle at 50% 47%,rgba(34,211,238,.17) 0%,rgba(34,211,238,.06) 42%,transparent 66%);
+   126→  animation:auraB 7s ease-in-out infinite}
+   127→.aura::after{content:'';position:absolute;inset:22%;border-radius:50%;
+   128→  background:radial-gradient(circle at 50% 45%,rgba(245,181,74,.10),transparent 62%)}
+   129→@keyframes auraB{0%,100%{opacity:.7;transform:scale(.965)}50%{opacity:1;transform:scale(1.035)}}
+   130→
+   131→/* ===== CANGKANG v41 identik ===== */
+   132→.hud{position:absolute;inset:0;animation:hSway 15s ease-in-out infinite;will-change:transform;z-index:2}
+   133→@keyframes hSway{0%,100%{transform:rotateX(6deg) rotateZ(-2deg)}50%{transform:rotateX(9deg) rotateZ(2.5deg)}}
+   134→.harc{position:absolute;border-radius:50%;will-change:transform}
+   135→.hud .k1{inset:0;
+   136→  background:conic-gradient(from 8deg,
+   137→    rgba(255,255,255,.98) 0deg,rgba(170,246,255,.95) 22deg,rgba(34,211,238,.72) 60deg,transparent 74deg 128deg,
+   138→    rgba(34,211,238,.85) 128deg 166deg,transparent 166deg 232deg,
+   139→    rgba(94,234,212,.7) 232deg 280deg,transparent 280deg 360deg);
+   140→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4.6px),#000 calc(100% - 2.6px));
+   141→          mask:radial-gradient(farthest-side,transparent calc(100% - 4.6px),#000 calc(100% - 2.6px));
+   142→  filter:drop-shadow(0 0 5px rgba(34,211,238,.55)) drop-shadow(0 0 14px rgba(34,211,238,.2));
+   143→  animation:hArcA 26s linear infinite}
+   144→.hud .k2{inset:6px;
+   145→  background:conic-gradient(from 196deg,
+   146→    rgba(140,238,255,.9) 0deg 44deg,transparent 44deg 138deg,
+   147→    rgba(245,181,74,.85) 138deg 166deg,transparent 166deg 290deg,
+   148→    rgba(140,238,255,.5) 290deg 314deg,transparent 314deg 360deg);
+   149→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.9px));
+   150→          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.9px));
+   151→  filter:drop-shadow(0 0 4px rgba(34,211,238,.45));
+   152→  animation:hArcB 19s linear infinite reverse}
+   153→.hud .htick{inset:15px;opacity:.8;
+   154→  background:repeating-conic-gradient(from 0deg,rgba(150,240,255,.55) 0deg 1.1deg,transparent 1.1deg 5deg);
+   155→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 2.2px));
+   156→          mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 2.2px));
+   157→  animation:hSpin 36s steps(72,end) infinite}
+   158→.hud .hdata{inset:21px;opacity:.9;
+   159→  background:repeating-conic-gradient(from 30deg,rgba(190,247,255,.8) 0deg 2.4deg,transparent 2.4deg 7.2deg);
+   160→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.8px));
+   161→          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.8px));
+   162→  animation:hSpin 13s linear infinite}
+   163→.hud .hdata::after{content:'';position:absolute;inset:-2.6px;border-radius:50%;
+   164→  background:conic-gradient(from 250deg,transparent 0 58deg,rgba(245,181,74,.8) 72deg,rgba(255,236,190,.95) 81deg,transparent 95deg);
+   165→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
+   166→          mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
+   167→  filter:drop-shadow(0 0 4px rgba(245,181,74,.5));
+   168→  animation:hArcB 11s linear infinite reverse}
+   169→.hud .hsweep{inset:11px;opacity:.8;
+   170→  background:conic-gradient(from 0deg,rgba(34,211,238,0) 0deg,rgba(34,211,238,.26) 16deg,rgba(170,246,255,.8) 50deg,transparent 68deg 360deg);
+   171→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.8px),#000 calc(100% - 1.7px));
+   172→          mask:radial-gradient(farthest-side,transparent calc(100% - 2.8px),#000 calc(100% - 1.7px));
+   173→  filter:drop-shadow(0 0 4px rgba(34,211,238,.4));
+   174→  animation:hSweep 8.6s cubic-bezier(.45,0,.25,1) infinite}
+   175→@keyframes hArcA{0%{transform:rotate(0deg)}38%{transform:rotate(128deg)}56%{transform:rotate(168deg)}100%{transform:rotate(360deg)}}
+   176→@keyframes hArcB{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+   177→@keyframes hSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+   178→@keyframes hSweep{0%{transform:rotate(0deg) scale(1)}42%{transform:rotate(214deg) scale(1.02)}57%{transform:rotate(252deg) scale(.965)}80%{transform:rotate(392deg) scale(1.01)}100%{transform:rotate(520deg) scale(1)}}
+   179→.hnode{position:absolute;border-radius:50%;will-change:transform}
+   180→.hnode s{position:absolute;top:-2px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;
+   181→  background:#EAFBFF;box-shadow:0 0 7px 1.5px rgba(94,229,252,.9),0 0 16px 5px rgba(34,211,238,.32);
+   182→  animation:hBlink 3.7s ease-in-out infinite}
+   183→.hnode.w1{inset:3px;animation:hArcA 26s linear infinite}
+   184→.hnode.w2{inset:13px;animation:hArcB 14.5s linear infinite}
+   185→.hnode.w3{inset:22px;animation:hSpin 9.5s linear infinite reverse}
+   186→.hnode.w2 s{top:-1.5px;width:3px;height:3px;background:var(--gold);box-shadow:0 0 6px 1px rgba(245,181,74,.85);animation-delay:1.2s}
+   187→.hnode.w3 s{top:-1.5px;width:3px;height:3px;background:#CFF6FF;box-shadow:0 0 5px 1px rgba(34,211,238,.8);animation-delay:2.1s}
+   188→@keyframes hBlink{0%,100%{opacity:1}50%{opacity:.45}}
+   189→
+   190→.core{position:absolute;inset:0;z-index:1}
+   191→.mhalo{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;
+   192→  background:radial-gradient(circle,rgba(34,211,238,.16) 0%,rgba(34,211,238,.055) 52%,transparent 74%);
+   193→  animation:breath 4.4s ease-in-out infinite}
+   194→@keyframes breath{0%,100%{transform:scale(.93);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+   195→@keyframes corePulse{0%{transform:scale(.4);opacity:.6}55%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
+   196→@keyframes hSpinStep{to{transform:rotate(360deg)}}
+   197→
+   198→/* ============================================================
+   199→   INTI LAMA (galeri A–F, tampil lewat toggle)
+   200→   ============================================================ */
+   201→/* A */
+   202→.cA .ldisk{position:absolute;inset:17px;border-radius:50%;
+   203→  background:radial-gradient(circle at 38% 30%,#0F4152 0%,#092C3E 36%,#041A28 66%,#010A12 100%);
+   204→  border:1px solid rgba(150,240,255,.42);
+   205→  box-shadow:0 0 26px 7px rgba(34,211,238,.28),0 0 60px 18px rgba(34,211,238,.12),
+   206→    inset 0 6px 12px rgba(170,235,255,.2),inset 0 -10px 16px rgba(0,0,0,.85),inset 0 0 24px rgba(2,14,24,.9)}
+   207→.cA .aClip{position:absolute;inset:18px;border-radius:50%;overflow:hidden}
+   208→.cA .aFan{position:absolute;inset:0;border-radius:50%;
+   209→  background:repeating-conic-gradient(from 0deg,rgba(170,242,255,.6) 0deg 1.5deg,transparent 1.5deg 6.2deg);
+   210→  -webkit-mask:conic-gradient(from 212deg,#000 0deg 128deg,transparent 128deg 360deg);
+   211→          mask:conic-gradient(from 212deg,#000 0deg 128deg,transparent 128deg 360deg);
+   212→  animation:hSpin 46s linear infinite;opacity:.85}
+   213→.cA .aFan.f2{background:repeating-conic-gradient(from 0deg,rgba(150,220,245,.4) 0deg 1.2deg,transparent 1.2deg 9deg);
+   214→  -webkit-mask:conic-gradient(from 28deg,#000 0deg 52deg,transparent 52deg 360deg);
+   215→          mask:conic-gradient(from 28deg,#000 0deg 52deg,transparent 52deg 360deg);
+   216→  animation:hSpin 33s linear infinite reverse;opacity:.6}
+   217→.cA .aCap{position:absolute;left:50%;top:50%;width:23px;height:23px;margin:-11.5px 0 0 -11.5px;border-radius:50%;
+   218→  background:radial-gradient(circle,#03131E 40%,rgba(3,19,30,.85) 62%,transparent 78%)}
+   219→.aTri,.aTriGlow{animation:hSpin 14s linear infinite;transform-origin:56px 56px}
+   220→.aTriGlow{opacity:.4}
+   221→.aRing{animation:breath 4.4s ease-in-out infinite;transform-origin:56px 56px}
+   222→.aDot{animation:hBlink 3.2s ease-in-out infinite;transform-origin:56px 56px}
+   223→/* B */
+   224→.cB .ldisk{position:absolute;inset:17px;border-radius:50%;
+   225→  background:radial-gradient(circle at 38% 30%,#0F4152 0%,#092C3E 36%,#041A28 66%,#010A12 100%);
+   226→  border:1px solid rgba(150,240,255,.42);
+   227→  box-shadow:0 0 26px 7px rgba(34,211,238,.28),0 0 60px 18px rgba(34,211,238,.12),
+   228→    inset 0 6px 12px rgba(170,235,255,.2),inset 0 -10px 16px rgba(0,0,0,.85),inset 0 0 24px rgba(2,14,24,.9)}
+   229→.cB .btick{position:absolute;inset:20px;border-radius:50%;opacity:.75;
+   230→  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.55) 0deg 1.2deg,transparent 1.2deg 9deg);
+   231→  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.6px),#000 calc(100% - 2.4px));
+   232→          mask:radial-gradient(farthest-side,transparent calc(100% - 3.6px),#000 calc(100% - 2.4px));
+   233→  animation:hSpin 60s steps(60,end) infinite}
+   234→.cB .bpulse{position:absolute;inset:24px;border-radius:50%;border:1px solid rgba(160,240,255,.5);opacity:0;
+   235→  animation:corePulse 4.4s ease-out infinite}
+   236→.cB .bWob{position:absolute;left:50%;top:50%;width:40px;height:37px;margin:-18.5px 0 0 -20px;
+   237→  animation:bWob 9s ease-in-out infinite}
+   238→@keyframes bWob{0%,100%{transform:rotate(-7deg) scale(1)}50%{transform:rotate(7deg) scale(1.05)}}
+   239→.cB .bGlass{position:absolute;inset:0;display:block;
+   240→  background:linear-gradient(180deg,rgba(236,254,255,.96),rgba(125,233,249,.72) 55%,rgba(24,169,206,.88));
+   241→  clip-path:polygon(50% 0,100% 100%,0 100%)}
+   242→.cB .bGlass::after{content:'';position:absolute;inset:2.6px 2.6px 1px;
+   243→  background:linear-gradient(180deg,rgba(9,44,62,.35),rgba(3,20,32,.78));
+   244→  clip-path:polygon(50% 0,100% 100%,0 100%)}
+   245→.cB .bGold{position:absolute;left:50%;top:63%;width:4.5px;height:4.5px;margin:-2.25px 0 0 -2.25px;border-radius:50%;
+   246→  background:#FFE9BC;box-shadow:0 0 8px 2px rgba(245,181,74,.8);animation:hBlink 3.7s ease-in-out infinite}
+   247→/* C lama */
+   248→.cStep{animation:hSpinStep 9s steps(3,end) infinite;transform-origin:56px 56px}
+   249→.cArcGlow{animation:hSpinStep 9s steps(3,end) infinite;transform-origin:56px 56px;opacity:.35}
+   250→.cDial{animation:hSpin 44s linear infinite reverse;transform-origin:56px 56px}
+   251→/* D lama */
+   252→.dOrb{animation:hSpin 12s linear infinite;transform-origin:56px 56px}
+   253→.dDash{animation:hSpin 8s linear infinite reverse;transform-origin:56px 56px}
+   254→.dCore{animation:dPulse 3.4s ease-in-out infinite;transform-origin:56px 56px}
+   255→@keyframes dPulse{0%,100%{transform:scale(.8);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+   256→/* E lama */
+   257→.eSpin{animation:hSpin 18s linear infinite;transform-origin:56px 56px}
+   258→.eGhost{animation:hSpin 27s linear infinite reverse;transform-origin:56px 56px}
+   259→.eShim{animation:hBlink 4.6s ease-in-out infinite}
+   260→.eTip{animation:hSpin 18s linear infinite;transform-origin:56px 56px}
+   261→/* F lama */
+   262→.fCirc{animation:fSwap 6.4s ease-in-out infinite,hSpin 22s linear infinite;transform-origin:56px 56px}
+   263→.fTri{animation:fSwap 6.4s ease-in-out infinite reverse,hSpin 22s linear infinite reverse;transform-origin:56px 56px}
+   264→@keyframes fSwap{0%,100%{opacity:1}48%,52%{opacity:0}}
+   265→
+   266→/* ============================================================
+   267→   INTI BARU — 9 custom C·D·F
+   268→   ============================================================ */
+   269→/* C1 — KURUNG GANDA */
+   270→.x1a{animation:hSpinStep 9s steps(3,end) infinite;transform-origin:56px 56px}
+   271→.x1b{animation:hSpinStep 9s steps(3,end) infinite reverse;transform-origin:56px 56px}
+   272→/* C2 — PANAH KOMPAS */
+   273→.x2a{animation:hSpinStep 7s steps(3,end) infinite;transform-origin:56px 56px}
+   274→.x2s{animation:hSpinStep 7s steps(3,end) infinite;transform-origin:56px 56px}
+   275→.x2t{animation:hSpin 16s linear infinite;transform-origin:56px 56px}
+   276→/* C3 — TRIGA TIK */
+   277→.x3a{animation:hSpinStep 9s steps(3,end) infinite;transform-origin:56px 56px}
+   278→.x3f{animation:x3flash 9s linear infinite;transform-origin:56px 56px}
+   279→@keyframes x3flash{
+   280→  0%{opacity:.95}9%{opacity:0}32%{opacity:0}33%{opacity:.95}42%{opacity:0}
+   281→  65%{opacity:0}66%{opacity:.95}75%{opacity:0}100%{opacity:0}}
+   282→/* D1 — HEKSAGRAM DINAMIS */
+   283→.x4a{animation:hSpin 12s linear infinite;transform-origin:56px 56px}
+   284→.x4b{animation:hSpin 10s linear infinite reverse;transform-origin:56px 56px}
+   285→/* D2 — KOMET TRIAD */
+   286→.x5a{animation:hSpin 9s linear infinite;transform-origin:56px 56px}
+   287→.x5p{animation:corePulse 3.4s ease-out infinite;transform-origin:56px 56px}
+   288→.x5b{animation:hBlink 3s ease-in-out infinite}
+   289→.x5b.s2{animation-delay:1s}.x5b.s3{animation-delay:2s}
+   290→/* D3 — TRIAD RESONANSI */
+   291→.x6w{animation:x6breathe 5.4s ease-in-out infinite;transform-origin:56px 56px}
+   292→@keyframes x6breathe{0%,100%{transform:scale(.94)}50%{transform:scale(1.1)}}
+   293→.x6a{animation:hSpin 14s linear infinite;transform-origin:56px 56px}
+   294→.x6d{animation:hSpin 8s linear infinite reverse;transform-origin:56px 56px}
+   295→.x6p{animation:corePulse 4s ease-out infinite;transform-origin:56px 56px}
+   296→/* F1 — MORF TIGA WAJAH */
+   297→.x7r{animation:hSpin 26s linear infinite;transform-origin:56px 56px}
+   298→.f1c,.f1t,.f1h{animation:fSwap3 6.6s linear infinite}
+   299→.f1t{animation-delay:-2.2s}.f1h{animation-delay:-4.4s}
+   300→@keyframes fSwap3{0%{opacity:1}24%{opacity:1}34%{opacity:0}90%{opacity:0}100%{opacity:1}}
+   301→/* F2 — MORF ISI KACA */
+   302→.x8w{animation:x8breathe 6.4s ease-in-out infinite;transform-origin:56px 56px}
+   303→@keyframes x8breathe{0%,100%{transform:scale(.94)}50%{transform:scale(1.07)}}
+   304→.x8c{animation:fSwap 6.4s ease-in-out infinite}
+   305→.x8t{animation:fSwap 6.4s ease-in-out infinite reverse}
+   306→/* F3 — MORF DETAK */
+   307→.x9r{animation:hSpinStep 3.2s steps(12,end) infinite;transform-origin:56px 56px}
+   308→.x9c{animation:x9hard 3.2s linear infinite}
+   309→.x9t{animation:x9hard 3.2s linear infinite reverse}
+   310→@keyframes x9hard{0%{opacity:1}49.9%{opacity:1}50%,100%{opacity:0}}
+   311→.x9m{animation:x9mark 3.2s linear infinite}
+   312→@keyframes x9mark{0%{opacity:1}42%{opacity:1}55%,100%{opacity:0}}
+   313→
+   314→/* ---------- meta ---------- */
+   315→.meta{width:100%;margin-top:14px;text-align:left}
+   316→.mrow{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+   317→.meta h3{font-family:var(--disp);font-weight:700;font-size:13.5px;letter-spacing:.03em}
+   318→.meta .ix{font:700 10px var(--mono);color:var(--dim2);letter-spacing:.14em}
+   319→.meta p{color:var(--dim);font-size:12.5px;margin-top:5px;line-height:1.5}
+   320→.meta p b{color:#C9E9FF;font-weight:600}
+   321→.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+   322→.tags i{font:600 9px var(--mono);font-style:normal;letter-spacing:.14em;color:var(--dim);
+   323→  border:1px solid var(--line);border-radius:999px;padding:3.5px 8px;background:rgba(150,180,225,.05)}
+   324→.tags i.g{color:#FFE3AE;border-color:rgba(245,181,74,.35);background:rgba(245,181,74,.07)}
+   325→
+   326→/* ---------- footer ---------- */
+   327→footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right:auto;
+   328→  padding:14px 22px calc(16px + env(safe-area-inset-bottom))}
+   329→.footIn{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+   330→  border:1px solid var(--line);border-radius:14px;background:var(--pan);
+   331→  padding:11px 15px;font:600 10.5px var(--mono);letter-spacing:.14em;color:var(--dim)}
+   332→.footIn b{color:#BFF1FF;font-weight:700}
+   333→.footIn .r{color:var(--dim2)}
+   334→
+   335→@media(max-width:640px){
+   336→  header{padding-top:24px}
+   337→  main{padding:18px 14px 22px}
+   338→  .grid{grid-template-columns:1fr}
+   339→  .stage{width:222px;height:222px}
+   340→}
+   341→@media (prefers-reduced-motion:reduce){
+   342→  *,*::before,*::after{animation-play-state:paused !important}
+   343→}
+   344→</style>
+   345→</head>
+   346→<body>
+   347→<div class="bgAur"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+   348→<div class="bgSt" id="stars"></div>
+   349→<div class="vig"></div>
+   350→
+   351→<header>
+   352→  <span class="labChip">LAB ORB 2 · RALAT FAVORIT</span>
+   353→  <h1>C · D · F DI-CUSTOM LAGI — <em>SEMBILAN WAJAH BARU</em></h1>
+   354→  <p>Tiga varian yang Pak pilih digarap lebih dalam: <b>C</b> (tiga busur tajam),
+   355→     <b>D</b> (triad node), <b>F</b> (morf lingkar⇄segitiga). Tiap varian dapat
+   356→     <b>3 arah custom</b> — cangkang luar tetap identik ala GIF. Pilih kode yang paling nyata.</p>
+   357→  <div class="howto">
+   358→    <u>C1</u><u>C2</u><u>C3</u><u>D1</u><u>D2</u><u>D3</u><u>F1</u><u>F2</u><u>F3</u>
+   359→    <span>— boleh campur elemen antar kode</span>
+   360→  </div>
+   361→  <div class="seg" role="tablist">
+   362→    <button id="tabL2" aria-pressed="true" onclick="lab(2)">9 CUSTOM BARU</button>
+   363→    <button id="tabL1" aria-pressed="false" onclick="lab(1)">GALERI PENUH A–F</button>
+   364→  </div>
+   365→</header>
+   366→
+   367→<main>
+   368→  <!-- ================= LAB 2 : 9 CUSTOM ================= -->
+   369→  <div class="grid" id="g2">
+   370→
+   371→    <div class="gdiv">Ralat C · Tiga Busur Tajam <small>3 take</small></div>
+   372→
+   373→    <!-- C1 KURUNG GANDA -->
+   374→    <section class="card">
+   375→      <div class="crow"><span class="vchip">C1</span><span class="shellTag">cangkang v41</span></div>
+   376→      <div class="stage">
+   377→        <div class="aura"></div>
+   378→        <div class="orb cC1">
+   379→          <div class="core">
+   380→            <div class="mhalo"></div>
+   381→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   382→              <defs>
+   383→                <linearGradient id="xArm" x1="0" y1="0" x2="0" y2="1">
+   384→                  <stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#AAF6FF"/><stop offset="100%" stop-color="#22D3EE"/>
+   385→                </linearGradient>
+   386→                <linearGradient id="xHexG" x1="0" y1="0" x2="1" y2="1">
+   387→                  <stop offset="0%" stop-color="#FFF3D2"/><stop offset="100%" stop-color="#F5B54A"/>
+   388→                </linearGradient>
+   389→              </defs>
+   390→              <circle cx="56" cy="56" r="30" fill="none" stroke="rgba(150,220,245,.28)" stroke-width=".8" stroke-dasharray="1.5 4.5"/>
+   391→              <g class="x1a">
+   392→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="rgba(34,211,238,.55)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+   393→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="rgba(34,211,238,.55)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 56 56)"/>
+   394→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="rgba(34,211,238,.55)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 56 56)"/>
+   395→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#xArm)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+   396→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#xArm)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 56 56)"/>
+   397→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#xArm)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 56 56)"/>
+   398→              </g>
+   399→              <g class="x1b">
+   400→                <polyline points="51.35,49.8 56,43.3 60.65,49.8" fill="none" stroke="rgba(245,181,74,.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+   401→                <polyline points="51.35,49.8 56,43.3 60.65,49.8" fill="none" stroke="rgba(245,181,74,.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 56 56)"/>
+   402→                <polyline points="51.35,49.8 56,43.3 60.65,49.8" fill="none" stroke="rgba(245,181,74,.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 56 56)"/>
+   403→              </g>
+   404→              <polygon points="60.5,56 58.25,59.9 53.75,59.9 51.5,56 53.75,52.1 58.25,52.1" fill="url(#xHexG)" opacity=".95"/>
+   405→              <circle cx="56" cy="56" r="1.2" fill="#2A1B04"/>
+   406→            </svg>
+   407→          </div>
+   408→          <div class="hud">
+   409→            <div class="harc k1"></div><div class="harc k2"></div>
+   410→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   411→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   412→          </div>
+   413→        </div>
+   414→      </div>
+   415→      <div class="meta">
+   416→        <div class="mrow"><h3>KURUNG GANDA</h3><span class="ix">C1·01</span></div>
+   417→        <p>Kurung besar sian <b>berdetak searah</b>, kurung kecil <b>emas berlawanan</b> — dua segitiga
+   418→           tersirat saling menyisip tiap lompatan. Pusat: baut emas.</p>
+   419→        <div class="tags"><i>DUA LAPIS</i><i>STEPS(3) LAWAN</i><i class="g">GERAK · DETAK MESIN</i></div>
+   420→      </div>
+   421→    </section>
+   422→
+   423→    <!-- C2 PANAH KOMPAS -->
+   424→    <section class="card">
+   425→      <div class="crow"><span class="vchip">C2</span><span class="shellTag">cangkang v41</span></div>
+   426→      <div class="stage">
+   427→        <div class="aura"></div>
+   428→        <div class="orb cC2">
+   429→          <div class="core">
+   430→            <div class="mhalo"></div>
+   431→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   432→              <defs>
+   433→                <linearGradient id="xArr" x1="0" y1="0" x2="0" y2="1">
+   434→                  <stop offset="0%" stop-color="#F2FFFF"/><stop offset="100%" stop-color="#22D3EE"/>
+   435→                </linearGradient>
+   436→              </defs>
+   437→              <circle cx="56" cy="56" r="24" fill="none" stroke="rgba(150,220,245,.3)" stroke-width=".8" stroke-dasharray="1 6"/>
+   438→              <g class="x2s"><path d="M 73.68 34.93 A 27.5 27.5 0 0 1 82.68 49.35" fill="none" stroke="rgba(245,181,74,.85)" stroke-width="2" stroke-linecap="round"/></g>
+   439→              <g class="x2a">
+   440→                <polygon points="56,32.5 59.8,40 52.2,40" fill="url(#xArr)"/>
+   441→                <polygon points="56,32.5 59.8,40 52.2,40" fill="url(#xArr)" transform="rotate(120 56 56)"/>
+   442→                <polygon points="56,32.5 59.8,40 52.2,40" fill="url(#xArr)" transform="rotate(240 56 56)"/>
+   443→              </g>
+   444→              <g class="x2t">
+   445→                <polygon points="56,49 62.1,59.5 49.9,59.5" fill="none" stroke="rgba(140,238,255,.75)" stroke-width="1.2" stroke-linejoin="round"/>
+   446→              </g>
+   447→              <circle cx="56" cy="56" r="1.5" fill="#F2FFFF"/>
+   448→            </svg>
+   449→          </div>
+   450→          <div class="hud">
+   451→            <div class="harc k1"></div><div class="harc k2"></div>
+   452→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   453→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   454→          </div>
+   455→        </div>
+   456→      </div>
+   457→      <div class="meta">
+   458→        <div class="mrow"><h3>PANAH KOMPAS</h3><span class="ix">C2·02</span></div>
+   459→        <p>Tiga <b>panah menunjuk keluar</b> melompat seperti jarum kalibrasi; <b>sapuan emas</b>
+   460→           ikut melompat menyusul. Pusat: segitiga kecil berputar mulus — penyeimbang.</p>
+   461→        <div class="tags"><i>PANAH KELUAR</i><i>SAPUAN LOMPAT</i><i class="g">GERAK · KOMPAS</i></div>
+   462→      </div>
+   463→    </section>
+   464→
+   465→    <!-- C3 TRIGA TIK -->
+   466→    <section class="card">
+   467→      <div class="crow"><span class="vchip">C3</span><span class="shellTag">cangkang v41</span></div>
+   468→      <div class="stage">
+   469→        <div class="aura"></div>
+   470→        <div class="orb cC3">
+   471→          <div class="core">
+   472→            <div class="mhalo"></div>
+   473→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   474→              <defs>
+   475→                <linearGradient id="xArm2" x1="0" y1="0" x2="0" y2="1">
+   476→                  <stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#AAF6FF"/><stop offset="100%" stop-color="#22D3EE"/>
+   477→                </linearGradient>
+   478→              </defs>
+   479→              <polygon class="x3f" points="56,35 74.2,66.5 37.8,66.5" fill="none" stroke="rgba(34,211,238,.38)" stroke-width="3.4" stroke-linejoin="round"/>
+   480→              <polygon class="x3f" points="56,35 74.2,66.5 37.8,66.5" fill="none" stroke="rgba(190,247,255,.95)" stroke-width="1.3" stroke-linejoin="round"/>
+   481→              <g class="x3a">
+   482→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#xArm2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+   483→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#xArm2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 56 56)"/>
+   484→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#xArm2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 56 56)"/>
+   485→                <circle cx="56" cy="35.5" r="1.3" fill="#FFFFFF"/>
+   486→                <circle cx="56" cy="35.5" r="1.3" fill="#FFFFFF" transform="rotate(120 56 56)"/>
+   487→                <circle cx="56" cy="35.5" r="1.3" fill="#FFFFFF" transform="rotate(240 56 56)"/>
+   488→              </g>
+   489→              <circle cx="56" cy="56" r="1.7" fill="#FFE9BC"/>
+   490→            </svg>
+   491→          </div>
+   492→          <div class="hud">
+   493→            <div class="harc k1"></div><div class="harc k2"></div>
+   494→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   495→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   496→          </div>
+   497→        </div>
+   498→      </div>
+   499→      <div class="meta">
+   500→        <div class="mrow"><h3>TRIGA TIK</h3><span class="ix">C3·03</span></div>
+   501→        <p>Kurung berjalan <b>berdetak</b>, dan tiap kali mendarat <b>segitiga penuh berkilat sekali</b>
+   502→           lalu larut — segitiga yang hanya terlihat di detak kalibrasi. Ujung kurung putih-panas.</p>
+   503→        <div class="tags"><i>KURUNG + KILAT SISI</i><i>KILAT TIAP MENDARAT</i><i class="g">GERAK · DETAK + KILAT</i></div>
+   504→      </div>
+   505→    </section>
+   506→
+   507→    <div class="gdiv">Ralat D · Triad Node <small>3 take</small></div>
+   508→
+   509→    <!-- D1 HEKSAGRAM DINAMIS -->
+   510→    <section class="card">
+   511→      <div class="crow"><span class="vchip g">D1</span><span class="shellTag">cangkang v41</span></div>
+   512→      <div class="stage">
+   513→        <div class="aura"></div>
+   514→        <div class="orb cD1">
+   515→          <div class="core">
+   516→            <div class="mhalo"></div>
+   517→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   518→              <g class="x4a">
+   519→                <polygon points="56,41 69,63.5 43,63.5" fill="none" stroke="rgba(140,238,255,.5)" stroke-width=".8"/>
+   520→                <circle cx="56" cy="41" r="5" fill="rgba(34,211,238,.22)"/>
+   521→                <circle cx="56" cy="41" r="2.3" fill="#F2FFFF"/>
+   522→                <circle cx="69" cy="63.5" r="5" fill="rgba(34,211,238,.18)"/>
+   523→                <circle cx="69" cy="63.5" r="2.1" fill="#CFF6FF"/>
+   524→                <circle cx="43" cy="63.5" r="5" fill="rgba(94,234,212,.2)"/>
+   525→                <circle cx="43" cy="63.5" r="2.1" fill="#CFF6E9"/>
+   526→              </g>
+   527→              <g class="x4b">
+   528→                <polygon points="56,71 69,48.5 43,48.5" fill="none" stroke="rgba(245,181,74,.45)" stroke-width=".8"/>
+   529→                <circle cx="56" cy="71" r="4.6" fill="rgba(245,181,74,.2)"/>
+   530→                <circle cx="56" cy="71" r="2" fill="#FFE9BC"/>
+   531→                <circle cx="69" cy="48.5" r="4.6" fill="rgba(245,181,74,.16)"/>
+   532→                <circle cx="69" cy="48.5" r="1.9" fill="#FFDfA6"/>
+   533→                <circle cx="43" cy="48.5" r="4.6" fill="rgba(94,234,212,.18)"/>
+   534→                <circle cx="43" cy="48.5" r="1.9" fill="#BFF2E2"/>
+   535→              </g>
+   536→              <circle cx="56" cy="56" r="3" fill="none" stroke="rgba(190,247,255,.6)" stroke-width=".8"/>
+   537→              <circle cx="56" cy="56" r="1.4" fill="#FFFFFF"/>
+   538→            </svg>
+   539→          </div>
+   540→          <div class="hud">
+   541→            <div class="harc k1"></div><div class="harc k2"></div>
+   542→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   543→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   544→          </div>
+   545→        </div>
+   546→      </div>
+   547→      <div class="meta">
+   548→        <div class="mrow"><h3>HEKSAGRAM DINAMIS</h3><span class="ix">D1·04</span></div>
+   549→        <p>Triad digandakan: segitiga sian berputar searah, segitiga emas <b>berlawanan</b> —
+   550→           garis-garisnya terus menyusun <b>heksagram yang tak pernah diam</b>. Enam node, satu pusat.</p>
+   551→        <div class="tags"><i>DUA SEGITIGA</i><i>6 NODE LAWAN ARAH</i><i class="g">GERAK · GIRO GANDA</i></div>
+   552→      </div>
+   553→    </section>
+   554→
+   555→    <!-- D2 KOMET TRIAD -->
+   556→    <section class="card">
+   557→      <div class="crow"><span class="vchip g">D2</span><span class="shellTag">cangkang v41</span></div>
+   558→      <div class="stage">
+   559→        <div class="aura"></div>
+   560→        <div class="orb cD2">
+   561→          <div class="core">
+   562→            <div class="mhalo"></div>
+   563→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   564→              <defs>
+   565→                <linearGradient id="xTail" x1="0" y1="0" x2="1" y2="1">
+   566→                  <stop offset="0%" stop-color="rgba(34,211,238,0)"/><stop offset="100%" stop-color="rgba(140,244,255,.55)"/>
+   567→                </linearGradient>
+   568→              </defs>
+   569→              <g class="x5a">
+   570→                <polygon points="56,41 69,63.5 43,63.5" fill="rgba(34,211,238,.07)" stroke="rgba(140,238,255,.35)" stroke-width=".7"/>
+   571→                <path d="M 46.76 44.18 A 15 15 0 0 1 54.43 41.08" fill="none" stroke="url(#xTail)" stroke-width="2.6" stroke-linecap="round"/>
+   572→                <path d="M 46.76 44.18 A 15 15 0 0 1 54.43 41.08" fill="none" stroke="url(#xTail)" stroke-width="2.6" stroke-linecap="round" transform="rotate(120 56 56)"/>
+   573→                <path d="M 46.76 44.18 A 15 15 0 0 1 54.43 41.08" fill="none" stroke="url(#xTail)" stroke-width="2.6" stroke-linecap="round" transform="rotate(240 56 56)"/>
+   574→                <circle class="x5b" cx="56" cy="41" r="2.5" fill="#F2FFFF"/>
+   575→                <circle class="x5b s2" cx="69" cy="63.5" r="2.2" fill="#FFE9BC"/>
+   576→                <circle class="x5b s3" cx="43" cy="63.5" r="2.2" fill="#CFF6E9"/>
+   577→              </g>
+   578→              <circle class="x5p" cx="56" cy="56" r="4" fill="none" stroke="rgba(160,240,255,.5)" stroke-width=".9"/>
+   579→              <circle cx="56" cy="56" r="1.8" fill="#FFE9BC"/>
+   580→            </svg>
+   581→          </div>
+   582→          <div class="hud">
+   583→            <div class="harc k1"></div><div class="harc k2"></div>
+   584→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   585→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   586→          </div>
+   587→        </div>
+   588→      </div>
+   589→      <div class="meta">
+   590→        <div class="mrow"><h3>KOMET TRIAD</h3><span class="ix">D2·05</span></div>
+   591→        <p>Node kini <b>berekor komet</b> — melaju lebih cepat membawa ekor cahaya; kedipnya
+   592→           <b>bergiliran</b> (putih→emas→mint). Wajah segitiga terisi samar; pusat memantul emas.</p>
+   593→        <div class="tags"><i>EKOR KOMET</i><i>KEDIP BERGILIRAN</i><i class="g">GERAK · LAJU KOMET</i></div>
+   594→      </div>
+   595→    </section>
+   596→
+   597→    <!-- D3 TRIAD RESONANSI -->
+   598→    <section class="card">
+   599→      <div class="crow"><span class="vchip g">D3</span><span class="shellTag">cangkang v41</span></div>
+   600→      <div class="stage">
+   601→        <div class="aura"></div>
+   602→        <div class="orb cD3">
+   603→          <div class="core">
+   604→            <div class="mhalo"></div>
+   605→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   606→              <g class="x6d"><circle cx="56" cy="56" r="8.5" fill="none" stroke="rgba(150,220,245,.5)" stroke-width=".9" stroke-dasharray="2.5 3.5"/></g>
+   607→              <g class="x6w"><g class="x6a">
+   608→                <line x1="56" y1="56" x2="56" y2="41" stroke="rgba(140,238,255,.3)" stroke-width=".7"/>
+   609→                <line x1="56" y1="56" x2="69" y2="63.5" stroke="rgba(140,238,255,.3)" stroke-width=".7"/>
+   610→                <line x1="56" y1="56" x2="43" y2="63.5" stroke="rgba(140,238,255,.3)" stroke-width=".7"/>
+   611→                <circle cx="56" cy="48.5" r="1.4" fill="#FFE9BC"/>
+   612→                <circle cx="56" cy="41" r="5.2" fill="rgba(34,211,238,.2)"/>
+   613→                <circle cx="56" cy="41" r="2.3" fill="#F2FFFF"/>
+   614→                <circle cx="69" cy="63.5" r="4.8" fill="rgba(94,234,212,.18)"/>
+   615→                <circle cx="69" cy="63.5" r="2.1" fill="#CFF6E9"/>
+   616→                <circle cx="43" cy="63.5" r="4.8" fill="rgba(34,211,238,.18)"/>
+   617→                <circle cx="43" cy="63.5" r="2.1" fill="#CFF6FF"/>
+   618→              </g></g>
+   619→              <circle class="x6p" cx="56" cy="56" r="3.6" fill="none" stroke="rgba(160,240,255,.45)" stroke-width=".9"/>
+   620→              <circle cx="56" cy="56" r="1.4" fill="#FFFFFF"/>
+   621→            </svg>
+   622→          </div>
+   623→          <div class="hud">
+   624→            <div class="harc k1"></div><div class="harc k2"></div>
+   625→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   626→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   627→          </div>
+   628→        </div>
+   629→      </div>
+   630→      <div class="meta">
+   631→        <div class="mrow"><h3>TRIAD RESONANSI</h3><span class="ix">D3·06</span></div>
+   632→        <p>Node diikat <b>jari-jari ke pusat</b>, dan seluruh triad <b>bernafas</b> — mendekat-menjauh
+   633→           dari inti sambil mengorbit; denyut ring keluar tiap tarikan napas. Titik emas di satu jari.</p>
+   634→        <div class="tags"><i>JARI-JARI PUSAT</i><i>ORBIT BERNAFAS</i><i class="g">GERAK · RESONANSI</i></div>
+   635→      </div>
+   636→    </section>
+   637→
+   638→    <div class="gdiv">Ralat F · Morf Lingkar⇄Segitiga <small>3 take</small></div>
+   639→
+   640→    <!-- F1 MORF TIGA WAJAH -->
+   641→    <section class="card">
+   642→      <div class="crow"><span class="vchip g">F1</span><span class="shellTag">cangkang v41</span></div>
+   643→      <div class="stage">
+   644→        <div class="aura"></div>
+   645→        <div class="orb cF1">
+   646→          <div class="core">
+   647→            <div class="mhalo"></div>
+   648→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   649→              <defs>
+   650→                <linearGradient id="xTri2" x1="0" y1="0" x2="0" y2="1">
+   651→                  <stop offset="0%" stop-color="#E8FDFF"/><stop offset="100%" stop-color="#18A9CE"/>
+   652→                </linearGradient>
+   653→              </defs>
+   654→              <g class="x7r">
+   655→                <g class="f1c">
+   656→                  <circle cx="56" cy="56" r="18.5" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="4.4"/>
+   657→                  <circle cx="56" cy="56" r="18.5" fill="none" stroke="#7DE9F9" stroke-width="1.7"/>
+   658→                </g>
+   659→                <g class="f1t">
+   660→                  <polygon points="56,37 73.3,66.3 38.7,66.3" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="4.4" stroke-linejoin="round"/>
+   661→                  <polygon points="56,37 73.3,66.3 38.7,66.3" fill="none" stroke="url(#xTri2)" stroke-width="1.7" stroke-linejoin="round"/>
+   662→                </g>
+   663→                <g class="f1h">
+   664→                  <polygon points="74,56 65,71.6 47,71.6 38,56 47,40.4 65,40.4" fill="none" stroke="rgba(245,181,74,.3)" stroke-width="4.4" stroke-linejoin="round"/>
+   665→                  <polygon points="74,56 65,71.6 47,71.6 38,56 47,40.4 65,40.4" fill="none" stroke="#FFE3AE" stroke-width="1.5" stroke-linejoin="round"/>
+   666→                </g>
+   667→              </g>
+   668→              <circle cx="56" cy="56" r="1.9" fill="#FFE9BC"/>
+   669→            </svg>
+   670→          </div>
+   671→          <div class="hud">
+   672→            <div class="harc k1"></div><div class="harc k2"></div>
+   673→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   674→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   675→          </div>
+   676→        </div>
+   677→      </div>
+   678→      <div class="meta">
+   679→        <div class="mrow"><h3>MORF TIGA WAJAH</h3><span class="ix">F1·07</span></div>
+   680→        <p>Rantai morf diperpanjang: <b>lingkaran → segitiga → heksagon → kembali</b> — sisi emas
+   681→           menyela di antara dua wajah sian. Semua berputar satu lajur supaya transisinya mengalir.</p>
+   682→        <div class="tags"><i>3 WAJAH BERANTAI</i><i>HEKSAGON EMAS</i><i class="g">GERAK · MORF MENGALIR</i></div>
+   683→      </div>
+   684→    </section>
+   685→
+   686→    <!-- F2 MORF ISI KACA -->
+   687→    <section class="card">
+   688→      <div class="crow"><span class="vchip g">F2</span><span class="shellTag">cangkang v41</span></div>
+   689→      <div class="stage">
+   690→        <div class="aura"></div>
+   691→        <div class="orb cF2">
+   692→          <div class="core">
+   693→            <div class="mhalo"></div>
+   694→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   695→              <defs>
+   696→                <radialGradient id="xGlassC" cx="38%" cy="32%" r="80%">
+   697→                  <stop offset="0%" stop-color="#F0FDFF"/><stop offset="55%" stop-color="#7DE9F9"/><stop offset="100%" stop-color="rgba(24,169,206,.85)"/>
+   698→                </radialGradient>
+   699→                <linearGradient id="xGlassT" x1="0" y1="0" x2="0" y2="1">
+   700→                  <stop offset="0%" stop-color="#ECFEFF"/><stop offset="60%" stop-color="#7DE9F9"/><stop offset="100%" stop-color="#18A9CE"/>
+   701→                </linearGradient>
+   702→              </defs>
+   703→              <circle cx="56" cy="56" r="19" fill="none" stroke="rgba(125,233,249,.2)" stroke-width=".9"/>
+   704→              <polygon points="56,37 73.3,66.3 38.7,66.3" fill="none" stroke="rgba(125,233,249,.2)" stroke-width=".9" stroke-linejoin="round"/>
+   705→              <g class="x8w">
+   706→                <g class="x8c">
+   707→                  <circle cx="56" cy="56" r="16" fill="url(#xGlassC)"/>
+   708→                  <circle cx="56" cy="56" r="11.5" fill="rgba(3,20,32,.5)"/>
+   709→                </g>
+   710→                <g class="x8t">
+   711→                  <polygon points="56,37 73.3,66.3 38.7,66.3" fill="url(#xGlassT)" stroke-linejoin="round"/>
+   712→                  <polygon points="56,43.1 67.8,63 44.2,63" fill="rgba(3,20,32,.5)" stroke-linejoin="round"/>
+   713→                </g>
+   714→              </g>
+   715→              <circle cx="56" cy="56" r="1.9" fill="#FFE9BC"/>
+   716→            </svg>
+   717→          </div>
+   718→          <div class="hud">
+   719→            <div class="harc k1"></div><div class="harc k2"></div>
+   720→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   721→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   722→          </div>
+   723→        </div>
+   724→      </div>
+   725→      <div class="meta">
+   726→        <div class="mrow"><h3>MORF ISI KACA</h3><span class="ix">F2·08</span></div>
+   727→        <p>Bukan cuma garis: <b>bentuk kaca terisi</b> yang berubah wujud — bulat→segitiga—
+   728→           dengan <b>bayangan samar wujud berikutnya</b> selalu terbaca di latar. Bernafas saat berganti.</p>
+   729→        <div class="tags"><i>TERISI KACA</i><i>BAYANGAN WUJUD LAIN</i><i class="g">GERAK · MORF + NAFAS</i></div>
+   730→      </div>
+   731→    </section>
+   732→
+   733→    <!-- F3 MORF DETAK -->
+   734→    <section class="card">
+   735→      <div class="crow"><span class="vchip g">F3</span><span class="shellTag">cangkang v41</span></div>
+   736→      <div class="stage">
+   737→        <div class="aura"></div>
+   738→        <div class="orb cF3">
+   739→          <div class="core">
+   740→            <div class="mhalo"></div>
+   741→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   742→              <defs>
+   743→                <linearGradient id="xTri3" x1="0" y1="0" x2="0" y2="1">
+   744→                  <stop offset="0%" stop-color="#E8FDFF"/><stop offset="100%" stop-color="#18A9CE"/>
+   745→                </linearGradient>
+   746→              </defs>
+   747→              <circle cx="56" cy="56" r="24" fill="none" stroke="rgba(150,220,245,.3)" stroke-width=".8" stroke-dasharray="1 5"/>
+   748→              <g class="x9r">
+   749→                <g class="x9c">
+   750→                  <circle cx="56" cy="56" r="18.5" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="4.4"/>
+   751→                  <circle cx="56" cy="56" r="18.5" fill="none" stroke="#7DE9F9" stroke-width="1.7"/>
+   752→                </g>
+   753→                <g class="x9t">
+   754→                  <polygon points="56,37 73.3,66.3 38.7,66.3" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="4.4" stroke-linejoin="round"/>
+   755→                  <polygon points="56,37 73.3,66.3 38.7,66.3" fill="none" stroke="url(#xTri3)" stroke-width="1.7" stroke-linejoin="round"/>
+   756→                </g>
+   757→              </g>
+   758→              <circle class="x9m" cx="56" cy="33.5" r="1.6" fill="#FFE9BC"/>
+   759→              <circle cx="56" cy="56" r="1.6" fill="#F2FFFF"/>
+   760→            </svg>
+   761→          </div>
+   762→          <div class="hud">
+   763→            <div class="harc k1"></div><div class="harc k2"></div>
+   764→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   765→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   766→          </div>
+   767→        </div>
+   768→      </div>
+   769→      <div class="meta">
+   770→        <div class="mrow"><h3>MORF DETAK</h3><span class="ix">F3·09</span></div>
+   771→        <p>Versi mekanis: wujud <b>tidak melembek — SNAP</b> bulat→segitiga tiap detak, sambil
+   772→           rotasi melompat <b>steps(12)</b> seperti kam profil. Penanda emas di puncak menyala saat
+   773→           segitiga bertakhta.</p>
+   774→        <div class="tags"><i>SNAP PER DETAK</i><i>ROTASI STEPS(12)</i><i class="g">GERAK · KAM MEKANIS</i></div>
+   775→      </div>
+   776→    </section>
+   777→
+   778→  </div>
+   779→
+   780→  <!-- ================= LAB 1 : GALERI A–F (toggle) ================= -->
+   781→  <div class="grid" id="g1" style="display:none">
+   782→
+   783→    <div class="gdiv">Galeri Pertama · Enam Tafsir Inti <small>arsip ralat 1</small></div>
+   784→
+   785→    <!-- A -->
+   786→    <section class="card">
+   787→      <div class="crow"><span class="vchip">VAR-A</span><span class="shellTag">cangkang v41</span></div>
+   788→      <div class="stage">
+   789→        <div class="aura"></div>
+   790→        <div class="orb cA">
+   791→          <div class="core">
+   792→            <div class="mhalo"></div>
+   793→            <div class="ldisk"></div>
+   794→            <div class="aClip"><div class="aFan"></div><div class="aFan f2"></div></div>
+   795→            <div class="aCap"></div>
+   796→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   797→              <defs>
+   798→                <linearGradient id="aTri" x1="0" y1="0" x2="0" y2="1">
+   799→                  <stop offset="0%" stop-color="#E8FDFF"/><stop offset="55%" stop-color="#7DE9F9"/><stop offset="100%" stop-color="#18A9CE"/>
+   800→                </linearGradient>
+   801→              </defs>
+   802→              <circle class="aRing" cx="56" cy="56" r="13.5" fill="none" stroke="rgba(130,238,255,.55)" stroke-width=".9"/>
+   803→              <polygon class="aTriGlow" points="56,46.5 64.2,60.8 47.8,60.8" fill="none" stroke="rgba(34,211,238,.55)" stroke-width="3"/>
+   804→              <g class="aTri"><polygon points="56,46.5 64.2,60.8 47.8,60.8" fill="none" stroke="url(#aTri)" stroke-width="1.5" stroke-linejoin="round"/></g>
+   805→              <circle class="aDot" cx="56" cy="56" r="1.7" fill="#F2FFFF"/>
+   806→            </svg>
+   807→          </div>
+   808→          <div class="hud">
+   809→            <div class="harc k1"></div><div class="harc k2"></div>
+   810→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   811→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   812→          </div>
+   813→        </div>
+   814→      </div>
+   815→      <div class="meta">
+   816→        <div class="mrow"><h3>TRINITY GIF</h3><span class="ix">A·01</span></div>
+   817→        <p>Kipas rambut ala GIF + segitiga garis berputar dalam lingkaran dalam — tafsir paling dekat referensi.</p>
+   818→        <div class="tags"><i>INTI · SEGITIGA GARIS</i><i>KIPAS RAMBUT</i><i class="g">GERAK · TETAP MESIN</i></div>
+   819→      </div>
+   820→    </section>
+   821→
+   822→    <!-- B -->
+   823→    <section class="card">
+   824→      <div class="crow"><span class="vchip">VAR-B</span><span class="shellTag">cangkang v41</span></div>
+   825→      <div class="stage">
+   826→        <div class="aura"></div>
+   827→        <div class="orb cB">
+   828→          <div class="core">
+   829→            <div class="mhalo"></div>
+   830→            <div class="ldisk"></div>
+   831→            <div class="btick"></div>
+   832→            <div class="bpulse"></div>
+   833→            <div class="bWob"><div class="bGlass"></div></div>
+   834→            <div class="bGold"></div>
+   835→          </div>
+   836→          <div class="hud">
+   837→            <div class="harc k1"></div><div class="harc k2"></div>
+   838→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   839→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   840→          </div>
+   841→        </div>
+   842→      </div>
+   843→      <div class="meta">
+   844→        <div class="mrow"><h3>SEGITIGA KACA</h3><span class="ix">B·02</span></div>
+   845→        <p>Segitiga kaca penuh (warisan Konsep 2) jadi satu-satunya tokoh inti — bergoyang pelan, denyut ring di belakangnya.</p>
+   846→        <div class="tags"><i>INTI · SEGITIGA PENUH</i><i>GOYANG + DENYUT</i><i class="g">GERAK · BERNAFAS</i></div>
+   847→      </div>
+   848→    </section>
+   849→
+   850→    <!-- C -->
+   851→    <section class="card">
+   852→      <div class="crow"><span class="vchip">VAR-C</span><span class="shellTag">cangkang v41</span></div>
+   853→      <div class="stage">
+   854→        <div class="aura"></div>
+   855→        <div class="orb cC">
+   856→          <div class="core">
+   857→            <div class="mhalo"></div>
+   858→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   859→              <defs>
+   860→                <linearGradient id="cArm" x1="0" y1="0" x2="0" y2="1">
+   861→                  <stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#AAF6FF"/><stop offset="100%" stop-color="#22D3EE"/>
+   862→                </linearGradient>
+   863→                <linearGradient id="cHex" x1="0" y1="0" x2="1" y2="1">
+   864→                  <stop offset="0%" stop-color="#D9F9FF"/><stop offset="100%" stop-color="#4FCDE6"/>
+   865→                </linearGradient>
+   866→              </defs>
+   867→              <g class="cDial"><circle cx="56" cy="56" r="30" fill="none" stroke="rgba(150,220,245,.3)" stroke-width=".8" stroke-dasharray="1.5 4.5"/></g>
+   868→              <g class="cArcGlow">
+   869→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="rgba(34,211,238,.6)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round"/>
+   870→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="rgba(34,211,238,.6)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 56 56)"/>
+   871→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="rgba(34,211,238,.6)" stroke-width="5.2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 56 56)"/>
+   872→              </g>
+   873→              <g class="cStep">
+   874→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#cArm)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+   875→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#cArm)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 56 56)"/>
+   876→                <polyline points="48.5,46 56,35.5 63.5,46" fill="none" stroke="url(#cArm)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 56 56)"/>
+   877→                <polygon points="60.5,56 58.25,59.9 53.75,59.9 51.5,56 53.75,52.1 58.25,52.1" fill="url(#cHex)" opacity=".95"/>
+   878→                <circle cx="56" cy="56" r="1.2" fill="#03222E"/>
+   879→              </g>
+   880→            </svg>
+   881→          </div>
+   882→          <div class="hud">
+   883→            <div class="harc k1"></div><div class="harc k2"></div>
+   884→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   885→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   886→          </div>
+   887→        </div>
+   888→      </div>
+   889→      <div class="meta">
+   890→        <div class="mrow"><h3>TIGA BUSUR TAJAM</h3><span class="ix">C·03</span></div>
+   891→        <p>Segitiga tersirat dari tiga kurung sudut tebal berujung putih — berputar berdetak steps(3). Pusat: baut hex.</p>
+   892→        <div class="tags"><i>INTI · SEGITIGA TERSIRAT</i><i>KURUNG SUDUT</i><i class="g">GERAK · DETAK STEPS</i></div>
+   893→      </div>
+   894→    </section>
+   895→
+   896→    <!-- D -->
+   897→    <section class="card">
+   898→      <div class="crow"><span class="vchip">VAR-D</span><span class="shellTag">cangkang v41</span></div>
+   899→      <div class="stage">
+   900→        <div class="aura"></div>
+   901→        <div class="orb cD">
+   902→          <div class="core">
+   903→            <div class="mhalo"></div>
+   904→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   905→              <defs>
+   906→                <linearGradient id="dLine" x1="0" y1="0" x2="1" y2="1">
+   907→                  <stop offset="0%" stop-color="rgba(140,238,255,.85)"/><stop offset="100%" stop-color="rgba(245,181,74,.6)"/>
+   908→                </linearGradient>
+   909→              </defs>
+   910→              <g class="dDash"><circle cx="56" cy="56" r="8.5" fill="none" stroke="rgba(150,220,245,.5)" stroke-width=".9" stroke-dasharray="2.5 3.5"/></g>
+   911→              <g class="dOrb">
+   912→                <polygon points="56,41 69,63.5 43,63.5" fill="none" stroke="rgba(140,238,255,.4)" stroke-width=".8"/>
+   913→                <polygon points="56,41 69,63.5 43,63.5" fill="none" stroke="url(#dLine)" stroke-width=".6" opacity=".8"/>
+   914→                <circle cx="56" cy="41" r="5.5" fill="rgba(34,211,238,.22)"/>
+   915→                <circle cx="56" cy="41" r="2.4" fill="#F2FFFF"/>
+   916→                <circle cx="69" cy="63.5" r="5" fill="rgba(245,181,74,.2)"/>
+   917→                <circle cx="69" cy="63.5" r="2.1" fill="#FFE9BC"/>
+   918→                <circle cx="43" cy="63.5" r="5" fill="rgba(94,234,212,.2)"/>
+   919→                <circle cx="43" cy="63.5" r="2.1" fill="#CFF6E9"/>
+   920→              </g>
+   921→              <circle class="dCore" cx="56" cy="56" r="2.6" fill="#BDF5FF"/>
+   922→              <circle cx="56" cy="56" r="1.4" fill="#FFFFFF"/>
+   923→            </svg>
+   924→          </div>
+   925→          <div class="hud">
+   926→            <div class="harc k1"></div><div class="harc k2"></div>
+   927→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   928→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   929→          </div>
+   930→        </div>
+   931→      </div>
+   932→      <div class="meta">
+   933→        <div class="mrow"><h3>TRIAD NODE</h3><span class="ix">D·04</span></div>
+   934→        <p>Tiga node cahaya (putih · emas · mint) jadi sudut segitiga, diikat garis tipis, mengorbit inti.</p>
+   935→        <div class="tags"><i>INTI · SEGITIGA NODE</i><i>ORBIT + ANTI-ORBIT</i><i class="g">GERAK · GIRO</i></div>
+   936→      </div>
+   937→    </section>
+   938→
+   939→    <!-- E -->
+   940→    <section class="card">
+   941→      <div class="crow"><span class="vchip">VAR-E</span><span class="shellTag">cangkang v41</span></div>
+   942→      <div class="stage">
+   943→        <div class="aura"></div>
+   944→        <div class="orb cE">
+   945→          <div class="core">
+   946→            <div class="mhalo"></div>
+   947→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   948→              <defs>
+   949→                <linearGradient id="eRing" x1="0" y1="0" x2="0" y2="1">
+   950→                  <stop offset="0%" stop-color="#AAF6FF"/><stop offset="60%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#0E7490"/>
+   951→                </linearGradient>
+   952→                <mask id="eMask">
+   953→                  <g class="eSpin"><polygon points="56,26 82,71 30,71" fill="#fff"/></g>
+   954→                </mask>
+   955→              </defs>
+   956→              <circle cx="56" cy="56" r="21" fill="none" stroke="rgba(34,211,238,.16)" stroke-width="1"/>
+   957→              <circle cx="56" cy="56" r="21" fill="none" stroke="url(#eRing)" stroke-width="3.8" mask="url(#eMask)"/>
+   958→              <circle cx="56" cy="56" r="26.5" fill="none" stroke="rgba(34,211,238,.2)" stroke-width=".8" stroke-dasharray="1.5 4"/>
+   959→              <g class="eGhost"><polygon points="56,29 79.9,69.5 32.1,69.5" fill="none" stroke="rgba(236,254,255,.45)" stroke-width=".8" stroke-linejoin="round"/></g>
+   960→              <g class="eShim"><circle cx="56" cy="29.5" r="1.6" fill="#FFE9BC"/></g>
+   961→              <g class="eTip">
+   962→                <circle cx="56" cy="35" r="2" fill="#EAFBFF"/>
+   963→                <circle cx="74.2" cy="66.5" r="1.6" fill="rgba(94,234,212,.9)"/>
+   964→                <circle cx="37.8" cy="66.5" r="1.6" fill="rgba(94,234,212,.9)"/>
+   965→              </g>
+   966→              <circle cx="56" cy="56" r="1.7" fill="#F2FFFF"/>
+   967→            </svg>
+   968→          </div>
+   969→          <div class="hud">
+   970→            <div class="harc k1"></div><div class="harc k2"></div>
+   971→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+   972→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+   973→          </div>
+   974→        </div>
+   975→      </div>
+   976→      <div class="meta">
+   977→        <div class="mrow"><h3>TAPAL SEGITIGA</h3><span class="ix">E·05</span></div>
+   978→        <p>Lingkaran dalam dipotong jendela segitiga yang berputar — cahaya ring hanya bocor lewat tiga sisi.</p>
+   979→        <div class="tags"><i>INTI · LINGKARAN TERPOTONG</i><i>JENDELA BERPUTAR</i><i class="g">GERAK · PINDAI</i></div>
+   980→      </div>
+   981→    </section>
+   982→
+   983→    <!-- F -->
+   984→    <section class="card">
+   985→      <div class="crow"><span class="vchip">VAR-F</span><span class="shellTag">cangkang v41</span></div>
+   986→      <div class="stage">
+   987→        <div class="aura"></div>
+   988→        <div class="orb cF">
+   989→          <div class="core">
+   990→            <div class="mhalo"></div>
+   991→            <svg viewBox="0 0 112 112" aria-hidden="true">
+   992→              <defs>
+   993→                <linearGradient id="fTri" x1="0" y1="0" x2="0" y2="1">
+   994→                  <stop offset="0%" stop-color="#E8FDFF"/><stop offset="100%" stop-color="#18A9CE"/>
+   995→                </linearGradient>
+   996→              </defs>
+   997→              <g class="fCirc">
+   998→                <circle cx="56" cy="56" r="18.5" fill="none" stroke="rgba(34,211,238,.28)" stroke-width="4.6"/>
+   999→                <circle cx="56" cy="56" r="18.5" fill="none" stroke="#7DE9F9" stroke-width="1.7"/>
+  1000→              </g>
+  1001→              <g class="fTri">
+  1002→                <polygon points="56,36.5 73.3,66.3 38.7,66.3" fill="none" stroke="rgba(34,211,238,.3)" stroke-width="4.6" stroke-linejoin="round"/>
+  1003→                <polygon points="56,36.5 73.3,66.3 38.7,66.3" fill="none" stroke="url(#fTri)" stroke-width="1.7" stroke-linejoin="round"/>
+  1004→              </g>
+  1005→              <circle class="fDot" cx="56" cy="56" r="2.4" fill="#FFE9BC"/>
+  1006→            </svg>
+  1007→          </div>
+  1008→          <div class="hud">
+  1009→            <div class="harc k1"></div><div class="harc k2"></div>
+  1010→            <div class="harc htick"></div><div class="harc hdata"></div><div class="harc hsweep"></div>
+  1011→            <div class="hnode w1"><s></s></div><div class="hnode w2"><s></s></div><div class="hnode w3"><s></s></div>
+  1012→          </div>
+  1013→        </div>
+  1014→      </div>
+  1015→      <div class="meta">
+  1016→        <div class="mrow"><h3>MORF LINGKAR⇄SEGITIGA</h3><span class="ix">F·06</span></div>
+  1017→        <p>Inti berganti wujud terus: lingkaran memudar, segitiga lahir, lalu sebaliknya — dua lajur berlawanan arah.</p>
+  1018→        <div class="tags"><i>INTI · MORF</i><i>DUA LAJUR LAWAN</i><i class="g">GERAK · ORGANIK</i></div>
+  1019→      </div>
+  1020→    </section>
+  1021→
+  1022→  </div>
+  1023→</main>
+  1024→
+  1025→<footer>
+  1026→  <div class="footIn">
+  1027→    <span><b>LAB ORB 2</b> · AVI — balas kode (C1–F3), inti terpilih saya pasangkan ke MK-XIX</span>
+  1028→    <span class="r">9 CUSTOM · CANGKANG IDENTIK · DARI C·D·F</span>
+  1029→  </div>
+  1030→</footer>
+  1031→
+  1032→<script>
+  1033→/* serbuk bintang */
+  1034→(function(){
+  1035→  var w=document.getElementById('stars'),h='';
+  1036→  for(var i=0;i<26;i++){
+  1037→    var l=(Math.random()*100).toFixed(2),t=(Math.random()*100).toFixed(2);
+  1038→    var d=(4+Math.random()*6).toFixed(1),dl=(Math.random()*7).toFixed(1);
+  1039→    h+='<i style="left:'+l+'%;top:'+t+'%;--d:'+d+'s;--dl:'+dl+'s"></i>';
+  1040→  }
+  1041→  w.innerHTML=h;
+  1042→})();
+  1043→/* toggle lab 2 / lab 1 */
+  1044→function lab(n){
+  1045→  var g2=document.getElementById('g2'),g1=document.getElementById('g1');
+  1046→  var b2=document.getElementById('tabL2'),b1=document.getElementById('tabL1');
+  1047→  var on2=(n===2);
+  1048→  g2.style.display=on2?'':'none';
+  1049→  g1.style.display=on2?'none':'';
+  1050→  b2.setAttribute('aria-pressed',on2?'true':'false');
+  1051→  b1.setAttribute('aria-pressed',on2?'false':'true');
+  1052→  window.scrollTo({top:0,behavior:'smooth'});
+  1053→}
+  1054→</script>
+  1055→</body>
+  1056→</html>
+  1057→
