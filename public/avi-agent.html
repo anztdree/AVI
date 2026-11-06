@@ -3,26 +3,27 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XVIII PLASMA HIDUP v40</title>
+<title>AVI — Asisten Pribadi · MK-XIX HUD SENTRI v41</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v40 — "MK-XVIII PLASMA HIDUP" : jawaban atas masukan Pak
-   "monoton, animasi & bentuk itu-itu mulu". Dasar tetap Konsep 2
-   (lensa reaktor), tapi gerak & bentuk dipecah VARIASI — rotasi
-   kini hanya 1 dari 6 karakter gerak, bukan satu-satunya:
-   ⇒ v40: (1) inti = 2 BOLA PLASMA MORF (border-radius terus
-   berubah, fase tak sinkron — bentuk tak pernah sama) sian+emas;
-   (2) GARIS PINDAI linier melintasi wajah lensa; (3) 6 BAUT HEX
-   berkedip bergiliran seperti pemeriksaan sistem; (4) ring tik
-   berubah jadi DETAK steps (instrumen, bukan putaran mulus);
-   (5) busur EMAS kedua tipis berlawanan arah; (6) rel HUD di sisi
-   lensa hanyut naik-turun. Riwayat dihormati: tanpa kipas,
-   tanpa mata, tanpa garis putus-putus di tepi terluar.
-   Cangkang orbit v31/v33 TETAP (dipuji Pak): 3 cincin giro 3
-   sumbu + partikel orbit + radar ping.
+   AVI v41 — "MK-XIX HUD SENTRI" : jawaban atas referensi GIF Pak
+   "orb luarnya natural, hanya garis luarnya tidak cocok".
+   ⇒ v41: (A) CANGKANG BARU ala HUD GIF — multi-lapis busur
+   TERSEGMENTASI bercelah, tiap lapis beda arah, beda laju, beda
+   tekstur: kurung tebal ujung putih-panas (laju VARIABEL: melaju
+   lalu menahan), busur tipis arah lawan beraksen emas, band
+   rambut kalibrasi berputar DETAK steps, pita data titik,
+   sapuan radar tumbuh-menyusut, 3 node cahaya pengorbit TANPA
+   rel garis. (B) DIHAPUS persis atas kritik "garis luar":
+   3 garis lingkaran utuh tipis (giro), rel orbT tipis, dan
+   ping radar mengembang — tak ada lagi lingkaran utuh di luar.
+   (C) INTI TETAP: lensa reaktor Konsep 2 + plasma morf v40
+   (6 karakter gerak anti-monoton dipertahankan semua).
+   Riwayat dihormati: tanpa kipas, tanpa mata, tanpa garis
+   putus-putus di tepi terluar.
    Dashboard obrolan v35 TETAP: bubble chassis (rel mesin,
    scanline, bracket HUD), VOX 230MS, stempel CH-01 + jam,
    TERKIRIM ✓, history maks 3, masuk pegas.
@@ -330,9 +331,9 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.6)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 
-/* ============ ORB MK-XVIII — PLASMA HIDUP (v40) : konsep 2 + 6 karakter gerak ============
-   Cangkang giro tetap (dipuji). Inti lensa reaktor (konsep 2) kini HIDUP: plasma morf,
-   pindai linier, baut hex giliran, detak steps — bukan cuma putaran. */
+/* ============ ORB MK-XIX — HUD SENTRI (v41) : cangkang ala GIF referensi Pak ============
+   Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
+   Inti lensa reaktor (konsep 2) + plasma morf v40 tetap hidup. */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
 /* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
 .heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
@@ -349,44 +350,89 @@ html.kb .aura{inset:-14px}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
 /* (v38) bezel derajat bergaris putus-putus DIHAPUS — "bikin jelek" (Pak) */
 .orbBig svg{position:absolute;inset:0;overflow:visible}
-.panggung3d{position:absolute;inset:0;perspective:340px}
-.hgyro{position:absolute;inset:0;transform-style:preserve-3d;animation:hTilt 13s ease-in-out infinite;will-change:transform}
-@keyframes hTilt{0%,100%{transform:rotateX(54deg) rotateZ(0deg)}50%{transform:rotateX(66deg) rotateZ(26deg)}}
-/* — cincin giroskop: TIGA sumbu berbeda, masing-masing arc emas+sian & satelit — */
-.gring{position:absolute;left:50%;top:50%;border-radius:50%;transform-style:preserve-3d;will-change:transform}
-.gring i,.gring b,.gring u{position:absolute;border-radius:50%}
-.gring i{inset:0;border:1px solid rgba(34,211,238,.3)}
-/* tick kalibrasi mesin mengelilingi tiap cincin giro */
-.gring i::after{content:'';position:absolute;inset:-4px;border-radius:50%;
-  background:repeating-conic-gradient(from 0deg,rgba(140,238,255,.5) 0deg 1.7deg,transparent 1.7deg 12deg);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px));
-          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 2.2px))}
-.gring b{inset:0;
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 2.6px),#000 calc(100% - 1.7px));
-  background:conic-gradient(from 20deg,transparent 0 56%,rgba(245,181,74,.95) 68%,rgba(140,238,255,.92) 77%,transparent 86%)}
-.gring u{top:-2.5px;left:50%;width:5px;height:5px;margin-left:-2.5px;background:var(--gold);box-shadow:0 0 7px rgba(245,181,74,.95)}
-.gring u.c{background:#9BEBFF;box-shadow:0 0 6px rgba(34,211,238,.9)}
-.gx{width:84px;height:84px;margin:-42px 0 0 -42px;animation:gxA 7.5s linear infinite}
-.gy{width:98px;height:98px;margin:-49px 0 0 -49px;animation:gyA 11s linear infinite reverse}
-.gz{width:72px;height:72px;margin:-36px 0 0 -36px;animation:gzA 9s linear infinite}
-@keyframes gxA{from{transform:rotateY(57deg) rotateZ(0deg)}to{transform:rotateY(57deg) rotateZ(360deg)}}
-@keyframes gyA{from{transform:rotateX(64deg) rotateZ(0deg)}to{transform:rotateX(64deg) rotateZ(360deg)}}
-@keyframes gzA{from{transform:rotateX(80deg) rotateY(18deg) rotateZ(0deg)}to{transform:rotateX(80deg) rotateY(18deg) rotateZ(-360deg)}}
+/* (v41) panggung DIRATAKAN jadi 2D murni — ala GIF referensi: tanpa preserve-3d/perspective,
+     menyelenat semua artefak irisan bidang 3D (baji gelap & kotak mask) di SEMUA browser */
+.panggung3d{position:absolute;inset:0}
+/* — HUD SENTRI: hampir datar menghadap depan (ala GIF), goyangan halus saja —
+     natural datang dari LAPIS-lapis busur bercelah yang beda arah & beda laju — */
+.hud{position:absolute;inset:0;animation:hSway 15s ease-in-out infinite;will-change:transform}
+@keyframes hSway{0%,100%{transform:rotateX(6deg) rotateZ(-2deg)}50%{transform:rotateX(9deg) rotateZ(2.5deg)}}
+.harc{position:absolute;border-radius:50%;will-change:transform}
+/* k1 — tiga kurung TEBAL ujung putih-panas, laju VARIABEL (melaju lalu menahan) */
+.hud .k1{inset:0;
+  background:conic-gradient(from 8deg,
+    rgba(255,255,255,.98) 0deg,rgba(170,246,255,.95) 22deg,rgba(34,211,238,.72) 60deg,transparent 74deg 128deg,
+    rgba(34,211,238,.85) 128deg 166deg,transparent 166deg 232deg,
+    rgba(94,234,212,.7) 232deg 280deg,transparent 280deg 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4.6px),#000 calc(100% - 2.6px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 4.6px),#000 calc(100% - 2.6px));
+  filter:drop-shadow(0 0 5px rgba(34,211,238,.55)) drop-shadow(0 0 14px rgba(34,211,238,.2));
+  animation:hArcA 26s linear infinite}
+/* k2 — busur tipis ARAH LAWAN, satu aksen emas */
+.hud .k2{inset:6px;
+  background:conic-gradient(from 196deg,
+    rgba(140,238,255,.9) 0deg 44deg,transparent 44deg 138deg,
+    rgba(245,181,74,.85) 138deg 166deg,transparent 166deg 290deg,
+    rgba(140,238,255,.5) 290deg 314deg,transparent 314deg 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.9px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.9px));
+  filter:drop-shadow(0 0 4px rgba(34,211,238,.45));
+  animation:hArcB 19s linear infinite reverse}
+/* band rambut kalibrasi — berputar DETAK steps (eskapan mesin, bukan putaran mulus) */
+.hud .htick{inset:15px;opacity:.8;
+  background:repeating-conic-gradient(from 0deg,rgba(150,240,255,.55) 0deg 1.1deg,transparent 1.1deg 5deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 2.2px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 2.2px));
+  animation:hSpin 36s steps(72,end) infinite}
+/* pita DATA titik-titik + ekor emas pendek arah lawan (dua laju beda) */
+.hud .hdata{inset:21px;opacity:.9;
+  background:repeating-conic-gradient(from 30deg,rgba(190,247,255,.8) 0deg 2.4deg,transparent 2.4deg 7.2deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.8px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 3.2px),#000 calc(100% - 1.8px));
+  animation:hSpin 13s linear infinite}
+.hud .hdata::after{content:'';position:absolute;inset:-2.6px;border-radius:50%;
+  background:conic-gradient(from 250deg,transparent 0 58deg,rgba(245,181,74,.8) 72deg,rgba(255,236,190,.95) 81deg,transparent 95deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 2.4px),#000 calc(100% - 1.4px));
+  filter:drop-shadow(0 0 4px rgba(245,181,74,.5));
+  animation:hArcB 11s linear infinite reverse}
+/* sapuan radar: busur TUMBUH-MENYUSUT sambil memutar non-linier (pengganti ping) */
+.hud .hsweep{inset:11px;opacity:.8;
+  background:conic-gradient(from 0deg,rgba(34,211,238,0) 0deg,rgba(34,211,238,.26) 16deg,rgba(170,246,255,.8) 50deg,transparent 68deg 360deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.8px),#000 calc(100% - 1.7px));
+          mask:radial-gradient(farthest-side,transparent calc(100% - 2.8px),#000 calc(100% - 1.7px));
+  filter:drop-shadow(0 0 4px rgba(34,211,238,.4));
+  animation:hSweep 8.6s cubic-bezier(.45,0,.25,1) infinite}
+@keyframes hArcA{0%{transform:rotate(0deg)}38%{transform:rotate(128deg)}56%{transform:rotate(168deg)}100%{transform:rotate(360deg)}}
+@keyframes hArcB{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes hSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes hSweep{0%{transform:rotate(0deg) scale(1)}42%{transform:rotate(214deg) scale(1.02)}57%{transform:rotate(252deg) scale(.965)}80%{transform:rotate(392deg) scale(1.01)}100%{transform:rotate(520deg) scale(1)}}
+/* tiga node pengorbit — titik cahaya menunggangi lajur, TANPA rel garis; kedip berfase.
+     w1 mengunci laju k1 (kepala komet), w2 menunggangi lajur sapuan, w3 mengelilingi lensa */
+.hnode{position:absolute;border-radius:50%;will-change:transform}
+.hnode s{position:absolute;top:-2px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;
+  background:#EAFBFF;box-shadow:0 0 7px 1.5px rgba(94,229,252,.9),0 0 16px 5px rgba(34,211,238,.32);
+  animation:hBlink 3.7s ease-in-out infinite}
+.hnode.w1{inset:3px;animation:hArcA 26s linear infinite}
+.hnode.w2{inset:13px;animation:hArcB 14.5s linear infinite}
+.hnode.w3{inset:22px;animation:hSpin 9.5s linear infinite reverse}
+.hnode.w2 s{top:-1.5px;width:3px;height:3px;background:var(--gold);box-shadow:0 0 6px 1px rgba(245,181,74,.85);animation-delay:1.2s}
+.hnode.w3 s{top:-1.5px;width:3px;height:3px;background:#CFF6FF;box-shadow:0 0 5px 1px rgba(34,211,238,.8);animation-delay:2.1s}
+@keyframes hBlink{0%,100%{opacity:1}50%{opacity:.45}}
 /* — MK-XVIII PLASMA HIDUP: lensa reaktor konsep 2 yang DIBERI NYAWA (v40).
      Masukan Pak: "monoton, animasi & bentuk itu-itu mulu".
      ⇒ 6 karakter gerak berbeda: plasma morf (organik), pindai linier,
      baut hex bergiliran, detak steps, busur emas berlawanan, rel hanyut.
      Wajah mesin tetap: cakram gelap, bingkai busur, segitiga kaca. — */
-.coreBox{position:absolute;inset:0;transform-style:preserve-3d;z-index:1}
+.coreBox{position:absolute;inset:0;z-index:1}
 /* halo energi di belakang lensa — bernapas (redam, jangan cuci wajah) */
 .mhalo{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;
-  background:radial-gradient(circle,rgba(34,211,238,.2) 0%,rgba(34,211,238,.07) 52%,transparent 74%);
+  background:radial-gradient(circle,rgba(34,211,238,.16) 0%,rgba(34,211,238,.055) 52%,transparent 74%);
   animation:breath 4.4s ease-in-out infinite}
 @keyframes breath{0%,100%{transform:scale(.93);opacity:.8}50%{transform:scale(1.05);opacity:1}}
 /* lensa reaktor: cakram frontal dengan sway halus — mesin yang hidup */
 .lens{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;z-index:1;
-  animation:msway 9s ease-in-out infinite;transform-style:preserve-3d}
+  animation:msway 9s ease-in-out infinite}
 @keyframes msway{0%,100%{transform:rotateX(6deg) rotateY(-7deg)}50%{transform:rotateX(6deg) rotateY(7deg)}}
 /* tubuh lensa: cakram teal GELAP solid — kontras khas konsep 2 */
 .ldisk{position:absolute;inset:0;border-radius:50%;
@@ -450,8 +496,8 @@ html.kb .aura{inset:-14px}
   mix-blend-mode:screen;opacity:0;animation:lscan 6.4s ease-in-out infinite}
 @keyframes lscan{0%,64%{transform:translateY(5px);opacity:0}72%{opacity:.95}90%{opacity:.85}100%{transform:translateY(49px);opacity:0}}
 /* reticle segitiga KACA tipis — identitas konsep 2, plasma bersinar di baliknya */
-.ltri{position:absolute;left:50%;top:50%;width:21px;height:19px;margin:-11px 0 0 -10.5px;
-  filter:drop-shadow(0 0 4px rgba(140,240,255,.55))}
+.ltri{position:absolute;left:50%;top:50%;width:21px;height:19px;margin:-11px 0 0 -10.5px}
+/* (v41) filter drop-shadow di ltri DIHAPUS — picu artefak raster segitiga raksasa di 3D context */
 .ltri b{position:absolute;inset:0;display:block;
   background:linear-gradient(180deg,rgba(232,253,255,.95),rgba(125,233,249,.7) 55%,rgba(24,169,206,.85));
   clip-path:polygon(50% 0,100% 100%,0 100%)}
@@ -480,24 +526,24 @@ html.kb .aura{inset:-14px}
 .pulse{position:absolute;inset:16px;border-radius:50%;border:1px solid rgba(160,240,255,.5);opacity:0;
   animation:corePulse 4.4s ease-out infinite}
 @keyframes corePulse{0%{transform:scale(.4);opacity:.65}55%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
-/* busur energi: 3 bidang miring, ekor komet — BUKAN jari-jari */
-.carc{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;transform-style:preserve-3d}
+/* busur energi: 2 elips miring (2D squash — tanpa bidang 3D, tanpa irisan), ekor komet */
+.carc{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px}
 .carc i{position:absolute;inset:0;border-radius:50%;
   border:1.4px solid rgba(34,211,238,.13);
   border-top-color:rgba(200,247,255,.95);
   border-right-color:rgba(34,211,238,.5);
   filter:drop-shadow(0 0 4px rgba(34,211,238,.5));
   animation:cspin 3.2s linear infinite}
-.carc.a{transform:rotateX(64deg)}
-.carc.b{transform:rotateX(20deg) rotateY(56deg)}
+.carc.a{transform:scaleY(.42)}
+.carc.b{transform:rotate(24deg) scale(.9,.64)}
 .carc.b i{animation-duration:4.6s;animation-direction:reverse;
   border-top-color:rgba(255,222,150,.92);border-right-color:rgba(245,181,74,.4);
   filter:drop-shadow(0 0 4px rgba(245,181,74,.45))}
 @keyframes cspin{from{transform:rotateZ(0)}to{transform:rotateZ(360deg)}}
 /* percikan pengorbit: satu titik cahaya mengitari inti */
 .spark{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;
-  transform:rotateX(68deg) rotateY(-16deg);transform-style:preserve-3d}
-.spark u{position:absolute;inset:0;transform-style:preserve-3d;animation:cspin 7.2s linear infinite}
+  transform:scaleY(.4) rotate(-10deg)}
+.spark u{position:absolute;inset:0;animation:cspin 7.2s linear infinite}
 .spark s{position:absolute;top:-2.5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;
   background:#F2FFFF;box-shadow:0 0 8px 2px rgba(34,211,238,.85),0 0 18px 6px rgba(34,211,238,.3)}
 /* jendela instrumen: latar lembut di belakang angka % (kerja/tuntas) */
@@ -505,27 +551,14 @@ html.kb .aura{inset:-14px}
   background:radial-gradient(circle,rgba(2,12,20,.74) 0%,rgba(2,12,20,.42) 56%,transparent 80%);
   opacity:0;transition:opacity .35s;z-index:2;pointer-events:none}
 .orbBig.work .pcscrim,.orbBig.done .pcscrim{opacity:1}
-/* — orbit partikel mikro (3 bidang miring tambahan) — */
-.orbT{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(34,211,238,.14)}
-.orbT s{position:absolute;top:-1.5px;left:50%;width:3px;height:3px;margin-left:-1.5px;border-radius:50%;background:#CFF6FF;box-shadow:0 0 5px rgba(190,247,255,.95)}
-.t1{width:44px;height:44px;margin:-22px 0 0 -22px;animation:tA 5.5s linear infinite}
-.t2{width:56px;height:56px;margin:-28px 0 0 -28px;animation:tB 7.5s linear infinite reverse}
-.t3{width:66px;height:66px;margin:-33px 0 0 -33px;animation:tC 9.5s linear infinite}
-@keyframes tA{from{transform:rotateY(72deg) rotateZ(0deg)}to{transform:rotateY(72deg) rotateZ(360deg)}}
-@keyframes tB{from{transform:rotateX(58deg) rotateY(22deg) rotateZ(0deg)}to{transform:rotateX(58deg) rotateY(22deg) rotateZ(360deg)}}
-@keyframes tC{from{transform:rotateX(84deg) rotateZ(0deg)}to{transform:rotateX(84deg) rotateZ(360deg)}}
-/* — ping radar 2D mengembang — */
-.hping{position:absolute;inset:6px;border-radius:50%;border:1.5px solid rgba(34,211,238,.5);opacity:0;pointer-events:none;
-  animation:hPing 4.6s cubic-bezier(.22,.61,.36,1) infinite}
-.hping.d2{animation-delay:2.3s}
-@keyframes hPing{0%{transform:scale(.52);opacity:0}12%{opacity:.7}100%{transform:scale(1.14);opacity:0}}
+
 /* — lapisan HUD 2D: cincin progres + persen — */
 .orbBig .prog{fill:none;stroke:var(--cyan);stroke-width:2.4;stroke-linecap:round;opacity:0;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .4s,opacity .4s;filter:drop-shadow(0 0 5px var(--glow))}
 .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#B9F1FF;opacity:0;transition:.3s;text-shadow:0 1px 5px rgba(2,14,22,.95),0 0 12px rgba(34,211,238,.35)}
 .orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
-/* — state KERJA: plasma mengamuk, pindai cepat, baut mengejar — */
-.orbBig.work .hgyro{animation-duration:5.6s}
+/* — state KERJA: plasma mengamuk, HUD ngebut, sapuan gelisah — */
+.orbBig.work .hud{animation-duration:9s}
 .orbBig.work .lens{animation-duration:3.6s}
 .orbBig.work .mhalo{animation-duration:1.2s;background:radial-gradient(circle,rgba(34,211,238,.32) 0%,rgba(34,211,238,.11) 52%,transparent 74%)}
 .orbBig.work .lblob{animation-duration:2.3s;filter:blur(.3px) drop-shadow(0 0 11px rgba(140,244,255,.95))}
@@ -536,7 +569,7 @@ html.kb .aura{inset:-14px}
 .orbBig.work .lseg2{animation-duration:6.2s}
 .orbBig.work .lbol{animation-duration:1.7s}
 .orbBig.work .lbkt{border-color:rgba(190,247,255,.78);opacity:1}
-.orbBig.work .ltri{filter:drop-shadow(0 0 9px rgba(140,244,255,.95))}
+.orbBig.work .ltri{opacity:.95}
 .orbBig.work .ltri b{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(201,248,255,.85) 55%,rgba(94,221,245,.9))}
 .orbBig.work .ltri b::after{background:rgba(3,20,32,.45)}
 .orbBig.work .lring{border-color:rgba(190,247,255,.78);box-shadow:0 0 12px rgba(34,211,238,.6),inset 0 0 12px rgba(34,211,238,.35)}
@@ -544,14 +577,19 @@ html.kb .aura{inset:-14px}
 .orbBig.work .carc.a i{animation-duration:1s}
 .orbBig.work .carc.b i{animation-duration:1.4s}
 .orbBig.work .spark u{animation-duration:2s}
-.orbBig.work .gx{animation-duration:2.5s}
-.orbBig.work .gy{animation-duration:3.7s}
-.orbBig.work .gz{animation-duration:2.9s}
-.orbBig.work .hping{animation-duration:2.1s;border-color:rgba(245,181,74,.55)}
+.orbBig.work .k1{animation-duration:7.5s}
+.orbBig.work .k2{animation-duration:5.4s}
+.orbBig.work .htick{animation-duration:12s}
+.orbBig.work .hdata{animation-duration:5.2s}
+.orbBig.work .hdata::after{animation-duration:4.6s}
+.orbBig.work .hsweep{animation-duration:3.2s;opacity:1;filter:drop-shadow(0 0 6px rgba(34,211,238,.65))}
+.orbBig.work .hnode.w1{animation-duration:7.5s}
+.orbBig.work .hnode.w2{animation-duration:5.4s}
+.orbBig.work .hnode.w3{animation-duration:3.8s}
+.orbBig.work .hnode s{animation-duration:1.6s}
 .orbBig.work .prog,.orbBig.work .pct{opacity:1}
 /* — state TUNTAS: inti berpijah emas TENANG — */
-.orbBig.done .gring i{border-color:rgba(245,181,74,.52)}
-.orbBig.done .gring i::after{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.7) 0deg 1.7deg,transparent 1.7deg 12deg)}
+.orbBig.done .k1{background:conic-gradient(from 8deg,rgba(255,250,230,.98) 0deg,rgba(255,236,190,.95) 22deg,rgba(245,181,74,.68) 60deg,transparent 74deg 128deg,rgba(245,181,74,.8) 128deg 166deg,transparent 166deg 232deg,rgba(255,214,140,.6) 232deg 280deg,transparent 280deg 360deg);filter:drop-shadow(0 0 5px rgba(245,181,74,.55)) drop-shadow(0 0 14px rgba(245,181,74,.22))}
 .orbBig.done .mhalo{animation-duration:5.6s;background:radial-gradient(circle,rgba(245,181,74,.2) 0%,rgba(245,181,74,.07) 52%,transparent 74%)}
 .orbBig.done .ldisk{border-color:rgba(255,236,190,.45);box-shadow:0 0 24px 6px rgba(245,181,74,.24),0 0 58px 16px rgba(245,181,74,.11),inset 0 6px 12px rgba(255,236,190,.16),inset 0 -8px 14px rgba(0,0,0,.75),inset 0 0 18px rgba(245,181,74,.12)}
 .orbBig.done .lseg{background:conic-gradient(from -58deg,rgba(255,240,200,.95) 0 52deg,transparent 52deg 118deg,rgba(245,181,74,.75) 118deg 168deg,transparent 168deg 236deg,rgba(255,214,140,.62) 236deg 286deg,transparent 286deg 360deg);filter:drop-shadow(0 0 6px rgba(245,181,74,.6))}
@@ -563,21 +601,33 @@ html.kb .aura{inset:-14px}
 .orbBig.done .lscan{background:linear-gradient(180deg,transparent,rgba(255,224,160,.3) 42%,rgba(255,240,200,.6) 50%,rgba(255,224,160,.3) 58%,transparent)}
 .orbBig.done .lbol{background:linear-gradient(160deg,#FFF3D2,#F5B54A)}
 .orbBig.done .lbkt{border-color:rgba(255,224,150,.6)}
-.orbBig.done .ltri{filter:drop-shadow(0 0 6px rgba(245,181,74,.85))}
+.orbBig.done .ltri{opacity:.95}
 .orbBig.done .ltri b{background:linear-gradient(180deg,rgba(255,247,224,.95),rgba(255,217,138,.75) 55%,rgba(224,154,43,.85))}
 .orbBig.done .ltri b::after{background:rgba(26,16,3,.6)}
 .orbBig.done .pulse{border-color:rgba(255,230,170,.55)}
 .orbBig.done .carc i{border-top-color:rgba(255,236,190,.95);border-right-color:rgba(245,181,74,.5);filter:drop-shadow(0 0 4px rgba(245,181,74,.5))}
 .orbBig.done .spark s{background:#FFF6DE;box-shadow:0 0 8px 2px rgba(245,181,74,.85),0 0 18px 6px rgba(245,181,74,.3)}
 .orbBig.done .pcscrim{background:radial-gradient(circle,rgba(24,14,2,.72) 0%,rgba(24,14,2,.4) 56%,transparent 80%)}
-.orbBig.done .gring b{background:conic-gradient(from 20deg,transparent 0 56%,rgba(255,236,190,.95) 68%,rgba(245,181,74,.9) 77%,transparent 86%)}
-.orbBig.done .hping{border-color:rgba(245,181,74,.6)}
-.orbBig.done .gx u{background:#FFE9B0;box-shadow:0 0 7px rgba(245,181,74,.95)}
+.orbBig.done .k2{background:conic-gradient(from 196deg,rgba(94,225,248,.75) 0deg 44deg,transparent 44deg 138deg,rgba(255,236,190,.9) 138deg 166deg,transparent 166deg 290deg,rgba(94,225,248,.45) 290deg 314deg,transparent 314deg 360deg);filter:drop-shadow(0 0 4px rgba(245,181,74,.4))}
+.orbBig.done .htick{background:repeating-conic-gradient(from 0deg,rgba(255,236,190,.55) 0deg 1.1deg,transparent 1.1deg 5deg)}
+.orbBig.done .hdata{background:repeating-conic-gradient(from 30deg,rgba(255,240,200,.75) 0deg 2.4deg,transparent 2.4deg 7.2deg)}
+.orbBig.done .hdata::after{background:conic-gradient(from 250deg,transparent 0 58deg,rgba(94,225,248,.7) 72deg,rgba(190,247,255,.9) 81deg,transparent 95deg);filter:drop-shadow(0 0 4px rgba(94,225,248,.45))}
+.orbBig.done .hsweep{background:conic-gradient(from 0deg,rgba(245,181,74,0) 0deg,rgba(245,181,74,.3) 16deg,rgba(255,236,190,.85) 50deg,transparent 68deg 360deg);filter:drop-shadow(0 0 5px rgba(245,181,74,.5))}
+.orbBig.done .hnode.w1 s{background:#FFF6DE;box-shadow:0 0 7px 1.5px rgba(245,181,74,.9),0 0 16px 5px rgba(245,181,74,.3)}
+.orbBig.done .hnode.w2 s{background:#9BEBFF;box-shadow:0 0 6px 1px rgba(34,211,238,.8)}
 .orbBig.done .pct{color:#FFEDB8}
 .orbBig.done .prog{stroke:var(--gold);opacity:1}
 .orbBig.done .halo{animation:halo .9s ease-out both}
 /* — tema siang: inti sian tinta di latar terang — */
-html[data-theme="siang"] .orbBig .gring i{border-color:rgba(12,110,136,.42)}
+html[data-theme="siang"] .hud .k1{background:conic-gradient(from 8deg,rgba(255,255,255,1) 0deg,rgba(10,125,150,.85) 22deg,rgba(9,125,150,.55) 60deg,transparent 74deg 128deg,rgba(9,125,150,.7) 128deg 166deg,transparent 166deg 232deg,rgba(11,143,112,.5) 232deg 280deg,transparent 280deg 360deg);filter:drop-shadow(0 0 3px rgba(9,125,150,.3))}
+html[data-theme="siang"] .hud .k2{background:conic-gradient(from 196deg,rgba(12,110,136,.7) 0deg 44deg,transparent 44deg 138deg,rgba(176,110,10,.7) 138deg 166deg,transparent 166deg 290deg,rgba(12,110,136,.4) 290deg 314deg,transparent 314deg 360deg);filter:drop-shadow(0 0 3px rgba(9,125,150,.25))}
+html[data-theme="siang"] .hud .htick{background:repeating-conic-gradient(from 0deg,rgba(12,110,136,.5) 0deg 1.1deg,transparent 1.1deg 5deg)}
+html[data-theme="siang"] .hud .hdata{background:repeating-conic-gradient(from 30deg,rgba(12,110,136,.6) 0deg 2.4deg,transparent 2.4deg 7.2deg)}
+html[data-theme="siang"] .hud .hdata::after{background:conic-gradient(from 250deg,transparent 0 58deg,rgba(176,110,10,.65) 72deg,rgba(176,110,10,.85) 81deg,transparent 95deg);filter:drop-shadow(0 0 3px rgba(176,110,10,.35))}
+html[data-theme="siang"] .hud .hsweep{background:conic-gradient(from 0deg,rgba(9,125,150,0) 0deg,rgba(9,125,150,.22) 16deg,rgba(12,110,136,.7) 50deg,transparent 68deg 360deg);filter:drop-shadow(0 0 3px rgba(9,125,150,.3))}
+html[data-theme="siang"] .hnode.w1 s{background:#0E93B4;box-shadow:0 0 5px 1px rgba(9,125,150,.6)}
+html[data-theme="siang"] .hnode.w2 s{background:#B06E0A;box-shadow:0 0 5px 1px rgba(176,110,10,.55)}
+html[data-theme="siang"] .hnode.w3 s{background:#0E93B4;box-shadow:0 0 4px 1px rgba(9,125,150,.55)}
 html[data-theme="siang"] .mhalo{background:radial-gradient(circle,rgba(9,125,150,.15) 0%,rgba(9,125,150,.06) 52%,transparent 74%)}
 html[data-theme="siang"] .ldisk{background:radial-gradient(circle at 38% 30%,#FFFFFF 0%,#EAF3F8 40%,#D2E2EC 72%,#B9CCDA 100%);border-color:rgba(12,110,136,.42);box-shadow:0 0 18px 5px rgba(9,125,150,.16),0 0 40px 12px rgba(9,125,150,.09),inset 0 6px 12px rgba(255,255,255,.95),inset 0 -8px 14px rgba(70,95,120,.3),inset 0 0 18px rgba(9,125,150,.08)}
 html[data-theme="siang"] .lseg{background:conic-gradient(from -58deg,rgba(10,125,150,.85) 0 52deg,transparent 52deg 118deg,rgba(10,125,150,.5) 118deg 168deg,transparent 168deg 236deg,rgba(11,143,112,.45) 236deg 286deg,transparent 286deg 360deg);filter:drop-shadow(0 0 3px rgba(9,125,150,.3))}
@@ -590,7 +640,7 @@ html[data-theme="siang"] .lscan{background:linear-gradient(180deg,transparent,rg
 html[data-theme="siang"] .lbol{background:linear-gradient(160deg,#0E93B4,#0B6E8A)}
 html[data-theme="siang"] .lbol.h4{background:linear-gradient(160deg,#B06E0A,#8A5606)}
 html[data-theme="siang"] .lbkt{border-color:rgba(12,110,136,.5)}
-html[data-theme="siang"] .ltri{filter:drop-shadow(0 0 4px rgba(9,125,150,.45))}
+html[data-theme="siang"] .ltri{opacity:.9}
 html[data-theme="siang"] .ltri b{background:linear-gradient(180deg,rgba(18,134,166,.92),rgba(11,110,138,.7) 55%,rgba(7,83,107,.92))}
 html[data-theme="siang"] .ltri b::after{background:rgba(240,249,253,.55)}
 html[data-theme="siang"] .pulse{border-color:rgba(9,125,150,.4)}
@@ -928,33 +978,28 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
     </section>
   </main>
 
-  <!-- ORB MK-XVIII PLASMA HIDUP — HERO di panggung tengah (v40 · konsep 2 diberi nyawa) -->
+  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung tengah (v41 · cangkang HUD ala GIF Pak, inti plasma konsep 2 tetap) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
       <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
       <div class="panggung3d">
-        <div class="hgyro">
-          <div class="gring gx"><i></i><b></b><u></u></div>
-          <div class="gring gy"><i></i><b></b><u class="c"></u></div>
-          <div class="gring gz"><i></i><b></b><u></u></div>
-          <div class="orbT t1"><s></s></div>
-          <div class="orbT t2"><s></s></div>
-          <div class="orbT t3"><s></s></div>
+        <div class="hud">
+          <i class="harc k1"></i><i class="harc k2"></i><i class="harc htick"></i><i class="harc hdata"></i><i class="harc hsweep"></i>
+          <i class="hnode w1"><s></s></i><i class="hnode w2"><s></s></i><i class="hnode w3"><s></s></i>
         </div>
         <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="lblob"></i><i class="lblob b2"></i><i class="lscan"></i></i><i class="ltri"><b></b></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
       </div>
       <svg width="112" height="112" viewBox="0 0 112 112">
         <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
       </svg>
-      <div class="hping"></div><div class="hping d2"></div>
       <div class="halo"></div>
       <div class="pcscrim"></div>
       <span class="pct" id="stgPct">0%</span>
       </div>
     </div>
     <div class="orbSide" id="orbSide">
-      <div id="orbIdle">MK-XVIII · PLASMA HIDUP · ENERGI MORF · MEMORI 62%</div>
+      <div id="orbIdle">MK-XIX · HUD SENTRI · KALIBRASI HALUS · MEMORI 62%</div>
       <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
@@ -1039,7 +1084,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.6)}
   </div>
 </div>
 
-<div class="note">v40 · MK-XVIII PLASMA HIDUP — ANTI-MONOTON: 2 BOLA PLASMA MORF (BENTUK TAK PERNAH SAMA) · GARIS PINDAI LINIER · 6 BAUT HEX BERGILIRAN · RING TIK DETAK (STEPS) · BUSUR EMAS BERLAWANAN ARAH · REL HUD HANYUT · CANGKANG GIRO TETAP · CHAT DASHBOARD V35 · AGENT DI DALAM AVI</div>
+<div class="note">v41 · MK-XIX HUD SENTRI — CANGKANG HUD NATURAL (REFERENSI GIF PAK): KURUNG TEBAL LAJU VARIABEL · BUSUR LAWAN ARAH AKSEN EMAS · BAND RAMBUT DETAK STEPS · PITA DATA TITIK · SAPUAN TUMBUH-MENYUSUT · 3 NODE PENGORBIT · GARIS LINGKARAN UTUH & PING DIHAPUS · INTI PLASMA KONSEP 2 TETAP · CHAT DASHBOARD V35 · AGENT DI DALAM AVI</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1091,7 +1136,7 @@ window.addEventListener('resize',()=>moveInd($('.navbtn.on')));
 $('#hdPill').addEventListener('click',openSheet);
 
 /* ---- SATU SLOT di sisi orb (v17): telemetri/status — perintah kini di obrolan (v34) ---- */
-const IDLE_TX='MK-XVIII · PLASMA HIDUP · NET AKTIF · MEMORI 62%';
+const IDLE_TX='MK-XIX · HUD SENTRI · NET AKTIF · MEMORI 62%';
 function slotIdle(tx){
   const w=$('#orbIdle');if(w){w.className='';w.textContent=tx||IDLE_TX}
 }
@@ -1401,7 +1446,7 @@ function lvClose(){lv.classList.remove('open');lvT.forEach(clearTimeout);lvT=[];
         setTimeout(()=>{if(!taskActive)slotIdle()},6800)}}
   }
   if(taskActive&&!done&&!stopped&&!fin){$('#app').classList.add('live');state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK')}
-  else if(!taskActive){state('','MK-XVIII · PLASMA HIDUP · SIAP MENEMANI PAK')}
+  else if(!taskActive){state('','MK-XIX · HUD SENTRI · SIAP MENEMANI PAK')}
 }
 $('#btnMic').addEventListener('click',lvOpen);
 $('#orbBig').addEventListener('click',lvOpen);
