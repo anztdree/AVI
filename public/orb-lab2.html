@@ -279,9 +279,14 @@ main{max-width:1240px;width:100%;margin:0 auto;padding:22px 22px 30px;flex:1}
 @keyframes x3flash{
   0%{opacity:.95}9%{opacity:0}32%{opacity:0}33%{opacity:.95}42%{opacity:0}
   65%{opacity:0}66%{opacity:.95}75%{opacity:0}100%{opacity:0}}
-/* D1 — HEKSAGRAM DINAMIS */
-.x4a{animation:hSpin 12s linear infinite;transform-origin:56px 56px}
-.x4b{animation:hSpin 10s linear infinite reverse;transform-origin:56px 56px}
+/* D1 — HEKSAGRAM DINAMIS (fix: seirama, lock tiap 2.17s, node ramping) */
+.x4a{animation:hSpin 13s linear infinite;transform-origin:56px 56px}
+.x4b{animation:hSpin 13s linear infinite reverse;transform-origin:56px 56px}
+.x4f{animation:corePulse 2.1667s ease-out infinite;transform-origin:56px 56px}
+.x4n{animation:x4blink 2.1667s ease-in-out infinite}
+.x4n.d1{animation-delay:-.72s}.x4n.d2{animation-delay:-1.44s}
+.x4n.g1{animation-delay:-.36s}.x4n.g2{animation-delay:-1.08s}.x4n.g3{animation-delay:-1.8s}
+@keyframes x4blink{0%,100%{opacity:.5}50%{opacity:1}}
 /* D2 — KOMET TRIAD */
 .x5a{animation:hSpin 9s linear infinite;transform-origin:56px 56px}
 .x5p{animation:corePulse 3.4s ease-out infinite;transform-origin:56px 56px}
@@ -515,24 +520,39 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
           <div class="core">
             <div class="mhalo"></div>
             <svg viewBox="0 0 112 112" aria-hidden="true">
-              <g class="x4a">
-                <polygon points="56,41 69,63.5 43,63.5" fill="none" stroke="rgba(140,238,255,.5)" stroke-width=".8"/>
-                <circle cx="56" cy="41" r="5" fill="rgba(34,211,238,.22)"/>
-                <circle cx="56" cy="41" r="2.3" fill="#F2FFFF"/>
-                <circle cx="69" cy="63.5" r="5" fill="rgba(34,211,238,.18)"/>
-                <circle cx="69" cy="63.5" r="2.1" fill="#CFF6FF"/>
-                <circle cx="43" cy="63.5" r="5" fill="rgba(94,234,212,.2)"/>
-                <circle cx="43" cy="63.5" r="2.1" fill="#CFF6E9"/>
+              <defs>
+                <filter id="x4g" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="1.5" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <!-- pemandu: heksagram hantu (target lock) -->
+              <g>
+                <polygon points="56,41 69,63.5 43,63.5" fill="none" stroke="rgba(140,238,255,.17)" stroke-width=".6" stroke-dasharray="2 3"/>
+                <polygon points="56,71 69,48.5 43,48.5" fill="none" stroke="rgba(245,181,74,.15)" stroke-width=".6" stroke-dasharray="2 3"/>
+                <circle cx="56" cy="41" r=".9" fill="rgba(140,238,255,.35)"/>
+                <circle cx="69" cy="63.5" r=".9" fill="rgba(140,238,255,.3)"/>
+                <circle cx="43" cy="63.5" r=".9" fill="rgba(140,238,255,.3)"/>
+                <circle cx="56" cy="71" r=".9" fill="rgba(245,181,74,.32)"/>
+                <circle cx="69" cy="48.5" r=".9" fill="rgba(245,181,74,.28)"/>
+                <circle cx="43" cy="48.5" r=".9" fill="rgba(94,234,212,.3)"/>
               </g>
-              <g class="x4b">
-                <polygon points="56,71 69,48.5 43,48.5" fill="none" stroke="rgba(245,181,74,.45)" stroke-width=".8"/>
-                <circle cx="56" cy="71" r="4.6" fill="rgba(245,181,74,.2)"/>
-                <circle cx="56" cy="71" r="2" fill="#FFE9BC"/>
-                <circle cx="69" cy="48.5" r="4.6" fill="rgba(245,181,74,.16)"/>
-                <circle cx="69" cy="48.5" r="1.9" fill="#FFDfA6"/>
-                <circle cx="43" cy="48.5" r="4.6" fill="rgba(94,234,212,.18)"/>
-                <circle cx="43" cy="48.5" r="1.9" fill="#BFF2E2"/>
+              <!-- segitiga sian searah -->
+              <g class="x4a" filter="url(#x4g)">
+                <polygon points="56,41 69,63.5 43,63.5" fill="rgba(34,211,238,.06)" stroke="rgba(140,238,255,.8)" stroke-width="1"/>
+                <circle class="x4n" cx="56" cy="41" r="2.3" fill="#F2FFFF"/>
+                <circle class="x4n d1" cx="69" cy="63.5" r="2" fill="#CFF6FF"/>
+                <circle class="x4n d2" cx="43" cy="63.5" r="2" fill="#CFF6E9"/>
               </g>
+              <!-- segitiga emas berlawanan -->
+              <g class="x4b" filter="url(#x4g)">
+                <polygon points="56,71 69,48.5 43,48.5" fill="rgba(245,181,74,.05)" stroke="rgba(245,181,74,.7)" stroke-width="1"/>
+                <circle class="x4n g1" cx="56" cy="71" r="2.3" fill="#FFE9BC"/>
+                <circle class="x4n g2" cx="69" cy="48.5" r="2" fill="#FFDFA6"/>
+                <circle class="x4n g3" cx="43" cy="48.5" r="2" fill="#BFF2E2"/>
+              </g>
+              <!-- kilat sinkron saat heksagram terkunci -->
+              <circle class="x4f" cx="56" cy="56" r="9" fill="none" stroke="rgba(190,247,255,.55)" stroke-width=".9"/>
               <circle cx="56" cy="56" r="3" fill="none" stroke="rgba(190,247,255,.6)" stroke-width=".8"/>
               <circle cx="56" cy="56" r="1.4" fill="#FFFFFF"/>
             </svg>
@@ -546,9 +566,9 @@ footer{margin-top:auto;max-width:1240px;width:100%;margin-left:auto;margin-right
       </div>
       <div class="meta">
         <div class="mrow"><h3>HEKSAGRAM DINAMIS</h3><span class="ix">D1·04</span></div>
-        <p>Triad digandakan: segitiga sian berputar searah, segitiga emas <b>berlawanan</b> —
-           garis-garisnya terus menyusun <b>heksagram yang tak pernah diam</b>. Enam node, satu pusat.</p>
-        <div class="tags"><i>DUA SEGITIGA</i><i>6 NODE LAWAN ARAH</i><i class="g">GERAK · GIRO GANDA</i></div>
+        <p>Triad digandakan dan kini <b>seirama</b>: segitiga sian berputar searah, segitiga emas berlawanan —
+           laju sama. Tiap <b>2 detik</b> keduanya menyusun <b>heksagram sempurna</b>, berkilat sesaat, lalu bubar lagi. Enam node, satu pusat.</p>
+        <div class="tags"><i>DUA SEGITIGA</i><i>6 NODE LAWAN ARAH</i><i class="g">LOCK TIAP 2 DETIK</i></div>
       </div>
     </section>
 
