@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v44.0</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v44.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -73,7 +73,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;
   background:
     radial-gradient(120% 58% at 50% -8%,rgba(45,217,245,.085),transparent 62%),
     radial-gradient(100% 52% at 88% 106%,rgba(246,193,91,.075),transparent 58%),
-    linear-gradient(178deg,var(--bg1) 0%,var(--bg0) 58%,#03060C 100%)}
+    linear-gradient(178deg,var(--bg1) 0%,var(--bg0) 52%,#0B1622 82%,#060D15 100%)}
 html[data-theme="siang"] .app{
   background:
     radial-gradient(120% 58% at 50% -8%,rgba(8,121,155,.075),transparent 62%),
@@ -100,6 +100,8 @@ html[data-theme="siang"] .app{
 .bgFx .gA{width:58%;height:42%;left:-16%;top:-12%;background:rgba(45,217,245,.14);animation:driftA 17s ease-in-out infinite alternate}
 .bgFx .gB{width:62%;height:48%;right:-18%;bottom:-16%;background:rgba(246,193,91,.11);animation:driftB 21s ease-in-out infinite alternate}
 .bgFx .gC{width:44%;height:36%;right:-12%;top:-16%;background:rgba(94,234,212,.075);animation:driftA 25s ease-in-out infinite alternate-reverse}
+/* (v44.1) dasar app tak gelap lagi: pendar lantai sian di tengah bawah */
+.bgFx .gD{width:72%;height:36%;left:14%;bottom:-15%;background:rgba(45,217,245,.10);animation:driftB 23s ease-in-out infinite alternate-reverse}
 /* (v43.9) pita aurora sian-emas — tema tak lagi polos */
 .bgFx .aur{left:6%;right:6%;top:9%;height:26%;filter:blur(30px);opacity:.55;border-radius:50%;
   background:linear-gradient(112deg,transparent 14%,rgba(45,217,245,.14) 40%,rgba(246,193,91,.10) 68%,transparent 88%);
@@ -721,6 +723,10 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 
 /* ---------- komposer: kapsul kaca dengan cincin fokus gradien ---------- */
 .composer{flex:none;display:flex;padding:8px 16px calc(12px + env(safe-area-inset-bottom))}
+/* (v44.1) garis horizon sian-emas di atas komposer — panggung bawah hidup */
+.composer::before{content:'';position:absolute;left:14px;right:14px;top:-8px;height:1px;pointer-events:none;opacity:.85;
+  background:linear-gradient(90deg,transparent,rgba(45,217,245,.42) 26%,rgba(246,193,91,.38) 70%,transparent);
+  box-shadow:0 0 14px rgba(45,217,245,.22)}
 .cmd{flex:1;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 18px;border-radius:999px;position:relative;
   background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.015) 50%),var(--pan);backdrop-filter:blur(18px);
   border:1px solid var(--line2);transition:border-color .3s,box-shadow .3s;
@@ -907,7 +913,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 <div class="app" id="app">
 
   <!-- latar ATELIER: grid blueprint bermask + dua pendaran tenang + vignette -->
-  <div class="bgFx"><i class="gA"></i><i class="gB"></i><i class="gC"></i><i class="aur"></i><i class="specks"></i><i class="ruler"></i><i class="ruler r"></i><i class="hatch tl"></i><i class="hatch br"></i><svg class="hexwm" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 8 88 74 12 74Z" stroke="rgba(45,217,245,.16)" stroke-width="1.1"/><path d="M50 92 12 26 88 26Z" stroke="rgba(246,193,91,.13)" stroke-width="1.1"/></svg><div class="gridL"></div><div class="gridL g2"></div><div class="noise"></div><i class="orn tl"></i><i class="orn tr"></i><i class="orn bl"></i><i class="orn br"></i></div>
+  <div class="bgFx"><i class="gA"></i><i class="gB"></i><i class="gC"></i><i class="gD"></i><i class="aur"></i><i class="specks"></i><i class="ruler"></i><i class="ruler r"></i><i class="hatch tl"></i><i class="hatch br"></i><svg class="hexwm" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 8 88 74 12 74Z" stroke="rgba(45,217,245,.16)" stroke-width="1.1"/><path d="M50 92 12 26 88 26Z" stroke="rgba(246,193,91,.13)" stroke-width="1.1"/></svg><div class="gridL"></div><div class="gridL g2"></div><div class="noise"></div><i class="orn tl"></i><i class="orn tr"></i><i class="orn bl"></i><i class="orn br"></i></div>
   <div class="vig"></div>
 
   <!-- HEADER -->
@@ -1196,7 +1202,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   </div>
 </div>
 
-<div class="note">MK-XXI REGALIA v44.0 · LATAR DIPERKAYA (BINTANG · PENGARAS · HEKSAGRAM) · MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v44.1 · DASAR DITERANGKAN + GARIS HORIZON · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
