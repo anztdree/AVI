@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.4</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -230,9 +230,7 @@ html[data-theme="siang"] .card{box-shadow:0 18px 42px -20px rgba(30,50,80,.4),0 
   box-shadow:0 0 8px rgba(94,234,212,.8);animation:blink 2.6s infinite}
 .comms .mdl{display:flex;align-items:baseline;gap:7px;color:var(--cyan);font-weight:700;letter-spacing:1.6px;font-size:10.5px;text-shadow:0 0 14px rgba(45,217,245,.35)}
 .comms .mdl b{font-size:8.5px;color:var(--dim2);letter-spacing:2px;text-shadow:none}
-.comms .lat{margin-left:auto;color:var(--gold);font-weight:700;letter-spacing:1.2px;transition:opacity .2s}
-.comms .lat.tick{animation:blink .5s 1}
-.tbtn{flex:none;padding:5px 12px;border-radius:9px;border:1px solid rgba(246,193,91,.42);color:var(--gold);font:700 9.5px var(--mono);letter-spacing:2px;cursor:pointer;transition:.2s;background:linear-gradient(160deg,rgba(246,193,91,.14),rgba(246,193,91,.03))}
+.tbtn{flex:none;margin-left:auto;padding:5px 12px;border-radius:9px;border:1px solid rgba(246,193,91,.42);color:var(--gold);font:700 9.5px var(--mono);letter-spacing:2px;cursor:pointer;transition:.2s;background:linear-gradient(160deg,rgba(246,193,91,.14),rgba(246,193,91,.03))}
 .tbtn:hover{border-color:rgba(246,193,91,.75);box-shadow:0 0 16px -5px rgba(246,193,91,.55)}
 .tbtn:active{transform:scale(.96)}
 .tbtn.busy{color:var(--cyan);border-color:rgba(45,217,245,.55);background:linear-gradient(160deg,rgba(45,217,245,.12),rgba(45,217,245,.02));animation:blink 1s infinite;pointer-events:none}
@@ -379,7 +377,7 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.62)}
 .vtag.soon{border-color:var(--goldSoft);background:var(--goldSoft);color:var(--gold)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
-   Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
+/* Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
    Inti lensa reaktor (konsep 2) tetap hidup — bola plasma morf v40 DIANGKAT total
    (v43.2: terbaca seperti janin bergerak, ditolak Pak). */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 6px}
@@ -682,7 +680,7 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 #orbIdle.done{color:var(--gold)}
 
 /* ---------- komposer: kapsul kaca dengan cincin fokus gradien ---------- */
-.composer{flex:none;display:flex;padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+.composer{flex:none;display:flex;padding:8px 16px calc(12px + env(safe-area-inset-bottom))}
 .cmd{flex:1;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 18px;border-radius:999px;position:relative;
   background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.015) 50%),var(--pan);backdrop-filter:blur(18px);
   border:1px solid var(--line2);transition:border-color .3s,box-shadow .3s;
@@ -700,27 +698,6 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 .cmd .send:hover{color:var(--txt);border-color:var(--line2)}
 .cmd .send.rdy{border:none;background:linear-gradient(135deg,#FFE3A6,var(--gold) 55%,#D18A1F);color:#241703;box-shadow:0 4px 22px -4px rgba(246,193,91,.5)}
 .cmd .send.rdy:hover{filter:brightness(1.07);color:#241703}
-
-/* ---------- NAV: dock kapsul melayang + indikator geser ---------- */
-nav{flex:none;display:flex;justify-content:center;padding:4px 16px calc(10px + env(safe-area-inset-bottom))}
-.dock{position:relative;display:flex;gap:2px;padding:5px;border-radius:999px;
-  background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.015) 50%),var(--pan);
-  backdrop-filter:blur(18px);border:1px solid var(--line2);box-shadow:0 20px 46px -18px rgba(0,0,0,.66),inset 0 1px 0 rgba(255,255,255,.06)}
-.dock::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.6;
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none}
-#dockInd{position:absolute;top:5px;bottom:5px;left:5px;width:96px;border-radius:999px;z-index:0;
-  background:linear-gradient(135deg,var(--cyanSoft),rgba(246,193,91,.08));
-  border:1px solid rgba(45,217,245,.38);box-shadow:0 0 20px -4px var(--glow),inset 0 0 14px rgba(45,217,245,.09);
-  transition:left .4s cubic-bezier(.3,1.35,.4,1),width .4s cubic-bezier(.3,1.35,.4,1)}
-html[data-theme="siang"] #dockInd{border-color:rgba(8,121,155,.4)}
-.dbtn{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:10px 17px;border-radius:999px;
-  font-size:10.5px;font-weight:700;letter-spacing:1.6px;color:var(--dim2);transition:color .25s;background:none;border:none;cursor:pointer}
-.dbtn svg{width:15px;height:15px;transition:filter .25s}
-.dbtn.on{color:var(--cyan)}
-.dbtn.on svg{filter:drop-shadow(0 0 6px var(--glow))}
-.dbtn .dot{display:none;position:absolute;top:7px;right:10px;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(246,193,91,.7)}
-.dbtn .dot.show{display:block}
 
 /* ---------- sheet TUGAS + PENGATURAN ---------- */
 #sheet,#setSheet{position:fixed;inset:0;z-index:60;pointer-events:none}
@@ -923,7 +900,6 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
       <div class="comms">
         <span class="dot"></span>
         <span class="mdl"><b>MODEL</b>GLM-4.6</span>
-        <span class="lat" id="clat">LAT 41MS</span>
         <button class="tbtn" id="btnTest">TEST</button>
       </div>
 
@@ -1083,16 +1059,6 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
     </div>
   </div>
 
-  <!-- NAV: dock kapsul melayang -->
-  <nav>
-    <div class="dock">
-      <span id="dockInd"></span>
-      <button class="navbtn dbtn on" data-v="obrolan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.55 0-3-.4-4.3-1.2L3 20l1.2-5.2A8.5 8.5 0 1 1 21 11.5z"/><circle cx="8.6" cy="11.5" r=".9" fill="var(--gold)" stroke="none"/><circle cx="12.5" cy="11.5" r=".9" fill="var(--gold)" stroke="none"/><circle cx="16.4" cy="11.5" r=".9" fill="var(--gold)" stroke="none"/></svg>OBROLAN</button>
-      <button class="navbtn dbtn" data-sheet="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.2h10M3.5 12h10M3.5 17.8h10"/><path d="M15.8 5.2l2 2 3.4-3.6" stroke="var(--gold)"/></svg>TUGAS<span class="dot" id="navDot"></span></button>
-      <button class="navbtn dbtn" data-v="kendali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7.5h8M17.5 7.5H20M4 16.5h3.5M12.5 16.5H20"/><circle cx="14.6" cy="7.5" r="2.5"/><circle cx="9.5" cy="16.5" r="2.5" stroke="var(--gold)"/></svg>KENDALI</button>
-    </div>
-  </nav>
-
   <!-- SHEET TUGAS -->
   <div id="sheet">
     <div class="shbg" id="shBg"></div>
@@ -1185,7 +1151,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   </div>
 </div>
 
-<div class="note">MK-XXI REGALIA v43.4 · MODEL+TEST · PENGATURAN · ORB MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v43.5 · TANPA LATENSI · TANPA DOCK · ORB TENGAH · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1198,10 +1164,6 @@ $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toa
 /* ---- stempel mesin: jam (v42: strip VOX dihapus — mewah itu tenang) ---- */
 function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 
-/* ---- latensi inti berdenyut — tanda vital sambungan (diam saat hasil TEST dipajang) ---- */
-let latHold=0;
-setInterval(()=>{const l=$('#clat');if(!l||Date.now()<latHold)return;l.textContent='LAT '+(34+Math.floor(Math.random()*26))+'MS';l.classList.remove('tick');void l.offsetWidth;l.classList.add('tick')},2400);
-
 /* ---- tema dikunci malam (v43.4: tombol mode gelap dihapus, jadi PENGATURAN) ---- */
 
 /* ---- sapaan per waktu ---- */
@@ -1212,15 +1174,6 @@ setInterval(()=>{const l=$('#clat');if(!l||Date.now()<latHold)return;l.textConte
   const gt=$('#greetT');if(gt)gt.textContent=nowT();
 })();
 
-/* ---- navigasi: dock + indikator geser ---- */
-function moveInd(btn){const ind=$('#dockInd');if(!ind||!btn)return;ind.style.left=btn.offsetLeft+'px';ind.style.width=btn.offsetWidth+'px'}
-$$('.navbtn').forEach(b=>b.addEventListener('click',()=>{
-  if(b.dataset.sheet){openSheet();return}
-  $$('.navbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');moveInd(b);
-  $$('.view').forEach(v=>v.classList.remove('on'));
-  $('#v-'+b.dataset.v).classList.add('on');
-}));
-window.addEventListener('resize',()=>moveInd($('.navbtn.on')));
 
 /* ---- SATU SLOT di sisi orb (v17): telemetri/status ---- */
 const IDLE_TX='MK-XIX · HUD SENTRI · NET AKTIF · MEMORI 62%';
@@ -1332,25 +1285,20 @@ $('#btnSet').addEventListener('click',openSet);
 $('#setClose').addEventListener('click',closeSet);
 $('#setBg').addEventListener('click',closeSet);
 
-/* ---- uji model: tombol TEST menulis hasil ke telemetri latensi ---- */
+/* ---- uji model: TEST menyala sebentar, AVI melapor lewat toast ---- */
 $('#btnTest').addEventListener('click',()=>{
-  const b=$('#btnTest'),l=$('#clat');
+  const b=$('#btnTest');
   if(b.classList.contains('busy'))return;
   b.classList.add('busy');b.textContent='UJI…';
-  l.textContent='MENGUJI…';l.classList.remove('tick');void l.offsetWidth;l.classList.add('tick');
   setTimeout(()=>{
-    const ms=38+Math.floor(Math.random()*57);
     b.classList.remove('busy');b.textContent='TEST';
-    l.textContent='OK · '+ms+'MS';l.classList.remove('tick');void l.offsetWidth;l.classList.add('tick');
-    latHold=Date.now()+9000;
-  },850+Math.floor(Math.random()*550));
+    toast('Model merespons — siap menemani, Pak');
+  },900+Math.floor(Math.random()*500));
 });
 function jump(sel){
   closeSheet();
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-obrolan').classList.add('on');
-  $$('.navbtn').forEach(x=>x.classList.toggle('on',x.dataset.v==='obrolan'));
-  moveInd($('.navbtn.on'));
   const el=$(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
@@ -1402,7 +1350,6 @@ function render(){
   const sp=$('#shRunPct');if(sp&&taskActive)sp.textContent=Math.round(pct)+'%';
   const sb=$('#shBarTx');if(sb)sb.style.width=pct+'%';
   const ss=$('#shStepTx');if(ss&&taskActive&&!stopped&&!done)ss.textContent=step;
-  const nd=$('#navDot');if(nd)nd.classList.toggle('show',taskActive&&!stopped&&!done);
 }
 function collapseWork(){const w=$('#stgWork');w.classList.remove('open')}
 function startTask(name){
@@ -1449,7 +1396,6 @@ function finish(){
   trimChat();
   evtLine('TUGAS TUNTAS — DOKUMEN SIAP DI OBROLAN',true,'#followMsg');
   $('#hdOrb').classList.remove('work');
-  const nd=$('#navDot');if(nd)nd.classList.remove('show');
   const st=$('#strip');st.classList.add('ok');
   $('#stPct').textContent='TUNTAS';
   $('#btnSPause').textContent='JEDA';
@@ -1491,7 +1437,6 @@ function doStop(){
   const ob=$('#orbBig');ob.classList.remove('work');
   slotIdle('MK1 · SIAGA · MENUNGGU PERINTAH PAK');
   $('#hdOrb').classList.remove('work');
-  const nd=$('#navDot');if(nd)nd.classList.remove('show');
   const st=$('#strip');st.classList.add('bad');$('#stPct').textContent='STOP';
   setTimeout(()=>{st.classList.remove('on')},3800);
   const sh=$('#shRun');
@@ -1564,8 +1509,6 @@ $('#lvClose').addEventListener('click',lvClose);
 $('#app').classList.add('live');
 seqMsg($('#greetMsg')); /* sapaan = pesan tertua dalam riwayat */
 render();
-moveInd($('.navbtn.on'));
-setTimeout(()=>moveInd($('.navbtn.on')),350); /* ulang setelah font termuat — indikator presisi */
 (function(){const m=$('main');if(m)m.scrollTop=m.scrollHeight})();
 /* bingkai tetap tegap: .app TIDAK BOLEH tergulik */
 (function(){const a=$('#app');a.addEventListener('scroll',()=>{if(a.scrollTop!==0)a.scrollTop=0})})();
