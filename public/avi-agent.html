@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.9</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v44.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -105,6 +105,25 @@ html[data-theme="siang"] .app{
   background:linear-gradient(112deg,transparent 14%,rgba(45,217,245,.14) 40%,rgba(246,193,91,.10) 68%,transparent 88%);
   animation:aurD 16s ease-in-out infinite alternate}
 @keyframes aurD{from{transform:translateX(-2.5%) skewX(-3deg)}to{transform:translateX(2.5%) skewX(2.5deg)}}
+/* (v44.0) latar diperkaya: bintang debu + penggaris blueprint + arsir sudut + watermark heksagram */
+.bgFx .specks{width:2px;height:2px;left:24px;top:140px;border-radius:50%;filter:none;opacity:.75;animation:twk 6.5s ease-in-out infinite alternate;
+  box-shadow:
+    40px 60px 0 0 rgba(148,178,224,.34),150px 26px 0 0 rgba(246,193,91,.30),300px 80px 0 0 rgba(148,178,224,.24),
+    360px 180px 0 0 rgba(246,193,91,.28),90px 240px 0 0 rgba(148,178,224,.20),210px 210px 0 0 rgba(94,234,212,.24),
+    330px 320px 0 0 rgba(148,178,224,.30),60px 380px 0 0 rgba(246,193,91,.20),260px 430px 0 0 rgba(148,178,224,.24),
+    380px 520px 0 0 rgba(246,193,91,.24),140px 540px 0 0 rgba(148,178,224,.20),40px 620px 0 0 rgba(94,234,212,.20),
+    300px 640px 0 0 rgba(148,178,224,.30),180px 700px 0 0 rgba(246,193,91,.20)}
+@keyframes twk{from{opacity:.45}to{opacity:.9}}
+.bgFx .ruler{left:0;top:0;bottom:0;width:7px;border-radius:0;filter:none;
+  background:repeating-linear-gradient(180deg,rgba(148,178,224,.30) 0 1px,transparent 1px 26px);
+  -webkit-mask:linear-gradient(180deg,transparent,#000 10%,#000 90%,transparent);
+          mask:linear-gradient(180deg,transparent,#000 10%,#000 90%,transparent)}
+.bgFx .ruler.r{left:auto;right:0;transform:scaleX(.55);opacity:.7}
+.bgFx .hatch{width:130px;height:130px;border-radius:0;filter:none;opacity:.55;
+  background:repeating-linear-gradient(45deg,rgba(148,178,224,.13) 0 1px,transparent 1px 7px)}
+.bgFx .hatch.tl{left:0;top:0;-webkit-mask:linear-gradient(135deg,#000,transparent 72%);mask:linear-gradient(135deg,#000,transparent 72%)}
+.bgFx .hatch.br{right:0;bottom:0;-webkit-mask:linear-gradient(315deg,#000,transparent 72%);mask:linear-gradient(315deg,#000,transparent 72%)}
+.bgFx .hexwm{position:absolute;left:50%;top:32%;width:290px;height:290px;margin:-145px 0 0 -145px;filter:none;opacity:.55;animation:spin 90s linear infinite}
 @keyframes driftA{to{transform:translate(46px,36px) scale(1.16)}}
 @keyframes driftB{to{transform:translate(-42px,-30px) scale(1.12)}}
 .gridL{position:absolute;inset:-2%;
@@ -888,7 +907,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 <div class="app" id="app">
 
   <!-- latar ATELIER: grid blueprint bermask + dua pendaran tenang + vignette -->
-  <div class="bgFx"><i class="gA"></i><i class="gB"></i><i class="gC"></i><i class="aur"></i><div class="gridL"></div><div class="gridL g2"></div><div class="noise"></div><i class="orn tl"></i><i class="orn tr"></i><i class="orn bl"></i><i class="orn br"></i></div>
+  <div class="bgFx"><i class="gA"></i><i class="gB"></i><i class="gC"></i><i class="aur"></i><i class="specks"></i><i class="ruler"></i><i class="ruler r"></i><i class="hatch tl"></i><i class="hatch br"></i><svg class="hexwm" viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M50 8 88 74 12 74Z" stroke="rgba(45,217,245,.16)" stroke-width="1.1"/><path d="M50 92 12 26 88 26Z" stroke="rgba(246,193,91,.13)" stroke-width="1.1"/></svg><div class="gridL"></div><div class="gridL g2"></div><div class="noise"></div><i class="orn tl"></i><i class="orn tr"></i><i class="orn bl"></i><i class="orn br"></i></div>
   <div class="vig"></div>
 
   <!-- HEADER -->
@@ -1177,7 +1196,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   </div>
 </div>
 
-<div class="note">MK-XXI REGALIA v43.9 · TEMA &amp; IKON DIPERCANTUI · ORB TERANGKAT 54PX · MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v44.0 · LATAR DIPERKAYA (BINTANG · PENGARAS · HEKSAGRAM) · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
