@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.6</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -380,7 +380,7 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.62)}
 /* Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
    Inti lensa reaktor (konsep 2) tetap hidup — bola plasma morf v40 DIANGKAT total
    (v43.2: terbaca seperti janin bergerak, ditolak Pak). */
-#orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 18px 8px}
+#orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 24px}
 /* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
 .heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
 .heroWrap .orbBig{transform:scale(1.786);transform-origin:0 0}
@@ -845,7 +845,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   .heroWrap{width:150px;height:150px}
   .heroWrap .orbBig{transform:scale(1.34)}
   .aura{inset:-26px}
-  #orbDock{gap:4px;padding:2px 18px 4px}
+  #orbDock{gap:4px;padding:2px 18px 14px}
   #orbIdle{display:none}
   .comms{margin-top:10px;padding:7px 12px;letter-spacing:1.4px}
 }
@@ -880,31 +880,6 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
       <button class="icobtn" id="btnSet" aria-label="Pengaturan" title="Pengaturan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r=".8" fill="var(--gold)" stroke="none"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     </div>
   </header>
-
-  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung atas: langsung di bawah topbar, chat mengalir di bawahnya (v41 · TIDAK DISENTUH) -->
-  <div id="orbDock">
-    <div class="heroWrap">
-      <div class="aura"></div>
-      <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
-      <div class="panggung3d">
-        <div class="hud">
-          <i class="harc k1"></i><i class="harc k2"></i><i class="harc htick"></i><i class="harc hdata"></i><i class="harc hsweep"></i>
-          <i class="hnode w1"><s></s></i><i class="hnode w2"><s></s></i><i class="hnode w3"><s></s></i>
-        </div>
-        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="lscan"></i></i><i class="ltri"><b></b></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
-      </div>
-      <svg width="112" height="112" viewBox="0 0 112 112">
-        <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
-      </svg>
-      <div class="halo"></div>
-      <div class="pcscrim"></div>
-      <span class="pct" id="stgPct">0%</span>
-      </div>
-    </div>
-    <div class="orbSide" id="orbSide">
-      <div id="orbIdle">MK-XIX · HUD SENTRI · KALIBRASI HALUS · MEMORI 62%</div>
-    </div>
-  </div>
 
   <!-- STRIP KENDALI (baru tampil saat agent bekerja) -->
   <div id="strip">
@@ -1050,6 +1025,31 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
     </section>
   </main>
 
+  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung bawah: di atas komposer, diangkat SEDIKIT dari posisi lama (v41 · TIDAK DISENTUH) -->
+  <div id="orbDock">
+    <div class="heroWrap">
+      <div class="aura"></div>
+      <div class="orbBig" id="orbBig" title="Ketuk — bicara dengan AVI">
+      <div class="panggung3d">
+        <div class="hud">
+          <i class="harc k1"></i><i class="harc k2"></i><i class="harc htick"></i><i class="harc hdata"></i><i class="harc hsweep"></i>
+          <i class="hnode w1"><s></s></i><i class="hnode w2"><s></s></i><i class="hnode w3"><s></s></i>
+        </div>
+        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="lscan"></i></i><i class="ltri"><b></b></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
+      </div>
+      <svg width="112" height="112" viewBox="0 0 112 112">
+        <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
+      </svg>
+      <div class="halo"></div>
+      <div class="pcscrim"></div>
+      <span class="pct" id="stgPct">0%</span>
+      </div>
+    </div>
+    <div class="orbSide" id="orbSide">
+      <div id="orbIdle">MK-XIX · HUD SENTRI · KALIBRASI HALUS · MEMORI 62%</div>
+    </div>
+  </div>
+
   <!-- komposer: kapsul kaca — TANPA LAMPIRAN -->
   <div class="composer">
     <div class="cmd">
@@ -1151,7 +1151,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   </div>
 </div>
 
-<div class="note">MK-XXI REGALIA v43.6 · ORB NAIK KE ATAS · TANPA LATENSI · TANPA DOCK · MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v43.7 · ORB NAIK SEDIKIT · TANPA LATENSI · TANPA DOCK · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
