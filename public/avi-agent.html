@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.8</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v43.9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -100,6 +100,11 @@ html[data-theme="siang"] .app{
 .bgFx .gA{width:58%;height:42%;left:-16%;top:-12%;background:rgba(45,217,245,.14);animation:driftA 17s ease-in-out infinite alternate}
 .bgFx .gB{width:62%;height:48%;right:-18%;bottom:-16%;background:rgba(246,193,91,.11);animation:driftB 21s ease-in-out infinite alternate}
 .bgFx .gC{width:44%;height:36%;right:-12%;top:-16%;background:rgba(94,234,212,.075);animation:driftA 25s ease-in-out infinite alternate-reverse}
+/* (v43.9) pita aurora sian-emas — tema tak lagi polos */
+.bgFx .aur{left:6%;right:6%;top:9%;height:26%;filter:blur(30px);opacity:.55;border-radius:50%;
+  background:linear-gradient(112deg,transparent 14%,rgba(45,217,245,.14) 40%,rgba(246,193,91,.10) 68%,transparent 88%);
+  animation:aurD 16s ease-in-out infinite alternate}
+@keyframes aurD{from{transform:translateX(-2.5%) skewX(-3deg)}to{transform:translateX(2.5%) skewX(2.5deg)}}
 @keyframes driftA{to{transform:translate(46px,36px) scale(1.16)}}
 @keyframes driftB{to{transform:translate(-42px,-30px) scale(1.12)}}
 .gridL{position:absolute;inset:-2%;
@@ -174,6 +179,15 @@ header::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1.5
 .brand small{font:600 8px var(--mono);letter-spacing:3.4px;color:var(--dim2);display:block;margin-top:2px}
 .hdR{margin-left:auto;display:flex;align-items:center;gap:8px}
 .icobtn{width:38px;height:38px;border-radius:13px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);transition:.2s;background:var(--pan);backdrop-filter:blur(10px)}
+/* (v43.9) PENGATURAN: tombol ikon dibuat sederhana — bingkai emas dua lapis + gir berputar saat disentuh */
+#btnSet{position:relative;border:none;color:var(--gold);
+  background:linear-gradient(160deg,rgba(246,193,91,.17),rgba(246,193,91,.05) 52%,rgba(45,217,245,.09));
+  box-shadow:inset 0 0 0 1px rgba(246,193,91,.4),inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px -10px rgba(246,193,91,.4)}
+#btnSet::before{content:'';position:absolute;inset:3px;border-radius:10px;border:1px dashed rgba(246,193,91,.3);pointer-events:none;transition:.3s}
+#btnSet svg{transition:transform .55s cubic-bezier(.22,1,.36,1)}
+#btnSet:hover{box-shadow:inset 0 0 0 1px rgba(246,193,91,.75),0 0 24px -6px rgba(246,193,91,.6),inset 0 1px 0 rgba(255,255,255,.14)}
+#btnSet:hover::before{border-color:rgba(246,193,91,.55);transform:scale(.94)}
+#btnSet:hover svg{transform:rotate(90deg)}
 .icobtn:hover{color:var(--gold);border-color:var(--line2);box-shadow:0 0 16px -6px rgba(246,193,91,.4)}
 
 /* ---------- strip kendali ---------- */
@@ -230,7 +244,11 @@ html[data-theme="siang"] .card{box-shadow:0 18px 42px -20px rgba(30,50,80,.4),0 
   box-shadow:0 0 8px rgba(94,234,212,.8);animation:blink 2.6s infinite}
 .comms .mdl{display:flex;align-items:baseline;gap:7px;color:var(--cyan);font-weight:700;letter-spacing:1.6px;font-size:10.5px;text-shadow:0 0 14px rgba(45,217,245,.35)}
 .comms .mdl b{font-size:8.5px;color:var(--dim2);letter-spacing:2px;text-shadow:none}
-.tbtn{flex:none;margin-left:auto;padding:5px 12px;border-radius:9px;border:1px solid rgba(246,193,91,.42);color:var(--gold);font:700 9.5px var(--mono);letter-spacing:2px;cursor:pointer;transition:.2s;background:linear-gradient(160deg,rgba(246,193,91,.14),rgba(246,193,91,.03))}
+.tbtn{position:relative;flex:none;margin-left:auto;padding:5px 12px;border-radius:9px;border:1px solid rgba(246,193,91,.42);color:var(--gold);font:700 9.5px var(--mono);letter-spacing:2px;cursor:pointer;transition:.2s;background:linear-gradient(160deg,rgba(246,193,91,.14),rgba(246,193,91,.03))}
+/* (v43.9) sudut bidik ala comms — TEST ikut bahasa sudut emas */
+.tbtn::before,.tbtn::after{content:'';position:absolute;width:7px;height:7px;pointer-events:none;opacity:.85}
+.tbtn::before{left:-3px;top:-3px;border-left:1.5px solid rgba(246,193,91,.6);border-top:1.5px solid rgba(246,193,91,.6)}
+.tbtn::after{right:-3px;bottom:-3px;border-right:1.5px solid rgba(246,193,91,.6);border-bottom:1.5px solid rgba(246,193,91,.6)}
 .tbtn:hover{border-color:rgba(246,193,91,.75);box-shadow:0 0 16px -5px rgba(246,193,91,.55)}
 .tbtn:active{transform:scale(.96)}
 .tbtn.busy{color:var(--cyan);border-color:rgba(45,217,245,.55);background:linear-gradient(160deg,rgba(45,217,245,.12),rgba(45,217,245,.02));animation:blink 1s infinite;pointer-events:none}
@@ -381,6 +399,9 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.62)}
    Inti lensa reaktor (konsep 2) tetap hidup — bola plasma morf v40 DIANGKAT total
    (v43.2: terbaca seperti janin bergerak, ditolak Pak). */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 60px}
+/* (v43.9) alas cahaya di bawah panggung orb — dekor latar, orb v41 TIDAK disentuh */
+#orbDock::before{content:'';position:absolute;left:50%;bottom:14px;width:340px;height:160px;transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(55% 64% at 50% 60%,rgba(45,217,245,.12),rgba(246,193,91,.06) 54%,transparent 78%)}
 /* HERO — panggung orb: 200px saat siaga, 112px saat papan ketik buka */
 .heroWrap{position:relative;width:200px;height:200px;flex:none;transition:width .28s ease,height .28s ease}
 .heroWrap .orbBig{transform:scale(1.786);transform-origin:0 0}
@@ -694,8 +715,13 @@ html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 .cmd input::placeholder{color:var(--dim2)}
 .cmd .cbtn{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--line);color:var(--dim);transition:.2s;background:var(--pan2);cursor:pointer}
 .cmd .cbtn:hover{color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px -4px var(--glow)}
-.cmd .send{border:1px solid var(--line2);background:var(--pan2);color:var(--dim2);transition:.25s}
-.cmd .send:hover{color:var(--txt);border-color:var(--line2)}
+/* (v43.9) MIC: kaca sian + sorot atas; SEND: emas tenang sejak diam — komposer tak polos lagi */
+#btnMic{color:var(--cyan);border-color:rgba(45,217,245,.34);
+  background:linear-gradient(160deg,rgba(45,217,245,.15),rgba(45,217,245,.04) 58%),var(--pan2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 16px -10px rgba(45,217,245,.5)}
+#btnMic:hover{color:var(--mint);border-color:rgba(45,217,245,.75);box-shadow:0 0 20px -4px rgba(45,217,245,.55),inset 0 1px 0 rgba(255,255,255,.1)}
+.cmd .send{border:1px solid rgba(246,193,91,.36);background:linear-gradient(160deg,rgba(246,193,91,.14),rgba(246,193,91,.03));color:var(--gold);transition:.25s}
+.cmd .send:hover{color:var(--gold);border-color:rgba(246,193,91,.7);box-shadow:0 0 18px -6px rgba(246,193,91,.5)}
 .cmd .send.rdy{border:none;background:linear-gradient(135deg,#FFE3A6,var(--gold) 55%,#D18A1F);color:#241703;box-shadow:0 4px 22px -4px rgba(246,193,91,.5)}
 .cmd .send.rdy:hover{filter:brightness(1.07);color:#241703}
 
@@ -862,7 +888,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 <div class="app" id="app">
 
   <!-- latar ATELIER: grid blueprint bermask + dua pendaran tenang + vignette -->
-  <div class="bgFx"><i class="gA"></i><i class="gB"></i><i class="gC"></i><div class="gridL"></div><div class="gridL g2"></div><div class="noise"></div><i class="orn tl"></i><i class="orn tr"></i><i class="orn bl"></i><i class="orn br"></i></div>
+  <div class="bgFx"><i class="gA"></i><i class="gB"></i><i class="gC"></i><i class="aur"></i><div class="gridL"></div><div class="gridL g2"></div><div class="noise"></div><i class="orn tl"></i><i class="orn tr"></i><i class="orn bl"></i><i class="orn br"></i></div>
   <div class="vig"></div>
 
   <!-- HEADER -->
@@ -1151,7 +1177,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   </div>
 </div>
 
-<div class="note">MK-XXI REGALIA v43.8 · ORB TERANGKAT 54PX · TANPA LATENSI · TANPA DOCK · MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v43.9 · TEMA &amp; IKON DIPERCANTUI · ORB TERANGKAT 54PX · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
