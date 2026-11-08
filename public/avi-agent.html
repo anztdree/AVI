@@ -241,23 +241,6 @@ html[data-theme="siang"] .card{box-shadow:0 18px 42px -20px rgba(30,50,80,.4),0 
 .comms .lat{margin-left:auto;color:var(--gold);font-weight:700;letter-spacing:1.2px;transition:opacity .2s}
 .comms .lat.tick{animation:blink .5s 1}
 
-/* ---------- sapaan cepat: rail premium berikon-tile ---------- */
-.chips{display:flex;gap:9px;overflow-x:auto;margin-top:13px;padding:4px 2px 10px;scrollbar-width:none;
-  animation:msgIn .55s .22s cubic-bezier(.22,1,.36,1) both;
-  -webkit-mask:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 18px),transparent);
-          mask:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 18px),transparent)}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;display:inline-flex;align-items:center;gap:9px;padding:7px 15px 7px 8px;border-radius:14px;
-  border:1px solid var(--line2);background:linear-gradient(160deg,rgba(255,255,255,.05),transparent 55%),var(--pan);backdrop-filter:blur(10px);
-  font:500 12.5px var(--ui);letter-spacing:.3px;color:var(--dim);transition:.25s;position:relative;overflow:hidden}
-.chip::after{content:'';position:absolute;left:12px;right:12px;bottom:0;height:1.5px;border-radius:2px;
-  background:linear-gradient(90deg,transparent,rgba(246,193,91,.65),transparent);opacity:0;transition:.3s}
-.chip svg{width:25px;height:25px;padding:5.5px;box-sizing:border-box;border-radius:9px;flex:none;
-  color:var(--gold);background:linear-gradient(140deg,var(--goldSoft),rgba(45,217,245,.07));border:1px solid var(--line)}
-.chip:hover{color:var(--txt);border-color:rgba(246,193,91,.5);box-shadow:0 8px 22px -10px rgba(246,193,91,.35),0 0 18px -8px var(--glow);transform:translateY(-1.5px)}
-.chip:hover::after{opacity:1;left:16px;right:16px}
-.chip:active{transform:translateY(0)}
-
 /* ---------- pesan: panel HUD berhias — TIDAK POLOS lagi ---------- */
 .msg{display:flex;gap:10px;margin-top:18px;align-items:flex-end;animation:msgIn .5s cubic-bezier(.22,1,.36,1) both}
 #greetMsg{margin-top:14px}
@@ -695,13 +678,8 @@ html[data-theme="siang"] .pcscrim{background:radial-gradient(circle,rgba(255,255
 html[data-theme="siang"] .pct{color:#075E75;text-shadow:0 1px 3px rgba(255,255,255,.85),0 0 10px rgba(9,125,150,.25)}
 html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 
-/* SLOT teks + STRIP RINGKASAN di bawah orb hero (v30) */
+/* SLOT teks di bawah orb hero (v30) */
 .orbSide{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;max-width:360px;position:relative;text-align:center}
-.sumChip{display:inline-flex;align-items:center;gap:7px;font:700 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim);
-  background:var(--pan);border:1px solid var(--line2);border-radius:999px;padding:6px 13px;max-width:100%;
-  box-shadow:0 10px 22px -10px rgba(0,0,0,.6)}
-.sumChip i{width:5px;height:5px;border-radius:50%;background:var(--gold);flex:none;box-shadow:0 0 6px rgba(245,181,74,.8)}
-.sumChip b{color:var(--cyan);font-weight:700}
 #orbIdle{font:600 9px var(--mono);letter-spacing:2.2px;color:var(--dim2);max-width:340px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s}
 #orbIdle.work{color:var(--cyan)}
@@ -886,8 +864,6 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
   .aura{inset:-26px}
   #orbDock{gap:4px;padding:2px 18px 4px}
   #orbIdle{display:none}
-  .chips{margin-top:12px;gap:8px}
-  .chip{padding:6px 13px 6px 7px;font-size:11.5px}
   .comms{margin-top:10px;padding:7px 12px;letter-spacing:1.4px}
 }
 
@@ -949,14 +925,6 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 
       <!-- percakapan: sapaan pembuka -->
       <div class="msg" id="greetMsg"><span class="mav"><i class="tk"></i><i class="cd"></i><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M20 6.5 32.5 27.5H7.5Z" stroke="#2DD9F5" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 33.5 7.5 12.5H32.5Z" stroke="#F6C15B" stroke-width="2" stroke-linejoin="round" opacity=".9"/></svg><i class="pip"></i></span><div class="mcol"><div class="mmeta"><b>AVI</b><span class="mts"><i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
-
-      <!-- sapaan cepat -->
-      <div class="chips" id="chips">
-        <button class="chip" data-t="Rekap rapat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>Rekap rapat</button>
-        <button class="chip" data-t="Draf email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7.5l7.5 5.5 7.5-5.5"/></svg>Draf email</button>
-        <button class="chip" data-t="Laporan pengeluaran"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V16M9.3 19.5v-8M14.7 19.5V9M20 19.5V5"/></svg>Laporan pengeluaran</button>
-        <button class="chip" data-t="Pengingat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 7.5-2.5 7.5h17S18 14.5 18 8.5"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg>Pengingat</button>
-      </div>
 
       <!-- panel kerja agent: AGENT DI DALAM AVI -->
       <div id="stgWork">
@@ -1099,7 +1067,6 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
     </div>
     <div class="orbSide" id="orbSide">
       <div id="orbIdle">MK-XIX · HUD SENTRI · KALIBRASI HALUS · MEMORI 62%</div>
-      <div class="sumChip"><i></i>RINGKASAN · <b>2 JADWAL</b> · <b>1 PENGINGAT</b> · CERAH 31°</div>
     </div>
   </div>
 
@@ -1219,9 +1186,6 @@ $('#btnTheme').addEventListener('click',()=>{
   $('#greetBub').innerHTML='Selamat '+w+', Pak. Ada yang bisa saya urus hari ini?';
   const gt=$('#greetT');if(gt)gt.textContent=nowT();
 })();
-
-/* ---- sapaan cepat: chip = perintah langsung ---- */
-$$('.chip').forEach(c=>c.addEventListener('click',()=>{$('#cin').value=c.dataset.t;handleSend()}));
 
 /* ---- navigasi: dock + indikator geser ---- */
 function moveInd(btn){const ind=$('#dockInd');if(!ind||!btn)return;ind.style.left=btn.offsetLeft+'px';ind.style.width=btn.offsetWidth+'px'}
