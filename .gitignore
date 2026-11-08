@@ -1,54 +1,67 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ============================================================
+#  REPO INI KHUSUS PROYEK APK AVI — rules di bawah DIKUNCI.
+#  Yang boleh masuk repo HANYA:
+#    - android-app/            (sumber APK Kotlin+Compose)
+#    - build.gradle.kts / settings.gradle.kts / gradle.properties
+#    - .github/workflows/build-android.yml  (CI build APK)
+#    - public/avi-agent.html   (mockup display sebelum dikemas APK)
+#    - docs/                   (RENCANA, SPESIFIKASI, RIWAYAT)
+#    - README.md, .gitignore
+#  Sisanya = scaffolding sandbox (Next.js/Bun) yang HANYA hidup di
+#  lokal untuk preview — jangan pernah di-commit lagi.
+# ============================================================
 
-# dependencies
-node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-local-*
-.claude
-.z-ai-config
+# --- runtime & dependensi ---
+node_modules/
+.next/
+out/
+build/
+coverage/
 *.log
 dev.log
 dev.out.log
-test
-prompt
-
 server.log
-# Skills directory
-/skills/
+*.pid
+.env*
+.vercel
+*.tsbuildinfo
+.DS_Store
+
+# --- scaffolding Next.js/Bun (lokal saja) ---
+/src/
+/examples/
+/tests/
+/mini-services/
+/db/
+/prisma/
+/.zscripts/
+Caddyfile
+bun.lock
+bun.lockb
+package.json
+package-lock.json
+yarn.lock
+components.json
+next.config.ts
+tsconfig.json
+tailwind.config.ts
+postcss.config.mjs
+eslint.config.mjs
+
+# --- public: hanya mockup AVI yang boleh ---
+/public/*
+!/public/avi-agent.html
+
+# --- GitHub: hanya workflow build APK ---
+/.github/workflows/*
+!/.github/workflows/build-android.yml
+
+# --- folder kerja tool lokal ---
+.claude/
+.z-ai-config/
+skills/
+tool-results/
+agent-ctx/
+prompt
+test
+local-*
