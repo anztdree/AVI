@@ -25,6 +25,7 @@ server.log
 .env*
 .vercel
 *.tsbuildinfo
+next-env.d.ts
 .DS_Store
 
 # --- scaffolding Next.js/Bun (lokal saja) ---
