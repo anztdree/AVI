@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v51</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v52</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -615,7 +615,7 @@ html.kb .aura{inset:-14px}
 /* (v49) DENGAR = DRAMATIS — umpan Pak: "dari tadi komplain gak ada perubahan".
    Akar masalah: state idle sudah ramai animasi -> perubahan halus tak terlihat.
    Kini saat mendengarkan: orb MEMBESAR 16%, LEDAKAN cahaya saat diklik,
-   glow kuat bernapas, plasma melmebar, HUD power-up, EQ besar.
+   glow kuat bernapas, plasma melmebar & HUD power-up.
    (v51) sonar diganti SATU cincin tipis; goyang & naik-turun badan DIHAPUS — tenang.
    Prinsip tetap: animation-duration animasi lama tak disentuh */
 #orbDock .heroWrap{transition:transform .6s cubic-bezier(.22,1,.36,1)}
@@ -679,31 +679,12 @@ html.kb .aura{inset:-14px}
 .lface .hexp i.r{transform:rotate(180deg);
   background:linear-gradient(180deg,rgba(245,181,74,.6),rgba(245,181,74,.1))}
 @keyframes hexpD{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-/* pindai cepat khas "sedang mendengar" — hanya tampil saat .hear */
-.lface .lscanH{position:absolute;left:2px;right:2px;top:0;height:7px;margin-top:-3.5px;border-radius:3px;mix-blend-mode:screen;
-  background:linear-gradient(180deg,transparent,rgba(160,244,255,.3) 40%,rgba(255,255,255,.55) 50%,rgba(160,244,255,.3) 60%,transparent);
-  opacity:0;animation:lscanH 1.7s ease-in-out infinite;display:none}
-.orbBig.hear .lscanH{display:block}
-@keyframes lscanH{0%{opacity:0;transform:translateY(4px)}30%{opacity:.9}80%{opacity:.5}100%{opacity:0;transform:translateY(52px)}}
-/* ekualiser dengar: 7 batang bergelombang berjalan sian-emas berselang */
-.lface .eq{position:absolute;left:50%;bottom:5px;width:52px;height:20px;margin-left:-26px;z-index:2;
-  display:flex;align-items:flex-end;justify-content:space-between;opacity:0;transform:translateY(4px);
-  transition:opacity .45s,transform .45s}
-.orbBig.hear .eq{opacity:1;transform:none}
-.lface .eq u{width:4px;height:30%;border-radius:2px;
-  background:linear-gradient(180deg,#EAFBFF,rgba(34,211,238,.85));
-  box-shadow:0 0 7px rgba(34,211,238,.7);
-  animation:eqD 1.1s ease-in-out infinite}
-.lface .eq u:nth-child(2){width:3.4px;animation-duration:.85s;animation-delay:.12s}
-.lface .eq u:nth-child(3){width:4.4px;animation-duration:1.35s;animation-delay:.24s}
-.lface .eq u:nth-child(4){animation-duration:.95s;animation-delay:.36s;background:linear-gradient(180deg,#FFF4DA,rgba(245,181,74,.9));box-shadow:0 0 7px rgba(245,181,74,.65)}
-.lface .eq u:nth-child(5){width:4.4px;animation-duration:1.5s;animation-delay:.48s}
-.lface .eq u:nth-child(6){width:3.4px;animation-duration:.9s;animation-delay:.6s}
-.lface .eq u:nth-child(7){animation-duration:1.2s;animation-delay:.72s}
-@keyframes eqD{0%{height:26%}30%{height:94%}55%{height:36%}78%{height:100%}100%{height:26%}}
+/* (v52) BAR NAIK-TURUN DIHAPUS TOTAL — umpan Pak: "bar naik turunnya masih ada
+   dan itu justru yg bikin orb jelek". Ekualiser 7 batang (eq) & pindai cepat
+   dengar (lscanH) dibuang semua — wajah orb bersih & tenang saat mendengar */
 
 /* — (v50) DENGAR = ORB MENYALA HIJAU: seluruh wajah & energi orb berganti warna state —
-   heksagram D1 menyala penuh, plasma kolam emerald, EQ hijau, segitiga kaca hijau,
+   heksagram D1 menyala penuh, plasma kolam emerald, segitiga kaca hijau,
    halo/pulsa/energi orbit ikut emerald — satu identitas "MIC HIDUP" — */
 .lface .hexp{transition:opacity .4s}
 .orbBig.hear .lface .hexp{opacity:1}
@@ -713,9 +694,6 @@ html.kb .aura{inset:-14px}
 .orbBig.hear .ltri{opacity:1}
 .orbBig.hear .ltri b{background:linear-gradient(180deg,rgba(236,253,245,.98),rgba(110,231,183,.8) 55%,rgba(16,185,129,.92))}
 .orbBig.hear .ltri b::after{background:rgba(3,26,18,.55)}
-.orbBig.hear .lscanH{background:linear-gradient(180deg,transparent,rgba(167,243,208,.35) 40%,rgba(240,255,248,.6) 50%,rgba(167,243,208,.35) 60%,transparent)}
-.orbBig.hear .eq u{background:linear-gradient(180deg,#EAFFF6,rgba(52,211,153,.9));box-shadow:0 0 8px rgba(52,211,153,.75)}
-.orbBig.hear .eq u:nth-child(4){background:linear-gradient(180deg,#FFF4DA,rgba(245,181,74,.9));box-shadow:0 0 7px rgba(245,181,74,.65)}
 .orbBig.hear .lseg{filter:brightness(1.35) drop-shadow(0 0 8px rgba(52,211,153,.75))}
 .orbBig.hear .ltick{filter:hue-rotate(-38deg) brightness(1.4)}
 .orbBig.hear .lbkt{border-color:rgba(167,243,208,.72);opacity:1}
@@ -826,8 +804,6 @@ html[data-theme="siang"] .orbBig.hear .lface .coreGlow{background:radial-gradien
 html[data-theme="siang"] .orbBig.hear .lface .hexp i{background:linear-gradient(180deg,rgba(6,125,95,.85),rgba(5,150,105,.35))}
 html[data-theme="siang"] .orbBig.hear .lface .hexp i.r{background:linear-gradient(180deg,rgba(176,110,10,.85),rgba(176,110,10,.35))}
 html[data-theme="siang"] .orbBig.hear .ltri b{background:linear-gradient(180deg,rgba(236,253,245,.95),rgba(110,231,183,.55) 55%,rgba(6,125,95,.8))}
-html[data-theme="siang"] .orbBig.hear .eq u{background:linear-gradient(180deg,#EAFBF4,rgba(5,150,105,.85));box-shadow:0 0 7px rgba(5,150,105,.6)}
-html[data-theme="siang"] .orbBig.hear .eq u:nth-child(4){background:linear-gradient(180deg,#FFF4DA,rgba(176,110,10,.85));box-shadow:0 0 7px rgba(176,110,10,.55)}
 html[data-theme="siang"] .orbBig.hear .lseg{filter:drop-shadow(0 0 5px rgba(5,150,105,.6))}
 html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,rgba(5,150,105,.2) 0%,rgba(5,150,105,.08) 52%,transparent 74%);filter:none}
 
@@ -1165,7 +1141,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
           <i class="harc k1"></i><i class="harc k2"></i><i class="harc htick"></i><i class="harc hdata"></i><i class="harc hsweep"></i>
           <i class="hnode w1"><s></s></i><i class="hnode w2"><s></s></i><i class="hnode w3"><s></s></i>
         </div>
-        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="coreGlow"></i><i class="hexp"><i></i><i class="r"></i></i><i class="lscan"></i><i class="lscanH"></i><i class="eq"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></i></i><i class="ltri"><b></b></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
+        <div class="coreBox"><div class="mhalo"></div><div class="pulse"></div><div class="carc a"><i></i></div><div class="carc b"><i></i></div><div class="spark"><u><s></s></u></div><div class="lens"><i class="ldisk"></i><i class="ltick"></i><i class="lseg"></i><i class="lseg2"></i><i class="lring"></i><i class="lface"><i class="coreGlow"></i><i class="hexp"><i></i><i class="r"></i></i><i class="lscan"></i></i><i class="ltri"><b></b></i><i class="lbol h1"></i><i class="lbol h2"></i><i class="lbol h3"></i><i class="lbol h4"></i><i class="lbol h5"></i><i class="lbol h6"></i><i class="lbkt l"></i><i class="lbkt r"></i></div></div>
       </div>
       <svg width="112" height="112" viewBox="0 0 112 112">
         <circle class="prog" id="orbProg" cx="56" cy="56" r="46.5" stroke-dasharray="292.2" stroke-dashoffset="292.2"/>
@@ -1267,7 +1243,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 
 </div>
 
-<div class="note">MK-XXI REGALIA v51 · SONAR SIMPLE SATU CINCIN + HOLOGRAM TEGAK DIAM (goyang & naik-turun dihapus) · ORB MENYALA HIJAU SAAT MENDENGAR · MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v52 · BAR EQ & PINDAI DENGAR DIHAPUS — WAJAH ORB BERSIH & TENANG · ORB MENYALA HIJAU SAAT MENDENGAR · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
