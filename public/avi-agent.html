@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v50</title>
+<title>AVI — Asisten Pribadi · MK-XXI REGALIA v51</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -614,12 +614,13 @@ html.kb .aura{inset:-14px}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
 /* (v49) DENGAR = DRAMATIS — umpan Pak: "dari tadi komplain gak ada perubahan".
    Akar masalah: state idle sudah ramai animasi -> perubahan halus tak terlihat.
-   Kini saat mendengarkan: orb MEMBESAR 16% + terangkat, LEDAKAN cahaya saat diklik,
-   gelumbang sonar terang besar, glow kuat bernapas, inti berdebar, plasma melmebar,
-   HUD power-up, EQ besar. Prinsip tetap: animation-duration animasi lama tak disentuh */
+   Kini saat mendengarkan: orb MEMBESAR 16%, LEDAKAN cahaya saat diklik,
+   glow kuat bernapas, plasma melmebar, HUD power-up, EQ besar.
+   (v51) sonar diganti SATU cincin tipis; goyang & naik-turun badan DIHAPUS — tenang.
+   Prinsip tetap: animation-duration animasi lama tak disentuh */
 #orbDock .heroWrap{transition:transform .6s cubic-bezier(.22,1,.36,1)}
-/* (v49) mendengarkan = orb MEMBESAR 16% & terangkat — perubahan tak mungkin tak terlihat */
-.heroWrap.hIn{transform:scale(1.16) translateY(-8px)}
+/* (v49/v51) mendengarkan = orb MEMBESAR 16% — terangkat dihapus, hologram tegak diem */
+.heroWrap.hIn{transform:scale(1.16)}
 .orbBig .hearGlow{position:absolute;inset:-20px;border-radius:50%;opacity:0;transition:opacity .45s;pointer-events:none}
 .orbBig .hearGlow::after{content:'';position:absolute;inset:0;border-radius:50%;
   background:radial-gradient(circle,rgba(52,211,153,.55) 0%,rgba(52,211,153,.22) 48%,transparent 72%)}
@@ -627,18 +628,17 @@ html.kb .aura{inset:-14px}
 /* glow dengar BERNAPAS — bukan nyala statis kaku */
 .orbBig.hear .hearGlow::after{animation:hearGlowD 3.4s ease-in-out infinite}
 @keyframes hearGlowD{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.15);filter:brightness(1.5)}}
-/* sonar hidup v48: 3 GELOMBANG gradian buram (tanpa garis keras) mengembang terus — organik */
+/* (v51) sonar DISEDERHANAKAN — umpan Pak: gelombang terlalu ganggu, bikin simple aja.
+   Kini CUMA SATU cincin tipis melebar pelan lalu pudar; dua gelombang gradian lain DIHAPUS total.
+   Jangkauan dipendekkan (1.62x vs 2.3x) & redup (puncak .55) = tidak menyilaukan */
 .orbBig .ear{position:absolute;inset:0;border-radius:50%;opacity:0;transition:opacity .5s;pointer-events:none;z-index:2}
 .orbBig .ear i{position:absolute;inset:-6px;border-radius:50%;opacity:0;will-change:transform,opacity;
-  background:radial-gradient(circle,transparent 46%,rgba(110,231,183,.45) 60%,rgba(167,243,208,.88) 70%,transparent 80%);
-  filter:blur(1.2px);
-  animation:earD 2.6s cubic-bezier(.16,.6,.3,1) infinite}
-.orbBig .ear i:nth-child(2){animation-delay:.87s;
-  background:radial-gradient(circle,transparent 46%,rgba(245,181,74,.34) 60%,rgba(255,214,140,.78) 70%,transparent 80%)}
-.orbBig .ear i:nth-child(3){animation-delay:1.74s;filter:blur(2px)}
-@keyframes earD{0%{transform:scale(.82);opacity:0}10%{opacity:1}50%{opacity:.72}100%{transform:scale(2.3);opacity:0}}
+  background:none;border:1.5px solid rgba(110,231,183,.5);box-shadow:0 0 7px rgba(52,211,153,.28);
+  animation:earD 3.4s cubic-bezier(.25,.6,.35,1) infinite}
+.orbBig .ear i:nth-child(2),.orbBig .ear i:nth-child(3){display:none}
+@keyframes earD{0%{transform:scale(.86);opacity:.55}100%{transform:scale(1.62);opacity:0}}
 /* denyut reaktif: tiap KATA yang terdengar menyentak satu gelombang halus dari orb (JS) */
-/* denyut per KATA (ring) + LEDAKAN saat mulai mendengarkan (go.big = kilat inti + cincin raksasa) */
+/* denyut per KATA (ring) + LEDAKAN pelan saat mulai mendengarkan (go.big — v51 diringkas) */
 .orbBig .wpulse{position:absolute;inset:-2px;border-radius:50%;opacity:0;pointer-events:none;z-index:2;
   background:radial-gradient(circle,transparent 52%,rgba(167,243,208,.55) 66%,rgba(255,255,255,.22) 74%,transparent 82%);
   filter:blur(1px);transform:scale(.88)}
@@ -648,15 +648,12 @@ html.kb .aura{inset:-14px}
 .orbBig .wpulse.go.big{animation:wpD2 .85s ease-out 1}
 .orbBig .wpulse.go.big::before{animation:wpC .85s ease-out 1}
 @keyframes wpD{0%{opacity:.9;transform:scale(.88)}100%{opacity:0;transform:scale(1.6)}}
-@keyframes wpD2{0%{opacity:1;transform:scale(.82)}55%{opacity:.5}100%{opacity:0;transform:scale(1.95)}}
+@keyframes wpD2{0%{opacity:.85;transform:scale(.82)}100%{opacity:0;transform:scale(1.5)}}
 @keyframes wpC{0%{opacity:1}100%{opacity:0}}
 .orbBig.hear .ear{opacity:1}
-/* orb "menyimak" v48: BADAN condong bergoyang pelan (panggung) + inti bernapas miring halus —
-   banyak lapis irama beda periode (5.6s/3.8s/3.4s/3.6s) = tidak pernah terasa metronom */
-.orbBig.hear .panggung3d{animation:hearSway 5.6s ease-in-out infinite;transform-origin:50% 86%}
-@keyframes hearSway{0%{transform:rotate(0) translateY(0)}18%{transform:rotate(-1.5deg) translateY(-1.5px)}38%{transform:rotate(.9deg) translateY(.4px)}58%{transform:rotate(-1.1deg) translateY(-.8px)}78%{transform:rotate(.65deg) translateY(.2px)}100%{transform:rotate(0) translateY(0)}}
-.orbBig.hear .coreBox{animation:hearBreath 3.8s ease-in-out infinite}
-@keyframes hearBreath{0%{transform:scale(1) rotate(0)}24%{transform:scale(1.075) rotate(1.1deg)}44%{transform:scale(1.02) rotate(-.9deg)}66%{transform:scale(1.09) rotate(.6deg)}100%{transform:scale(1) rotate(0)}}
+/* (v51) goyang badan (hearSway) & napas inti (hearBreath) DIHAPUS — umpan Pak:
+   hologram naik-turun jadi jelek. Saat mendengar orb TEGAP DIAM;
+   perubahan state cukup lewat warna menyala hijau + membesar 16% */
 .ldisk,.mhalo,.k1,.k2,.hdata{transition:filter .6s}
 /* (v50) AKAR KELUHAN PAK: "yg jadi masalah orb-nya bukan animasi saat orb di klik"
    -> BADAN ORB SENDIRI berubah wujud saat diklik: cakram gelap MENYALA HIJAU EMERALD
@@ -816,8 +813,7 @@ html[data-theme="siang"] .pct{color:#075E75;text-shadow:0 1px 3px rgba(255,255,2
 html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
 /* (v48) mode dengar di tema siang: gelombang sonar, glow & denyut kata pakai TINTA SIAN —
    versi sian-emas terang mentah (mode malam) meninggalkan smudge coklat di latar putih */
-html[data-theme="siang"] .orbBig .ear i{background:radial-gradient(circle,transparent 46%,rgba(5,150,105,.34) 60%,rgba(6,125,95,.66) 70%,transparent 80%)}
-html[data-theme="siang"] .orbBig .ear i:nth-child(2){background:radial-gradient(circle,transparent 46%,rgba(176,110,10,.26) 60%,rgba(176,110,10,.55) 70%,transparent 80%)}
+html[data-theme="siang"] .orbBig .ear i{border-color:rgba(5,150,105,.5);box-shadow:0 0 6px rgba(5,150,105,.3)}
 html[data-theme="siang"] .orbBig .hearGlow::after{background:radial-gradient(circle,rgba(5,150,105,.28) 0%,rgba(5,150,105,.12) 48%,transparent 72%)}
 html[data-theme="siang"] .orbBig .wpulse{background:radial-gradient(circle,transparent 52%,rgba(6,125,95,.46) 66%,rgba(5,150,105,.22) 74%,transparent 82%)}
 html[data-theme="siang"] .orbBig .wpulse::before{background:radial-gradient(circle,rgba(190,247,225,.92) 0%,rgba(5,150,105,.32) 55%,transparent 75%)}
@@ -1271,7 +1267,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 
 </div>
 
-<div class="note">MK-XXI REGALIA v50 · ORB-nya SENDIRI MENYALA HIJAU SAAT MENDENGAR (bukan cuma animasi pinggiran) · SUARA CUMA VIA ORB · MK-XIX v41 TETAP</div>
+<div class="note">MK-XXI REGALIA v51 · SONAR SIMPLE SATU CINCIN + HOLOGRAM TEGAK DIAM (goyang & naik-turun dihapus) · ORB MENYALA HIJAU SAAT MENDENGAR · MK-XIX v41 TETAP</div>
 <div class="toast" id="toast"></div>
 
 <script>
