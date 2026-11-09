@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"/>
-<title>AVI — Asisten Pribadi · MK-XXI REGALIA v52</title>
+<meta name="version" content="1.0.0"/>
+<title>AVI — Asisten Pribadi · APK v1.0.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ============================================================
-   AVI v43 — "MK-XXI REGALIA" : TEMA OBROLAN DIRANCANG ULANG
+   AVI APK v1.0.0 — TEMA OBROLAN DIRANCANG ULANG
    Keluhan Pak: "background polos", "bubble polos", chip & statistik
-   terlihat sampah. Jawaban REGALIA — kemewahan lewat LAPISAN:
+   terlihat sampah. Jawabannya — kemewahan lewat LAPISAN:
    (1) Latar panggung: aurora emas+sian yang bergerak pelan, grid
        blueprint dua skala bermask radial, tekstur grain halus,
        vignette, ornamen sudut beraksen — tidak ada lagi bidang
@@ -21,7 +22,7 @@
    (3) Sapaan cepat: rail premium berikon-tile, hover emas.
    (4) Telemetri & statistik: mono berjersey, bracket sudut,
        panel bergradien — terbaca alat presisi, bukan sampah.
-   (5) ORB MK-XIX v41 TETAP UTUH — tidak disentuh sama sekali.
+   (5) BENTUK ORB TETAP UTUH — tidak disentuh sama sekali.
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -99,14 +100,14 @@ html[data-theme="siang"] .app{
 .bgFx i{position:absolute;border-radius:50%;filter:blur(84px);will-change:transform}
 .bgFx .gA{width:58%;height:42%;left:-16%;top:-12%;background:rgba(45,217,245,.14);animation:driftA 17s ease-in-out infinite alternate}
 .bgFx .gB{width:62%;height:48%;right:-18%;bottom:-16%;background:rgba(246,193,91,.11);animation:driftB 21s ease-in-out infinite alternate}
-/* (v44.1) dasar app tak gelap lagi: pendar lantai sian di tengah bawah */
+/* dasar app tak gelap lagi: pendar lantai sian di tengah bawah */
 .bgFx .gD{width:72%;height:36%;left:14%;bottom:-15%;background:rgba(45,217,245,.14);animation:driftB 19s ease-in-out infinite alternate-reverse}
-/* (v43.9) pita aurora sian-emas — tema tak lagi polos */
+/* pita aurora sian-emas — tema tak lagi polos */
 .bgFx .aur{left:6%;right:6%;top:9%;height:26%;filter:blur(30px);opacity:.55;border-radius:50%;
   background:linear-gradient(112deg,transparent 14%,rgba(45,217,245,.14) 40%,rgba(246,193,91,.10) 68%,transparent 88%);
   animation:aurD 16s ease-in-out infinite alternate}
 @keyframes aurD{from{transform:translateX(-2.5%) skewX(-3deg)}to{transform:translateX(2.5%) skewX(2.5deg)}}
-/* (v44.3) LATAR HIDUP: debu energi melayang + sapuan radar + bintang jatuh — dekor murni, orb MK-XIX v41 tidak disentuh */
+/* LATAR HIDUP: debu energi melayang + sapuan radar + bintang jatuh — dekor murni, bentuk orb tidak disentuh */
 .bgFx .motes{position:absolute;inset:0;border-radius:0;filter:none}
 .bgFx .motes b{position:absolute;left:var(--x);bottom:-2%;width:var(--s);height:var(--s);border-radius:50%;
   background:var(--c);box-shadow:0 0 calc(var(--s)*3) var(--c),0 0 calc(var(--s)*6.5) var(--c);
@@ -121,10 +122,10 @@ html[data-theme="siang"] .app{
 html[data-theme="siang"] .motes{opacity:.5}
 html[data-theme="siang"] .bgFx .meteor{display:none}
 @media(prefers-reduced-motion:reduce){.bgFx .gA,.bgFx .gB,.bgFx .gD,.bgFx .aur,.bgFx .motes b,.bgFx .meteor,#orbDock::before{animation:none}}
-/* (v45) LATAR BERSIH-HIDUP (umpan Pak: corak kebanyakan & jelek, animasi tak terlihat) —
+/* LATAR BERSIH-HIDUP (umpan Pak: corak kebanyakan & jelek, animasi tak terlihat) —
    foto AI, grid blueprint, specks, grain, ornamen sudut, penggaris, arsir, sapuan radar: SEMUA dipensiunkan.
    Sisa latar: 3 pendaran lembut + aurora + 9 debu energi + 1 bintang jatuh — sedikit elemen, semua bergerak nyata.
-   Panggung orb jadi area paling bersih & kontras; bentuk orb MK-XIX v41 tetap tidak disentuh */
+   Panggung orb jadi area paling bersih & kontras; bentuk orb tetap tidak disentuh */
 @keyframes driftA{to{transform:translate(66px,52px) scale(1.18)}}
 @keyframes driftB{to{transform:translate(-60px,-46px) scale(1.14)}}
 .vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(0,0,0,.62)}
@@ -180,7 +181,7 @@ header::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1.5
 .brand small{font:600 8px var(--mono);letter-spacing:3.4px;color:var(--dim2);display:block;margin-top:2px}
 .hdR{margin-left:auto;display:flex;align-items:center;gap:8px}
 .icobtn{width:38px;height:38px;border-radius:13px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--dim);transition:.2s;background:var(--pan);backdrop-filter:blur(10px)}
-/* (v43.9) PENGATURAN: tombol ikon dibuat sederhana — bingkai emas dua lapis + gir berputar saat disentuh */
+/* PENGATURAN: tombol ikon dibuat sederhana — bingkai emas dua lapis + gir berputar saat disentuh */
 #btnSet{position:relative;border:none;color:var(--gold);
   background:linear-gradient(160deg,rgba(246,193,91,.17),rgba(246,193,91,.05) 52%,rgba(45,217,245,.09));
   box-shadow:inset 0 0 0 1px rgba(246,193,91,.4),inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px -10px rgba(246,193,91,.4)}
@@ -213,7 +214,7 @@ main::-webkit-scrollbar{width:4px}
 main::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
 .view{display:none}.view.on{display:block}
 
-/* ---------- kartu REGALIA: kaca pekat + braket sudut emas ---------- */
+/* ---------- kartu utama: kaca pekat + braket sudut emas ---------- */
 .card{position:relative;border-radius:20px;padding:16px 17px;border:1px solid transparent;
   background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.014) 48%),var(--pan);
   backdrop-filter:blur(18px);
@@ -246,7 +247,7 @@ html[data-theme="siang"] .card{box-shadow:0 18px 42px -20px rgba(30,50,80,.4),0 
 .comms .mdl{display:flex;align-items:baseline;gap:7px;color:var(--cyan);font-weight:700;letter-spacing:1.6px;font-size:10.5px;text-shadow:0 0 14px rgba(45,217,245,.35)}
 .comms .mdl b{font-size:8.5px;color:var(--dim2);letter-spacing:2px;text-shadow:none}
 .tbtn{position:relative;flex:none;margin-left:auto;padding:5px 12px;border-radius:9px;border:1px solid rgba(246,193,91,.42);color:var(--gold);font:700 9.5px var(--mono);letter-spacing:2px;cursor:pointer;transition:.2s;background:linear-gradient(160deg,rgba(246,193,91,.14),rgba(246,193,91,.03))}
-/* (v43.9) sudut bidik ala comms — TEST ikut bahasa sudut emas */
+/* sudut bidik ala comms — TEST ikut bahasa sudut emas */
 .tbtn::before,.tbtn::after{content:'';position:absolute;width:7px;height:7px;pointer-events:none;opacity:.85}
 .tbtn::before{left:-3px;top:-3px;border-left:1.5px solid rgba(246,193,91,.6);border-top:1.5px solid rgba(246,193,91,.6)}
 .tbtn::after{right:-3px;bottom:-3px;border-right:1.5px solid rgba(246,193,91,.6);border-bottom:1.5px solid rgba(246,193,91,.6)}
@@ -397,15 +398,15 @@ html[data-theme="siang"] #stgLog{background:rgba(255,255,255,.62)}
 .dbtns{display:flex;gap:8px;margin-top:10px}
 .dbtns .btn{flex:1}
 /* Cangkang: busur tersegmentasi beda arah/beda laju — TANPA garis lingkaran utuh (ditolak).
-   Inti lensa reaktor (konsep 2) tetap hidup — bola plasma morf v40 DIANGKAT total
-   (v43.2: terbaca seperti janin bergerak, ditolak Pak). */
+   Inti lensa reaktor (konsep 2) tetap hidup — bola plasma morf lama DIANGKAT total
+   (terbaca seperti janin bergerak, ditolak Pak). */
 #orbDock{flex:none;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 18px 60px}
-/* (v43.9) alas cahaya di bawah panggung orb — dekor latar, orb v41 TIDAK disentuh */
+/* alas cahaya di bawah panggung orb — dekor latar, bentuk orb TIDAK disentuh */
 #orbDock::before{content:'';position:absolute;left:50%;bottom:14px;width:380px;height:230px;transform:translateX(-50%);pointer-events:none;
   background:radial-gradient(50% 46% at 50% 56%,rgba(45,217,245,.17),rgba(246,193,91,.08) 55%,transparent 78%),radial-gradient(72% 78% at 50% 54%,rgba(3,7,14,.82),rgba(3,7,14,.5) 56%,transparent 84%);
   animation:dockB 5.4s ease-in-out infinite}
 @keyframes dockB{0%,100%{transform:translateX(-50%) scale(1);opacity:.85}50%{transform:translateX(-50%) scale(1.13);opacity:1}}
-/* (v48) tema siang: alas panggung GELAP rgba(3,7,14,.82) diganti tinta sian lembut —
+/* tema siang: alas panggung GELAP rgba(3,7,14,.82) diganti tinta sian lembut —
    dahulu jadi smudge abu-coklat besar di latar terang (isu lama, baru ketahuan) */
 html[data-theme="siang"] #orbDock::before{
   background:radial-gradient(50% 46% at 50% 56%,rgba(9,125,150,.12),rgba(176,110,10,.05) 55%,transparent 78%),radial-gradient(72% 78% at 50% 54%,rgba(9,125,150,.09),rgba(9,125,150,.045) 56%,transparent 84%)}
@@ -424,7 +425,7 @@ html.kb .aura{inset:-14px}
 .orbBig{position:relative;width:112px;height:112px;flex:none;cursor:pointer;transition:transform .28s}
 /* (v38) bezel derajat bergaris putus-putus DIHAPUS — "bikin jelek" (Pak) */
 .orbBig svg{position:absolute;inset:0;overflow:visible}
-/* (v41) panggung DIRATAKAN jadi 2D murni — ala GIF referensi: tanpa preserve-3d/perspective,
+/* panggung DIRATAKAN jadi 2D murni — ala GIF referensi: tanpa preserve-3d/perspective,
      menyelenat semua artefak irisan bidang 3D (baji gelap & kotak mask) di SEMUA browser */
 .panggung3d{position:absolute;inset:0}
 /* — HUD SENTRI: hampir datar menghadap depan (ala GIF), goyangan halus saja —
@@ -493,7 +494,7 @@ html.kb .aura{inset:-14px}
 .hnode.w2 s{top:-1.5px;width:3px;height:3px;background:var(--gold);box-shadow:0 0 6px 1px rgba(245,181,74,.85);animation-delay:1.2s}
 .hnode.w3 s{top:-1.5px;width:3px;height:3px;background:#CFF6FF;box-shadow:0 0 5px 1px rgba(34,211,238,.8);animation-delay:2.1s}
 @keyframes hBlink{0%,100%{opacity:1}50%{opacity:.45}}
-/* — MK-XVIII PLASMA HIDUP (v43.2): lensa reaktor konsep 2 yang diberi nyawa.
+/* — PLASMA HIDUP: lensa reaktor konsep 2 yang diberi nyawa.
      Masukan Pak: "orb ada janinnya lagi" ⇒ DUA BOLA PLASMA MORF DIANGKAT total.
      Karakter gerak yang tersisa: pindai linier, baut hex bergiliran,
      detak steps, busur emas berlawanan, rel hanyut.
@@ -552,7 +553,7 @@ html.kb .aura{inset:-14px}
 @keyframes lscan{0%,64%{transform:translateY(5px);opacity:0}72%{opacity:.95}90%{opacity:.85}100%{transform:translateY(49px);opacity:0}}
 /* reticle segitiga KACA tipis — identitas konsep 2, inti yang terasa hidup */
 .ltri{position:absolute;left:50%;top:50%;width:21px;height:19px;margin:-11px 0 0 -10.5px}
-/* (v41) filter drop-shadow di ltri DIHAPUS — picu artefak raster segitiga raksasa di 3D context */
+/* filter drop-shadow di ltri DIHAPUS — picu artefak raster segitiga raksasa di 3D context */
 .ltri b{position:absolute;inset:0;display:block;
   background:linear-gradient(180deg,rgba(232,253,255,.95),rgba(125,233,249,.7) 55%,rgba(24,169,206,.85));
   clip-path:polygon(50% 0,100% 100%,0 100%)}
@@ -612,14 +613,14 @@ html.kb .aura{inset:-14px}
 .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;font:700 13px var(--mono);color:#B9F1FF;opacity:0;transition:.3s;text-shadow:0 1px 5px rgba(2,14,22,.95),0 0 12px rgba(34,211,238,.35)}
 .orbBig .halo{position:absolute;inset:-4px;border-radius:50%;pointer-events:none;opacity:0}
 @keyframes halo{0%{opacity:.95;box-shadow:0 0 90px 26px rgba(245,181,74,.55)}100%{opacity:0;box-shadow:0 0 0 0 rgba(245,181,74,0)}}
-/* (v49) DENGAR = DRAMATIS — umpan Pak: "dari tadi komplain gak ada perubahan".
+/* DENGAR = DRAMATIS — umpan Pak: "dari tadi komplain gak ada perubahan".
    Akar masalah: state idle sudah ramai animasi -> perubahan halus tak terlihat.
    Kini saat mendengarkan: orb MEMBESAR 16%, LEDAKAN cahaya saat diklik,
    glow kuat bernapas, plasma melmebar & HUD power-up.
-   (v51) sonar diganti SATU cincin tipis; goyang & naik-turun badan DIHAPUS — tenang.
+    sonar diganti SATU cincin tipis; goyang & naik-turun badan DIHAPUS — tenang.
    Prinsip tetap: animation-duration animasi lama tak disentuh */
 #orbDock .heroWrap{transition:transform .6s cubic-bezier(.22,1,.36,1)}
-/* (v49/v51) mendengarkan = orb MEMBESAR 16% — terangkat dihapus, hologram tegak diem */
+/* mendengarkan = orb MEMBESAR 16% — terangkat dihapus, hologram tegak diem */
 .heroWrap.hIn{transform:scale(1.16)}
 .orbBig .hearGlow{position:absolute;inset:-20px;border-radius:50%;opacity:0;transition:opacity .45s;pointer-events:none}
 .orbBig .hearGlow::after{content:'';position:absolute;inset:0;border-radius:50%;
@@ -628,7 +629,7 @@ html.kb .aura{inset:-14px}
 /* glow dengar BERNAPAS — bukan nyala statis kaku */
 .orbBig.hear .hearGlow::after{animation:hearGlowD 3.4s ease-in-out infinite}
 @keyframes hearGlowD{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.15);filter:brightness(1.5)}}
-/* (v51) sonar DISEDERHANAKAN — umpan Pak: gelombang terlalu ganggu, bikin simple aja.
+/* sonar DISEDERHANAKAN — umpan Pak: gelombang terlalu ganggu, bikin simple aja.
    Kini CUMA SATU cincin tipis melebar pelan lalu pudar; dua gelombang gradian lain DIHAPUS total.
    Jangkauan dipendekkan (1.62x vs 2.3x) & redup (puncak .55) = tidak menyilaukan */
 .orbBig .ear{position:absolute;inset:0;border-radius:50%;opacity:0;transition:opacity .5s;pointer-events:none;z-index:2}
@@ -638,7 +639,7 @@ html.kb .aura{inset:-14px}
 .orbBig .ear i:nth-child(2),.orbBig .ear i:nth-child(3){display:none}
 @keyframes earD{0%{transform:scale(.86);opacity:.55}100%{transform:scale(1.62);opacity:0}}
 /* denyut reaktif: tiap KATA yang terdengar menyentak satu gelombang halus dari orb (JS) */
-/* denyut per KATA (ring) + LEDAKAN pelan saat mulai mendengarkan (go.big — v51 diringkas) */
+/* denyut per KATA (ring) + LEDAKAN pelan saat mulai mendengarkan (go.big — diringkas) */
 .orbBig .wpulse{position:absolute;inset:-2px;border-radius:50%;opacity:0;pointer-events:none;z-index:2;
   background:radial-gradient(circle,transparent 52%,rgba(167,243,208,.55) 66%,rgba(255,255,255,.22) 74%,transparent 82%);
   filter:blur(1px);transform:scale(.88)}
@@ -651,11 +652,11 @@ html.kb .aura{inset:-14px}
 @keyframes wpD2{0%{opacity:.85;transform:scale(.82)}100%{opacity:0;transform:scale(1.5)}}
 @keyframes wpC{0%{opacity:1}100%{opacity:0}}
 .orbBig.hear .ear{opacity:1}
-/* (v51) goyang badan (hearSway) & napas inti (hearBreath) DIHAPUS — umpan Pak:
+/* goyang badan (hearSway) & napas inti (hearBreath) DIHAPUS — umpan Pak:
    hologram naik-turun jadi jelek. Saat mendengar orb TEGAP DIAM;
    perubahan state cukup lewat warna menyala hijau + membesar 16% */
 .ldisk,.mhalo,.k1,.k2,.hdata{transition:filter .6s}
-/* (v50) AKAR KELUHAN PAK: "yg jadi masalah orb-nya bukan animasi saat orb di klik"
+/* AKAR KELUHAN PAK: "yg jadi masalah orb-nya bukan animasi saat orb di klik"
    -> BADAN ORB SENDIRI berubah wujud saat diklik: cakram gelap MENYALA HIJAU EMERALD
    (nyala terus selama mendengar — jelas beda, bukan gerak halus yang bisa terlewat) */
 .orbBig .ldisk{transition:filter .38s ease,box-shadow .38s ease,border-color .38s ease}
@@ -670,7 +671,7 @@ html.kb .aura{inset:-14px}
   background:radial-gradient(circle,rgba(130,238,255,.5) 0%,rgba(34,211,238,.24) 45%,transparent 70%);
   animation:breath 3.6s ease-in-out infinite;
   transition:width .5s,height .5s,margin .5s,filter .38s ease}
-/* (v49) saat mendengarkan kolam plasma MELMEBAR 36->52px — jelas mata orb membuka */
+/* saat mendengarkan kolam plasma MELMEBAR 36->52px — jelas mata orb membuka */
 .orbBig.hear .lface .coreGlow{width:52px;height:52px;margin:-26px 0 0 -26px}
 .lface .hexp{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;opacity:.55;animation:hexpD 16s linear infinite}
 .lface .hexp i{position:absolute;inset:0;
@@ -679,11 +680,11 @@ html.kb .aura{inset:-14px}
 .lface .hexp i.r{transform:rotate(180deg);
   background:linear-gradient(180deg,rgba(245,181,74,.6),rgba(245,181,74,.1))}
 @keyframes hexpD{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-/* (v52) BAR NAIK-TURUN DIHAPUS TOTAL — umpan Pak: "bar naik turunnya masih ada
+/* BAR NAIK-TURUN DIHAPUS TOTAL — umpan Pak: "bar naik turunnya masih ada
    dan itu justru yg bikin orb jelek". Ekualiser 7 batang (eq) & pindai cepat
    dengar (lscanH) dibuang semua — wajah orb bersih & tenang saat mendengar */
 
-/* — (v50) DENGAR = ORB MENYALA HIJAU: seluruh wajah & energi orb berganti warna state —
+/* —  DENGAR = ORB MENYALA HIJAU: seluruh wajah & energi orb berganti warna state —
    heksagram D1 menyala penuh, plasma kolam emerald, segitiga kaca hijau,
    halo/pulsa/energi orbit ikut emerald — satu identitas "MIC HIDUP" — */
 .lface .hexp{transition:opacity .4s}
@@ -789,7 +790,7 @@ html[data-theme="siang"] .spark s{background:#0A7A96;box-shadow:0 0 6px 2px rgba
 html[data-theme="siang"] .pcscrim{background:radial-gradient(circle,rgba(255,255,255,.85) 0%,rgba(255,255,255,.55) 56%,transparent 80%)}
 html[data-theme="siang"] .pct{color:#075E75;text-shadow:0 1px 3px rgba(255,255,255,.85),0 0 10px rgba(9,125,150,.25)}
 html[data-theme="siang"] .orbBig.done .pct{color:#8A5606}
-/* (v48) mode dengar di tema siang: gelombang sonar, glow & denyut kata pakai TINTA SIAN —
+/* mode dengar di tema siang: gelombang sonar, glow & denyut kata pakai TINTA SIAN —
    versi sian-emas terang mentah (mode malam) meninggalkan smudge coklat di latar putih */
 html[data-theme="siang"] .orbBig .ear i{border-color:rgba(5,150,105,.5);box-shadow:0 0 6px rgba(5,150,105,.3)}
 html[data-theme="siang"] .orbBig .hearGlow::after{background:radial-gradient(circle,rgba(5,150,105,.28) 0%,rgba(5,150,105,.12) 48%,transparent 72%)}
@@ -798,7 +799,7 @@ html[data-theme="siang"] .orbBig .wpulse::before{background:radial-gradient(circ
 html[data-theme="siang"] .orbBig.hear .lring{border-color:#0B7A5A;box-shadow:0 0 24px rgba(5,150,105,.75),0 0 52px rgba(5,150,105,.32),inset 0 0 18px rgba(5,150,105,.42)}
 html[data-theme="siang"] .cmdVoice.listening .vtext{color:#067A5B}
 html[data-theme="siang"] .cmdVoice.listening .vmic{border-color:rgba(5,150,105,.7);color:#0B7A5A}
-/* (v50) siang: badan lensa PUTIH — state hijau via cincin & isi wajah tinta emerald */
+/* siang: badan lensa PUTIH — state hijau via cincin & isi wajah tinta emerald */
 html[data-theme="siang"] .orbBig.hear .ldisk{filter:none;border-color:rgba(5,150,105,.72);box-shadow:0 0 24px 7px rgba(5,150,105,.42),0 0 56px 18px rgba(5,150,105,.2),inset 0 0 26px rgba(5,150,105,.3)}
 html[data-theme="siang"] .orbBig.hear .lface .coreGlow{background:radial-gradient(circle,rgba(209,250,229,.95) 0%,rgba(5,150,105,.42) 45%,transparent 72%);filter:none}
 html[data-theme="siang"] .orbBig.hear .lface .hexp i{background:linear-gradient(180deg,rgba(6,125,95,.85),rgba(5,150,105,.35))}
@@ -807,12 +808,12 @@ html[data-theme="siang"] .orbBig.hear .ltri b{background:linear-gradient(180deg,
 html[data-theme="siang"] .orbBig.hear .lseg{filter:drop-shadow(0 0 5px rgba(5,150,105,.6))}
 html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,rgba(5,150,105,.2) 0%,rgba(5,150,105,.08) 52%,transparent 74%);filter:none}
 
-/* (v45.1) SLOT teks di bawah orb DIHAPUS — umpan Pak: ngapain ada teks; panggung orb bersih total.
+/* SLOT teks di bawah orb DIHAPUS — umpan Pak: ngapain ada teks; panggung orb bersih total.
    JS slotIdle()/state() punya guard null jadi aman tanpa elemen ini */
 
 /* ---------- komposer: kapsul kaca dengan cincin fokus gradien ---------- */
 .composer{flex:none;display:flex;padding:8px 16px calc(12px + env(safe-area-inset-bottom))}
-/* (v44.1) garis horizon sian-emas di atas komposer — panggung bawah hidup */
+/* garis horizon sian-emas di atas komposer — panggung bawah hidup */
 .composer::before{content:'';position:absolute;left:14px;right:14px;top:-8px;height:1px;pointer-events:none;opacity:.85;
   background:linear-gradient(90deg,transparent,rgba(45,217,245,.42) 26%,rgba(246,193,91,.38) 70%,transparent);
   box-shadow:0 0 14px rgba(45,217,245,.22)}
@@ -823,7 +824,7 @@ html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,r
 .cmd::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--gline);opacity:.55;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;transition:opacity .3s}
-/* (v48) BAR BUKAN TOMBOL — umpan Pak: papan ketik gak boleh disentuh utk suara; saklar suara CUMA orb */
+/* BAR BUKAN TOMBOL — umpan Pak: papan ketik gak boleh disentuh utk suara; saklar suara CUMA orb */
 .cmdVoice{display:flex;align-items:center;gap:11px;padding:7px 14px 7px 8px;cursor:default}
 .vmic{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
   border:1px solid rgba(45,217,245,.32);color:var(--cyan);
@@ -973,7 +974,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 
   <!-- HEADER -->
   <header>
-    <div class="mark" id="hdOrb" title="AVI MK-XIX" aria-label="Logo AVI">
+    <div class="mark" id="hdOrb" title="AVI v1.0.0" aria-label="Logo AVI">
       <i class="tk"></i><i class="ar"></i><i class="cd"></i>
       <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
         <path d="M20 6.5 32.5 27.5H7.5Z" stroke="#2DD9F5" stroke-width="2.4" stroke-linejoin="round"/>
@@ -1131,7 +1132,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
     </section>
   </main>
 
-  <!-- ORB MK-XIX HUD SENTRI — HERO di panggung bawah: di atas komposer, diangkat SEDIKIT dari posisi lama (v41 · TIDAK DISENTUH) -->
+  <!-- ORB HUD SENTRI — HERO di panggung bawah (bentuk TIDAK DISENTUH) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
@@ -1156,7 +1157,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
     </div>
   </div>
 
-  <!-- komposer (v47): BAR HASIL SUARA — input teks dihapus, input 100% lewat suara orb -->
+  <!-- komposer : BAR HASIL SUARA — input teks dihapus, input 100% lewat suara orb -->
   <div class="composer">
     <div class="cmd cmdVoice" id="voiceBar" aria-live="polite">
       <i class="vmic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></svg></i>
@@ -1232,9 +1233,9 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
           <div><b>SUARA &amp; PENGINGAT</b><small>Vokal AVI, alarm harian</small></div>
           <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
-        <button class="setrow" data-toast="AVI MK-XIX · HUD SENTRI — kerangka pondasi REGALIA">
+        <button class="setrow" data-toast="AVI v1.0.0 · HUD SENTRI — kerangka pondasi APK">
           <i class="au"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 16v-4.5M12 8h.01"/></svg></i>
-          <div><b>TENTANG AVI</b><small>MK-XIX · HUD SENTRI</small></div>
+          <div><b>TENTANG AVI</b><small>APK v1.0.0 · HUD SENTRI</small></div>
           <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
@@ -1243,7 +1244,7 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 
 </div>
 
-<div class="note">MK-XXI REGALIA v52 · BAR EQ & PINDAI DENGAR DIHAPUS — WAJAH ORB BERSIH & TENANG · ORB MENYALA HIJAU SAAT MENDENGAR · MK-XIX v41 TETAP</div>
+<div class="note">AVI APK v1.0.0 · SUARA CUMA VIA ORB — ORB MENYALA HIJAU SAAT MENDENGAR · WAJAH ORB BERSIH & TENANG</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1253,10 +1254,10 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
 
-/* ---- stempel mesin: jam (v42: strip VOX dihapus — mewah itu tenang) ---- */
+/* ---- stempel mesin: jam (strip VOX dihapus — mewah itu tenang) ---- */
 function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 
-/* ---- tema dikunci malam (v43.4: tombol mode gelap dihapus, jadi PENGATURAN) ---- */
+/* ---- tema dikunci malam (tombol mode gelap dihapus, jadi PENGATURAN) ---- */
 
 /* ---- sapaan per waktu ---- */
 (function(){
@@ -1268,7 +1269,7 @@ function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+'
 
 
 /* ---- SATU SLOT di sisi orb (v17): telemetri/status ---- */
-const IDLE_TX='MK-XIX · HUD SENTRI · NET AKTIF · MEMORI 62%';
+const IDLE_TX='AVI v1.0.0 · HUD SENTRI · NET AKTIF · MEMORI 62%';
 function slotIdle(tx){
   const w=$('#orbIdle');if(w){w.className='';w.textContent=tx||IDLE_TX}
 }
@@ -1317,7 +1318,7 @@ function meBubble(txt){
   trimChat();
   const m=$('main');if(m)m.scrollTo({top:m.scrollHeight,behavior:'smooth'});
 }
-/* ---- RIWAYAT CHAT — cukup panjang agar percakapan terasa hidup (v42: 10) ---- */
+/* ---- RIWAYAT CHAT — cukup panjang agar percakapan terasa hidup (10) ---- */
 let msgSeq=0;
 function seqMsg(el){if(el)el.dataset.seq=String(++msgSeq)}
 function trimChat(){
@@ -1334,7 +1335,7 @@ function trimChat(){
   while(evts.length>3)evts.shift().remove();
 }
 
-/* ---- jawaban AVI ringan (dipakai alur suara v47) ---- */
+/* ---- jawaban AVI ringan (dipakai alur suara) ---- */
 const REPLIES=['Siap, Pak — sudah saya catat.','Baik, Pak. Saya urus dan kabari hasilnya.','Tercatat, Pak. Saya ingatkan tepat waktunya.','Siap, Pak. Ada lagi yang bisa saya bantu?'];
 let repIdx=0;
 
@@ -1541,7 +1542,7 @@ $$('.qadd').forEach(b=>b.addEventListener('click',()=>{
 $$('.jtg').forEach(t=>t.addEventListener('click',()=>toast('Jadwal otomatis — COMING SOON')));
 
 /* ============ MODE SUARA ============ */
-/* (v48) SUARA 100% VIA ORB SAJA — bar bawah cuma cermin hasil suara (tak bisa diklik).
+/* SUARA 100% VIA ORB SAJA — bar bawah cuma cermin hasil suara (tak bisa diklik).
    ketuk orb → AVI mendengar → kalimat muncul KATA DEMI KATA + orb berdenyut tiap kata
    → selesai otomatis masuk obrolan sebagai perintah (berat = membangunkan agent). Tanpa pindah layer */
 const VOICE_HINT='Hasil suara tampil di sini — ketuk ORB untuk bicara, Pak';
@@ -1592,7 +1593,7 @@ function finishVoice(aborted){
 }
 $('#orbBig').addEventListener('click',hearToggle);
 $('#orbBig').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hearToggle()}});
-/* (v48) klik bar DIHAPUS — bar cuma cermin hasil suara; satu-satunya saklar suara = ORB */
+/* klik bar DIHAPUS — bar cuma cermin hasil suara; satu-satunya saklar suara = ORB */
 
 /* mulai: asisten tenang — orb menemani di atas papan ketik */
 $('#app').classList.add('live');
