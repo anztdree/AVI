@@ -53,9 +53,10 @@ eslint.config.mjs
 /public/*
 !/public/avi-agent.html
 
-# --- GitHub: hanya workflow build APK ---
+# --- GitHub: workflow build APK + deploy preview Pages ---
 /.github/workflows/*
 !/.github/workflows/build-android.yml
+!/.github/workflows/deploy-preview.yml
 
 # --- folder kerja tool lokal ---
 .claude/
