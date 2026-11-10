@@ -135,15 +135,13 @@ html[data-theme="siang"] .bgFx .meteor{display:none}
 @keyframes driftB{to{transform:translate(-60px,-46px) scale(1.14)}}
 .vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(0,0,0,.48)}
 html[data-theme="siang"] .vig{box-shadow:inset 0 0 100px rgba(120,140,170,.22)}
-header,main,.composer,nav,#strip{position:relative;z-index:2}
+header,main,.composer,#strip{position:relative;z-index:2}
 
 /* ---------- animasi masuk ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 header{animation:rise .55s cubic-bezier(.22,1,.36,1) both}
 main .card,main .evt{animation:rise .6s cubic-bezier(.22,1,.36,1) both}
-#v-kendali .card:nth-child(2){animation-delay:.06s}
 .composer{animation:rise .6s .12s cubic-bezier(.22,1,.36,1) both}
-nav{animation:rise .6s .2s cubic-bezier(.22,1,.36,1) both}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes nafas{0%,100%{transform:scale(1);box-shadow:0 0 12px var(--glow)}50%{transform:scale(1.07);box-shadow:0 0 24px var(--glow)}}
 @keyframes blink{50%{opacity:.25}}
@@ -845,27 +843,27 @@ html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,r
 @keyframes vmicD{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
 @keyframes vcarD{0%,100%{opacity:.9}50%{opacity:.12}}
 
-/* ---------- sheet TUGAS + PENGATURAN ---------- */
-#sheet,#setSheet{position:fixed;inset:0;z-index:60;pointer-events:none}
-#sheet .shbg,#setSheet .shbg{position:absolute;inset:0;background:rgba(2,5,10,.66);backdrop-filter:blur(5px);opacity:0;transition:.3s}
-#sheet .shpan,#setSheet .shpan{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;border-radius:24px 24px 0 0;
+/* ---------- sheet PENGATURAN ---------- */
+#setSheet{position:fixed;inset:0;z-index:60;pointer-events:none}
+#setSheet .shbg{position:absolute;inset:0;background:rgba(2,5,10,.66);backdrop-filter:blur(5px);opacity:0;transition:.3s}
+#setSheet .shpan{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;border-radius:24px 24px 0 0;
   background:
     radial-gradient(100% 46% at 50% 0%,rgba(45,217,245,.07),transparent 62%),
     linear-gradient(180deg,var(--bg1),var(--bg0) 120%);
   border-top:1px solid var(--line2);
   box-shadow:0 -30px 80px -30px rgba(0,0,0,.8);
   transform:translateY(102%);transition:transform .38s cubic-bezier(.32,.72,.24,1);padding-bottom:24px}
-#sheet .shpan::before,#setSheet .shpan::before{content:'';position:absolute;left:0;right:0;top:0;height:1.5px;
+#setSheet .shpan::before{content:'';position:absolute;left:0;right:0;top:0;height:1.5px;
   background:linear-gradient(90deg,transparent 6%,rgba(246,193,91,.55) 30%,rgba(45,217,245,.55) 74%,transparent 94%);pointer-events:none}
-#sheet.open,#setSheet.open{pointer-events:auto}
-#sheet.open .shbg,#setSheet.open .shbg{opacity:1}
-#sheet.open .shpan,#setSheet.open .shpan{transform:translateY(0)}
+#setSheet.open{pointer-events:auto}
+#setSheet.open .shbg{opacity:1}
+#setSheet.open .shpan{transform:translateY(0)}
 .grab{width:40px;height:4px;border-radius:4px;background:var(--line2);margin:10px auto 2px}
 .shhd{display:flex;align-items:center;padding:8px 18px 6px}
 .shhd b{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:3px;
   background:linear-gradient(92deg,var(--txt) 40%,var(--gold) 96%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .shx{margin-left:auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);color:var(--dim);font-size:13px;background:var(--pan);cursor:pointer}
-/* baris PENGATURAN: kerangka pondasi — ikon berbingkai + chevron */
+/* baris PENGATURAN: ikon berbingkai + chevron */
 .setrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px 12px;margin-bottom:9px;border:1px solid var(--line);border-radius:14px;
   background:linear-gradient(160deg,rgba(255,255,255,.04),transparent 55%),var(--pan);cursor:pointer;transition:.2s;position:relative}
 .setrow:hover{border-color:var(--line2);box-shadow:0 10px 26px -16px rgba(0,0,0,.6)}
@@ -875,76 +873,13 @@ html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,r
 .setrow b{font-size:11px;font-weight:700;letter-spacing:1.7px;color:var(--txt)}
 .setrow small{display:block;font-size:9.5px;color:var(--dim2);letter-spacing:.5px;margin-top:3px}
 .setrow .chev{margin-left:auto;color:var(--dim2);flex:none;opacity:.7}
-/* statistik: ubin telemetri berbracket — bukan kotak polos */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px 18px 4px}
-.stat{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.045),transparent 55%),var(--pan);border:1px solid var(--line);border-radius:14px;padding:12px 6px 10px;text-align:center;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
-.stat::before{content:'';position:absolute;left:-1px;top:-1px;width:8px;height:8px;pointer-events:none;
-  border-left:1.5px solid var(--cyan);border-top:1.5px solid var(--cyan);border-radius:4px 0 0 0;opacity:.85}
-.stat b{font-family:var(--disp);font-size:16px;font-weight:700;display:block;
-  background:linear-gradient(180deg,var(--txt),var(--dim));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.stat small{font-size:8px;font-weight:700;letter-spacing:1.3px;color:var(--dim2)}
-.stat.jl b{background:linear-gradient(180deg,var(--cyan),#0A5E75);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.stat.sx b{background:linear-gradient(180deg,var(--mint),#0A5E52);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.stat.kr b{background:linear-gradient(180deg,var(--gold),#8A5A10);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .shsec{padding:12px 18px 2px}
-.srow{display:flex;align-items:center;gap:11px;background:linear-gradient(160deg,rgba(255,255,255,.04),transparent 55%),var(--pan);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:8px;cursor:pointer;position:relative;transition:.2s}
-.srow::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--cyan),transparent 80%);opacity:.7}
-.srow:hover{border-color:var(--line2)}
-.swic{width:34px;height:34px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;
-  color:var(--cyan);background:linear-gradient(140deg,var(--cyanSoft),rgba(246,193,91,.07));border:1px solid var(--line);font:700 9px var(--mono)}
-.swb{flex:1;min-width:0}
-.swb b{font-size:13.5px;font-weight:600;display:block}
-.swb small{color:var(--dim);font-size:11px;display:flex;align-items:center;gap:6px;margin-top:1px;flex-wrap:wrap}
-.sst{font:700 8.5px var(--mono);letter-spacing:1px;padding:2px 6px;border-radius:6px}
-.sst.run{color:var(--cyan);background:var(--cyanSoft)}
-.sst.ok{color:var(--mint);background:var(--mintSoft)}
-.srow.ok{border-color:rgba(94,234,212,.5)}
-.srow.ok::before{background:linear-gradient(180deg,var(--mint),transparent 80%)}
-.srow.stopped{border-color:rgba(251,113,133,.4)}
-.srow.stopped::before{background:linear-gradient(180deg,var(--red),transparent 80%)}
-.shbar{height:4px;border-radius:4px;background:var(--pan3);overflow:hidden;margin-top:7px}
-.shbar b{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:4px;transition:width .4s}
-.empty{color:var(--dim2);font-size:12.5px;font-style:italic;padding:4px 2px 2px}
-.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.qc2{background:linear-gradient(160deg,rgba(255,255,255,.04),transparent 55%),var(--pan);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;transition:.2s;cursor:pointer;color:var(--txt)}
-.qc2:hover{border-color:rgba(246,193,91,.5);box-shadow:0 8px 20px -10px rgba(246,193,91,.3)}
-.qc2 b{font-size:13px;font-weight:600;display:block}
-.qc2 small{color:var(--dim2);font-size:10.5px}
 
-/* ---------- kendali ---------- */
-.opt{flex:1;border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--dim);background:var(--pan);transition:.2s;cursor:pointer}
-.opt.on{border-color:var(--cyan);color:var(--cyan);background:var(--cyanSoft);box-shadow:0 0 16px -4px var(--glow),inset 0 0 10px rgba(45,217,245,.05)}
-.optrow{display:flex;gap:8px}
+/* ---------- saklar (PENGATURAN) ---------- */
 .tg{width:40px;height:22px;border-radius:999px;background:var(--pan3);border:1px solid var(--line2);position:relative;flex:none;transition:.2s;cursor:pointer}
 .tg::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--dim2);transition:.2s}
 .tg.on{background:var(--cyanSoft);border-color:var(--cyan);box-shadow:0 0 12px -4px var(--glow)}
 .tg.on::after{left:20px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-.swrow{display:flex;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
-.swrow:first-of-type{border-top:none}
-.swrow b{font-size:13.5px;font-weight:600}
-.swrow small{display:block;color:var(--dim);font-size:11px;font-weight:400}
-.swrow .tg{margin-left:auto}
-input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;background:var(--pan3)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--gold);border:2px solid var(--bg1);box-shadow:0 0 10px rgba(246,193,91,.5)}
-.seg{display:flex;background:var(--pan2);border-radius:12px;padding:3px;gap:3px}
-.seg .qc{flex:1;padding:7px 4px;border-radius:10px;font-size:10.5px;font-weight:700;letter-spacing:.5px;color:var(--dim);transition:.2s;background:none;border:none;cursor:pointer}
-.seg .qc.on{background:var(--cyan);color:#032730;box-shadow:0 0 14px -4px var(--glow)}
-.gauges{display:flex;gap:14px;align-items:center}
-.gauge{text-align:center}
-.gauge svg{transform:rotate(-90deg)}
-.gauge .gv{font:700 10px var(--mono);color:var(--cyan);margin-top:-46px;height:46px;display:flex;align-items:center;justify-content:center}
-.gauge small{display:block;font:700 8px var(--mono);letter-spacing:1.5px;color:var(--dim2);margin-top:4px}
-.gbox{flex:1;font:500 9.5px var(--mono);color:var(--dim);line-height:1.9}
-.gbox b{font-weight:600}
-.logbox{background:rgba(3,7,14,.55);border:1px solid var(--line);border-radius:13px;padding:10px 12px;font:500 10px var(--mono);color:var(--dim);line-height:1.9;position:relative;overflow:hidden}
-.logbox::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(45,217,245,.022) 3px 4px)}
-html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
-.soon{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.soon .sc{border:1px dashed var(--line2);border-radius:14px;padding:11px 12px;background:var(--pan2)}
-.soon .sc b{font-size:12px;font-weight:600;display:block;color:var(--dim)}
-.soon .sc small{font:700 8px var(--mono);letter-spacing:1.5px;color:var(--gold)}
 
 /* ---------- mode suara: panggung gelap bergrid ---------- */
 
@@ -968,10 +903,10 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 }
 
 @keyframes gA{to{transform:translate(42px,32px)}}
-/* ==== P43 — umpan Pak: header tetap bersih (tanpa SIAGA/jam, pojok kanan atas
-   cuma 1 tombol PENGATURAN); MODEL AKTIF pindah ke BAR STATUS tepat di bawah
-   header — membaca model terkini dari PUSAT KENDALI + tombol TES sambungan;
-   telemetri orbit ala ReactorHalo (JAM·BAT·RAM·NET·OTAK) tetap mengelilingi orb ==== */
+/* ==== P44 — umpan Pak: CINCIN TEKS TELEMETRI DI SEKELILING ORB DIHAPUS (jelek) —
+   panggung orb kini murni: bentuk orb MK-XIX + aura, tanpa teks berputar.
+   Header tetap bersih (cuma 1 tombol PENGATURAN); MODEL AKTIF tetap di BAR STATUS
+   di bawah header + tombol TES sambungan ==== */
 /* BAR MODEL AKTIF — kaca tipis dengan tulang punggung emas di tepi kiri */
 .modelbar{flex:none;display:flex;align-items:center;gap:10px;margin:10px 18px 0;padding:8px 8px 8px 13px;
   border:1px solid var(--line2);border-radius:14px;background:var(--pan);backdrop-filter:blur(8px);
@@ -998,13 +933,29 @@ html[data-theme="siang"] .modelbar .mtx b{color:#8a5a00;text-shadow:none}
 /* papan ketik buka: bar ikut merapat agar panggung orb tak tenggelam */
 html.kb .modelbar{margin-top:6px;padding:5px 6px 5px 11px}
 html.kb .modelbar .mtx small{display:none}
-.otelem{position:absolute;inset:-26px;animation:otSpin 16s linear infinite;pointer-events:none;opacity:.85}
-.otelem span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-116px);font-family:var(--mono);font-size:8px;letter-spacing:1.4px;color:var(--cyan);text-shadow:0 0 10px rgba(45,217,245,.45);white-space:nowrap}
-.otelem span b{color:var(--gold);font-weight:700;text-shadow:0 0 10px rgba(246,193,91,.4)}
-.otelem i{position:absolute;left:50%;top:50%;width:3px;height:3px;border-radius:50%;background:var(--gold);opacity:.55;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-116px);box-shadow:0 0 6px rgba(246,193,91,.6)}
-@keyframes otSpin{to{transform:rotate(360deg)}}
-html.kb .otelem{display:none}
-@media (max-width:420px){.otelem{inset:-8px}.otelem span,.otelem i{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-97px)}}
+/* ==== P44 — PENGATURAN kalibrasi ulang: 3 bagian (OTAK/SUARA/MARKAS),
+   semua baris nyata, tanpa stub; daftar model terbuka di dalam lembar ==== */
+.modelist{display:none;flex-direction:column;gap:7px;margin:-2px 0 10px}
+.modelist.open{display:flex;animation:rise .32s cubic-bezier(.22,1,.36,1) both}
+.mopt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--pan2);cursor:pointer;transition:.18s}
+.mopt:hover{border-color:var(--line2)}
+.mopt .mtx2{flex:1;min-width:0}
+.mopt b{font-size:10.5px;letter-spacing:1.2px;color:var(--txt)}
+.mopt small{display:block;font:600 8px var(--mono);letter-spacing:1.2px;color:var(--dim2);margin-top:2px}
+.mopt .md{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line2);flex:none;position:relative;transition:.18s}
+.mopt.on{border-color:rgba(246,193,91,.55);background:var(--goldSoft);box-shadow:0 0 18px -8px rgba(246,193,91,.55)}
+.mopt.on .md{border-color:var(--gold)}
+.mopt.on .md::after{content:'';position:absolute;inset:3.5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+#rowModel .chev{transition:transform .25s}
+#rowModel[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.setrow .tg{margin-left:auto}
+.setinfo{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.setinfo span{flex:1;min-width:92px;font:700 7.5px var(--mono);letter-spacing:1.8px;color:var(--dim2);border:1px solid var(--line);border-radius:12px;background:linear-gradient(160deg,rgba(255,255,255,.04),transparent 55%),var(--pan);padding:10px 8px;text-align:center}
+.setinfo b{display:block;font:700 11px var(--mono);letter-spacing:1.2px;color:var(--cyan);margin-top:4px}
+.tbtn2{flex:none;font-family:var(--mono);font-size:9px;letter-spacing:2px;font-weight:700;color:var(--gold);padding:8px 13px;border:1px solid rgba(246,193,91,.45);border-radius:10px;background:rgba(246,193,91,.08);cursor:pointer;transition:.18s}
+.tbtn2:hover{background:rgba(246,193,91,.16);box-shadow:0 0 14px rgba(246,193,91,.22)}
+.tbtn2.live{color:var(--red);border-color:rgba(251,113,133,.5);background:rgba(251,113,133,.08)}
+.setfoot{font:600 7.5px var(--mono);letter-spacing:2.2px;color:var(--dim2);text-align:center;padding:8px 0 2px;opacity:.75}
 </style>
 </head>
 <body>
@@ -1102,97 +1053,12 @@ html.kb .otelem{display:none}
       <div style="height:4px" id="chatEnd"></div>
     </section>
 
-    <!-- ================= KENDALI ================= -->
-    <section class="view" id="v-kendali">
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.4-9.3-9A5.3 5.3 0 0 1 12 6.6a5.3 5.3 0 0 1 9.3 4.9c-1.8 4.6-9.3 9-9.3 9z"/><circle cx="12" cy="11" r="1.4" fill="var(--gold)" stroke="none"/></svg>JANTUNG MK1</div>
-        <div class="gauges">
-          <div class="gauge">
-            <svg width="46" height="46" viewBox="0 0 46 46">
-              <circle cx="23" cy="23" r="19" fill="none" stroke="var(--pan3)" stroke-width="4"/>
-              <circle cx="23" cy="23" r="19" fill="none" stroke="var(--cyan)" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="5"/>
-            </svg>
-            <div class="gv">98%</div><small>REAKTOR</small>
-          </div>
-          <div class="gauge">
-            <svg width="46" height="46" viewBox="0 0 46 46">
-              <circle cx="23" cy="23" r="19" fill="none" stroke="var(--pan3)" stroke-width="4"/>
-              <circle cx="23" cy="23" r="19" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="71.6"/>
-            </svg>
-            <div class="gv">41°</div><small>TERMAL</small>
-          </div>
-          <div class="gbox">
-            memori <b style="color:var(--cyan)">62%</b> · latensi <b style="color:var(--cyan)">41ms</b><br/>
-            agent <b style="color:var(--gold)">1 instance</b> di dalam AVI<br/>
-            keamanan <b style="color:var(--mint)">BAKU</b> · audit aktif
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3.2v5c0 4.6-3.2 7.6-7.5 9.3-4.3-1.7-7.5-4.7-7.5-9.3v-5z"/><path d="M9 11.8l2.2 2.2 4-4.2"/></svg>OTORITAS AVI</div>
-        <div class="optrow">
-          <button class="opt" data-a="AMAN">AMAN</button>
-          <button class="opt on" data-a="BAKU">BAKU</button>
-          <button class="opt" data-a="PENUH">PENUH</button>
-        </div>
-        <div class="empty" style="margin-top:8px">BAKU: pekerjaan rumah boleh jalan sendiri — uang &amp; kirim-kirim selalu izin dulu.</div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7.5h8M17.5 7.5H20M4 16.5h3.5M12.5 16.5H20"/><circle cx="14.6" cy="7.5" r="2.5"/><circle cx="9.5" cy="16.5" r="2.5"/></svg>KEBIASAAN KERJA</div>
-        <div class="swrow"><div><b>Rapikan otomatis</b><small>Berkas hasil langsung ke folder rapi</small></div><button class="tg on"></button></div>
-        <div class="swrow"><div><b>Tanya sebelum kirim</b><small>Semua pesan keluar saya perlihatkan dulu</small></div><button class="tg on"></button></div>
-        <div class="swrow"><div><b>Pembayaran</b><small>Selalu minta izin — terkunci</small></div><button class="tg lock on"></button></div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/><circle cx="12" cy="12" r="1" fill="var(--gold)" stroke="none"/></svg>BATAS KR HARIAN — <span id="krOut" style="color:var(--gold)">20 KR</span></div>
-        <div style="display:flex;align-items:center;gap:12px"><input type="range" id="krSlider" min="5" max="60" value="20"/></div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.5 7.5-2.5 7.5h17S18 14.5 18 8.5"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg>PENGHUMASAN</div>
-        <div class="seg" id="nseg">
-          <button class="qc" data-n="TIAP RUN">TIAP RUN</button>
-          <button class="qc on" data-n="HANYA SELESAI">HANYA SELESAI</button>
-          <button class="qc" data-n="HANYA GAGAL">HANYA GAGAL</button>
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 8h14M5 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M8 3.5V6M16 3.5V6M8.5 12.5h2M13.5 12.5h2M8.5 15.8h2"/></svg>LOG INTI</div>
-        <div class="logbox">
-          boot mk1 — reaktor stabil · termal aman<br/>
-          net aktif · latensi 41ms · mem 62%<br/>
-          agent: 1 instance hidup di dalam AVI<br/>
-          kebijakan: BAKU · batas 20 KR
-        </div>
-      </div>
-      <div class="card" style="margin-top:12px">
-        <div class="clab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><circle cx="18.5" cy="17.5" r="1.2" fill="var(--gold)" stroke="none"/></svg>SEGERA HADIR</div>
-        <div class="soon">
-          <div class="sc"><b>Kalender &amp; Email</b><small>COMING SOON</small></div>
-          <div class="sc"><b>Koneksi Rumah</b><small>COMING SOON</small></div>
-          <div class="sc"><b>Profil Pak</b><small>COMING SOON</small></div>
-          <div class="sc"><b>Mode Suara Penuh</b><small>COMING SOON</small></div>
-        </div>
-      </div>
-      <div style="height:8px"></div>
-    </section>
   </main>
 
   <!-- ORB HUD SENTRI — HERO di panggung bawah (bentuk TIDAK DISENTUH) -->
   <div id="orbDock">
     <div class="heroWrap">
       <div class="aura"></div>
-      <div class="otelem" aria-hidden="true">
-        <span style="--a:0deg">JAM <b id="otJam">--.--</b></span>
-        <i style="--a:36deg"></i>
-        <span style="--a:72deg">BAT <b id="otBat">87%</b></span>
-        <i style="--a:108deg"></i>
-        <span style="--a:144deg">RAM <b id="otRam">42%</b></span>
-        <i style="--a:180deg"></i>
-        <span style="--a:216deg">NET <b id="otNet">WIFI</b></span>
-        <i style="--a:252deg"></i>
-        <span style="--a:288deg">OTAK <b id="otOtak">GEMINI 2.5 FLASH</b></span>
-        <i style="--a:324deg"></i>
-      </div>
       <div class="orbBig" id="orbBig" role="button" tabindex="0" aria-label="Ketuk — AVI mendengarkan" title="Ketuk — AVI mendengarkan">
       <div class="panggung3d">
         <div class="hud">
@@ -1222,80 +1088,54 @@ html.kb .otelem{display:none}
     </div>
   </div>
 
-  <!-- SHEET TUGAS -->
-  <div id="sheet">
-    <div class="shbg" id="shBg"></div>
-    <div class="shpan scr">
-      <div class="grab"></div>
-      <div class="shhd"><b>TUGAS</b><button class="shx" id="shClose">✕</button></div>
-      <div class="stats">
-        <div class="stat jl"><b id="stRun">0</b><small>JALAN</small></div>
-        <div class="stat"><b id="stQueue">0</b><small>ANTRE</small></div>
-        <div class="stat sx"><b id="stDone">3</b><small>SELESAI</small></div>
-        <div class="stat kr"><b id="stKr">11</b><small>KR PAKAI</small></div>
-      </div>
-      <div class="shsec">
-        <div class="clab">SEDANG BERJALAN</div>
-        <div class="empty" id="runEmpty">Siaga — belum ada tugas berjalan, Pak.</div>
-        <div class="srow" id="shRun" style="display:none">
-          <div class="swic">DOC</div>
-          <div class="swb">
-            <b id="shRunName">—</b>
-            <small><span class="sst run" id="shRunPct">0%</span><span id="shStepTx">Menyiapkan…</span></small>
-            <div class="shbar"><b id="shBarTx" style="width:0%"></b></div>
-          </div>
-          <button class="btn" id="shLihat" style="padding:6px 10px;font-size:10px">LIHAT</button>
-        </div>
-      </div>
-      <div class="shsec">
-        <div class="clab">ANTREAN</div>
-        <div id="queueList"></div>
-        <div class="empty" id="queueEmpty">Kosong — semua tugas tuntas, Pak.</div>
-      </div>
-      <div class="shsec">
-        <div class="clab">MULAI CEPAT</div>
-        <div class="qgrid">
-          <button class="qc2 qadd" data-t="Rekap rapat"><b>Rekap rapat</b><small>Poin &amp; keputusan → PDF</small></button>
-          <button class="qc2 qadd" data-t="Draf email"><b>Draf email</b><small>Saya tuliskan, Pak betulkan</small></button>
-          <button class="qc2 qadd" data-t="Laporan pengeluaran"><b>Laporan pengeluaran</b><small>Rekap per kategori</small></button>
-          <button class="qc2 qadd" data-t="Pengingat"><b>Pengingat</b><small>Diingatkan tepat waktu</small></button>
-        </div>
-      </div>
-      <div class="shsec" style="padding-bottom:26px">
-        <div class="clab">JADWAL OTOMATIS<span class="tg2">COMING SOON</span></div>
-        <div class="swrow"><div><b>Rekap tiap pagi</b><small>Brief ringkas di sapaan, Pak</small></div><button class="tg jtg on"></button></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SHEET PENGATURAN (kerangka pondasi) -->
-  <div id="setSheet">
+  <!-- SHEET TUGAS DIPENSIUNKAN (P44): tak terjangkau sejak tombol Deck dihapus (P42) —
+       perintah cepat hidup di APK lewat Deck PINTASAN MARKAS -->
+  <!-- SHEET PENGATURAN — P44 kalibrasi ulang: 3 bagian, semua baris NYATA, tanpa stub -->
+  <div id="setSheet" role="dialog" aria-modal="true" aria-label="Pengaturan">
     <div class="shbg" id="setBg"></div>
     <div class="shpan scr">
       <div class="grab"></div>
       <div class="shhd"><b>PENGATURAN</b><button class="shx" id="setClose">✕</button></div>
-      <div class="shsec" style="padding:6px 14px 26px">
-        <button class="setrow" data-toast="Profil &amp; preferensi — kerangka diisi menyusul, Pak">
-          <i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></i>
-          <div><b>PROFIL PAK</b><small>Nama, foto, sapaan pribadi</small></div>
-          <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <button class="setrow" id="rowModel" aria-label="Ganti model kecerdasan — daftar diambil dari katalog Google">
+
+      <div class="shsec">
+        <div class="clab">OTAK</div>
+        <button class="setrow" id="rowModel" aria-expanded="false" aria-controls="modelList" aria-label="Ganti model kecerdasan — daftar dari katalog Google">
           <i class="au"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></i>
-          <div><b>MODEL KECERDASAN</b><small id="mSet">Gemini 2.5 Flash · otak utama AVI · ketuk untuk ganti</small></div>
+          <div><b>MODEL KECERDASAN</b><small id="mSet">Gemini 2.5 Flash · otak utama AVI</small></div>
           <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
-        <button class="setrow" data-toast="Suara &amp; pengingat — kerangka diisi menyusul, Pak">
-          <i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></i>
-          <div><b>SUARA &amp; PENGINGAT</b><small>Vokal AVI, alarm harian</small></div>
-          <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <button class="setrow" data-toast="AVI v1.0.0 · HUD SENTRI — kerangka pondasi APK">
-          <i class="au"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 16v-4.5M12 8h.01"/></svg></i>
-          <div><b>TENTANG AVI</b><small>APK v1.0.0 · HUD SENTRI</small></div>
-          <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
+        <div class="modelist" id="modelList">
+          <button class="mopt on" data-i="0"><span class="mtx2"><b>Gemini 2.5 Flash</b><small>cepat · sehari-hari</small></span><i class="md" aria-hidden="true"></i></button>
+          <button class="mopt" data-i="1"><span class="mtx2"><b>Gemini 2.5 Pro</b><small>dalam · tugas berat</small></span><i class="md" aria-hidden="true"></i></button>
+          <button class="mopt" data-i="2"><span class="mtx2"><b>Gemini 2.0 Flash</b><small>ringan · hemat</small></span><i class="md" aria-hidden="true"></i></button>
+        </div>
       </div>
+
+      <div class="shsec">
+        <div class="clab">SUARA</div>
+        <div class="setrow" id="rowVoice">
+          <i><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></i>
+          <div><b>VOKAL JAWABAN</b><small>AVI membacakan balasannya</small></div>
+          <button class="tg on" id="tgVoice" role="switch" aria-checked="true" aria-label="Vokal jawaban"></button>
+        </div>
+        <div class="setrow" id="rowLive">
+          <i class="au"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></i>
+          <div><b>SUARA LANGSUNG</b><small id="liveStat">Mode LIVE — mendengar tanpa henti</small></div>
+          <button class="tbtn2" id="btnLive" aria-live="polite">MULAI</button>
+        </div>
+      </div>
+
+      <div class="shsec">
+        <div class="clab">MARKAS</div>
+        <div class="setinfo">
+          <span>BATERAI<b>87%</b></span>
+          <span>SIMPAN<b>64/128 GB</b></span>
+          <span>NET<b>WIFI</b></span>
+        </div>
+      </div>
+
+      <div class="setfoot">AVI APK v1.0.0 · PUSAT KENDALI AVI</div>
+      <div style="height:16px"></div>
     </div>
   </div>
 
@@ -1311,24 +1151,28 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2400)}
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
 
-/* ---- P43: BAR MODEL AKTIF — membaca model terkini dari PUSAT KENDALI + TES sambungan ----
-   Pusat Kendali (Pengaturan) = sumber kebenaran: ketuk baris MODEL KECERDASAN
-   untuk ganti otak, bar di bawah header & telemetri orbit OTAK ikut terbaca.
-   Di APK: daftar model diambil live dari katalog Google (ModelCatalog.kt) dan
-   TES memanggil generateContent sungguhan — di preview ini disimulasikan. */
+/* ---- P44: OTAK = satu sumber kebenaran — PENGATURAN → MODEL KECERDASAN (daftar terbuka),
+   bar di bawah header ikut terbaca. Di APK daftar diambil live dari katalog Google
+   (ModelCatalog.kt) dan TES memanggil generateContent sungguhan — preview disimulasikan. */
 const MODELS=['Gemini 2.5 Flash','Gemini 2.5 Pro','Gemini 2.0 Flash'];
 let mIdx=0,mBusy=false;
-const mName=$('#mName'),mStat=$('#mStat'),mDot=$('#mDot'),mSet=$('#mSet'),otOtak=$('#otOtak'),btnTest=$('#btnTest');
+const mName=$('#mName'),mStat=$('#mStat'),mDot=$('#mDot'),mSet=$('#mSet'),btnTest=$('#btnTest');
 function renderModel(){
   const disp=MODELS[mIdx].toUpperCase();
   if(mName)mName.textContent=disp;
-  if(mSet)mSet.textContent=MODELS[mIdx]+' · otak utama AVI · ketuk untuk ganti';
-  if(otOtak)otOtak.textContent=disp;
+  if(mSet)mSet.textContent=MODELS[mIdx]+' · otak utama AVI';
+  $$('.mopt').forEach(o=>o.classList.toggle('on',+o.dataset.i===mIdx));
 }
 $('#rowModel').addEventListener('click',()=>{
-  mIdx=(mIdx+1)%MODELS.length;renderModel();mStat.textContent='';
-  toast('PUSAT KENDALI: otak diganti ke '+MODELS[mIdx]+' — bar bawah header ikut terbaca');
+  const open=$('#modelList').classList.toggle('open');
+  $('#rowModel').setAttribute('aria-expanded',open?'true':'false');
 });
+$$('.mopt').forEach(o=>o.addEventListener('click',()=>{
+  const i=+o.dataset.i;
+  if(i!==mIdx){mIdx=i;mStat.textContent='';renderModel();toast('Otak AVI: '+MODELS[mIdx]+' — bar bawah header ikut terbaca')}
+  $('#modelList').classList.remove('open');
+  $('#rowModel').setAttribute('aria-expanded','false');
+}));
 btnTest.addEventListener('click',()=>{
   if(mBusy)return;mBusy=true;
   btnTest.disabled=true;btnTest.textContent='…';
@@ -1433,41 +1277,38 @@ if(window.visualViewport){const vv=window.visualViewport;
     document.documentElement.classList.toggle('kb',vv.height<window.innerHeight-140)};
   vv.addEventListener('resize',setVH);setVH()}
 
-/* ---- sheet TUGAS + PENGATURAN ---- */
-const sheet=$('#sheet');
-function openSheet(){sheet.classList.add('open')}
-function closeSheet(){sheet.classList.remove('open')}
-$('#shClose').addEventListener('click',closeSheet);
-$('#shBg').addEventListener('click',closeSheet);
-
-/* ---- sheet PENGATURAN (kerangka pondasi) ---- */
+/* ---- P44: sheet PENGATURAN — 3 bagian (OTAK/SUARA/MARKAS), semua baris nyata.
+   Sheet TUGAS lama DIPENSIUNKAN (tak terjangkau sejak tombol Deck dihapus P42) ---- */
 const setS=$('#setSheet');
 function openSet(){setS.classList.add('open')}
 function closeSet(){setS.classList.remove('open')}
 $('#btnSet').addEventListener('click',openSet);
 $('#setClose').addEventListener('click',closeSet);
 $('#setBg').addEventListener('click',closeSet);
+/* vokal jawaban: saklar nyata — di APK mengerahkan mesin TTS */
+$('#rowVoice').addEventListener('click',()=>{
+  const tg=$('#tgVoice'),on=tg.classList.toggle('on');
+  tg.setAttribute('aria-checked',on?'true':'false');
+  toast(on?'Vokal jawaban dinyalakan, Pak':'Vokal jawaban dimatikan, Pak');
+});
+/* suara langsung (LIVE): nyata di APK (sesi STT terus-menerus) — preview simulasi */
+let liveOn=false;
+$('#rowLive').addEventListener('click',()=>{
+  liveOn=!liveOn;
+  $('#btnLive').textContent=liveOn?'BERHENTI':'MULAI';
+  $('#btnLive').classList.toggle('live',liveOn);
+  $('#liveStat').textContent=liveOn?'LIVE — BERJALAN · mendengar terus':'Mode LIVE — mendengar tanpa henti';
+  toast(liveOn?'Suara langsung MULAI, Pak':'Suara langsung berhenti, Pak');
+});
 
 /* ---- P41: tombol TEST di depan DIHAPUS (rencana porting APK) — uji model ada di Pengaturan aplikasi ---- */
 function jump(sel){
-  closeSheet();
   $$('.view').forEach(v=>v.classList.remove('on'));
   $('#v-obrolan').classList.add('on');
   const el=$(sel);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-/* ---- kendali ---- */
-$$('.opt').forEach(o=>o.addEventListener('click',()=>{
-  $$('.opt').forEach(x=>x.classList.remove('on'));o.classList.add('on');
-  toast('Otoritas '+o.dataset.a+' — dipakai untuk semua tugas, Pak');
-}));
-$$('.tg:not(.lock):not(.jtg)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
-$$('.tg.lock').forEach(t=>t.addEventListener('click',()=>toast('Pembayaran selalu minta izin, Pak — terkunci')));
-const ks=$('#krSlider');ks.addEventListener('input',()=>$('#krOut').textContent=ks.value+' KR');
-$$('#nseg .qc').forEach(b=>b.addEventListener('click',()=>{
-  $$('#nseg .qc').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-  toast('Penghumasan: '+b.dataset.n);
-}));
+
 
 /* ============ MESIN: AGENT HIDUP DI DALAM AVI ============ */
 const CP=2*Math.PI*46.5; /* ring prog orb r=46.5 */
@@ -1499,11 +1340,7 @@ function render(){
   $('#stgPct').textContent=Math.round(pct)+'%';
   $('#barTx').style.width=pct+'%';
   $('#stPct').textContent=Math.round(pct)+'%';
-  const step=stepNames[pct<33?0:pct<66?1:2];
   if(taskActive&&!stopped&&!fin&&!done)state('work','KERJA · '+Math.round(pct)+'% · TETAP MENEMANI PAK');
-  const sp=$('#shRunPct');if(sp&&taskActive)sp.textContent=Math.round(pct)+'%';
-  const sb=$('#shBarTx');if(sb)sb.style.width=pct+'%';
-  const ss=$('#shStepTx');if(ss&&taskActive&&!stopped&&!done)ss.textContent=step;
 }
 function collapseWork(){const w=$('#stgWork');w.classList.remove('open')}
 function startTask(name){
@@ -1514,13 +1351,6 @@ function startTask(name){
   $('#stgWork').classList.add('open');
   const st=$('#strip');st.classList.remove('ok','bad');st.classList.add('on');
   $('#stripJump').textContent=name;
-  $('#stRun').textContent='1';
-  const re=$('#runEmpty');if(re)re.style.display='none';
-  const sr=$('#shRun');
-  if(sr){sr.style.display='flex';sr.classList.remove('ok','stopped');
-    const nb=sr.querySelector('.swb b');if(nb)nb.textContent=name;
-    const sst=sr.querySelector('.sst');if(sst){sst.className='sst run';sst.textContent='0%'}
-    const sl=$('#shLihat');if(sl)sl.textContent='LIHAT'}
   $('#doneCard').style.display='none';
   $('#followMsg').style.display='none';
   $('#hdOrb').classList.add('work');
@@ -1532,13 +1362,9 @@ function startTask(name){
 }
 function finish(){
   fin=true;done=true;taskActive=false;render();
-  const sp=$('#shRunPct');if(sp){sp.textContent='TUNTAS';sp.classList.remove('run');sp.classList.add('ok')}
   const ob=$('#orbBig');ob.classList.remove('work');ob.classList.add('done');
   $('#stgPct').textContent='✓';
   state('done','TUNTAS ✓ · SAYA MENEMANI PAK');
-  const sd=$('#stDone');if(sd)sd.textContent=String(+sd.textContent+1);
-  const sk=$('#stKr');if(sk)sk.textContent=String(+sk.textContent+9);
-  const sr=$('#stRun');if(sr)sr.textContent='0';
   const fn=(taskName||'DOKUMEN AVI').toUpperCase().replace(/[^\w\s]/g,'').trim().replace(/\s+/g,'_').slice(0,28)||'DOKUMEN_AVI';
   $('#doneName').textContent=fn+'.PDF';
   $('#doneCard').style.display='block';
@@ -1554,8 +1380,6 @@ function finish(){
   $('#stPct').textContent='TUNTAS';
   $('#btnSPause').textContent='JEDA';
   setTimeout(()=>{st.classList.remove('on')},4000);
-  const sh=$('#shRun');
-  if(sh){sh.classList.add('ok');const s2=$('#shStepTx');if(s2)s2.textContent='Tuntas — 2 halaman, angka sudah saya cek ulang.';const sl=$('#shLihat');if(sl)sl.textContent='BUKA HASIL'}
   setTimeout(()=>{collapseWork();ob.classList.remove('done');$('#app').classList.add('live');slotIdle()},3200);
   toast('Tuntas, Pak — hasilnya menunggu di obrolan');
 }
@@ -1587,14 +1411,11 @@ $('#btnSPause').addEventListener('click',()=>{if(stopped||fin)return;setPaused(!
 function doStop(){
   if(fin||!taskActive)return;
   stopped=true;paused=false;taskActive=false;render();
-  const sr=$('#stRun');if(sr)sr.textContent='0';
   const ob=$('#orbBig');ob.classList.remove('work');
   slotIdle('MK1 · SIAGA · MENUNGGU PERINTAH PAK');
   $('#hdOrb').classList.remove('work');
   const st=$('#strip');st.classList.add('bad');$('#stPct').textContent='STOP';
   setTimeout(()=>{st.classList.remove('on')},3800);
-  const sh=$('#shRun');
-  if(sh){sh.classList.add('stopped');const s2=$('#shStepTx');if(s2)s2.textContent='Dihentikan oleh Pak — 4 KR terpakai.'}
   evtLine('TUGAS DIHENTIKAN OLEH PAK — AVI KEMBALI SIAGA',false,'#stgWork');
   setTimeout(collapseWork,1200);
   toast('Saya berhenti, Pak');
@@ -1603,22 +1424,7 @@ $('#btnSStop').addEventListener('click',doStop);
 
 /* ---- lompatan ---- */
 $('#stripJump').addEventListener('click',()=>jump(done?'#doneCard':'#stgWork'));
-$('#shLihat').addEventListener('click',()=>jump(done?'#doneCard':'#stgWork'));
 
-/* ---- antre ---- */
-function bindCancel(btn){if(!btn)return;btn.addEventListener('click',e=>{e.stopPropagation();btn.closest('.srow').remove();const st=$('#stQueue');if(st)st.textContent=Math.max(0,+st.textContent-1);toast('Antrean saya batalkan, Pak')})}
-$$('.qadd').forEach(b=>b.addEventListener('click',()=>{
-  if(!taskActive){closeSheet();startTask(b.dataset.t);return}
-  const row=document.createElement('div');row.className='srow';
-  row.innerHTML='<div class="swic">＋</div>'+
-    '<div class="swb"><b>'+b.dataset.t+'</b><small>Masuk antre — urutannya saya atur</small></div>'+
-    '<button class="btn red qcancel" style="padding:5px 9px;font-size:9.5px">BATAL</button>';
-  $('#queueList').appendChild(row);$('#queueEmpty').style.display='none';
-  bindCancel(row.querySelector('.qcancel'));
-  const st=$('#stQueue');if(st)st.textContent=String(+st.textContent+1);
-  toast('Siap, masuk antre — '+b.dataset.t);
-}));
-$$('.jtg').forEach(t=>t.addEventListener('click',()=>toast('Jadwal otomatis — COMING SOON')));
 
 /* ============ MODE SUARA ============ */
 /* SUARA 100% VIA ORB SAJA — bar bawah cuma cermin hasil suara (tak bisa diklik).
@@ -1644,19 +1450,6 @@ function setChip(hear){
   c.classList.toggle('on',hear);
   c.innerHTML='<i></i>'+(hear?'MENDENGAR':'SIAGA');
 }
-(function(){
-  const fmt=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+'.'+String(d.getMinutes()).padStart(2,'0')};
-  const tick=()=>{const t=fmt();const a=document.getElementById('hClock'),b=document.getElementById('otJam');
-    if(a)a.textContent=t;if(b)b.textContent=t};
-  tick();setInterval(tick,10000);
-  let bat=87;
-  setInterval(()=>{
-    if(Math.random()<.22)bat=Math.max(58,bat-1);
-    const ram=40+Math.round(Math.sin(Date.now()/9000)*4+Math.random()*3);
-    const ob=document.getElementById('otBat'),orm=document.getElementById('otRam');
-    if(ob)ob.textContent=bat+'%';if(orm)orm.textContent=ram+'%';
-  },4000);
-})();
 function hearToggle(){
   const ob=$('#orbBig'),hw=document.querySelector('.heroWrap');
   if(ob.classList.toggle('hear')){
