@@ -18,6 +18,8 @@
 # sah: CI build APK
 !/.github
 !/.github/workflows
+# di dalam workflows: HANYA build-android.yml yang sah
+/.github/workflows/*
 !/.github/workflows/build-android.yml
 
 # sah: dokumen & aturan repo
