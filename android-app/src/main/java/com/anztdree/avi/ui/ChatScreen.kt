@@ -8,7 +8,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -18,12 +17,12 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,12 +44,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -64,7 +61,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -73,7 +71,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -111,6 +108,9 @@ import kotlin.math.sin
 // nebula bernafas + medan bintang berkelip + grid parallax +
 // reaktor berlapis + obrolan masuk ber-spring. Tanpa gambar
 // mati yang ditempel (keputusan pemilik K13).
+// P43 (sinkron preview yang disetujui Pak): header bersih 1 tombol
+// Pengaturan, BAR MODEL AKTIF + TES di bawah header, dock = bar
+// hasil suara (kb via tekan-lama), visor dimatikan, latar diperjelas.
 // ============================================================
 
 @Composable
@@ -122,6 +122,7 @@ fun ChatScreen(vm: AviViewModel, onOpenSettings: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSettings: () -> Unit) {
     val palette = LocalAviPalette.current
@@ -192,21 +193,9 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         }
     }
 
-    val statusLabel = when (state) {
-        AviState.IDLE -> "SIAGA"
-        AviState.LISTENING -> "MENDENGAR"
-        AviState.THINKING -> "BERPIKIR"
-        AviState.SPEAKING -> "MENJAWAB"
-        AviState.LIVE -> "LIVE"
-    }
-    val statusColor = when (state) {
-        AviState.IDLE -> palette.accent
-        AviState.LISTENING -> palette.accent
-        AviState.THINKING -> palette.gold
-        AviState.SPEAKING -> palette.goldSoft
-        AviState.LIVE -> palette.danger
-    }
     val listState = rememberLazyListState()
+    // P43 — hasil tombol TES di bar MODEL AKTIF
+    val barTest by vm.barTest.collectAsState()
     LaunchedEffect(messages.size, streamingText) {
         val total = listState.layoutInfo.totalItemsCount
         if (total > 0) listState.scrollToItem(total - 1)
@@ -250,45 +239,45 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 .imePadding()
                 .padding(horizontal = 14.dp)
         ) {
-            // ============ BAR ATAS — gaya bar komando Jarvis ============
+            // ============ P43 — BAR ATAS BERSIH: mark + brand, pojok kanan CUMA 1 tombol PENGATURAN
+            //   (umpan Pak: chip SIAGA & jam DIHAPUS dari depan — jam tetap hidup di telemetri orbit;
+            //    Deck pindah ke ketukan MARK logo — depan tetap bersih) ============
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(vertical = 6.dp)
             ) {
-                Text(
-                    "AVI",
-                    color = palette.text,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Black,
-                    fontFamily = AviDisplay,
-                    letterSpacing = 2.sp,
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = palette.accent.copy(alpha = 0.85f),
-                            blurRadius = 16f
+                HeaderMark(
+                    palette = palette,
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clickable { showDeck = true }
+                )
+                Spacer(Modifier.width(10.dp))
+                Column {
+                    Text(
+                        "AVI",
+                        color = palette.text,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Black,
+                        fontFamily = AviDisplay,
+                        letterSpacing = 4.sp,
+                        lineHeight = 16.sp,
+                        style = TextStyle(
+                            shadow = Shadow(
+                                color = palette.accent.copy(alpha = 0.85f),
+                                blurRadius = 16f
+                            )
                         )
                     )
-                )
-                Spacer(Modifier.width(8.dp))
-                StatusChip(text = statusLabel, color = statusColor)
-                Spacer(Modifier.weight(1f))
-                // jam hidup — telemetri klasik HUD
-                Text(
-                    clockText,
-                    color = palette.accent,
-                    fontSize = 12.sp,
-                    fontFamily = AviHud,
-                    letterSpacing = 1.sp
-                )
-                Spacer(Modifier.width(2.dp))
-                IconButton(onClick = { showDeck = true }, modifier = Modifier.size(38.dp)) {
-                    Icon(
-                        Icons.Default.Apps,
-                        contentDescription = "Deck modul",
-                        tint = palette.accent,
-                        modifier = Modifier.size(20.dp)
+                    Text(
+                        "ASISTEN PRIBADI",
+                        color = palette.textDim,
+                        fontSize = 7.5.sp,
+                        fontFamily = AviHud,
+                        letterSpacing = 3.sp
                     )
                 }
+                Spacer(Modifier.weight(1f))
                 IconButton(onClick = onOpenSettings, modifier = Modifier.size(38.dp)) {
                     Icon(
                         Icons.Default.Settings,
@@ -298,6 +287,15 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     )
                 }
             }
+
+            // ============ P43 — BAR MODEL AKTIF: model terkini dari PUSAT KENDALI + tombol TES ============
+            ModelBar(
+                palette = palette,
+                model = settings.geminiModel.removePrefix("models/"),
+                test = barTest,
+                onTest = { vm.testActiveModel() },
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
 
             // ============ BANNER GALAT — masuk & keluar beranimasi ============
             AnimatedVisibility(
@@ -339,32 +337,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 }
             }
 
-            // ============ TEKS PARSIAL STT — chip dengar ============
-            if (partialText.isNotBlank()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                ) {
-                    Box(
-                        Modifier
-                            .width(3.dp)
-                            .height(16.dp)
-                            .background(palette.accent)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        "\u201C$partialText\u201D",
-                        color = palette.accent,
-                        fontSize = 12.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontFamily = AviBody,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
+            // P43 — teks parsial STT kini hidup DI DALAM bar hasil suara (dock)
 
             // ============ ZONA REAKTOR (piringan hidup · halo telemetri · orb) ============
             Box(Modifier.fillMaxWidth().height(232.dp)) {
@@ -387,7 +360,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                     voiceLevel = voiceLevel,
                     palette = palette,
                     powerSave = settings.powerSave,
-                    showVisor = true,
+                    showVisor = false,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(160.dp),
@@ -424,35 +397,18 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 Spacer(Modifier.height(6.dp))
             }
 
-            // ============ K19 — CHIP PINTASAN (perintah lokal instan + status otak) ============
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(vertical = 2.dp)
-            ) {
-                TopBarChip(
-                    label = settings.geminiModel.removePrefix("models/").ifBlank { "PILIH MODEL" },
-                    color = if (settings.geminiModel.isBlank()) palette.textDim else palette.accent,
-                    onClick = onOpenSettings
-                )
-                listOf(
-                    "Jam berapa?", "Tanggal berapa?", "Baterai berapa?",
-                    "Kondisi HP", "Sisa penyimpanan"
-                ).forEach { cmd ->
-                    HudCommandChip(text = cmd) { vm.sendText(cmd) }
-                }
-            }
+            // P43 — chip pintasan depan DIHAPUS (umpan Pak: depan bersih):
+            //   perintah lokal tetap hidup di Deck → PINTASAN MARKAS,
+            //   model terkini kini terbaca di BAR MODEL AKTIF di atas.
 
-            // ============ DOCK INPUT KACA — glow fokus, mic beriak, kirim beranimasi ============
+            // ============ DOCK P43 — BAR HASIL SUARA (vmic): suara lewat ORB,
+            //   papan ketik via tekan-lama/ikon; LIVE pindah ke Deck ============
+            var kbMode by remember { mutableStateOf(false) }
+            var voiceSaid by remember { mutableStateOf("") }
+            LaunchedEffect(partialText) { if (partialText.isNotBlank()) voiceSaid = partialText }
+            val focusRequester = remember { FocusRequester() }
+            LaunchedEffect(kbMode) { if (kbMode) focusRequester.requestFocus() }
             Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(bottom = 4.dp)) {
-                var focused by remember { mutableStateOf(false) }
-                val focusGlow by animateFloatAsState(
-                    targetValue = if (focused) 1f else 0.35f,
-                    animationSpec = tween(280),
-                    label = "focusGlow"
-                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -468,84 +424,128 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                         )
                         .border(
                             1.dp,
-                            palette.accent.copy(alpha = 0.22f + 0.5f * focusGlow),
+                            if (state == AviState.LISTENING) palette.accent.copy(alpha = 0.55f)
+                            else palette.accent.copy(alpha = 0.22f),
                             RoundedCornerShape(22.dp)
                         )
-                        .padding(horizontal = 14.dp, vertical = 2.dp)
+                        .combinedClickable(
+                            onClick = { if (!kbMode) kbMode = true },
+                            onLongClick = { kbMode = true }
+                        )
+                        .padding(start = 6.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
                 ) {
-                    BasicTextField(
-                        value = inputText,
-                        onValueChange = { inputText = it },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(vertical = 10.dp)
-                            .onFocusChanged { focused = it.isFocused },
-                        textStyle = TextStyle(
-                            color = palette.text,
-                            fontSize = 14.sp,
-                            fontFamily = AviBody
-                        ),
-                        cursorBrush = SolidColor(palette.accent),
-                        maxLines = 4,
-                        decorationBox = { inner ->
-                            Box {
-                                if (inputText.isEmpty()) {
-                                    Text(
-                                        "Ketik pesan ke AVI…",
-                                        color = palette.textDim,
-                                        fontSize = 13.sp,
-                                        fontFamily = AviBody
-                                    )
-                                }
-                                inner()
+                    // vmic — lingkaran mikrofon kecil; mengiup sian mengikuti suara
+                    Box(
+                        Modifier
+                            .size(36.dp)
+                            .graphicsLayer {
+                                val s = 1f + if (state == AviState.LISTENING) rmsLevel * 0.10f else 0f
+                                scaleX = s
+                                scaleY = s
                             }
+                            .clip(CircleShape)
+                            .background(
+                                if (state == AviState.LISTENING) palette.accent.copy(alpha = 0.20f)
+                                else palette.panelLight
+                            )
+                            .border(
+                                1.dp,
+                                if (state == AviState.LISTENING) palette.accent
+                                else palette.accent.copy(alpha = 0.30f),
+                                CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Mic,
+                            contentDescription = "Suara",
+                            tint = if (state == AviState.LISTENING) palette.accent else palette.textDim,
+                            modifier = Modifier.size(17.dp)
+                        )
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    if (kbMode) {
+                        BasicTextField(
+                            value = inputText,
+                            onValueChange = { inputText = it },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 8.dp)
+                                .focusRequester(focusRequester),
+                            textStyle = TextStyle(
+                                color = palette.text,
+                                fontSize = 14.sp,
+                                fontFamily = AviBody
+                            ),
+                            cursorBrush = SolidColor(palette.accent),
+                            maxLines = 4,
+                            decorationBox = { inner ->
+                                Box {
+                                    if (inputText.isEmpty()) {
+                                        Text(
+                                            "Ketik pesan ke AVI…",
+                                            color = palette.textDim,
+                                            fontSize = 13.sp,
+                                            fontFamily = AviBody
+                                        )
+                                    }
+                                    inner()
+                                }
+                            }
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        val canSend = inputText.isNotBlank()
+                        Box(
+                            modifier = Modifier
+                                .size(34.dp)
+                                .clip(CircleShape)
+                                .background(if (canSend) palette.gold else palette.panelLight)
+                                .clickable(enabled = canSend) {
+                                    kbMode = false
+                                    vm.sendText(inputText.trim())
+                                    inputText = ""
+                                    voiceSaid = ""
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Send,
+                                contentDescription = "Kirim",
+                                tint = if (canSend) palette.bg else palette.textDim,
+                                modifier = Modifier.size(16.dp)
+                            )
                         }
-                    )
-                }
-                Spacer(Modifier.width(6.dp))
-                PulseButton(
-                    icon = Icons.Default.Podcasts,
-                    contentDescription = "Mode live",
-                    active = state == AviState.LIVE,
-                    bg = if (state == AviState.LIVE) palette.danger else palette.panelLight,
-                    tint = if (state == AviState.LIVE) Color.White else palette.textDim,
-                    onClick = { if (state == AviState.LIVE) vm.stopLive() else vm.startLive() }
-                )
-                Spacer(Modifier.width(6.dp))
-                PulseButton(
-                    icon = if (state == AviState.LISTENING) Icons.Default.Stop else Icons.Default.Mic,
-                    contentDescription = "Mikrofon",
-                    active = state == AviState.LISTENING,
-                    level = if (state == AviState.LISTENING) rmsLevel else 0f,
-                    bg = if (state == AviState.LISTENING) palette.accent else palette.panelLight,
-                    tint = if (state == AviState.LISTENING) palette.bg else palette.accent,
-                    onClick = { ensureMicThenToggle() }
-                )
-                Spacer(Modifier.width(6.dp))
-                val canSend = inputText.isNotBlank()
-                val sendScale by animateFloatAsState(if (canSend) 1f else 0.86f, label = "sendScale")
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .graphicsLayer {
-                            scaleX = sendScale
-                            scaleY = sendScale
-                            alpha = if (canSend) 1f else 0.45f
+                    } else {
+                        val mirror = when {
+                            state == AviState.LISTENING && partialText.isNotBlank() -> "\u201C$partialText\u201D"
+                            state == AviState.LISTENING -> "Mendengar… silakan bicara, Pak"
+                            voiceSaid.isNotBlank() -> voiceSaid
+                            else -> "Hasil suara tampil di sini — ketuk ORB untuk bicara, Pak"
                         }
-                        .clip(CircleShape)
-                        .background(palette.gold)
-                        .clickable(enabled = canSend) {
-                            vm.sendText(inputText.trim())
-                            inputText = ""
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.Send,
-                        contentDescription = "Kirim",
-                        tint = palette.bg,
-                        modifier = Modifier.size(20.dp)
-                    )
+                        Text(
+                            mirror,
+                            color = when {
+                                state == AviState.LISTENING -> palette.accent
+                                voiceSaid.isNotBlank() -> palette.text
+                                else -> palette.textDim
+                            },
+                            fontSize = 13.sp,
+                            fontStyle = if (state == AviState.LISTENING) FontStyle.Italic else FontStyle.Normal,
+                            fontFamily = AviBody,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Icon(
+                            Icons.Default.Keyboard,
+                            contentDescription = "Papan ketik",
+                            tint = palette.textDim,
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable { kbMode = true }
+                        )
+                    }
                 }
             }
             Spacer(Modifier.height(6.dp))
@@ -605,9 +605,9 @@ private fun AnimatedNebula(resId: Int, palette: AviPalette, modifier: Modifier =
                     translationY = size.height * 0.018f * sin(drift * TAU * 0.7f)
                 },
             contentScale = ContentScale.Crop,
-            alpha = 0.48f
+            alpha = 0.62f   // P42: latar diperjelas (umpan Pak: animasi kurang jelas)
         )
-        // vignette bernafas — teks selalu terbaca, latar tetap berdenyut
+        // vignette bernafas — teks selalu terbaca, latar tetap berdenyut (P42: diringankan)
         Box(
             Modifier
                 .matchParentSize()
@@ -615,9 +615,9 @@ private fun AnimatedNebula(resId: Int, palette: AviPalette, modifier: Modifier =
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            palette.bg.copy(alpha = 0.42f),
-                            palette.bg.copy(alpha = 0.70f),
-                            palette.bg.copy(alpha = 0.86f)
+                            palette.bg.copy(alpha = 0.32f),
+                            palette.bg.copy(alpha = 0.56f),
+                            palette.bg.copy(alpha = 0.78f)
                         )
                     )
                 )
@@ -680,14 +680,14 @@ private fun StarfieldCanvas(palette: AviPalette, enabled: Boolean, modifier: Mod
                     color = col,
                     radius = s.size.dp.toPx() * 3.2f,
                     center = Offset(x, y),
-                    alpha = 0.10f * tw
+                    alpha = 0.15f * tw
                 )
             }
             drawCircle(
                 color = col,
                 radius = s.size.dp.toPx(),
                 center = Offset(x, y),
-                alpha = (0.22f + 0.45f * s.depth) * (0.45f + 0.55f * tw)
+                alpha = (0.30f + 0.50f * s.depth) * (0.45f + 0.55f * tw)
             )
         }
     }
@@ -789,67 +789,212 @@ private fun BubbleEntrance(key: Long, content: @Composable () -> Unit) {
 }
 
 // ============================================================
-// Tombol bulat dengan cincin denyut saat aktif + denyut level mic
+// P43 — MARK header: mini-orb identik lambang preview — inti kaca
+// gelap + cincin tick mesin + arc emas-sian berputar + hexagram
+// ganda. KETUK → DECK MODUL (pintasan pindah dari header — depan
+// tetap satu tombol Pengaturan, keputusan Pak).
 // ============================================================
 
 @Composable
-private fun PulseButton(
-    icon: ImageVector,
-    contentDescription: String,
-    active: Boolean,
-    bg: Color,
-    tint: Color,
-    level: Float = 0f,
-    onClick: () -> Unit
-) {
-    val transition = rememberInfiniteTransition(label = "pulseBtn")
-    val p by transition.animateFloat(
+private fun HeaderMark(palette: AviPalette, modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "hMark")
+    val spin by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(1500, easing = LinearEasing)),
-        label = "p"
+        animationSpec = infiniteRepeatable(tween(7000, easing = LinearEasing)),
+        label = "spin"
     )
-    Box(contentAlignment = Alignment.Center) {
-        if (active) {
-            // dua cincin memuai bergantian
-            val p2 = (p + 0.5f) % 1f
-            Box(
-                Modifier
-                    .size(48.dp)
-                    .graphicsLayer {
-                        scaleX = 1f + p * 0.75f
-                        scaleY = 1f + p * 0.75f
-                        alpha = (1f - p) * 0.55f
-                    }
-                    .border(2.dp, bg.copy(alpha = 0.7f), CircleShape)
+    val spin2 by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(13000, easing = LinearEasing)),
+        label = "spin2"
+    )
+    Canvas(modifier) {
+        val c = center
+        val R = size.minDimension / 2f
+        val TAU = (2.0 * PI).toFloat()
+        // inti kaca gelap
+        drawCircle(color = palette.bg.copy(alpha = 0.9f), radius = R * 0.86f, center = c)
+        drawCircle(
+            color = palette.accent.copy(alpha = 0.35f),
+            radius = R * 0.86f,
+            center = c,
+            style = Stroke(width = 1.dp.toPx())
+        )
+        // cincin tick mesin (24 gerigi halus, putar pelan)
+        rotate(degrees = spin2 * 360f, pivot = c) {
+            for (k in 0 until 24) {
+                drawArc(
+                    color = palette.textDim.copy(alpha = 0.5f),
+                    startAngle = k * 15f,
+                    sweepAngle = 4f,
+                    useCenter = false,
+                    style = Stroke(width = 1.dp.toPx())
+                )
+            }
+        }
+        // arc emas-sian berputar berlawanan laju
+        rotate(degrees = spin * 360f, pivot = c) {
+            drawArc(
+                color = palette.gold,
+                startAngle = 0f,
+                sweepAngle = 80f,
+                useCenter = false,
+                style = Stroke(width = 1.6.dp.toPx())
             )
-            Box(
-                Modifier
-                    .size(48.dp)
-                    .graphicsLayer {
-                        scaleX = 1f + p2 * 0.75f
-                        scaleY = 1f + p2 * 0.75f
-                        alpha = (1f - p2) * 0.55f
-                    }
-                    .border(2.dp, bg.copy(alpha = 0.7f), CircleShape)
+            drawArc(
+                color = palette.accent,
+                startAngle = 180f,
+                sweepAngle = 60f,
+                useCenter = false,
+                style = Stroke(width = 1.4.dp.toPx())
             )
         }
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .graphicsLayer {
-                    val s = 1f + level.coerceIn(0f, 1f) * 0.09f
-                    scaleX = s
-                    scaleY = s
+        // hexagram ganda — segitiga sian ke atas, emas ke bawah
+        rotate(degrees = spin2 * 360f, pivot = c) {
+            val r = R * 0.52f
+            fun tri(base: Float, col: Color, w: Float) {
+                val p = listOf(
+                    Offset(
+                        c.x + r * cos((base - 90f) * PI.toFloat() / 180f),
+                        c.y + r * sin((base - 90f) * PI.toFloat() / 180f)
+                    ),
+                    Offset(
+                        c.x + r * cos((base + 30f) * PI.toFloat() / 180f),
+                        c.y + r * sin((base + 30f) * PI.toFloat() / 180f)
+                    ),
+                    Offset(
+                        c.x + r * cos((base + 150f) * PI.toFloat() / 180f),
+                        c.y + r * sin((base + 150f) * PI.toFloat() / 180f)
+                    )
+                )
+                for (k in 0..2) {
+                    drawLine(col, p[k], p[(k + 1) % 3], strokeWidth = w)
                 }
-                .clip(CircleShape)
-                .background(bg)
-                .border(1.dp, tint.copy(alpha = 0.4f), CircleShape)
-                .clickable { onClick() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(icon, contentDescription = contentDescription, tint = tint, modifier = Modifier.size(21.dp))
+            }
+            tri(0f, palette.accent, 1.8.dp.toPx())
+            tri(180f, palette.gold.copy(alpha = 0.9f), 1.4.dp.toPx())
         }
+        // pip hidup di tepi — denyut seirama orb
+        drawCircle(
+            color = palette.accent,
+            radius = 1.6.dp.toPx(),
+            center = Offset(c.x + R * 0.66f, c.y - R * 0.66f),
+            alpha = 0.55f + 0.45f * sin(spin * TAU)
+        )
+    }
+}
+
+// ============================================================
+// P43 — BAR MODEL AKTIF: kaca tipis di bawah header — membaca
+// model terkini dari PUSAT KENDALI (Pengaturan). TES = ping
+// model yang SEDANG DIPAKAI (nyata — via ModelCatalog.testModel),
+// latensi ditampilkan apa adanya; gagal tak dihaluskan.
+// ============================================================
+
+@Composable
+private fun ModelBar(
+    palette: AviPalette,
+    model: String,
+    test: AviViewModel.BarTest,
+    onTest: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val testing = test.phase == 1
+    val transition = rememberInfiniteTransition(label = "mDot")
+    val beat by transition.animateFloat(
+        initialValue = 0.35f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            tween(if (testing) 500 else 2400, easing = LinearEasing)
+        ),
+        label = "beat"
+    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(palette.panel.copy(alpha = 0.78f))
+            .border(1.dp, palette.accent.copy(alpha = 0.18f), RoundedCornerShape(14.dp))
+            .padding(start = 13.dp, end = 6.dp, top = 7.dp, bottom = 7.dp)
+    ) {
+        Box(
+            Modifier
+                .size(8.dp)
+                .graphicsLayer { alpha = 0.35f + 0.65f * beat }
+                .background(
+                    when {
+                        testing -> palette.accent
+                        test.phase == 3 -> palette.danger
+                        else -> palette.gold
+                    },
+                    CircleShape
+                )
+        )
+        Spacer(Modifier.width(10.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                "MODEL AKTIF · DARI PUSAT KENDALI",
+                color = palette.textDim,
+                fontSize = 7.5.sp,
+                fontFamily = AviHud,
+                letterSpacing = 2.2.sp
+            )
+            Text(
+                model.ifBlank { "PILIH DI PUSAT KENDALI" }.uppercase(Locale.ROOT),
+                color = if (model.isBlank()) palette.textDim else palette.gold,
+                fontSize = 11.5.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = AviHud,
+                letterSpacing = 1.4.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        Spacer(Modifier.width(8.dp))
+        when {
+            testing -> Text(
+                "MENGUJI…",
+                color = palette.accent,
+                fontSize = 9.sp,
+                fontFamily = AviHud,
+                letterSpacing = 1.4.sp
+            )
+            test.phase == 2 -> Text(
+                "TERHUBUNG · ${test.ms} MS",
+                color = palette.accent,
+                fontSize = 9.sp,
+                fontFamily = AviHud,
+                letterSpacing = 1.2.sp
+            )
+            test.phase == 3 -> Text(
+                test.message,
+                color = palette.danger,
+                fontSize = 9.sp,
+                fontFamily = AviHud,
+                letterSpacing = 0.8.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false)
+            )
+        }
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = if (testing) "…" else "TES",
+            color = palette.gold,
+            fontSize = 9.5.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = AviHud,
+            letterSpacing = 2.sp,
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(palette.gold.copy(alpha = 0.10f))
+                .border(1.dp, palette.gold.copy(alpha = 0.45f), RoundedCornerShape(10.dp))
+                .clickable(enabled = !testing && model.isNotBlank()) { onTest() }
+                .padding(horizontal = 13.dp, vertical = 7.dp)
+        )
     }
 }
 

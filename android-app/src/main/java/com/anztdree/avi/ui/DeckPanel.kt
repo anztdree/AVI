@@ -31,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.anztdree.avi.AviState
 import com.anztdree.avi.AviViewModel
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.Protocol
@@ -317,6 +319,69 @@ fun DeckPanel(
                                 }
                                 repeat(3 - baris.size) { Spacer(Modifier.weight(1f)) }
                             }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+
+                // ============ P43 — SUARA LANGSUNG (tombol LIVE pindah dari dock depan) ============
+                ModuleFrame(title = "SUARA LANGSUNG", badge = "NYATA", badgeColor = palette.danger) {
+                    val st by vm.state.collectAsState()
+                    val live = st == AviState.LIVE
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Podcasts,
+                            contentDescription = null,
+                            tint = if (live) palette.danger else palette.textDim,
+                            modifier = Modifier.size(30.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                if (live) "LIVE — BERJALAN" else "MODE LIVE",
+                                color = if (live) palette.danger else palette.text,
+                                fontSize = 13.sp,
+                                fontFamily = AviDisplay,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "Bicara dua arah tanpa jeda — sentuh reaktor untuk berhenti.",
+                                color = palette.textDim,
+                                fontSize = 9.5.sp,
+                                lineHeight = 13.sp,
+                                fontFamily = AviBody
+                            )
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(
+                                    if (live) palette.danger.copy(alpha = 0.14f)
+                                    else palette.accent.copy(alpha = 0.10f)
+                                )
+                                .border(
+                                    1.dp,
+                                    if (live) palette.danger.copy(alpha = 0.55f)
+                                    else palette.accent.copy(alpha = 0.45f),
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .clickable {
+                                    if (live) vm.stopLive() else {
+                                        onDismiss()
+                                        vm.startLive()
+                                    }
+                                }
+                                .padding(horizontal = 12.dp, vertical = 7.dp)
+                        ) {
+                            Text(
+                                if (live) "BERHENTI" else "MULAI",
+                                color = if (live) palette.danger else palette.accent,
+                                fontSize = 9.sp,
+                                fontFamily = AviHud,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
+                            )
                         }
                     }
                 }

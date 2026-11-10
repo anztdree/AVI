@@ -130,6 +130,12 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private val _modelTest = MutableStateFlow<Map<String, ModelTestResult>>(emptyMap())
     val modelTest: StateFlow<Map<String, ModelTestResult>> = _modelTest.asStateFlow()
 
+    /** P43 — hasil tombol TES di BAR MODEL AKTIF (bawah header): fase 0=idle,
+     *  1=menguji, 2=terhubung (ms), 3=gagal (message) */
+    data class BarTest(val phase: Int = 0, val ms: Long = 0L, val message: String = "")
+    private val _barTest = MutableStateFlow(BarTest())
+    val barTest: StateFlow<BarTest> = _barTest.asStateFlow()
+
     /** K14 — progres UJI SEMUA MODEL: (sudah diuji, total) — null kalau tidak jalan. */
     private val _batchTest = MutableStateFlow<Pair<Int, Int>?>(null)
     val batchTest: StateFlow<Pair<Int, Int>?> = _batchTest.asStateFlow()
@@ -810,6 +816,36 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val r = ModelCatalog.testModel(key, name)
             _modelTest.value = _modelTest.value + (name to r)
+        }
+    }
+
+    /**
+     * P43 — TES di bar MODEL AKTIF: ping model yang SEDANG DIPAKAI
+     * (bukan katalog), ukur latensi nyata, tampilkan di bar bawah header.
+     * Gagal juga ditampilkan apa adanya — jangan menggembirakan palsu.
+     */
+    fun testActiveModel() {
+        if (_barTest.value.phase == 1) return
+        val s = _settings.value
+        val key = s.geminiKey.trim()
+        if (key.isEmpty()) {
+            _barTest.value = BarTest(3, 0, "API key kosong")
+            return
+        }
+        if (s.geminiModel.isBlank()) {
+            _barTest.value = BarTest(3, 0, "Model belum dipilih")
+            return
+        }
+        _barTest.value = BarTest(1)
+        viewModelScope.launch {
+            val t0 = System.currentTimeMillis()
+            val r = try {
+                ModelCatalog.testModel(key, s.geminiModel)
+            } catch (e: Exception) {
+                ModelTestResult(false, false, e.message ?: "galat tak dikenal")
+            }
+            val ms = System.currentTimeMillis() - t0
+            _barTest.value = if (r.ok) BarTest(2, ms, "TERHUBUNG") else BarTest(3, ms, r.message)
         }
     }
 
