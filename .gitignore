@@ -1,54 +1,25 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ============================================================
+# AVI — REPO KHUSUS PROYEK APK (whitelist ketat)
+# Keputusan Pak (tegaskan berkali-kali): isi repo FOKUS APK.
+# Segala sesuatu di luar daftar di bawah adalah plumbing sandbox
+# lokal (Next.js/bun, mockup, alat bantu, log) — DILARANG masuk GitHub.
+# Pola /* memblokir SEMUA root file, lalu whitelist membuka yang sah.
+# ============================================================
 
-# dependencies
-node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+/*
 
-# testing
-/coverage
+# sah: proyek APK
+!/android-app
+!/android-app/**
+!/build.gradle.kts
+!/settings.gradle.kts
+!/gradle.properties
 
-# next.js
-/.next/
-/out/
+# sah: CI build APK
+!/.github
+!/.github/workflows
+!/.github/workflows/build-android.yml
 
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-local-*
-.claude
-.z-ai-config
-*.log
-dev.log
-dev.out.log
-test
-prompt
-
-server.log
-# Skills directory
-/skills/
+# sah: dokumen & aturan repo
+!/.gitignore
+!/README.md

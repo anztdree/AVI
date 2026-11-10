@@ -1,55 +1,54 @@
-# AVI — Asisten Pribadi (MK-II)
+# AVI — Asisten Virtual Android
 
-AVI adalah **ASISTEN PRIBADI** yang punya kemampuan agent — bukan perkakas HP.
-Dirancang untuk tugas berat: laporan PDF, coding, analisa kode, analisa data.
+AVI adalah **asisten virtual berbasis AI** untuk Android: bicara bebas (STT & TTS
+ramah bahasa Indonesia), otak agen cloud (Google Gemini + kompatibel OpenAI)
+dengan **perkakas perangkat nyata**, Pusat Kendali 5 tab, dan telemetri orbit.
 
-## Isi repo
+## Isi repo — KHUSUS PROYEK APK
 
 | Jalur | Isi |
 |---|---|
-| `android-app/` | Source code aplikasi Android AVI (Kotlin + Jetpack Compose) |
-| `public/avi-agent.html` | **SATU-SATUNYA** mockup tampilan — self-contained, jadi contoh display sebelum dikemas jadi APK |
-| `.github/workflows/build-android.yml` | CI build APK (jalan saat `android-app/**` berubah) |
+| `android-app/` | Source aplikasi Android AVI (Kotlin + Jetpack Compose, paket `com.anztdree.avi`) |
+| `build.gradle.kts` · `settings.gradle.kts` · `gradle.properties` | Gradle root proyek |
+| `.github/workflows/build-android.yml` | CI: build Release APK + perbarui Release `v1.0.0` |
 
-## Preview v42 — "MK-XX ATELIER" : TEMA & TATA LETAK OBROLAN DIRANCANG ULANG
+> **Catatan tegas:** repo ini murni proyek APK. Plumbing sandbox pengembangan
+> lokal (Next.js/bun, mockup tampilan, alat bantu, log) sengaja **tidak
+> di-commit** — `.gitignore` memakai whitelist, jadi file di luar daftar di
+> atas tidak akan pernah masuk GitHub walau di-`git add -A`.
 
-Masukan Pak: **"tema dan tata letak maupun UI dari tampilan chat ini
-masih tidak sinkron tidak mewah"** — dan urusan orb dianggap selesai.
-Maka v42:
+## Unduh APK
 
-1. **Orb MK-XIX v41 TETAP UTUH** — cangkang HUD SENTRI + inti plasma
-   konsep 2 tidak disentuh sama sekali (CSS, HTML, state kerja/tuntas,
-   tema siang — semua disalin apa adanya).
-2. **Obrolan dibersihkan total** — scanline, bracket HUD, rel mesin,
-   strip VOX, comms bar sesak DIHAPUS. Bubble kini kaca rapi dengan
-   SATU aksen tepi tipis (sian untuk AVI, emas untuk Pak), meta
-   ringkas (nama + jam), masuk pegas halus.
-3. **Latar ATELIER** — grid blueprint samar bermask radial + dua
-   pendaran tenang (sian atas, emas bawah) + vignette. Menggantikan
-   3 blob aurora + starfield.
-4. **Aksen disiplin & sinkron dengan orb** — sian = sistem/AVI,
-   emas = Pak/aksi (kirim menyala emas saat ada tulisan), mint =
-   tuntas.
-5. **Sapaan cepat** — 4 chip elegan di bawah sapaan (rekap rapat,
-   draf email, laporan pengeluaran, pengingat) langsung menjalankan
-   alur agent. Riwayat obrolan diperpanjang (10) agar percakapan
-   terasa hidup. Status sambungan jadi SATU baris tenang.
-6. `prefers-reduced-motion` dihormati; tema siang "fajar atelier"
-   & malam tetap ada.
+Setiap perubahan `android-app/**` memicu build otomatis. APK terbaru selalu ada
+di **GitHub Release `v1.0.0`** dengan nama file unik per build:
+`AVI-v{versi}-{kode build}-{hash commit}.apk`
 
-## Melihat preview tampilan
+🔗 https://github.com/anztdree/AVI/releases/tag/v1.0.0
 
-Buka `public/avi-agent.html` langsung di browser — tidak perlu install
-apa pun. Interaksi yang jalan di mockup: obrolan asisten, chip sapaan
-cepat, pemicu tugas agent lewat pesan (mis. "buatkan laporan"), alur
-laporan lengkap (JEDA/STOP, izin di 60%, hasil PDF), orb v41 dengan
-koreografi keadaan (ketuk orb = mode suara), sheet TUGAS, KENDALI,
-tema malam/siang. Papan ketik nyata di HP ditangani rapi
-(`interactive-widget=resizes-content` + `visualViewport`).
-Fitur bertanda COMING SOON belum diimplementasi.
+## Build lokal
 
-## Status
+```bash
+gradle assembleRelease
+# hasil: android-app/build/outputs/apk/release/app-release.apk
+```
 
-Tahap desain: mockup v42 (MK-XX ATELIER — tema obrolan baru, orb v41
-dikunci). Implementasi desain terbaru ke aplikasi Android menyusul
-setelah desain disetujui.
+## Kemampuan utama
+
+- 🔊 **Bicara bebas** "Hai, Pak…" — STT & TTS selalu aktif, ramah bahasa Indonesia
+- 🧠 **AI cloud Google Gemini** — auth `X-goog-api-key`, daftar model dinamis
+  (keluarga 1.5 / 2.0 / 2.5 / alias `-latest`), plus klien kompatibel OpenAI
+- 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 16 perkakas nyata:
+  diagnostik, buka aplikasi, volume, senter, URL, pencarian web, share,
+  pengaturan, telepon/SMS draf, kalkulator aman, ingatan, dan lainnya
+- 🎛️ **Pusat Kendali 5 tab** — OTAK / SUARA / GAYA / SISTEM / AGENT
+  (otoritas 3 tingkat AMAN/BAKU/PENUH, mode AUTO/SELALU/MATI, log aksi)
+- 🛰️ **Orbit telemetri** di sekeliling orb — baterai, memori, penyimpanan,
+  jaringan, jam
+- 🌌 **Tampilan kelas Jarvis** — nebula animasi, bintang paralaks, piringan
+  reaktor, dock kaca beriak, tema Mark
+
+## Riwayat singkat
+
+K19 → K22: HUD Jarvis, Pusat Kendali dirambah, Ingatan AVI, dan AVI jadi
+AI AGEN (function calling terbukti di 2 model free-tier). Detail lengkap ada
+di pesan commit.
