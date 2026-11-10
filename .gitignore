@@ -25,7 +25,10 @@
 
 # sah: preview desain AVI (keputusan Pak 10 Nov: Pages = gerbang persetujuan
 # tampilan sebelum diimplementasikan jadi APK — avi-agent.html sah masuk repo)
+# CATATAN P42: /public dibuka lalu isi public/ DIBLOKIM LAGI satu-satu —
+# tanpa ini, auto-commit bisa menyeret jpg/apk/orb-lab ke repo (pernah terjadi).
 !/public
+/public/*
 !/public/avi-agent.html
 
 # sah: dokumen & aturan repo
