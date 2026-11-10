@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -45,8 +46,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -60,11 +65,15 @@ import com.anztdree.avi.ai.GeminiModelInfo
 import com.anztdree.avi.ai.ModelTestResult
 import com.anztdree.avi.ui.theme.AviBody
 import com.anztdree.avi.ui.theme.AviCode
+import com.anztdree.avi.ui.theme.AviDisplay
 import com.anztdree.avi.ui.theme.AviHead
 import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.LocalAviPalette
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 // ============================================================
 // Chip & bar atas
@@ -229,89 +238,250 @@ fun SetupCard(onOpenSettings: () -> Unit) {
         }
     }
 }
-
 // ============================================================
-// Bubble chat — kaca berlapis: tag peran, gradien, kursor kedip,
-// indikator mengetik. Masuk beranimasi dari BubbleEntrance.
+// P43 — PESAN: panel HUD berhias (porting setia preview .msg):
+// avatar mini-orb (AVI) / segel heksagon emas (PAK) + meta berchip
+// jam + bubble ber-PUNGGUNGAN aksen menyala + sudut bidik.
+// TIDAK POLOS lagi — persis bahasa preview yang disetujui.
 // ============================================================
 
 @Composable
-fun MessageBubble(role: String, text: String, streaming: Boolean = false) {
+fun MessageBubble(role: String, text: String, streaming: Boolean = false, time: String? = null) {
     val palette = LocalAviPalette.current
     val isUser = role == "user"
-    val bg = if (isUser) palette.userBubble else palette.aviBubble
-    val border = if (isUser) palette.userBorder else palette.aviBorder
     // ekor sudut menghadap pengirim — identitas visual tiap sisi
     val shape = if (isUser)
-        RoundedCornerShape(16.dp, 4.dp, 16.dp, 16.dp)
+        RoundedCornerShape(20.dp, 3.dp, 20.dp, 20.dp)
     else
-        RoundedCornerShape(4.dp, 16.dp, 16.dp, 16.dp)
+        RoundedCornerShape(3.dp, 20.dp, 20.dp, 20.dp)
+
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
+        verticalAlignment = Alignment.Bottom
     ) {
+        if (isUser) PakAvatar(palette = palette) else AviAvatar(palette = palette)
+        Spacer(Modifier.width(8.dp))
         Column(
-            modifier = Modifier
-                .widthIn(max = 300.dp)
-                .clip(shape)
-                .background(
-                    Brush.linearGradient(
-                        listOf(bg.copy(alpha = 0.94f), bg)
-                    )
-                )
-                .border(1.dp, border.copy(alpha = 0.55f), shape)
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+            modifier = Modifier.widthIn(max = 300.dp),
+            horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
         ) {
-            // tag peran — identitas HUD tiap bubble
+            // mmeta — nama + chip jam (mono berjersey)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .size(5.dp)
-                        .clip(CircleShape)
-                        .background(if (isUser) palette.gold else palette.accent)
-                )
-                Spacer(Modifier.width(5.dp))
+                if (isUser) {
+                    if (time != null) TimeChip(time, palette)
+                    Spacer(Modifier.width(7.dp))
+                }
                 Text(
                     if (isUser) "PAK" else "AVI",
                     color = if (isUser) palette.gold else palette.accent,
-                    fontSize = 8.5.sp,
+                    fontSize = 9.5.sp,
                     fontFamily = AviHud,
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.5.sp
+                    letterSpacing = 2.4.sp
                 )
+                if (!isUser) {
+                    Spacer(Modifier.width(7.dp))
+                    if (time != null) TimeChip(time, palette)
+                }
             }
-            Spacer(Modifier.height(3.dp))
-            if (streaming && text.isEmpty()) {
-                // menunggu suku kata pertama — tetesan mengetik
-                TypingDots(palette = palette)
-            } else {
-                Row {
-                    Text(
-                        text = text,
-                        color = palette.text,
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp,
-                        fontFamily = AviBody
+            Spacer(Modifier.height(4.dp))
+            Box(
+                modifier = Modifier
+                    .clip(shape)
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                (if (isUser) palette.userBubble else palette.aviBubble).copy(alpha = 0.94f),
+                                if (isUser) palette.userBubble else palette.aviBubble
+                            )
+                        )
                     )
-                    if (streaming) {
-                        val blink = rememberInfiniteTransition(label = "cursor")
-                        val on by blink.animateFloat(
-                            initialValue = 1f,
-                            targetValue = 0.1f,
-                            animationSpec = infiniteRepeatable(tween(460, easing = LinearEasing)),
-                            label = "on"
+                    .border(1.dp, palette.textDim.copy(alpha = 0.27f), shape)
+                    // pendaran radial di sudut atas (radial-gradient .bub) + PUNGGUNGAN
+                    // aksen menyala (bub::before) + sudut bidik (::after) — di atas latar
+                    .drawBehind {
+                        val tint = if (isUser) palette.gold else palette.accent
+                        drawRect(
+                            brush = Brush.radialGradient(
+                                listOf(tint.copy(alpha = 0.10f), Color.Transparent),
+                                center = if (isUser) Offset(size.width, 0f) else Offset(0f, 0f),
+                                radius = size.width * 1.3f
+                            ),
+                            topLeft = Offset.Zero, size = size
                         )
+                        // PUNGGUNGAN aksen menyala — kiri utk AVI, kanan utk PAK
+                        val spineX = if (isUser) size.width - 2.5.dp.toPx() else 0f
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                listOf(
+                                    (if (isUser) palette.gold else palette.accent),
+                                    (if (isUser) palette.gold else palette.accent).copy(alpha = 0.06f)
+                                ),
+                                startY = 9.dp.toPx(), endY = size.height - 9.dp.toPx()
+                            ),
+                            topLeft = Offset(spineX, 9.dp.toPx()),
+                            size = Size(2.5.dp.toPx(), size.height - 18.dp.toPx())
+                        )
+                        // sudut bidik di ekor bubble (::after) — aksen pengirim
+                        val ck = if (isUser) palette.gold else palette.accent
+                        val w = 2.dp.toPx()
+                        val s = 9.dp.toPx()
+                        val bx = if (isUser) size.width - s else 0f
+                        val by = size.height - s
+                        drawLine(ck.copy(alpha = 0.75f), Offset(bx, by + w / 2f), Offset(bx + s, by + w / 2f), w)
+                        drawLine(ck.copy(alpha = 0.75f), Offset(bx + w / 2f, by), Offset(bx + w / 2f, by + s), w)
+                    }
+                    .padding(
+                        start = if (isUser) 17.dp else 20.dp,
+                        end = if (isUser) 20.dp else 17.dp,
+                        top = 13.dp,
+                        bottom = 13.dp
+                    )
+            ) {
+                if (streaming && text.isEmpty()) {
+                    // menunggu suku kata pertama — tetesan mengetik
+                    TypingDots(palette = palette)
+                } else {
+                    Row {
                         Text(
-                            "▌",
-                            color = palette.accent,
-                            fontSize = 14.sp,
-                            fontFamily = AviBody,
-                            modifier = Modifier.graphicsLayer { alpha = on }
+                            text = text,
+                            color = palette.text,
+                            fontSize = 14.5.sp,
+                            lineHeight = 21.sp,
+                            fontFamily = AviBody
                         )
+                        if (streaming) {
+                            val blink = rememberInfiniteTransition(label = "cursor")
+                            val on by blink.animateFloat(
+                                initialValue = 1f,
+                                targetValue = 0.1f,
+                                animationSpec = infiniteRepeatable(tween(460, easing = LinearEasing)),
+                                label = "on"
+                            )
+                            Text(
+                                "▌",
+                                color = palette.accent,
+                                fontSize = 14.5.sp,
+                                fontFamily = AviBody,
+                                modifier = Modifier.graphicsLayer { alpha = on }
+                            )
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+/** Chip jam kecil (mmeta .mts preview) — mono berbingkai */
+@Composable
+private fun TimeChip(time: String, palette: AviPalette) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .clip(RoundedCornerShape(7.dp))
+            .background(palette.panel.copy(alpha = 0.6f))
+            .border(1.dp, palette.textDim.copy(alpha = 0.22f), RoundedCornerShape(7.dp))
+            .padding(horizontal = 7.dp, vertical = 1.5.dp)
+    ) {
+        Text(
+            time,
+            color = palette.textDim,
+            fontSize = 8.sp,
+            fontFamily = AviHud,
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 1.2.sp
+        )
+    }
+}
+
+/**
+ * Avatar AVI — mini-orb identik lambang header preview (.mav):
+ * ring tick mesin + inti kaca gelap + heksagram ganda + pip emas.
+ * Statis (tanpa loop per pesan — hemat baterai, wajah tetap sama).
+ */
+@Composable
+private fun AviAvatar(palette: AviPalette) {
+    Canvas(Modifier.size(34.dp)) {
+        val c = center
+        val R = size.minDimension / 2f
+        fun pt(r: Float, deg: Float) = Offset(
+            c.x + r * cos(deg * PI.toFloat() / 180f),
+            c.y + r * sin(deg * PI.toFloat() / 180f)
+        )
+        // pendaran lembut
+        drawCircle(palette.accent.copy(alpha = 0.14f), radius = R * 1.25f, center = c)
+        // ring tick mesin — 30 gerigi
+        for (k in 0 until 30) {
+            val a = k * 12f
+            drawLine(
+                palette.textDim.copy(alpha = 0.50f),
+                pt(R * 0.90f, a), pt(R, a),
+                strokeWidth = 1.dp.toPx()
+            )
+        }
+        // inti kaca gelap (cd)
+        drawCircle(
+            brush = Brush.radialGradient(
+                0f to Color.White.copy(alpha = 0.36f),
+                0.42f to palette.accent.copy(alpha = 0.20f),
+                0.88f to Color(0xFF0A1322).copy(alpha = 0.96f),
+                1f to Color(0xFF05080F),
+                center = Offset(c.x - R * 0.17f, c.y - R * 0.23f),
+                radius = R * 1.05f
+            ),
+            radius = R * 0.87f, center = c
+        )
+        drawCircle(palette.accent.copy(alpha = 0.32f), radius = R * 0.87f, center = c, style = Stroke(1.dp.toPx()))
+        // heksagram ganda — sian atas, emas bawah (statik, miring -13°)
+        val hr = R * 0.50f
+        val rot = -13f
+        fun tri(base: Float, col: Color, w: Float) {
+            for (k in 0..2) {
+                val a1 = (rot + base - 90f + k * 120f) * PI.toFloat() / 180f
+                val a2 = (rot + base - 90f + ((k + 1) % 3) * 120f) * PI.toFloat() / 180f
+                drawLine(
+                    col,
+                    Offset(c.x + hr * cos(a1), c.y + hr * sin(a1)),
+                    Offset(c.x + hr * cos(a2), c.y + hr * sin(a2)),
+                    strokeWidth = w, cap = StrokeCap.Round
+                )
+            }
+        }
+        tri(0f, palette.accent, 1.6.dp.toPx())
+        tri(180f, palette.gold.copy(alpha = 0.9f), 1.3.dp.toPx())
+        // pip emas di tepi — denyut identitas
+        val pip = pt(R * 0.93f, -45f)
+        drawCircle(palette.gold.copy(alpha = 0.45f), radius = R * 0.16f, center = pip)
+        drawCircle(palette.gold, radius = R * 0.10f, center = pip)
+    }
+}
+
+/** Avatar PAK — segel heksagon emas bermonogram (mavP preview) */
+@Composable
+private fun PakAvatar(palette: AviPalette) {
+    Box(Modifier.size(width = 31.dp, height = 33.dp), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            val c = center
+            val R = size.minDimension / 2f * 0.94f
+            val hex = Path()
+            for (k in 0 until 6) {
+                val a = (-90f + k * 60f) * PI.toFloat() / 180f
+                val p = Offset(c.x + R * cos(a), c.y + R * sin(a))
+                if (k == 0) hex.moveTo(p.x, p.y) else hex.lineTo(p.x, p.y)
+            }
+            hex.close()
+            drawPath(hex, palette.gold.copy(alpha = 0.12f))
+            drawPath(hex, palette.gold.copy(alpha = 0.85f), style = Stroke(1.2.dp.toPx()))
+        }
+        Text(
+            "P",
+            color = palette.gold,
+            fontSize = 12.5.sp,
+            fontWeight = FontWeight.ExtraBold,
+            fontFamily = AviDisplay
+        )
     }
 }
 

@@ -16,9 +16,9 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,7 +49,6 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,22 +57,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -84,7 +86,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.anztdree.avi.AviState
 import com.anztdree.avi.AviViewModel
-import com.anztdree.avi.R
 import com.anztdree.avi.agent.AgentEvent
 import com.anztdree.avi.data.AiProvider
 import com.anztdree.avi.data.AviSettings
@@ -161,6 +162,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             delay(10_000)
         }
     }
+    // format jam chip di bubble (mmeta .mts preview)
+    val msgTimeFmt = remember { SimpleDateFormat("HH.mm", Locale.getDefault()) }
 
     // ---- K12 — efek suara mengikuti denyut state reaktor ----
     LaunchedEffect(state) {
@@ -202,33 +205,11 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     }
 
     Box(Modifier.fillMaxSize().background(palette.bg)) {
-        // ---- K13 — nebula HD yang HIDUP: ken-burns pelan + vignette bernafas ----
-        if (!settings.powerSave) {
-            AnimatedNebula(
-                resId = when (settings.themeMark) {
-                    "MK2" -> R.drawable.bg_nebula_mk2
-                    "MK3" -> R.drawable.bg_nebula_mk3
-                    else -> R.drawable.bg_nebula
-                },
-                palette = palette,
-                modifier = Modifier.matchParentSize()
-            )
-        }
-        // ---- medan bintang berkelip berlapis kedalaman ----
-        StarfieldCanvas(
+        // ---- P43 LATAR PANGGUNG (setia preview): 3 pendaran + aurora +
+        //      9 debu energi + 1 bintang jatuh + vignette — TANPA foto/grid ----
+        AuroraStage(
             palette = palette,
-            enabled = settings.parallaxEnabled && !settings.powerSave,
-            modifier = Modifier.matchParentSize()
-        )
-        HexGridBackground(
-            palette = palette,
-            enabled = settings.parallaxEnabled && !settings.powerSave,
-            modifier = Modifier.matchParentSize()
-        )
-        // ---- K19 — bingkai HUD kelas Jarvis: bracket sudut + rel + sapuan hologram ----
-        HudFrameOverlay(
-            palette = palette,
-            enabled = settings.hudFrame && !settings.powerSave,
+            enabled = !settings.powerSave,
             modifier = Modifier.matchParentSize()
         )
         Column(
@@ -241,51 +222,115 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         ) {
             // ============ P43 — BAR ATAS BERSIH: mark + brand, pojok kanan CUMA 1 tombol PENGATURAN
             //   (umpan Pak: chip SIAGA & jam DIHAPUS dari depan — jam tetap hidup di telemetri orbit;
-            //    Deck pindah ke ketukan MARK logo — depan tetap bersih) ============
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 6.dp)
-            ) {
-                HeaderMark(
-                    palette = palette,
+            //    Deck pindah ke ketukan MARK logo — depan tetap satu tombol Pengaturan, keputusan Pak).
+            //   Porting setia preview: bar kaca + RAMBUT GRADIEN emas-sian di bawahnya +
+            //   brand bergradasi teks + tombol Pengaturan berbingkai emas dua lapis. ============
+            Box(Modifier.fillMaxWidth()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(38.dp)
-                        .clickable { showDeck = true }
-                )
-                Spacer(Modifier.width(10.dp))
-                Column {
-                    Text(
-                        "AVI",
-                        color = palette.text,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Black,
-                        fontFamily = AviDisplay,
-                        letterSpacing = 4.sp,
-                        lineHeight = 16.sp,
-                        style = TextStyle(
-                            shadow = Shadow(
-                                color = palette.accent.copy(alpha = 0.85f),
-                                blurRadius = 16f
+                        .fillMaxWidth()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Color.White.copy(alpha = 0.045f), Color.Transparent)
                             )
                         )
+                        .padding(top = 6.dp, bottom = 12.dp)
+                ) {
+                    HeaderMark(
+                        palette = palette,
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clickable { showDeck = true }
                     )
-                    Text(
-                        "ASISTEN PRIBADI",
-                        color = palette.textDim,
-                        fontSize = 7.5.sp,
-                        fontFamily = AviHud,
-                        letterSpacing = 3.sp
-                    )
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            "AVI",
+                            fontSize = 15.5.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = AviDisplay,
+                            letterSpacing = 5.sp,
+                            lineHeight = 16.sp,
+                            style = TextStyle(
+                                brush = Brush.horizontalGradient(
+                                    listOf(
+                                        palette.text,
+                                        palette.accent,
+                                        palette.gold
+                                    )
+                                )
+                            )
+                        )
+                        Text(
+                            "ASISTEN PRIBADI",
+                            color = palette.textDim,
+                            fontSize = 8.sp,
+                            fontFamily = AviHud,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 3.4.sp,
+                            modifier = Modifier.padding(top = 2.dp)
+                        )
+                    }
+                    Spacer(Modifier.weight(1f))
+                    // PENGATURAN — bingkai emas dua lapis + ring putus-putus dalam (preview #btnSet)
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(13.dp))
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(
+                                        palette.gold.copy(alpha = 0.17f),
+                                        palette.gold.copy(alpha = 0.05f),
+                                        palette.accent.copy(alpha = 0.09f)
+                                    )
+                                )
+                            )
+                            .border(1.dp, palette.gold.copy(alpha = 0.40f), RoundedCornerShape(13.dp))
+                            .drawBehind {
+                                val r = 11.dp.toPx()
+                                val rc = Offset(size.width / 2f - r, size.height / 2f - r)
+                                for (k in 0 until 24) {
+                                    drawArc(
+                                        color = palette.gold.copy(alpha = 0.30f),
+                                        startAngle = k * 15f, sweepAngle = 3.6f,
+                                        useCenter = false,
+                                        topLeft = rc,
+                                        size = androidx.compose.ui.geometry.Size(r * 2f, r * 2f),
+                                        style = Stroke(width = 1.dp.toPx())
+                                    )
+                                }
+                            }
+                            .clickable { onOpenSettings() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Pengaturan",
+                            tint = palette.gold,
+                            modifier = Modifier.size(19.dp)
+                        )
+                    }
                 }
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = onOpenSettings, modifier = Modifier.size(38.dp)) {
-                    Icon(
-                        Icons.Default.Settings,
-                        contentDescription = "Pengaturan",
-                        tint = palette.textDim,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+                // RAMBUT GRADIEN emas-sian di bawah header (header::after preview)
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(1.5.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                0f to Color.Transparent,
+                                0.04f to Color.Transparent,
+                                0.26f to palette.gold.copy(alpha = 0.50f),
+                                0.52f to Color(0xFF94B2E0).copy(alpha = 0.22f),
+                                0.80f to palette.accent.copy(alpha = 0.55f),
+                                0.96f to Color.Transparent,
+                                1f to Color.Transparent
+                            )
+                        )
+                )
             }
 
             // ============ P43 — BAR MODEL AKTIF: model terkini dari PUSAT KENDALI + tombol TES ============
@@ -320,7 +365,11 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 }
                 itemsIndexed(messages) { _, msg ->
                     BubbleEntrance(key = msg.timestamp) {
-                        MessageBubble(role = msg.role, text = msg.text)
+                        MessageBubble(
+                            role = msg.role,
+                            text = msg.text,
+                            time = msgTimeFmt.format(Date(msg.timestamp))
+                        )
                     }
                 }
                 if (state == AviState.THINKING) {
@@ -408,7 +457,22 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             LaunchedEffect(partialText) { if (partialText.isNotBlank()) voiceSaid = partialText }
             val focusRequester = remember { FocusRequester() }
             LaunchedEffect(kbMode) { if (kbMode) focusRequester.requestFocus() }
-            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(bottom = 4.dp)) {
+            // HORIZON sian-emas di atas komposer (composer::before preview) — panggung bawah hidup
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                    .height(1.dp)
+                    .background(
+                        Brush.horizontalGradient(
+                            0f to Color.Transparent,
+                            0.26f to palette.accent.copy(alpha = 0.42f),
+                            0.70f to palette.gold.copy(alpha = 0.38f),
+                            1f to Color.Transparent
+                        )
+                    )
+            )
+            Row(verticalAlignment = Alignment.Bottom) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -422,10 +486,19 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                                 )
                             )
                         )
+                        // CINCIN GRADIEN emas-sian (cmd::before / --gline preview)
                         .border(
-                            1.dp,
-                            if (state == AviState.LISTENING) palette.accent.copy(alpha = 0.55f)
-                            else palette.accent.copy(alpha = 0.22f),
+                            BorderStroke(
+                                1.dp,
+                                Brush.linearGradient(
+                                    listOf(
+                                        palette.accent.copy(alpha = 0.50f),
+                                        palette.accent.copy(alpha = 0.10f),
+                                        Color(0xFF94B2E0).copy(alpha = 0.18f),
+                                        palette.gold.copy(alpha = 0.45f)
+                                    )
+                                )
+                            ),
                             RoundedCornerShape(22.dp)
                         )
                         .combinedClickable(
@@ -446,12 +519,12 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                             .clip(CircleShape)
                             .background(
                                 if (state == AviState.LISTENING) palette.accent.copy(alpha = 0.20f)
-                                else palette.panelLight
+                                else palette.accent.copy(alpha = 0.10f)
                             )
                             .border(
                                 1.dp,
                                 if (state == AviState.LISTENING) palette.accent
-                                else palette.accent.copy(alpha = 0.30f),
+                                else palette.accent.copy(alpha = 0.32f),
                                 CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -459,7 +532,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                         Icon(
                             Icons.Default.Mic,
                             contentDescription = "Suara",
-                            tint = if (state == AviState.LISTENING) palette.accent else palette.textDim,
+                            tint = if (state == AviState.LISTENING) palette.accent else palette.accent.copy(alpha = 0.85f),
                             modifier = Modifier.size(17.dp)
                         )
                     }
@@ -568,135 +641,179 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
 }
 
 // ============================================================
-// Lapisan latar sinematik
+// LATAR PANGGUNG (P43 — porting setia preview .bgFx):
+// 3 pendaran lembut (gA sian · gB emas · gD lantai sian) + pita
+// aurora sian-emas bergoyang + 9 debu energi naik + 1 bintang
+// jatuh + vignette. TANPA foto nebula, TANPA grid, TANPA bingkai
+// — semua itu dipensiunkan di preview yang disetujui mata Pak.
+// Satu Canvas — murah, hidup, dan MURNI sama seperti HTML.
 // ============================================================
 
-/**
- * Nebula HD yang TIDAK PERNAH diam: ken-burns (zoom + geser sinusoidal
- * 26 detik) via graphicsLayer murni GPU + vignette yang bernafas.
- * K13 — jawaban atas keluhan "potongan gambar yang ditempel".
- */
 @Composable
-private fun AnimatedNebula(resId: Int, palette: AviPalette, modifier: Modifier = Modifier) {
-    val transition = rememberInfiniteTransition(label = "nebula")
-    val drift by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(26000, easing = LinearEasing)),
-        label = "drift"
-    )
-    val breathe by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(9000, easing = LinearEasing)),
-        label = "breathe"
-    )
-    Box(modifier) {
-        Image(
-            painter = painterResource(resId),
-            contentDescription = null,
-            modifier = Modifier
-                .matchParentSize()
-                .graphicsLayer {
-                    val TAU = (2.0 * PI).toFloat()
-                    scaleX = 1.08f + 0.03f * sin(drift * TAU)
-                    scaleY = scaleX
-                    translationX = size.width * 0.014f * cos(drift * TAU)
-                    translationY = size.height * 0.018f * sin(drift * TAU * 0.7f)
-                },
-            contentScale = ContentScale.Crop,
-            alpha = 0.62f   // P42: latar diperjelas (umpan Pak: animasi kurang jelas)
-        )
-        // vignette bernafas — teks selalu terbaca, latar tetap berdenyut (P42: diringankan)
-        Box(
-            Modifier
-                .matchParentSize()
-                .graphicsLayer { alpha = 0.55f + 0.14f * sin(breathe * PI.toFloat()) }
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            palette.bg.copy(alpha = 0.32f),
-                            palette.bg.copy(alpha = 0.56f),
-                            palette.bg.copy(alpha = 0.78f)
-                        )
-                    )
-                )
-        )
+private fun AuroraStage(palette: AviPalette, enabled: Boolean, modifier: Modifier = Modifier) {
+    val time = remember { mutableStateOf(0f) }
+    if (enabled) {
+        LaunchedEffect(Unit) {
+            var last = withFrameNanos { it }
+            while (true) {
+                val now = withFrameNanos { it }
+                time.value += (now - last) / 1_000_000_000f
+                last = now
+            }
+        }
     }
+    Canvas(modifier = modifier) { drawAuroraStage(time.value, palette) }
 }
 
-/** Satu bintang: posisi ternormalisasi, kedalaman (paralaks), fase kelip */
-private data class Star(
-    val x: Float,
-    val y: Float,
-    val depth: Float,
-    val size: Float,
-    val phase: Float,
-    val gold: Boolean,
-    val big: Boolean
+// 9 debu energi — parameter persis dari HTML preview (x, ukuran, warna,
+// durasi, delay negatif, opacity, hanyutan horizontal)
+private data class Mote(
+    val x: Float, val s: Float, val cyan: Boolean, val mint: Boolean,
+    val d: Float, val dl: Float, val o: Float, val dx: Float
 )
 
-/**
- * Medan bintang HD — 90 bintang 3 lapis kedalaman, hanyut turun pelan
- * (paralaks) + kelip sinus fase acak. Murni Canvas tanpa alokasi per frame.
- */
-@Composable
-private fun StarfieldCanvas(palette: AviPalette, enabled: Boolean, modifier: Modifier = Modifier) {
-    if (!enabled) return
-    val stars = remember {
-        val rnd = kotlin.random.Random(2077)
-        List(96) {
-            val big = rnd.nextFloat() < 0.07f
-            Star(
-                x = rnd.nextFloat(),
-                y = rnd.nextFloat(),
-                depth = 0.25f + rnd.nextFloat() * 0.75f,
-                size = if (big) 1.8f + rnd.nextFloat() * 1.2f else 0.7f + rnd.nextFloat() * 1.0f,
-                phase = rnd.nextFloat() * 2f * PI.toFloat(),
-                gold = rnd.nextFloat() < 0.28f,
-                big = big
-            )
-        }
+private val MOTES = listOf(
+    Mote(0.04f, 3.0f, true, false, 14f, -2f, 0.60f, 18f),
+    Mote(0.14f, 2.2f, false, false, 18f, -7f, 0.52f, -14f),
+    Mote(0.25f, 3.6f, false, true, 15f, -4f, 0.58f, 24f),
+    Mote(0.37f, 2.4f, true, false, 19f, -11f, 0.55f, -18f),
+    Mote(0.49f, 3.2f, false, false, 16f, -6f, 0.60f, 16f),
+    Mote(0.61f, 2.2f, true, false, 21f, -13f, 0.50f, -12f),
+    Mote(0.72f, 3.8f, false, true, 14.5f, -8f, 0.60f, 26f),
+    Mote(0.84f, 2.6f, false, false, 17.5f, -3.5f, 0.58f, -20f),
+    Mote(0.93f, 2.4f, true, false, 20f, -9.5f, 0.52f, 14f)
+)
+
+private fun DrawScope.drawAuroraStage(t: Float, palette: AviPalette) {
+    val w = size.width
+    val h = size.height
+    val TAU = (2.0 * PI).toFloat()
+
+    // ping-pong halus 0..1 (animation alternate CSS)
+    fun ping(dur: Float): Float {
+        val f = (t / dur) % 2f
+        return if (f < 1f) f else 2f - f
     }
-    val transition = rememberInfiniteTransition(label = "stars")
-    val t by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(24000, easing = LinearEasing)),
-        label = "t"
+    fun soft(p: Float) = 0.5f - 0.5f * cos(p * PI.toFloat()) // ease-in-out
+
+    // ---- gA: pendaran sian kiri-atas (driftA 17dtk) ----
+    val pa = soft(ping(17f))
+    val gaCx = w * 0.13f + 66f * pa * (w / 390f)
+    val gaCy = h * 0.09f + 52f * pa * (w / 390f)
+    val gaR = w * 0.29f * (1f + 0.18f * pa)
+    drawCircle(
+        brush = Brush.radialGradient(
+            listOf(palette.accent.copy(alpha = 0.26f), palette.accent.copy(alpha = 0.12f), Color.Transparent),
+            center = Offset(gaCx, gaCy), radius = gaR
+        ),
+        radius = gaR, center = Offset(gaCx, gaCy)
     )
-    Canvas(modifier) {
-        val TAU = (2.0 * PI).toFloat()
-        val w = size.width
-        val h = size.height
-        for (s in stars) {
-            val y = ((s.y + t * (0.04f + 0.11f * s.depth)) % 1f) * h
-            val x = s.x * w
-            val tw = 0.5f + 0.5f * sin(t * TAU * 3f + s.phase)
-            val col = if (s.gold) palette.gold else palette.accentSoft
-            if (s.big) {
-                // halo lembut bintang besar
-                drawCircle(
-                    color = col,
-                    radius = s.size.dp.toPx() * 3.2f,
-                    center = Offset(x, y),
-                    alpha = 0.15f * tw
-                )
-            }
-            drawCircle(
-                color = col,
-                radius = s.size.dp.toPx(),
-                center = Offset(x, y),
-                alpha = (0.30f + 0.50f * s.depth) * (0.45f + 0.55f * tw)
+    // ---- gB: pendaran emas kanan-bawah (driftB 21dtk) ----
+    val pb = soft(ping(21f))
+    val gbCx = w * 0.87f - 60f * pb * (w / 390f)
+    val gbCy = h * 0.92f - 46f * pb * (w / 390f)
+    val gbR = w * 0.31f * (1f + 0.14f * pb)
+    drawCircle(
+        brush = Brush.radialGradient(
+            listOf(palette.gold.copy(alpha = 0.21f), palette.gold.copy(alpha = 0.09f), Color.Transparent),
+            center = Offset(gbCx, gbCy), radius = gbR
+        ),
+        radius = gbR, center = Offset(gbCx, gbCy)
+    )
+    // ---- gD: pendaran lantai sian tengah-bawah (driftB 19dtk reverse) ----
+    val pd = soft(ping(19f))
+    val gdR = w * 0.36f * (1f + 0.14f * pd)
+    drawCircle(
+        brush = Brush.radialGradient(
+            listOf(palette.accent.copy(alpha = 0.23f), palette.accent.copy(alpha = 0.10f), Color.Transparent),
+            center = Offset(w * 0.50f, h * 1.02f), radius = gdR
+        ),
+        radius = gdR, center = Offset(w * 0.50f, h * 1.02f)
+    )
+
+    // ---- AURORA: pita sian-emas bergoyang (16dtk, translateX ±4% + kemiringan) ----
+    rotate(degrees = -4f + 8f * soft(ping(16f)), pivot = Offset(w * 0.5f, h * 0.22f)) {
+        translate(left = w * (-0.04f + 0.08f * soft(ping(16f)))) {
+            drawRect(
+                brush = Brush.horizontalGradient(
+                    0f to Color.Transparent,
+                    0.14f to Color.Transparent,
+                    0.40f to palette.accent.copy(alpha = 0.24f),
+                    0.68f to palette.gold.copy(alpha = 0.17f),
+                    0.88f to Color.Transparent,
+                    1f to Color.Transparent
+                ),
+                topLeft = Offset(w * 0.06f, h * 0.09f),
+                size = Size(w * 0.88f, h * 0.26f)
             )
         }
     }
+
+    // ---- 9 DEBU ENERGI: naik dari bawah + pendaran + hanyut ----
+    for (m in MOTES) {
+        val cycF = ((t + m.dl) / m.d % 1f + 1f) % 1f
+        val mx = m.x * w + m.dx * (w / 390f) * cycF
+        val my = h * (1.02f - 1.06f * cycF)
+        val mo = when {
+            cycF < 0.09f -> m.o * 1.5f * (cycF / 0.09f)
+            cycF < 0.58f -> m.o * 1.5f - (m.o * 0.38f) * ((cycF - 0.09f) / 0.49f)
+            else -> m.o * 1.12f * (1f - (cycF - 0.58f) / 0.42f)
+        }
+        if (mo <= 0f) continue
+        val col = when {
+            m.cyan -> palette.accent
+            m.mint -> Color(0xFF5EEAD4)
+            else -> palette.gold
+        }
+        val r = m.s * (w / 390f)
+        drawCircle(col.copy(alpha = mo * 0.25f), radius = r * 3f, center = Offset(mx, my))
+        drawCircle(col.copy(alpha = mo * 0.45f), radius = r * 1.8f, center = Offset(mx, my))
+        drawCircle(col.copy(alpha = mo), radius = r, center = Offset(mx, my))
+    }
+
+    // ---- 1 BINTANG JATUH: garis cahaya miring sapu cepat (10.5dtk, mulai 2.2dtk) ----
+    val mp = ((t - 2.2f) / 10.5f % 1f + 1f) % 1f
+    if (mp in 0.0f..0.16f) {
+        val mo2 = when {
+            mp < 0.04f -> mp / 0.04f * 0.9f
+            mp < 0.16f -> 0.9f * (1f - (mp - 0.04f) / 0.12f)
+            else -> 0f
+        }
+        val prog = (mp / 0.16f).coerceIn(0f, 1f)
+        val len = 150f * (w / 390f)
+        val mAng = 24f * PI.toFloat() / 180f
+        val cxm = w * 0.13f + 280f * prog * (w / 390f) * cos(mAng)
+        val cym = h * 0.08f + 280f * prog * (w / 390f) * sin(mAng)
+        val tail = Offset(
+            cxm - len * cos(mAng),
+            cym - len * sin(mAng)
+        )
+        drawLine(
+            brush = Brush.linearGradient(
+                listOf(Color.Transparent, palette.accent.copy(alpha = 0.55f * mo2), Color(0xFFF0FDFF).copy(alpha = 0.95f * mo2))
+            ),
+            start = tail, end = Offset(cxm, cym),
+            strokeWidth = 2f, cap = StrokeCap.Round
+        )
+    }
+
+    // ---- VIGNETTE (inset shadow .48) — tepi gelap halus, pusat jernih ----
+    drawRect(
+        brush = Brush.radialGradient(
+            0f to Color.Transparent,
+            0.62f to Color.Transparent,
+            0.88f to Color.Black.copy(alpha = 0.30f),
+            1f to Color.Black.copy(alpha = 0.48f),
+            center = Offset(w / 2f, h / 2f), radius = maxOf(w, h) * 0.72f
+        ),
+        topLeft = Offset.Zero, size = size
+    )
 }
 
 /**
- * Piringan reaktor — menggantikan tempelan gambar grid statis:
- * glow konsentris bernafas + dua cincin putus-putus berlawanan arah
- * + titik emas kardinal, mengikuti level suara.
+ * Piringan reaktor — porting #orbDock::before preview:
+ * ALAS CAHAYA di bawah panggung orb — pendaran sian+emas bernapas
+ * di atas lantai gelap. Bentuk orb TIDAK disentuh oleh lapisan ini.
  */
 @Composable
 private fun ReactorPlate(
@@ -705,63 +822,59 @@ private fun ReactorPlate(
     glowLevel: Float,
     modifier: Modifier = Modifier
 ) {
-    if (!enabled) return
-    val transition = rememberInfiniteTransition(label = "plate")
-    val t by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(16000, easing = LinearEasing)),
-        label = "t"
-    )
+    val time = remember { mutableStateOf(0f) }
+    if (enabled) {
+        LaunchedEffect(Unit) {
+            var last = withFrameNanos { it }
+            while (true) {
+                val now = withFrameNanos { it }
+                time.value += (now - last) / 1_000_000_000f
+                last = now
+            }
+        }
+    }
     Canvas(modifier = modifier) {
         val c = center
         val R = size.minDimension / 2f
-        val TAU = (2.0 * PI).toFloat()
-
-        // glow konsentris bernafas — memberi kedalaman di balik orb
-        val breathe = 0.5f + 0.5f * sin(t * TAU)
-        for (k in 0..2) {
-            drawCircle(
-                color = palette.accent.copy(alpha = (0.030f + 0.018f * k) * (0.75f + 0.5f * breathe + glowLevel * 0.6f)),
-                radius = R * (0.44f + 0.11f * k),
-                center = c
-            )
-        }
-        // cincin putus berputar searah — di celah antara orb dan pita telemetri
-        rotate(degrees = t * 360f, pivot = c) {
-            for (seg in 0 until 12) {
-                drawArc(
-                    color = palette.accent.copy(alpha = 0.15f),
-                    startAngle = seg * 30f,
-                    sweepAngle = 17f,
-                    useCenter = false,
-                    style = Stroke(width = 1.dp.toPx())
-                )
-            }
-        }
-        // cincin putus berlawanan arah
-        rotate(degrees = -t * 250f, pivot = c) {
-            for (seg in 0 until 8) {
-                drawArc(
-                    color = palette.gold.copy(alpha = 0.13f),
-                    startAngle = seg * 45f + 22f,
-                    sweepAngle = 24f,
-                    useCenter = false,
-                    style = Stroke(width = 1.dp.toPx())
-                )
-            }
-        }
-        // titik emas kardinal yang berkedip
-        for (k in 0 until 4) {
-            val rad = (k * 90f + t * 360f * 0.25f) * PI.toFloat() / 180f
-            val r = R * 0.685f
-            drawCircle(
-                color = palette.gold,
-                radius = 1.6.dp.toPx(),
-                center = Offset(c.x + r * cos(rad), c.y + r * sin(rad)),
-                alpha = 0.35f + 0.35f * sin(t * TAU * 2f + k)
-            )
-        }
+        // denyut alas 5.4dtk (dockB preview: scale 1 → 1.13, opacity .85 → 1)
+        val f = (time.value / 5.4f) % 2f
+        val p = 0.5f - 0.5f * cos(f * PI.toFloat())
+        val sc = 1f + 0.13f * p
+        val breathA = 0.85f + 0.15f * p
+        val cy = c.y + R * 0.10f
+        // lantai gelap dulu (radial kedua CSS), lalu pendaran sian, lalu emas
+        drawCircle(
+            brush = Brush.radialGradient(
+                listOf(
+                    Color(0xFF03070E).copy(alpha = 0.62f * breathA),
+                    Color(0xFF03070E).copy(alpha = 0.36f * breathA),
+                    Color.Transparent
+                ),
+                center = Offset(c.x, cy), radius = R * 1.42f * sc
+            ),
+            radius = R * 1.42f * sc, center = Offset(c.x, cy)
+        )
+        drawCircle(
+            brush = Brush.radialGradient(
+                listOf(
+                    palette.accent.copy(alpha = 0.17f * breathA + 0.08f * glowLevel),
+                    palette.accent.copy(alpha = 0.07f * breathA),
+                    Color.Transparent
+                ),
+                center = Offset(c.x, cy), radius = R * 1.05f * sc
+            ),
+            radius = R * 1.05f * sc, center = Offset(c.x, cy)
+        )
+        drawCircle(
+            brush = Brush.radialGradient(
+                listOf(
+                    palette.gold.copy(alpha = 0.08f * breathA),
+                    Color.Transparent
+                ),
+                center = Offset(c.x, cy), radius = R * 0.72f * sc
+            ),
+            radius = R * 0.72f * sc, center = Offset(c.x, cy)
+        )
     }
 }
 
@@ -917,13 +1030,42 @@ private fun ModelBar(
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
             .background(palette.panel.copy(alpha = 0.78f))
-            .border(1.dp, palette.accent.copy(alpha = 0.18f), RoundedCornerShape(14.dp))
+            .border(1.dp, palette.textDim.copy(alpha = 0.22f), RoundedCornerShape(14.dp))
+            // PUNGGUNGAN EMAS di tepi kiri (modelbar::before preview) — gradien emas→transparan
+            .drawBehind {
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        listOf(palette.gold, palette.gold.copy(alpha = 0.05f)),
+                        startY = 0f, endY = size.height
+                    ),
+                    topLeft = Offset(0f, 0f),
+                    size = Size(2.5.dp.toPx(), size.height)
+                )
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        listOf(palette.gold.copy(alpha = 0.35f), Color.Transparent),
+                        startY = 0f, endY = size.height
+                    ),
+                    topLeft = Offset(-1.5.dp.toPx(), 0f),
+                    size = Size(5.5.dp.toPx(), size.height)
+                )
+            }
             .padding(start = 13.dp, end = 6.dp, top = 7.dp, bottom = 7.dp)
     ) {
+        // mdot — titik emas berdenyut DENGAN PENDARAN (box-shadow CSS)
         Box(
             Modifier
                 .size(8.dp)
                 .graphicsLayer { alpha = 0.35f + 0.65f * beat }
+                .drawBehind {
+                    val glowCol = when {
+                        testing -> palette.accent
+                        test.phase == 3 -> palette.danger
+                        else -> palette.gold
+                    }
+                    drawCircle(glowCol.copy(alpha = 0.35f), radius = size.minDimension * 1.4f, center = center)
+                    drawCircle(glowCol.copy(alpha = 0.22f), radius = size.minDimension * 2.4f, center = center)
+                }
                 .background(
                     when {
                         testing -> palette.accent
@@ -945,10 +1087,10 @@ private fun ModelBar(
             Text(
                 model.ifBlank { "PILIH DI PUSAT KENDALI" }.uppercase(Locale.ROOT),
                 color = if (model.isBlank()) palette.textDim else palette.gold,
-                fontSize = 11.5.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = AviHud,
-                letterSpacing = 1.4.sp,
+                letterSpacing = 1.6.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -958,21 +1100,21 @@ private fun ModelBar(
             testing -> Text(
                 "MENGUJI…",
                 color = palette.accent,
-                fontSize = 9.sp,
+                fontSize = 8.5.sp,
                 fontFamily = AviHud,
                 letterSpacing = 1.4.sp
             )
             test.phase == 2 -> Text(
                 "TERHUBUNG · ${test.ms} MS",
-                color = palette.accent,
-                fontSize = 9.sp,
+                color = palette.goldSoft,
+                fontSize = 8.5.sp,
                 fontFamily = AviHud,
                 letterSpacing = 1.2.sp
             )
             test.phase == 3 -> Text(
                 test.message,
                 color = palette.danger,
-                fontSize = 9.sp,
+                fontSize = 8.5.sp,
                 fontFamily = AviHud,
                 letterSpacing = 0.8.sp,
                 maxLines = 1,
@@ -981,20 +1123,37 @@ private fun ModelBar(
             )
         }
         Spacer(Modifier.width(8.dp))
-        Text(
-            text = if (testing) "…" else "TES",
-            color = palette.gold,
-            fontSize = 9.5.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = AviHud,
-            letterSpacing = 2.sp,
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .background(palette.gold.copy(alpha = 0.10f))
-                .border(1.dp, palette.gold.copy(alpha = 0.45f), RoundedCornerShape(10.dp))
-                .clickable(enabled = !testing && model.isNotBlank()) { onTest() }
-                .padding(horizontal = 13.dp, vertical = 7.dp)
-        )
+        // TES — tombol emas dengan SUDUT BIDIK (corner bracket ::before/::after preview)
+        Box(Modifier.padding(3.dp)) {
+            Text(
+                text = if (testing) "…" else "TES",
+                color = palette.gold,
+                fontSize = 9.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = AviHud,
+                letterSpacing = 2.sp,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(palette.gold.copy(alpha = 0.08f))
+                    .border(1.dp, palette.gold.copy(alpha = 0.45f), RoundedCornerShape(10.dp))
+                    .drawBehind {
+                        val s = 6.dp.toPx()
+                        val w = 1.2.dp.toPx()
+                        val col = palette.gold.copy(alpha = 0.60f)
+                        // 4 sudut bidik emas — di tepi tombol
+                        drawLine(col, Offset(0f, 0f), Offset(s, 0f), w)
+                        drawLine(col, Offset(0f, 0f), Offset(0f, s), w)
+                        drawLine(col, Offset(size.width, 0f), Offset(size.width - s, 0f), w)
+                        drawLine(col, Offset(size.width, 0f), Offset(size.width, s), w)
+                        drawLine(col, Offset(0f, size.height), Offset(s, size.height), w)
+                        drawLine(col, Offset(0f, size.height), Offset(0f, size.height - s), w)
+                        drawLine(col, Offset(size.width, size.height), Offset(size.width - s, size.height), w)
+                        drawLine(col, Offset(size.width, size.height), Offset(size.width, size.height - s), w)
+                    }
+                    .clickable(enabled = !testing && model.isNotBlank()) { onTest() }
+                    .padding(horizontal = 13.dp, vertical = 7.dp)
+            )
+        }
     }
 }
 
