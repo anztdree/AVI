@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "public/avi-agent.html"
+      - "public/*.apk"
       - ".github/workflows/deploy-preview.yml"
   workflow_dispatch:
 
@@ -32,6 +33,8 @@ jobs:
           mkdir -p _site
           cp public/avi-agent.html _site/index.html
           cp public/avi-agent.html _site/avi-agent.html
+          # APK ikut di-deploy agar bisa diunduh langsung dari Pages
+          cp public/*.apk _site/ 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
