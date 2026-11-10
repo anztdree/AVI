@@ -18,9 +18,15 @@
 # sah: CI build APK
 !/.github
 !/.github/workflows
-# di dalam workflows: HANYA build-android.yml yang sah
+# di dalam workflows: build-android.yml + deploy-preview.yml (Pages = gerbang desain)
 /.github/workflows/*
 !/.github/workflows/build-android.yml
+!/.github/workflows/deploy-preview.yml
+
+# sah: preview desain AVI (keputusan Pak 10 Nov: Pages = gerbang persetujuan
+# tampilan sebelum diimplementasikan jadi APK — avi-agent.html sah masuk repo)
+!/public
+!/public/avi-agent.html
 
 # sah: dokumen & aturan repo
 !/.gitignore

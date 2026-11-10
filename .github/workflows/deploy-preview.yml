@@ -1,0 +1,46 @@
+name: Deploy Preview AVI (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/avi-agent.html"
+      - ".github/workflows/deploy-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-preview
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Siapkan berkas preview (mockup jadi halaman utama)
+        run: |
+          mkdir -p _site
+          cp public/avi-agent.html _site/index.html
+          cp public/avi-agent.html _site/avi-agent.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy ke GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
