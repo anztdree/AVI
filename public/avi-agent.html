@@ -23,6 +23,9 @@
    (4) Telemetri & statistik: mono berjersey, bracket sudut,
        panel bergradien — terbaca alat presisi, bukan sampah.
    (5) BENTUK ORB TETAP UTUH — tidak disentuh sama sekali.
+   P42 (umpan Pak, 10 Nov): latar diperjelas (pendaran+aurora+debu dinaikkan),
+   header DIBERSIHKAN — tanpa chip SIAGA, tanpa jam, pojok kanan atas HANYA 1
+   tombol PENGATURAN, dan MODEL AKTIF kini terpampang jelas di bawah orb.
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -98,21 +101,22 @@ html[data-theme="siang"] .app{
 /* ---------- LATAR PANGGUNG: aurora + grid + grain + ornamen sudut ---------- */
 .bgFx{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 .bgFx i{position:absolute;border-radius:50%;filter:blur(84px);will-change:transform}
-.bgFx .gA{width:58%;height:42%;left:-16%;top:-12%;background:rgba(45,217,245,.14);animation:driftA 17s ease-in-out infinite alternate}
-.bgFx .gB{width:62%;height:48%;right:-18%;bottom:-16%;background:rgba(246,193,91,.11);animation:driftB 21s ease-in-out infinite alternate}
+.bgFx .gA{width:58%;height:42%;left:-16%;top:-12%;background:rgba(45,217,245,.26);animation:driftA 17s ease-in-out infinite alternate}
+.bgFx .gB{width:62%;height:48%;right:-18%;bottom:-16%;background:rgba(246,193,91,.21);animation:driftB 21s ease-in-out infinite alternate}
 /* dasar app tak gelap lagi: pendar lantai sian di tengah bawah */
-.bgFx .gD{width:72%;height:36%;left:14%;bottom:-15%;background:rgba(45,217,245,.14);animation:driftB 19s ease-in-out infinite alternate-reverse}
+.bgFx .gD{width:72%;height:36%;left:14%;bottom:-15%;background:rgba(45,217,245,.23);animation:driftB 19s ease-in-out infinite alternate-reverse}
 /* pita aurora sian-emas — tema tak lagi polos */
-.bgFx .aur{left:6%;right:6%;top:9%;height:26%;filter:blur(30px);opacity:.55;border-radius:50%;
-  background:linear-gradient(112deg,transparent 14%,rgba(45,217,245,.14) 40%,rgba(246,193,91,.10) 68%,transparent 88%);
+/* P42: aurora diperkuat agar animasi latar JELAS terlihat mata (umpan Pak) */
+.bgFx .aur{left:6%;right:6%;top:9%;height:26%;filter:blur(30px);opacity:.85;border-radius:50%;
+  background:linear-gradient(112deg,transparent 14%,rgba(45,217,245,.24) 40%,rgba(246,193,91,.17) 68%,transparent 88%);
   animation:aurD 16s ease-in-out infinite alternate}
-@keyframes aurD{from{transform:translateX(-2.5%) skewX(-3deg)}to{transform:translateX(2.5%) skewX(2.5deg)}}
+@keyframes aurD{from{transform:translateX(-4%) skewX(-4deg)}to{transform:translateX(4%) skewX(4deg)}}
 /* LATAR HIDUP: debu energi melayang + sapuan radar + bintang jatuh — dekor murni, bentuk orb tidak disentuh */
 .bgFx .motes{position:absolute;inset:0;border-radius:0;filter:none}
 .bgFx .motes b{position:absolute;left:var(--x);bottom:-2%;width:var(--s);height:var(--s);border-radius:50%;
   background:var(--c);box-shadow:0 0 calc(var(--s)*3) var(--c),0 0 calc(var(--s)*6.5) var(--c);
   opacity:0;animation:moteD var(--d) linear infinite;animation-delay:var(--dl);will-change:transform,opacity}
-@keyframes moteD{0%{transform:translate(0,0);opacity:0}9%{opacity:var(--o)}58%{opacity:calc(var(--o)*.78)}100%{transform:translate(var(--dx),-880px);opacity:0}}
+@keyframes moteD{0%{transform:translate(0,0);opacity:0}9%{opacity:calc(var(--o)*1.5)}58%{opacity:calc(var(--o)*1.12)}100%{transform:translate(var(--dx),-880px);opacity:0}}
 .bgFx .meteor{left:13%;top:8%;width:150px;height:2px;border-radius:2px;filter:none;opacity:0;
   background:linear-gradient(90deg,transparent 0,rgba(45,217,245,.55) 44%,rgba(240,253,255,.95) 96%);
   box-shadow:0 0 9px rgba(45,217,245,.4);
@@ -128,7 +132,7 @@ html[data-theme="siang"] .bgFx .meteor{display:none}
    Panggung orb jadi area paling bersih & kontras; bentuk orb tetap tidak disentuh */
 @keyframes driftA{to{transform:translate(66px,52px) scale(1.18)}}
 @keyframes driftB{to{transform:translate(-60px,-46px) scale(1.14)}}
-.vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(0,0,0,.62)}
+.vig{position:absolute;inset:0;z-index:0;pointer-events:none;box-shadow:inset 0 0 120px rgba(0,0,0,.48)}
 html[data-theme="siang"] .vig{box-shadow:inset 0 0 100px rgba(120,140,170,.22)}
 header,main,.composer,nav,#strip{position:relative;z-index:2}
 
@@ -963,13 +967,14 @@ html[data-theme="siang"] .logbox{background:rgba(255,255,255,.62)}
 }
 
 @keyframes gA{to{transform:translate(42px,32px)}}
-/* ==== P41 — sinkron rencana porting APK: chip status + jam + Deck di header,
-   telemetri orbit ala ReactorHalo (JAM·BAT·RAM·NET·OTAK) mengelilingi orb ==== */
-.stchip{display:flex;align-items:center;gap:6px;margin-left:12px;padding:5px 11px;border:1px solid var(--line2);border-radius:999px;font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--cyan);background:var(--pan);backdrop-filter:blur(8px)}
-.stchip i{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);flex:none}
-.stchip.on{color:var(--mint);border-color:rgba(94,234,212,.4)}
-.stchip.on i{background:var(--mint);box-shadow:0 0 9px var(--mint)}
-.hclock{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--dim);text-shadow:0 0 12px rgba(45,217,245,.25)}
+/* ==== P42 — umpan Pak: header DIBERSIHKAN — chip SIAGA & jam DIHAPUS,
+   pojok kanan atas CUMA 1 tombol PENGATURAN; telemetri orbit ala ReactorHalo
+   (JAM·BAT·RAM·NET·OTAK) tetap mengelilingi orb ==== */
+/* MODEL AKTIF — plat identitas otak yang sedang dipakai, di bawah orb */
+.modelTag{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9.5px;letter-spacing:2.2px;color:var(--dim2);padding:5px 14px;border:1px solid var(--line2);border-radius:999px;background:var(--pan);backdrop-filter:blur(8px)}
+.modelTag i{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);flex:none;animation:blink 2.2s ease-in-out infinite}
+.modelTag b{color:var(--gold);font-weight:700;letter-spacing:1.4px}
+html.kb .modelTag{display:none}
 .otelem{position:absolute;inset:-26px;animation:otSpin 16s linear infinite;pointer-events:none;opacity:.85}
 .otelem span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-116px);font-family:var(--mono);font-size:8px;letter-spacing:1.4px;color:var(--cyan);text-shadow:0 0 10px rgba(45,217,245,.45);white-space:nowrap}
 .otelem span b{color:var(--gold);font-weight:700;text-shadow:0 0 10px rgba(246,193,91,.4)}
@@ -997,10 +1002,7 @@ html.kb .otelem{display:none}
       <i class="pip"></i>
     </div>
     <div class="brand"><b>AVI</b><small>ASISTEN PRIBADI</small></div>
-    <span class="stchip" id="stChip"><i></i>SIAGA</span>
-    <span class="hclock" id="hClock">--.--</span>
     <div class="hdR">
-      <button class="icobtn" id="btnDeck" aria-label="Deck modul" title="Deck modul" data-toast="Deck modul — panel penuh tersedia di aplikasi, Pak"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
       <button class="icobtn" id="btnSet" aria-label="Pengaturan" title="Pengaturan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r=".8" fill="var(--gold)" stroke="none"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     </div>
   </header>
@@ -1020,7 +1022,7 @@ html.kb .otelem{display:none}
     <!-- ================= OBROLAN ================= -->
     <section class="view on" id="v-obrolan">
 
-      <!-- P41: bar sambungan di depan DIHAPUS — model tampil di telemetri orbit orb & Pengaturan (persis rencana porting APK) -->
+      <!-- P42: bar sambungan tetap dihapus — MODEL AKTIF kini terpampang di bawah orb + Pengaturan -->
 
       <!-- percakapan: sapaan pembuka -->
       <div class="msg" id="greetMsg"><span class="mav"><i class="tk"></i><i class="cd"></i><svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M20 6.5 32.5 27.5H7.5Z" stroke="#2DD9F5" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 33.5 7.5 12.5H32.5Z" stroke="#F6C15B" stroke-width="2" stroke-linejoin="round" opacity=".9"/></svg><i class="pip"></i></span><div class="mcol"><div class="mmeta"><b>AVI</b><span class="mts"><i id="greetT">--:--</i></span></div><div class="bub" id="greetBub">Selamat malam, Pak. Ada yang bisa saya urus hari ini?</div></div></div>
@@ -1157,7 +1159,7 @@ html.kb .otelem{display:none}
         <i style="--a:180deg"></i>
         <span style="--a:216deg">NET <b id="otNet">WIFI</b></span>
         <i style="--a:252deg"></i>
-        <span style="--a:288deg">OTAK <b>GLM-4.6</b></span>
+        <span style="--a:288deg">OTAK <b>GEMINI 2.5 FLASH</b></span>
         <i style="--a:324deg"></i>
       </div>
       <div class="orbBig" id="orbBig" role="button" tabindex="0" aria-label="Ketuk — AVI mendengarkan" title="Ketuk — AVI mendengarkan">
@@ -1179,6 +1181,7 @@ html.kb .otelem{display:none}
       <span class="pct" id="stgPct">0%</span>
       </div>
     </div>
+    <div class="modelTag" aria-label="Model kecerdasan aktif"><i></i>MODEL AKTIF&nbsp;&middot;&nbsp;<b>GEMINI 2.5 FLASH</b></div>
   </div>
 
   <!-- komposer : BAR HASIL SUARA — input teks dihapus, input 100% lewat suara orb -->
@@ -1247,9 +1250,9 @@ html.kb .otelem{display:none}
           <div><b>PROFIL PAK</b><small>Nama, foto, sapaan pribadi</small></div>
           <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
-        <button class="setrow" data-toast="GLM-4.6 terpasang — otak utama AVI siap, Pak">
+        <button class="setrow" data-toast="Gemini 2.5 Flash terpasang — otak utama AVI siap, Pak">
           <i class="au"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2.5"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></i>
-          <div><b>MODEL KECERDASAN</b><small>GLM-4.6 · otak utama AVI</small></div>
+          <div><b>MODEL KECERDASAN</b><small>Gemini 2.5 Flash · otak utama AVI</small></div>
           <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
         <button class="setrow" data-toast="Suara &amp; pengingat — kerangka diisi menyusul, Pak">
@@ -1573,7 +1576,8 @@ const wpEl=document.querySelector('.wpulse');
 /* satu gelombang halus menyentak dari orb tiap kata terdengar — orb terlihat BENAR-BENAR mendengar */
 function wordPulse(big){if(!wpEl)return;wpEl.classList.remove('go','big');void wpEl.offsetWidth;if(big)wpEl.classList.add('big');wpEl.classList.add('go')}
 function voiceReset(){vdTimers.forEach(clearTimeout);vdTimers=[];voiceBar.classList.remove('listening');voiceText.textContent=VOICE_HINT}
-/* ---- P41: chip status header + telemetri orbit (sinkron ReactorHalo APK) ---- */
+/* ---- P42: chip status header DIHAPUS (umpan Pak) — status MENDENGAR cukup
+   diperlihatkan orb (hearGlow) & bar suara; fungsi dibiarkan sebagai no-op aman ---- */
 function setChip(hear){
   const c=document.getElementById('stChip');if(!c)return;
   c.classList.toggle('on',hear);
