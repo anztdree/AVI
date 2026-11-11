@@ -113,11 +113,11 @@ jobs:
           ---
           ### Fitur yang tersedia
           - 🔊 Bicara bebas "Hay pak…" — STT & TTS ramah bahasa Indonesia; VOKAL JAWABAN kini bisa disaklarkan
-          - ⌨️ P46 BISA DIKETIK — baris tulis SELALU terlihat di bar bawah (tanpa tombol pembuka), Enter/KIRIM langsung kirim; ketikan diterima walau AVI sedang bicara/mendengar/live/berpikir (tidak pernah dibuang lagi)
+          - 🔊 P47 INPUT SUARA SAJA — papan ketik dimatikan total (tanpa lapangan tulis, tidak bisa diklik); bar bawah murni cermin hasil suara (teks parsial/hasil STT); saklar suara = ORB atau MIC
+          - 🚀 Ikon launcher BARU — monogram A emas + gelombang suara sian (adaptive + monochrome + PNG legacy semua densitas)
           - 🧠 AI cloud Google Gemini — auth header \`X-goog-api-key\`, non-streaming, daftar model dinamis (semua keluarga: 1.5 / 2.0 / 2.5 / alias \`-latest\`)
           - 🧪 Uji Model per-kartu & tombol **UJI SEMUA MODEL** di Pusat Kendali
           - 🎛️ P45: Pusat Kendali 1 halaman jelas (OTAK/SUARA/AGEN/GAYA/MARKAS) + SUARA LANGSUNG LIVE + chip MARKAS BATERAI · SIMPAN · NET; cincin teks telemetri dihapus
-          - 🚀 Ikon launcher baru — reaktor sian-emas (adaptive + monochrome)
           - 🌌 Chat full animasi HD — nebula ken-burns, bintang paralaks, piringan reaktor, riwayat ber-spring, dock kaca beriak
           - ⚙️ Perintah perangkat lokal (buka app, WiFi/Bluetooth, baterai, telepon, dan lainnya)
           EOF

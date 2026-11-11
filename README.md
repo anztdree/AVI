@@ -37,11 +37,11 @@ gradle assembleRelease
 - 🔊 **Bicara bebas** "Hai, Pak…" — STT & TTS ramah bahasa Indonesia;
   VOKAL JAWABAN bisa disaklarkan (jawaban tetap tampil di chat), SUARA LANGSUNG
   = sesi LIVE dengar-tanpa-henti yang benar-benar MULAI/BERHENTI
-- ⌨️ **Bisa DIKETIK terus-menerus (P46)** — lapangan tulis SELALU terlihat di bar
-  bawah, tanpa tombol pembuka; ketuk → keyboard muncul, Enter/KIRIM langsung
-  mengirim. Ketikan DITERIMA di kondisi apa pun — walau AVI sedang bicara,
-  mendengar, sesi LIVE, atau berpikir, ketikan menghentikannya dan langsung
-  dijawab (dulu ketikan bisa terbuang diam-diam; kini tidak pernah dibuang)
+- 🔊 **Input SUARA SAJA (P47 — keputusan pemilik)** — papan ketik DIMATIKAN
+  total: tidak ada lapangan tulis, tidak bisa diklik, tanpa tulis manual.
+  Bar bawah murni CERMIN SUARA: teks parsial/hasil pengenalan suara tampil
+  di situ. Saklar suara = ORB atau tombol MIC; perintah preset tetap hidup
+  di Deck → PINTASAN MARKAS
 - 🧠 **AI cloud Google Gemini** — auth `X-goog-api-key`, daftar model dinamis
   (keluarga 1.5 / 2.0 / 2.5 / alias `-latest`), plus klien kompatibel OpenAI
 - 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 16 perkakas nyata:
@@ -55,8 +55,9 @@ gradle assembleRelease
 - 🌌 **Tampilan kelas Jarvis** — nebula animasi, bintang paralaks, piringan
   reaktor, orb MK-XIX + aura (P44: cincin teks telemetri di sekeliling orb
   dihapus — panggung murni bentuk), dock kaca beriak, tema Mark
-- 🚀 **Ikon launcher baru** — reaktor sian-emas bergaya kompas pada latar
-  angkasa gelap (adaptive icon + monochrome Android 13+)
+- 🚀 **Ikon launcher monogram A (P47)** — huruf A emas berlapis + gelombang
+  suara sian di angkasa navy (bukan reaktor lagi), lengkap adaptive icon +
+  monochrome Android 13+ + PNG legacy semua densitas (48–192px)
 
 ## Riwayat singkat
 

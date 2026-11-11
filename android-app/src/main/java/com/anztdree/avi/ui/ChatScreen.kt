@@ -41,12 +41,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -66,7 +62,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -75,7 +70,6 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -137,7 +131,6 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     val error by vm.error.collectAsState()
     // K22 — timeline aksi mesin agen
     val agentEvents by vm.agentEvents.collectAsState()
-    var inputText by remember { mutableStateOf("") }
     // K19 — deck modul kelas Jarvis
     var showDeck by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -425,22 +418,15 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             //   perintah lokal tetap hidup di Deck → PINTASAN MARKAS,
             //   model terkini kini terbaca di BAR MODEL AKTIF di atas.
 
-            // ============ DOCK P46 — BARIS TULIS SELALU HIDUP (umpan Pak:
-            //   "PAPAN KETIK DI MATIKAN!! hanya menerima hasil dari suara"):
-            //   LAPANGAN TULIS REAL SELALU TERLIHAT — tanpa mode tersembunyi,
-            //   tanpa tombol pembuka. Ketuk baris → keyboard langsung muncul;
-            //   ketik apa saja → tombol KIRIM emas menyala; MIC tetap di kiri
-            //   untuk suara; Enter/IME Send langsung kirim. Dan di P46 teks
-            //   dikirim saat AVI bicara/mendengar/live/berpikir pun DITERIMA
-            //   (vm.sendText menghentikan kondisi itu dulu) ============
+            // ============ DOCK P47 — PAPAN KETIK DIMATIKAN TOTAL (umpan Pak:
+            //   "saya mau disable papan ketik!! cuma hasil voice yg muncul,
+            //   tanpa keyboard manual tulis!!"): bar kini MURNI CERMIN SUARA —
+            //   TIDAK bisa diklik, TIDAK ada lapangan ketik, TIDAK ada tombol
+            //   KIRIM. Isinya CUMA hasil pendengaran AVI (teks parsial/hasil
+            //   STT). Satu-satunya saklar suara = ORB atau tombol MIC di kiri
+            //   (perintah preset tetap hidup di Deck → PINTASAN MARKAS) ============
             var voiceSaid by remember { mutableStateOf("") }
             LaunchedEffect(partialText) { if (partialText.isNotBlank()) voiceSaid = partialText }
-            fun kirimTeks() {
-                if (inputText.isBlank()) return
-                vm.sendText(inputText.trim())
-                inputText = ""
-                voiceSaid = ""
-            }
             // HORIZON sian-emas di atas komposer (composer::before preview) — panggung bawah hidup
             Box(
                 Modifier
@@ -456,34 +442,9 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                         )
                     )
             )
-            // STATUS MINI di atas baris tulis: sedang mendengar (plus teks parsial
-            // hasil STT) atau teks suara terakhir — baris tulis tak lagi dipakai
-            // untuk cermin suara supaya lapangan ketik KUSUT-FREE selalu bersih.
-            AnimatedVisibility(
-                visible = state == AviState.LISTENING || voiceSaid.isNotBlank(),
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                val statusMirror = when {
-                    state == AviState.LISTENING && partialText.isNotBlank() -> "MENDENGAR — \u201C$partialText\u201D"
-                    state == AviState.LISTENING -> "MENDENGAR — silakan bicara, Pak (atau langsung tulis di bawah)"
-                    else -> "Tadi AVI dengar: \u201C$voiceSaid\u201D"
-                }
-                Text(
-                    statusMirror,
-                    color = if (state == AviState.LISTENING) palette.accent else palette.textDim,
-                    fontSize = 12.sp,
-                    fontStyle = if (state == AviState.LISTENING) FontStyle.Italic else FontStyle.Normal,
-                    fontFamily = AviBody,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp)
-                )
-            }
+            // CERMIN SUARA hidup di DALAM bar (P47) — baris status terpisah tidak dipakai lagi
             Row(
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(22.dp))
@@ -542,56 +503,30 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                         modifier = Modifier.size(17.dp)
                     )
                 }
-                Spacer(Modifier.width(8.dp))
-                // LAPANGAN TULIS — SELALU ADA, selalu bisa diketuk (inti P46)
-                BasicTextField(
-                    value = inputText,
-                    onValueChange = { inputText = it },
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = 8.dp),
-                    textStyle = TextStyle(
-                        color = palette.text,
-                        fontSize = 14.sp,
-                        fontFamily = AviBody
-                    ),
-                    cursorBrush = SolidColor(palette.accent),
-                    maxLines = 4,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(onSend = { kirimTeks() }),
-                    decorationBox = { inner ->
-                        Box {
-                            if (inputText.isEmpty()) {
-                                Text(
-                                    "Tulis pesan ke AVI, Pak…",
-                                    color = palette.textDim,
-                                    fontSize = 13.sp,
-                                    fontFamily = AviBody
-                                )
-                            }
-                            inner()
-                        }
-                    }
-                )
-                Spacer(Modifier.width(8.dp))
-                // KIRIM — muncul menyala emas begitu ada tulisan; IME Send juga kirim
-                if (inputText.isNotBlank()) {
-                    Box(
-                        modifier = Modifier
-                            .size(34.dp)
-                            .clip(CircleShape)
-                            .background(palette.gold)
-                            .clickable { kirimTeks() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.Send,
-                            contentDescription = "Kirim",
-                            tint = palette.bg,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
+                Spacer(Modifier.width(10.dp))
+                // CERMIN SUARA — BUKAN INPUT (inti P47): bar tak bisa diklik,
+                // tak bisa ditulis. Isinya CUMA hasil suara: teks parsial saat
+                // mendengar, hasil akhir setelahnya.
+                val mirror = when {
+                    state == AviState.LISTENING && partialText.isNotBlank() -> "MENDENGAR — \u201C$partialText\u201D"
+                    state == AviState.LISTENING -> "Mendengar… silakan bicara, Pak"
+                    voiceSaid.isNotBlank() -> "\u201C$voiceSaid\u201D"
+                    else -> "Hasil suara tampil di sini — ketuk ORB untuk bicara, Pak"
                 }
+                Text(
+                    mirror,
+                    color = when {
+                        state == AviState.LISTENING -> palette.accent
+                        voiceSaid.isNotBlank() -> palette.text
+                        else -> palette.textDim
+                    },
+                    fontSize = 13.sp,
+                    fontStyle = if (state == AviState.LISTENING) FontStyle.Italic else FontStyle.Normal,
+                    fontFamily = AviBody,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
             }
             Spacer(Modifier.height(6.dp))
         }
