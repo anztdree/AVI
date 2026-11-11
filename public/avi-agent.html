@@ -800,7 +800,7 @@ html[data-theme="siang"] .orbBig .hearGlow::after{background:radial-gradient(cir
 html[data-theme="siang"] .orbBig .wpulse{background:radial-gradient(circle,transparent 52%,rgba(6,125,95,.46) 66%,rgba(5,150,105,.22) 74%,transparent 82%)}
 html[data-theme="siang"] .orbBig .wpulse::before{background:radial-gradient(circle,rgba(190,247,225,.92) 0%,rgba(5,150,105,.32) 55%,transparent 75%)}
 html[data-theme="siang"] .orbBig.hear .lring{border-color:#0B7A5A;box-shadow:0 0 24px rgba(5,150,105,.75),0 0 52px rgba(5,150,105,.32),inset 0 0 18px rgba(5,150,105,.42)}
-html[data-theme="siang"] .cmdVoice.listening .vtext{color:#067A5B}
+html[data-theme="siang"] .vstatus.listening{color:#067A5B}
 html[data-theme="siang"] .cmdVoice.listening .vmic{border-color:rgba(5,150,105,.7);color:#0B7A5A}
 /* siang: badan lensa PUTIH — state hijau via cincin & isi wajah tinta emerald */
 html[data-theme="siang"] .orbBig.hear .ldisk{filter:none;border-color:rgba(5,150,105,.72);box-shadow:0 0 24px 7px rgba(5,150,105,.42),0 0 56px 18px rgba(5,150,105,.2),inset 0 0 26px rgba(5,150,105,.3)}
@@ -832,14 +832,19 @@ html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,r
 .vmic{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
   border:1px solid rgba(45,217,245,.32);color:var(--cyan);
   background:linear-gradient(160deg,rgba(45,217,245,.14),rgba(45,217,245,.03));transition:border-color .4s,box-shadow .4s}
-.vtext{flex:1;min-width:0;display:flex;align-items:center;font:500 13.5px var(--ui);color:var(--txt);
-  white-space:nowrap;overflow:hidden;gap:2px}
-.vtext span{overflow:hidden;text-overflow:ellipsis}
-.vcar{width:2px;height:15px;flex:none;border-radius:1px;background:var(--cyan);opacity:0;transition:opacity .3s}
+/* P46 — STATUS MINI di atas baris tulis: cermin hasil suara (di APK: baris
+   AnimatedVisibility di atas pill). Baris tulis kini KUSUT-FREE — tak dipakai
+   untuk cermin suara, murni lapangan ketik. */
+.vstatus{flex:1;min-width:0;max-width:100%;display:flex;align-items:center;gap:6px;font:500 12px var(--ui);color:var(--dim);
+  padding:0 20px 5px;white-space:nowrap;overflow:hidden;max-height:22px;transition:max-height .25s,color .3s}
+.vstatus span{overflow:hidden;text-overflow:ellipsis}
+.vcar{width:2px;height:13px;flex:none;border-radius:1px;background:var(--cyan);opacity:0;transition:opacity .3s}
+.vstatus.listening{color:#DAFFEF}
+.vstatus.listening .vcar{opacity:1;animation:vcarD 1s steps(2,end) infinite}
+.kinput{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--txt);font:500 13.5px var(--ui);padding:8px 0}
+.kinput::placeholder{color:var(--dim)}
 .cmdVoice.listening{border-color:rgba(52,211,153,.6)}
 .cmdVoice.listening .vmic{border-color:rgba(52,211,153,.85);box-shadow:0 0 18px -2px rgba(52,211,153,.6);animation:vmicD 1.4s ease-in-out infinite}
-.cmdVoice.listening .vcar{opacity:1;animation:vcarD 1s steps(2,end) infinite}
-.cmdVoice.listening .vtext{color:#DAFFEF}
 @keyframes vmicD{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
 @keyframes vcarD{0%,100%{opacity:.9}50%{opacity:.12}}
 
@@ -956,14 +961,9 @@ html.kb .modelbar .mtx small{display:none}
 .tbtn2:hover{background:rgba(246,193,91,.16);box-shadow:0 0 14px rgba(246,193,91,.22)}
 .tbtn2.live{color:var(--red);border-color:rgba(251,113,133,.5);background:rgba(251,113,133,.08)}
 .setfoot{font:600 7.5px var(--mono);letter-spacing:2.2px;color:var(--dim2);text-align:center;padding:8px 0 2px;opacity:.75}
-/* P45 — tombol keyboard dock (selalu terlihat) + baris ketik + chip seksi AGEN/GAYA */
-.kbbtn{width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:var(--gold);border:1px solid var(--goldSoft);background:var(--goldSoft);cursor:pointer;transition:.18s;padding:0}
-.kbbtn:hover{box-shadow:0 0 12px rgba(246,193,91,.3)}
-.kbbtn.on{border-color:rgba(246,193,91,.75);box-shadow:0 0 14px rgba(246,193,91,.35)}
-.krow{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
-.krow input{flex:1;min-width:0;background:var(--pan3);border:1px solid var(--line2);border-radius:10px;color:var(--txt);font:500 13px var(--ui);padding:8px 10px;outline:none}
-.krow input:focus{border-color:rgba(45,217,245,.55)}
-.ksend{flex:none;font:700 9px var(--mono);letter-spacing:2px;color:var(--gold);background:rgba(246,193,91,.12);border:1px solid rgba(246,193,91,.5);border-radius:10px;padding:8px 12px;cursor:pointer}
+/* P46 — tombol KIRIM emas di ujung bar; terlihat jelas, makin terang saat hover */
+.ksend{flex:none;font:700 9px var(--mono);letter-spacing:2px;color:var(--gold);background:rgba(246,193,91,.12);border:1px solid rgba(246,193,91,.5);border-radius:10px;padding:8px 12px;cursor:pointer;transition:.18s}
+.ksend:hover{background:rgba(246,193,91,.22);box-shadow:0 0 12px rgba(246,193,91,.3)}
 .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 10px}
 .chip{font:700 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim2);border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--pan);cursor:pointer;transition:.15s}
 .chip.on{color:var(--cyan);border-color:rgba(45,217,245,.55);background:var(--cyanSoft)}
@@ -1091,15 +1091,18 @@ html.kb .modelbar .mtx small{display:none}
     </div>
   </div>
 
-  <!-- komposer : BAR INPUT GANDA — P45 (umpan Pak: "user gak bisa nulis pake keyboard"):
-       TOMBOL KEYBOARD SELALU TERLIHAT di kiri bar + mic = suara; ketuk keyboard →
-       baris ketik + KIRIM muncul (di APK: BasicTextField + IME Send + vm.sendText) -->
+  <!-- komposer : BARIS TULIS SELALU HIDUP — P46 (umpan Pak: "PAPAN KETIK DI
+       MATIKAN!! hanya menerima hasil dari suara"): LAPANGAN TULIS REAL SELALU
+       TERLIHAT tanpa tombol pembuka; MIC kiri = suara; tulis apa saja → KIRIM
+       emas menyala. Di APK: BasicTextField + IME Send + vm.sendText yang
+       MENERIMA ketikan di kondisi apa pun (bicara/mendengar/live/berpikir
+       pun dihentikan dan teks diutamakan) -->
   <div class="composer">
-    <div class="cmd cmdVoice" id="voiceBar" aria-live="polite">
-      <button class="kbbtn" id="btnKb" aria-label="Tulis dengan papan ketik" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h.01M11 14h.01M15 14h.01M17.5 14h.01M8 17.5h8"/></svg></button>
-      <i class="vmic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></svg></i>
-      <div class="vtext" id="vtextWrap"><span id="voiceText">Ketuk tombol keyboard untuk MENULIS — ketuk ORB untuk bicara, Pak</span><i class="vcar"></i></div>
-      <div class="krow" id="kRow" hidden><input id="kbInput" placeholder="Ketik pesan ke AVI…" maxlength="240" autocomplete="off"><button class="ksend" id="kbSend">KIRIM</button></div>
+    <div class="vstatus" id="voiceStatus" aria-live="polite"><span id="voiceText">Hasil suara tampil di sini — ketuk ORB untuk bicara, Pak</span><i class="vcar"></i></div>
+    <div class="cmd cmdVoice" id="voiceBar">
+      <button class="vmic" id="btnMic" aria-label="Bicara dengan suara"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/></svg></button>
+      <input class="kinput" id="kbInput" placeholder="Tulis pesan ke AVI, Pak…" maxlength="240" autocomplete="off">
+      <button class="ksend" id="kbSend" aria-label="Kirim tulisan">KIRIM</button>
     </div>
   </div>
 
@@ -1505,11 +1508,11 @@ const VOICE_DEMOS=[
   'Riset harga tiket ke Bali, carikan yang termurah.'
 ];
 let vdIdx=0,vdTimers=[];
-const voiceBar=$('#voiceBar'),voiceText=$('#voiceText');
+const voiceBar=$('#voiceBar'),voiceText=$('#voiceText'),voiceStatus=$('#voiceStatus');
 const wpEl=document.querySelector('.wpulse');
 /* satu gelombang halus menyentak dari orb tiap kata terdengar — orb terlihat BENAR-BENAR mendengar */
 function wordPulse(big){if(!wpEl)return;wpEl.classList.remove('go','big');void wpEl.offsetWidth;if(big)wpEl.classList.add('big');wpEl.classList.add('go')}
-function voiceReset(){vdTimers.forEach(clearTimeout);vdTimers=[];voiceBar.classList.remove('listening');voiceText.textContent=VOICE_HINT}
+function voiceReset(){vdTimers.forEach(clearTimeout);vdTimers=[];voiceBar.classList.remove('listening');voiceStatus&&voiceStatus.classList.remove('listening');voiceText.textContent=VOICE_HINT}
 /* ---- P42: chip status header DIHAPUS (umpan Pak) — status MENDENGAR cukup
    diperlihatkan orb (hearGlow) & bar suara; fungsi dibiarkan sebagai no-op aman ---- */
 function setChip(hear){
@@ -1524,6 +1527,7 @@ function hearToggle(){
     setChip(true);
     wordPulse(true);
     voiceBar.classList.add('listening');
+    voiceStatus&&voiceStatus.classList.add('listening');
     voiceText.textContent='';
     const words=VOICE_DEMOS[vdIdx++%VOICE_DEMOS.length].split(' ');
     let t=380;
@@ -1540,6 +1544,7 @@ function finishVoice(aborted){
   const ob=$('#orbBig');ob.classList.remove('hear');
   const hw=document.querySelector('.heroWrap');hw&&hw.classList.remove('hIn');
   voiceBar.classList.remove('listening');
+  voiceStatus&&voiceStatus.classList.remove('listening');
   if(!said||said===VOICE_HINT||(aborted&&said.split(' ').length<3)){voiceText.textContent=VOICE_HINT;return}
   voiceText.textContent='Saya urus, Pak — hasilnya menyusul di obrolan.';
   vdTimers.push(setTimeout(voiceReset,2600));
@@ -1554,7 +1559,7 @@ function finishVoice(aborted){
 }
 $('#orbBig').addEventListener('click',hearToggle);
 $('#orbBig').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hearToggle()}});
-/* klik bar DIHAPUS — bar cuma cermin hasil suara; satu-satunya saklar suara = ORB */
+/* klik bar DIHAPUS — lapangan tulis kini hidup di bar; saklar suara = ORB atau tombol MIC */
 
 /* mulai: asisten tenang — orb menemani di atas papan ketik */
 $('#app').classList.add('live');
@@ -1564,29 +1569,25 @@ render();
 /* bingkai tetap tegap: .app TIDAK BOLEH tergulik */
 (function(){const a=$('#app');a.addEventListener('scroll',()=>{if(a.scrollTop!==0)a.scrollTop=0})})();
 
-// ===== P45 — PAPAN KETIK DOCK (umpan Pak: user harus bisa MENULIS) =====
-// Tombol keyboard SELALU terlihat di kiri bar; ketuk → baris ketik + KIRIM.
-// Di APK: BasicTextField + IME Send → vm.sendText. Preview disimulasikan.
+// ===== P46 — PAPAN KETIK SELALU HIDUP (umpan Pak: "PAPAN KETIK DI MATIKAN!!") =====
+// Baris tulis LANGSUNG terlihat & bisa diketuk tanpa tombol pembuka; Enter/KIRIM
+// mengirim; tombol MIC di bar = saklar suara kedua. Di APK: BasicTextField +
+// IME Send → vm.sendText — ketikan DITERIMA di kondisi apa pun.
 (function(){
-  const kbBtn=$('#btnKb'),kRow=$('#kRow'),kbInput=$('#kbInput'),kbSend=$('#kbSend');
-  const vtextWrap=$('#vtextWrap'),voiceTextEl=$('#voiceText');
-  if(!kbBtn||!kRow||!kbInput||!kbSend||!vtextWrap||!voiceTextEl)return;
-  let kbOn=false;
-  function setKb(on){
-    kbOn=on;kRow.hidden=!on;
-    vtextWrap.style.display=on?'none':'flex';
-    kbBtn.classList.toggle('on',on);
-    kbBtn.setAttribute('aria-pressed',String(on));
-    if(on)setTimeout(()=>kbInput.focus(),60);else kbInput.blur();
-  }
+  const kbInput=$('#kbInput'),kbSend=$('#kbSend'),btnMic=$('#btnMic');
+  if(!kbInput||!kbSend)return;
   function kirimKetikan(){
     const t=(kbInput.value||'').trim();if(!t)return;
-    voiceTextEl.textContent='\u201C'+t+'\u201D';
-    kbInput.value='';setKb(false);
+    kbInput.value='';kbInput.blur();
+    if(voiceStatus)voiceStatus.classList.remove('listening');
+    voiceText.textContent=VOICE_HINT;
+    meBubble(t);
+    aviReply(REPLIES[repIdx++%REPLIES.length]);
+    setTimeout(()=>{if(!taskActive)slotIdle()},6800);
   }
-  kbBtn.addEventListener('click',()=>setKb(!kbOn));
   kbSend.addEventListener('click',kirimKetikan);
   kbInput.addEventListener('keydown',e=>{if(e.key==='Enter')kirimKetikan()});
+  btnMic&&btnMic.addEventListener('click',()=>hearToggle());
 })();
 </script>
 </body>

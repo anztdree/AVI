@@ -37,8 +37,11 @@ gradle assembleRelease
 - 🔊 **Bicara bebas** "Hai, Pak…" — STT & TTS ramah bahasa Indonesia;
   VOKAL JAWABAN bisa disaklarkan (jawaban tetap tampil di chat), SUARA LANGSUNG
   = sesi LIVE dengar-tanpa-henti yang benar-benar MULAI/BERHENTI
-- ⌨️ **Bisa DIKETIK juga** — tombol papan ketik SELALU terlihat di kiri bar bawah
-  (mic = suara, keyboard = tulis), Enter langsung mengirim
+- ⌨️ **Bisa DIKETIK terus-menerus (P46)** — lapangan tulis SELALU terlihat di bar
+  bawah, tanpa tombol pembuka; ketuk → keyboard muncul, Enter/KIRIM langsung
+  mengirim. Ketikan DITERIMA di kondisi apa pun — walau AVI sedang bicara,
+  mendengar, sesi LIVE, atau berpikir, ketikan menghentikannya dan langsung
+  dijawab (dulu ketikan bisa terbuang diam-diam; kini tidak pernah dibuang)
 - 🧠 **AI cloud Google Gemini** — auth `X-goog-api-key`, daftar model dinamis
   (keluarga 1.5 / 2.0 / 2.5 / alias `-latest`), plus klien kompatibel OpenAI
 - 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 16 perkakas nyata:

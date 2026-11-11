@@ -22,7 +22,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +45,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
@@ -64,8 +62,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -99,7 +95,6 @@ import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.AviTheme
 import com.anztdree.avi.ui.theme.LocalAviPalette
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -430,23 +425,18 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             //   perintah lokal tetap hidup di Deck → PINTASAN MARKAS,
             //   model terkini kini terbaca di BAR MODEL AKTIF di atas.
 
-            // ============ DOCK P45 — BAR INPUT GANDA (umpan Pak: "user gak bisa
-            //   nulis pake keyboard"): TOMBOL PAPAN KETIK BESAR SELALU TERLIHAT di
-            //   kiri bar + tombol MIC = suara + Enter/IME langsung kirim; teks
-            //   parsial/hasil STT tetap hidup di dalam bar ============
-            var kbMode by remember { mutableStateOf(false) }
+            // ============ DOCK P46 — BARIS TULIS SELALU HIDUP (umpan Pak:
+            //   "PAPAN KETIK DI MATIKAN!! hanya menerima hasil dari suara"):
+            //   LAPANGAN TULIS REAL SELALU TERLIHAT — tanpa mode tersembunyi,
+            //   tanpa tombol pembuka. Ketuk baris → keyboard langsung muncul;
+            //   ketik apa saja → tombol KIRIM emas menyala; MIC tetap di kiri
+            //   untuk suara; Enter/IME Send langsung kirim. Dan di P46 teks
+            //   dikirim saat AVI bicara/mendengar/live/berpikir pun DITERIMA
+            //   (vm.sendText menghentikan kondisi itu dulu) ============
             var voiceSaid by remember { mutableStateOf("") }
             LaunchedEffect(partialText) { if (partialText.isNotBlank()) voiceSaid = partialText }
-            val focusRequester = remember { FocusRequester() }
-            LaunchedEffect(kbMode) {
-                if (kbMode) {
-                    delay(120) // beri waktu field terpasang sebelum IME dibuka
-                    focusRequester.requestFocus()
-                }
-            }
             fun kirimTeks() {
                 if (inputText.isBlank()) return
-                kbMode = false
                 vm.sendText(inputText.trim())
                 inputText = ""
                 voiceSaid = ""
@@ -466,169 +456,139 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                         )
                     )
             )
-            Row(verticalAlignment = Alignment.Bottom) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+            // STATUS MINI di atas baris tulis: sedang mendengar (plus teks parsial
+            // hasil STT) atau teks suara terakhir — baris tulis tak lagi dipakai
+            // untuk cermin suara supaya lapangan ketik KUSUT-FREE selalu bersih.
+            AnimatedVisibility(
+                visible = state == AviState.LISTENING || voiceSaid.isNotBlank(),
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                val statusMirror = when {
+                    state == AviState.LISTENING && partialText.isNotBlank() -> "MENDENGAR — \u201C$partialText\u201D"
+                    state == AviState.LISTENING -> "MENDENGAR — silakan bicara, Pak (atau langsung tulis di bawah)"
+                    else -> "Tadi AVI dengar: \u201C$voiceSaid\u201D"
+                }
+                Text(
+                    statusMirror,
+                    color = if (state == AviState.LISTENING) palette.accent else palette.textDim,
+                    fontSize = 12.sp,
+                    fontStyle = if (state == AviState.LISTENING) FontStyle.Italic else FontStyle.Normal,
+                    fontFamily = AviBody,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(
+                        .fillMaxWidth()
+                        .padding(bottom = 6.dp)
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                palette.panel.copy(alpha = 0.92f),
+                                palette.panelLight.copy(alpha = 0.72f)
+                            )
+                        )
+                    )
+                    // CINCIN GRADIEN emas-sian (cmd::before / --gline preview)
+                    .border(
+                        BorderStroke(
+                            1.dp,
                             Brush.linearGradient(
                                 listOf(
-                                    palette.panel.copy(alpha = 0.92f),
-                                    palette.panelLight.copy(alpha = 0.72f)
+                                    palette.accent.copy(alpha = 0.50f),
+                                    palette.accent.copy(alpha = 0.10f),
+                                    Color(0xFF94B2E0).copy(alpha = 0.18f),
+                                    palette.gold.copy(alpha = 0.45f)
                                 )
                             )
+                        ),
+                        RoundedCornerShape(22.dp)
+                    )
+                    .padding(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 6.dp)
+            ) {
+                // vmic — lingkaran mikrofon; KETUK = mulai/berhenti suara
+                Box(
+                    Modifier
+                        .size(36.dp)
+                        .graphicsLayer {
+                            val s = 1f + if (state == AviState.LISTENING) rmsLevel * 0.10f else 0f
+                            scaleX = s
+                            scaleY = s
+                        }
+                        .clip(CircleShape)
+                        .background(
+                            if (state == AviState.LISTENING) palette.accent.copy(alpha = 0.20f)
+                            else palette.accent.copy(alpha = 0.10f)
                         )
-                        // CINCIN GRADIEN emas-sian (cmd::before / --gline preview)
                         .border(
-                            BorderStroke(
-                                1.dp,
-                                Brush.linearGradient(
-                                    listOf(
-                                        palette.accent.copy(alpha = 0.50f),
-                                        palette.accent.copy(alpha = 0.10f),
-                                        Color(0xFF94B2E0).copy(alpha = 0.18f),
-                                        palette.gold.copy(alpha = 0.45f)
-                                    )
-                                )
-                            ),
-                            RoundedCornerShape(22.dp)
+                            1.dp,
+                            if (state == AviState.LISTENING) palette.accent
+                            else palette.accent.copy(alpha = 0.32f),
+                            CircleShape
                         )
-                        .combinedClickable(
-                            onClick = { if (!kbMode) kbMode = true },
-                            onLongClick = { kbMode = true }
-                        )
-                        .padding(start = 6.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
+                        .clickable { ensureMicThenToggle() },
+                    contentAlignment = Alignment.Center
                 ) {
-                    // TOMBOL PAPAN KETIK — BESAR, SELALU TERLIHAT, di kiri bar
-                    // (umpan Pak: ikon kecil di ujung tak pernah ketemu)
+                    Icon(
+                        Icons.Default.Mic,
+                        contentDescription = "Bicara dengan suara",
+                        tint = if (state == AviState.LISTENING) palette.accent else palette.accent.copy(alpha = 0.85f),
+                        modifier = Modifier.size(17.dp)
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+                // LAPANGAN TULIS — SELALU ADA, selalu bisa diketuk (inti P46)
+                BasicTextField(
+                    value = inputText,
+                    onValueChange = { inputText = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 8.dp),
+                    textStyle = TextStyle(
+                        color = palette.text,
+                        fontSize = 14.sp,
+                        fontFamily = AviBody
+                    ),
+                    cursorBrush = SolidColor(palette.accent),
+                    maxLines = 4,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                    keyboardActions = KeyboardActions(onSend = { kirimTeks() }),
+                    decorationBox = { inner ->
+                        Box {
+                            if (inputText.isEmpty()) {
+                                Text(
+                                    "Tulis pesan ke AVI, Pak…",
+                                    color = palette.textDim,
+                                    fontSize = 13.sp,
+                                    fontFamily = AviBody
+                                )
+                            }
+                            inner()
+                        }
+                    }
+                )
+                Spacer(Modifier.width(8.dp))
+                // KIRIM — muncul menyala emas begitu ada tulisan; IME Send juga kirim
+                if (inputText.isNotBlank()) {
                     Box(
-                        Modifier
-                            .size(36.dp)
+                        modifier = Modifier
+                            .size(34.dp)
                             .clip(CircleShape)
-                            .background(
-                                if (kbMode) palette.gold.copy(alpha = 0.22f)
-                                else palette.gold.copy(alpha = 0.10f)
-                            )
-                            .border(
-                                1.dp,
-                                if (kbMode) palette.gold else palette.gold.copy(alpha = 0.40f),
-                                CircleShape
-                            )
-                            .clickable { kbMode = !kbMode },
+                            .background(palette.gold)
+                            .clickable { kirimTeks() },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            Icons.Default.Keyboard,
-                            contentDescription = "Tulis dengan papan ketik",
-                            tint = if (kbMode) palette.gold else palette.gold.copy(alpha = 0.90f),
-                            modifier = Modifier.size(17.dp)
-                        )
-                    }
-                    Spacer(Modifier.width(8.dp))
-                    // vmic — lingkaran mikrofon; KETUK = mulai/berhenti suara
-                    Box(
-                        Modifier
-                            .size(36.dp)
-                            .graphicsLayer {
-                                val s = 1f + if (state == AviState.LISTENING) rmsLevel * 0.10f else 0f
-                                scaleX = s
-                                scaleY = s
-                            }
-                            .clip(CircleShape)
-                            .background(
-                                if (state == AviState.LISTENING) palette.accent.copy(alpha = 0.20f)
-                                else palette.accent.copy(alpha = 0.10f)
-                            )
-                            .border(
-                                1.dp,
-                                if (state == AviState.LISTENING) palette.accent
-                                else palette.accent.copy(alpha = 0.32f),
-                                CircleShape
-                            )
-                            .clickable {
-                                kbMode = false
-                                ensureMicThenToggle()
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.Mic,
-                            contentDescription = "Bicara dengan suara",
-                            tint = if (state == AviState.LISTENING) palette.accent else palette.accent.copy(alpha = 0.85f),
-                            modifier = Modifier.size(17.dp)
-                        )
-                    }
-                    Spacer(Modifier.width(10.dp))
-                    if (kbMode) {
-                        BasicTextField(
-                            value = inputText,
-                            onValueChange = { inputText = it },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 8.dp)
-                                .focusRequester(focusRequester),
-                            textStyle = TextStyle(
-                                color = palette.text,
-                                fontSize = 14.sp,
-                                fontFamily = AviBody
-                            ),
-                            cursorBrush = SolidColor(palette.accent),
-                            maxLines = 4,
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                            keyboardActions = KeyboardActions(onSend = { kirimTeks() }),
-                            decorationBox = { inner ->
-                                Box {
-                                    if (inputText.isEmpty()) {
-                                        Text(
-                                            "Ketik pesan ke AVI…",
-                                            color = palette.textDim,
-                                            fontSize = 13.sp,
-                                            fontFamily = AviBody
-                                        )
-                                    }
-                                    inner()
-                                }
-                            }
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        val canSend = inputText.isNotBlank()
-                        Box(
-                            modifier = Modifier
-                                .size(34.dp)
-                                .clip(CircleShape)
-                                .background(if (canSend) palette.gold else palette.panelLight)
-                                .clickable(enabled = canSend) { kirimTeks() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Default.Send,
-                                contentDescription = "Kirim",
-                                tint = if (canSend) palette.bg else palette.textDim,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                    } else {
-                        val mirror = when {
-                            state == AviState.LISTENING && partialText.isNotBlank() -> "\u201C$partialText\u201D"
-                            state == AviState.LISTENING -> "Mendengar… silakan bicara, Pak"
-                            voiceSaid.isNotBlank() -> voiceSaid
-                            else -> "Ketuk tombol keyboard untuk MENULIS — ketuk ORB untuk bicara, Pak"
-                        }
-                        Text(
-                            mirror,
-                            color = when {
-                                state == AviState.LISTENING -> palette.accent
-                                voiceSaid.isNotBlank() -> palette.text
-                                else -> palette.textDim
-                            },
-                            fontSize = 13.sp,
-                            fontStyle = if (state == AviState.LISTENING) FontStyle.Italic else FontStyle.Normal,
-                            fontFamily = AviBody,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
+                            Icons.Default.Send,
+                            contentDescription = "Kirim",
+                            tint = palette.bg,
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }

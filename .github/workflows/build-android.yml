@@ -113,7 +113,7 @@ jobs:
           ---
           ### Fitur yang tersedia
           - 🔊 Bicara bebas "Hay pak…" — STT & TTS ramah bahasa Indonesia; VOKAL JAWABAN kini bisa disaklarkan
-          - ⌨️ BISA DIKETIK — tombol keyboard selalu terlihat di bar bawah (mic = suara, keyboard = tulis), Enter langsung kirim
+          - ⌨️ P46 BISA DIKETIK — baris tulis SELALU terlihat di bar bawah (tanpa tombol pembuka), Enter/KIRIM langsung kirim; ketikan diterima walau AVI sedang bicara/mendengar/live/berpikir (tidak pernah dibuang lagi)
           - 🧠 AI cloud Google Gemini — auth header \`X-goog-api-key\`, non-streaming, daftar model dinamis (semua keluarga: 1.5 / 2.0 / 2.5 / alias \`-latest\`)
           - 🧪 Uji Model per-kartu & tombol **UJI SEMUA MODEL** di Pusat Kendali
           - 🎛️ P45: Pusat Kendali 1 halaman jelas (OTAK/SUARA/AGEN/GAYA/MARKAS) + SUARA LANGSUNG LIVE + chip MARKAS BATERAI · SIMPAN · NET; cincin teks telemetri dihapus

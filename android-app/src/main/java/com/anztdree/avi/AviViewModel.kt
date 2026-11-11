@@ -243,6 +243,11 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
     // ===== STT =====
 
+    // P46 — penjaga buntutan: setelah ketikan menghentikan sesi dengar,
+    // hasil akhir STT yang terlambat datang TIDAK boleh terkirim sebagai
+    // pesan kedua (dulu bisa muncul pesan dobel setelah menulis)
+    private var suppressNextSttResult = false
+
     /** Dipanggil dari Activity onCreate (main thread) */
     fun createStt() {
         if (stt != null) return
@@ -262,6 +267,10 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
             override fun onResult(text: String) {
                 _partialText.value = ""
+                if (suppressNextSttResult) {
+                    suppressNextSttResult = false
+                    return
+                }
                 val cb = testCallback
                 if (cb != null) {
                     testCallback = null
@@ -324,6 +333,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 settingsRepo.markGreeted()
                 speakDirect(greetingText())
             } else {
+                suppressNextSttResult = false
                 s.start(_settings.value.sttLanguage)
             }
         }
@@ -334,7 +344,47 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     fun sendText(text: String) {
         val t = text.trim()
         if (t.isEmpty()) return
-        handleUserInput(t)
+        // P46 — TULISAN KEYBOARD TIDAK PERNAH DIBUANG (umpan Pak: "hanya menerima
+        // hasil dari suara"): di kondisi APA PUN teks ketikan harus diproses. Kalau
+        // AVI sedang bicara/mendengar/live/berpikir, kondisi itu dihentikan dan
+        // teks baru yang diutamakan — dulu teks dijelamakan diam-diam, keyboard
+        // terasa "mati".
+        when (_state.value) {
+            AviState.LIVE -> {
+                // Sesi live ditutup dulu supaya jalur teks bebas jalan
+                stopLive()
+                handleUserInput(t)
+            }
+            AviState.SPEAKING -> {
+                // Suara jawaban dihentikan, teks baru langsung dijawab.
+                // (tts.stop()/cloudPlayer.stop() aman: onDone buntutan yang datang
+                // belakangan menemukan state sudah THINKING — jadi tidak bentrok)
+                tts.stop()
+                cloudPlayer.stop()
+                setState(AviState.IDLE)
+                handleUserInput(t)
+            }
+            AviState.LISTENING -> {
+                // Berhenti mendengar, ketikan diutamakan. Hasil STT buntutan
+                // dijepit (suppressNextSttResult) supaya tidak terkirim dobel.
+                suppressNextSttResult = true
+                stt?.stop()
+                _partialText.value = ""
+                setState(AviState.IDLE)
+                handleUserInput(t)
+            }
+            AviState.THINKING -> {
+                // Permintaan lama dibatalkan, ketikan baru menggantikan
+                streamJob?.cancel()
+                pendingSteps.clear()
+                _agentEvents.value = emptyList()
+                _agentAktif.value = false
+                _streamingText.value = ""
+                setState(AviState.IDLE)
+                handleUserInput(t)
+            }
+            AviState.IDLE -> handleUserInput(t)
+        }
     }
 
     private fun handleUserInput(text: String) {
@@ -670,6 +720,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             viewModelScope.launch {
                 delay(600)
                 if (_conversationActive.value && _state.value == AviState.IDLE) {
+                    suppressNextSttResult = false
                     stt?.start(_settings.value.sttLanguage)
                 }
             }
@@ -1006,6 +1057,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         testCallback = onResult
+        suppressNextSttResult = false
         s.start(_settings.value.sttLanguage)
     }
 
