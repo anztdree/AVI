@@ -446,9 +446,10 @@ private fun ExpandArea(
                 .clip(RoundedCornerShape(14.dp))
                 .background(palette.panel.copy(alpha = 0.55f))
                 .border(1.dp, palette.panelLight.copy(alpha = 0.6f), RoundedCornerShape(14.dp))
-                .padding(12.dp),
-            content = content
-        )
+                .padding(12.dp)
+        ) {
+            content()
+        }
     }
 }
 
