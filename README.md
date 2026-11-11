@@ -2,7 +2,7 @@
 
 AVI adalah **asisten virtual berbasis AI** untuk Android: bicara bebas (STT & TTS
 ramah bahasa Indonesia), otak agen cloud (Google Gemini + kompatibel OpenAI)
-dengan **perkakas perangkat nyata**, Pusat Kendali 5 tab, dan telemetri orbit.
+dengan **perkakas perangkat nyata** dan Pusat Kendali 5 tab.
 
 ## Isi repo — KHUSUS PROYEK APK
 
@@ -34,18 +34,21 @@ gradle assembleRelease
 
 ## Kemampuan utama
 
-- 🔊 **Bicara bebas** "Hai, Pak…" — STT & TTS selalu aktif, ramah bahasa Indonesia
+- 🔊 **Bicara bebas** "Hai, Pak…" — STT & TTS ramah bahasa Indonesia;
+  VOKAL JAWABAN bisa disaklarkan (jawaban tetap tampil di chat), SUARA LANGSUNG
+  = sesi LIVE dengar-tanpa-henti yang benar-benar MULAI/BERHENTI
 - 🧠 **AI cloud Google Gemini** — auth `X-goog-api-key`, daftar model dinamis
   (keluarga 1.5 / 2.0 / 2.5 / alias `-latest`), plus klien kompatibel OpenAI
 - 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 16 perkakas nyata:
   diagnostik, buka aplikasi, volume, senter, URL, pencarian web, share,
   pengaturan, telepon/SMS draf, kalkulator aman, ingatan, dan lainnya
 - 🎛️ **Pusat Kendali 5 tab** — OTAK / SUARA / GAYA / SISTEM / AGENT
-  (otoritas 3 tingkat AMAN/BAKU/PENUH, mode AUTO/SELALU/MATI, log aksi)
-- 🛰️ **Orbit telemetri** di sekeliling orb — baterai, memori, penyimpanan,
-  jaringan, jam
+  (otoritas 3 tingkat AMAN/BAKU/PENUH, mode AUTO/SELALU/MATI, log aksi;
+  tab SISTEM kini menampilkan MARKAS: BATERAI · SIMPAN · NET dari
+  diagnostik perangkat sungguhan)
 - 🌌 **Tampilan kelas Jarvis** — nebula animasi, bintang paralaks, piringan
-  reaktor, dock kaca beriak, tema Mark
+  reaktor, orb MK-XIX + aura (P44: cincin teks telemetri di sekeliling orb
+  dihapus — panggung murni bentuk), dock kaca beriak, tema Mark
 
 ## Riwayat singkat
 

@@ -759,8 +759,9 @@ fun HoloPanel(
 }
 
 // ============================================================
-// (StatusDock & ChipRow DIHAPUS TOTAL — keputusan pemilik K10:
-//  data status kini mengorbit reaktor di ReactorHalo)
+// (StatusDock & ChipRow DIHAPUS TOTAL — keputusan pemilik K10;
+//  P44: cincin telemetri ReactorHalo ikut dihapus — markas tampil
+//  di Pusat Kendali tab SISTEM, chip MARKAS nyata)
 // ============================================================
 
 // ============================================================

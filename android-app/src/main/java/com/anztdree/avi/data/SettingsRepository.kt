@@ -44,6 +44,9 @@ data class AviSettings(
     val geminiModel: String = "",
     // suara
     val autoListen: Boolean = true,
+    // P44 — VOKAL JAWABAN: saklar nyata (di preview: #tgVoice) — kalau mati,
+    // jawaban tetap tampil di chat tapi TIDAK dibacakan
+    val ttsEnabled: Boolean = true,
     val speechRate: Float = 1.0f,
     val pitch: Float = 1.0f,
     val cloudTtsEnabled: Boolean = false,
@@ -54,7 +57,6 @@ data class AviSettings(
     val bootEnabled: Boolean = true,
     val parallaxEnabled: Boolean = true,
     val hapticsEnabled: Boolean = true,
-    val diagnosticsOrbit: Boolean = true,
     // K19 — bingkai HUD kelas Jarvis (bracket sudut + rel samping + sapuan hologram)
     val hudFrame: Boolean = true,
     val powerSave: Boolean = false,
@@ -82,6 +84,7 @@ class SettingsRepository(private val context: Context) {
         val ocModel = stringPreferencesKey("oc_model")
         val geminiModel = stringPreferencesKey("gemini_model")
         val autoListen = booleanPreferencesKey("auto_listen")
+        val ttsEnabled = booleanPreferencesKey("tts_enabled")
         val speechRate = floatPreferencesKey("speech_rate")
         val pitch = floatPreferencesKey("pitch")
         val cloudTtsEnabled = booleanPreferencesKey("cloud_tts_enabled")
@@ -91,7 +94,6 @@ class SettingsRepository(private val context: Context) {
         val bootEnabled = booleanPreferencesKey("boot_enabled")
         val parallaxEnabled = booleanPreferencesKey("parallax_enabled")
         val hapticsEnabled = booleanPreferencesKey("haptics_enabled")
-        val diagnosticsOrbit = booleanPreferencesKey("diagnostics_orbit")
         val hudFrame = booleanPreferencesKey("hud_frame")
         val powerSave = booleanPreferencesKey("power_save")
         val style = stringPreferencesKey("style")
@@ -117,6 +119,7 @@ class SettingsRepository(private val context: Context) {
         ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
         geminiModel = p[Keys.geminiModel] ?: "",
         autoListen = p[Keys.autoListen] ?: true,
+        ttsEnabled = p[Keys.ttsEnabled] ?: true,
         speechRate = p[Keys.speechRate] ?: 1.0f,
         pitch = p[Keys.pitch] ?: 1.0f,
         cloudTtsEnabled = p[Keys.cloudTtsEnabled] ?: false,
@@ -126,7 +129,6 @@ class SettingsRepository(private val context: Context) {
         bootEnabled = p[Keys.bootEnabled] ?: true,
         parallaxEnabled = p[Keys.parallaxEnabled] ?: true,
         hapticsEnabled = p[Keys.hapticsEnabled] ?: true,
-        diagnosticsOrbit = p[Keys.diagnosticsOrbit] ?: true,
         hudFrame = p[Keys.hudFrame] ?: true,
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
@@ -149,6 +151,7 @@ class SettingsRepository(private val context: Context) {
             p[Keys.ocModel] = next.ocModel
             p[Keys.geminiModel] = next.geminiModel
             p[Keys.autoListen] = next.autoListen
+            p[Keys.ttsEnabled] = next.ttsEnabled
             p[Keys.speechRate] = next.speechRate
             p[Keys.pitch] = next.pitch
             p[Keys.cloudTtsEnabled] = next.cloudTtsEnabled
@@ -158,7 +161,6 @@ class SettingsRepository(private val context: Context) {
             p[Keys.bootEnabled] = next.bootEnabled
             p[Keys.parallaxEnabled] = next.parallaxEnabled
             p[Keys.hapticsEnabled] = next.hapticsEnabled
-            p[Keys.diagnosticsOrbit] = next.diagnosticsOrbit
             p[Keys.hudFrame] = next.hudFrame
             p[Keys.powerSave] = next.powerSave
             p[Keys.style] = next.style

@@ -89,6 +89,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.anztdree.avi.AviState
 import com.anztdree.avi.AviViewModel
 import com.anztdree.avi.R
 import com.anztdree.avi.agent.AgentEngine
@@ -119,6 +120,10 @@ import kotlinx.coroutines.delay
  *  · TAMBAHAN nyata: bahasa dengaran (Indonesia/English) tersambung ke mesin STT
  *  · Navigasi 4 tab misi (OTAK · SUARA · GAYA · SISTEM) dgn indikator meluncur
  *  · Strip status: OTAK · SUARA · PEMILIK · REQ HARI INI (hitungan asli)
+ * P44 (umpan Pak: pengaturan jangan setengah-setengah) — sinkron preview:
+ *  · VOKAL JAWABAN jadi SAKLAR NYATA (dulu "wajib tanpa tombol") → TTS dihormati
+ *  · SUARA LANGSUNG masuk tab SUARA — MULAI/BERHENTI sesi LIVE STT sungguhan
+ *  · MARKAS = 3 chip diagnostik perangkat sungguhan: BATERAI · SIMPAN · NET
  * Satu keluarga visual dgn layar obrolan: nebula per-Mark + hex grid + bingkai HUD.
  */
 @Composable
@@ -366,10 +371,12 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     }
                     Spacer(Modifier.height(14.dp))
                     Text(
-                        "AVI — Asisten Virtual Indonesia · Semua data tersimpan lokal di HP Anda.",
-                        color = palette.textDim,
-                        fontSize = 9.sp,
+                        "AVI APK v$versiApp · PUSAT KENDALI AVI",
+                        color = palette.textDim.copy(alpha = 0.75f),
+                        fontSize = 8.sp,
                         fontFamily = AviHud,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -699,17 +706,21 @@ private fun SuaraTab(
 ) {
     val models by vm.models.collectAsState()
     val ttsReady by vm.ttsReady.collectAsState()
+    // P44 — status sesi SUARA LANGSUNG (state LIVE dari mesin LiveClient)
+    val liveState by vm.state.collectAsState()
+    val live = liveState == AviState.LIVE
     var ttsModelMenu by remember { mutableStateOf(false) }
     var voiceMenu by remember { mutableStateOf(false) }
     val ttsModels = models.filter { it.canTts }
 
     SystemHeader(name = "SUARA", active = ttsReady, palette = palette)
     HoloPanel(palette = palette) {
-        Text(
-            "AVI selalu membacakan setiap jawaban — wajib, tanpa tombol",
-            color = palette.textDim,
-            fontSize = 11.sp,
-            lineHeight = 15.sp
+        // P44 — VOKAL JAWABAN: saklar nyata (preview #tgVoice) — dulu "wajib, tanpa tombol"
+        ReactorToggle(
+            label = "Vokal jawaban — AVI membacakan balasannya",
+            checked = settings.ttsEnabled,
+            onChange = { v -> vm.updateSettings { it.copy(ttsEnabled = v) } },
+            palette = palette
         )
         Spacer(Modifier.height(4.dp))
         ReactorToggle(
@@ -718,6 +729,64 @@ private fun SuaraTab(
             onChange = { v -> vm.updateSettings { it.copy(autoListen = v) } },
             palette = palette
         )
+        HudDivider(palette)
+
+        // P44 — SUARA LANGSUNG: MULAI/BERHENTI sesi LIVE STT sungguhan (preview #btnLive)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "SUARA LANGSUNG",
+                    color = palette.text,
+                    fontSize = 12.sp,
+                    fontFamily = AviHud,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp
+                )
+                Text(
+                    if (live) "LIVE — BERJALAN · mendengar terus"
+                    else "Mode LIVE — mendengar tanpa henti",
+                    color = if (live) palette.danger else palette.textDim,
+                    fontSize = 10.sp,
+                    lineHeight = 13.sp
+                )
+            }
+            Spacer(Modifier.width(10.dp))
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        if (live) palette.danger.copy(alpha = 0.10f)
+                        else palette.gold.copy(alpha = 0.08f)
+                    )
+                    .border(
+                        1.dp,
+                        if (live) palette.danger.copy(alpha = 0.50f)
+                        else palette.gold.copy(alpha = 0.45f),
+                        RoundedCornerShape(10.dp)
+                    )
+                    .clickable { if (live) vm.stopLive() else vm.startLive() }
+                    .padding(horizontal = 13.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    if (live) "BERHENTI" else "MULAI",
+                    color = if (live) palette.danger else palette.gold,
+                    fontSize = 9.sp,
+                    fontFamily = AviHud,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp
+                )
+            }
+        }
+        if (live) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "AVI sedang mendengar tanpa henti — kembali ke layar depan untuk bicara " +
+                    "dua arah, atau tekan BERHENTI di sini.",
+                color = palette.danger.copy(alpha = 0.85f),
+                fontSize = 10.sp,
+                lineHeight = 13.sp
+            )
+        }
         HudDivider(palette)
 
         // K21 — BAHASA DENGARAN (nyata: disambungkan ke mesin STT Android)
@@ -1232,8 +1301,40 @@ private fun SistemTab(
         } catch (_: Exception) { "?" }
     }
 
+    // ---- P44 — MARKAS: diagnostik perangkat sungguhan (BATERAI · SIMPAN · NET) ----
+    val diag by vm.diagnostics.collectAsState()
+    LaunchedEffect(Unit) { vm.refreshDiagnostics() }
+
     // ---- data & privasi (K21 — pengganti ring kuota palsu ±1500) ----
     SystemHeader(name = "SISTEM", active = true, palette = palette)
+    HoloPanel(palette = palette) {
+        PanelTitle("MARKAS", "NYATA", palette)
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            MarkasChip(
+                label = "BATERAI",
+                value = diag?.let { "${it.batteryPct}%${if (it.charging) "⚡" else ""}" } ?: "—",
+                palette = palette,
+                modifier = Modifier.weight(1f)
+            )
+            MarkasChip(
+                label = "SIMPAN",
+                value = diag?.let {
+                    String.format(Locale.US, "%.0f/%.0f GB", it.storageFreeGb, it.storageTotalGb)
+                } ?: "—",
+                palette = palette,
+                modifier = Modifier.weight(1f)
+            )
+            MarkasChip(
+                label = "NET",
+                value = diag?.network ?: "—",
+                palette = palette,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+    Spacer(Modifier.height(12.dp))
+
     HoloPanel(palette = palette) {
         PanelTitle("DATA & PRIVASI", "LOKAL", palette)
         Spacer(Modifier.height(4.dp))
@@ -1413,6 +1514,51 @@ private fun SistemTab(
             Spacer(Modifier.width(6.dp))
             Text("REPO GITHUB AVI", fontSize = 11.sp, color = palette.accent, fontFamily = AviHud)
         }
+    }
+}
+
+/**
+ * P44 — chip diagnostik MARKAS (BATERAI · SIMPAN · NET): label kecil redup di
+ * atas, nilai sian tebal di bawah — satu keluarga dengan .setinfo preview
+ * Pengaturan. Non-interaktif, nilai dari DeviceActions.readDiagnostics nyata.
+ */
+@Composable
+private fun MarkasChip(
+    label: String,
+    value: String,
+    palette: AviPalette,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(palette.panel.copy(alpha = 0.55f))
+            .border(1.dp, palette.panelLight.copy(alpha = 0.8f), RoundedCornerShape(12.dp))
+            .padding(horizontal = 6.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            label,
+            color = palette.textDim,
+            fontSize = 7.5.sp,
+            fontFamily = AviHud,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.8.sp,
+            textAlign = TextAlign.Center,
+            maxLines = 1
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            value,
+            color = palette.accent,
+            fontSize = 11.sp,
+            fontFamily = AviHud,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.2.sp,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

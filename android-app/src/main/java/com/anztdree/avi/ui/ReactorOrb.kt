@@ -1,10 +1,6 @@
 package com.anztdree.avi.ui
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -29,13 +25,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.anztdree.avi.AviState
@@ -63,7 +56,8 @@ import kotlin.math.sin
  *   · STATE DENGAR  — seluruh wajah MENYALA HIJAU ZAMRUD, orb MEMBESAR 16%,
  *                     sonar 1 cincin melebar (ear), halo zamrud (hearGlow)
  *   · STATE KERJA   — semua laju ×~3, cincin progres + jendela instrumen
- * Di luar orb: ReactorHalo (pita telemetri JAM·BAT·RAM·NET·OTAK) — terpisah.
+ * P44 (umpan Pak): cincin teks telemetri di sekeliling orb DIHAPUS —
+ * panggung orb kini murni bentuk MK-XIX + aura, tanpa ReactorHalo.
  * Visor digambar sebagai overlay composable (bukan di dalam Canvas).
  */
 
@@ -151,125 +145,6 @@ fun ReactorOrb(
                 palette = palette,
                 modifier = Modifier.size(width = side * 0.5f, height = side * 0.17f)
             )
-        }
-    }
-}
-
-// ============================================================
-// Halo Mark III — telemetri JAM·BAT·RAM·NET·OTAK mengorbit
-// (pita 80–105dp) — identik dengan .otelem preview, tak berubah
-// ============================================================
-
-@Composable
-fun ReactorHalo(
-    palette: AviPalette,
-    enabled: Boolean,
-    modifier: Modifier = Modifier,
-    glowLevel: Float = 0f,
-    orbitItems: List<String> = emptyList()
-) {
-    if (!enabled) return
-    val transition = rememberInfiniteTransition(label = "halo")
-    val t by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(14000, easing = LinearEasing)),
-        label = "haloTime"
-    )
-
-    // Cache Paint — TIDAK dialokasi per frame (TextPaint ada di paket android.text)
-    val orbitPaint = remember {
-        android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
-            typeface = android.graphics.Typeface.MONOSPACE
-            textAlign = android.graphics.Paint.Align.CENTER
-        }
-    }
-
-    Canvas(modifier = modifier) {
-        val c = center
-        val R = size.minDimension / 2f          // penuh kotak (±105dp+)
-        val dR = R / 105f                       // skala dp→px aktual
-
-        // ============ PITA 3 — busur & tick (99–105dp) ============
-        val bandR = 97f * dR
-        // busur utama berputar searah jarum jam
-        rotate(degrees = t * 360f, pivot = c) {
-            drawArc(
-                color = palette.accent.copy(alpha = 0.32f),
-                startAngle = -90f,
-                sweepAngle = 64f,
-                useCenter = false,
-                style = Stroke(width = 1.2.dp.toPx(), cap = StrokeCap.Round)
-            )
-            drawArc(
-                color = palette.gold.copy(alpha = 0.30f),
-                startAngle = 90f,
-                sweepAngle = 44f,
-                useCenter = false,
-                style = Stroke(width = 1.2.dp.toPx(), cap = StrokeCap.Round)
-            )
-        }
-        // busur kedua berlawanan arah — lebih tipis
-        rotate(degrees = -t * 216f, pivot = c) {
-            drawArc(
-                color = palette.accent.copy(alpha = 0.18f),
-                startAngle = 20f,
-                sweepAngle = 26f,
-                useCenter = false,
-                style = Stroke(width = 1.dp.toPx(), cap = StrokeCap.Round)
-            )
-        }
-        // tick pendek ke 4 arah — hanya di pita luar, tidak masuk ke area orb/teks
-        for (k in 0 until 4) {
-            val rad = k * 90f * PI.toFloat() / 180f
-            drawLine(
-                color = palette.accent.copy(alpha = 0.20f),
-                start = Offset(c.x + bandR * 0.97f * cos(rad), c.y + bandR * 0.97f * sin(rad)),
-                end = Offset(c.x + R * 0.995f * cos(rad), c.y + R * 0.995f * sin(rad)),
-                strokeWidth = 1f
-            )
-        }
-        // dua titik emas berlawanan arah di pita yang sama
-        for (k in 0..1) {
-            val rad = (-t * 360f + k * 180f) * PI.toFloat() / 180f
-            drawCircle(
-                color = palette.gold,
-                radius = 1.8.dp.toPx(),
-                center = Offset(c.x + bandR * cos(rad), c.y + bandR * sin(rad)),
-                alpha = 0.75f
-            )
-        }
-
-        // ============ PITA 2 — diagnostik mengorbit (80–99dp) ============
-        val items = orbitItems
-        if (items.isNotEmpty()) {
-            val labelR = 89f * dR                    // garis dasar label
-            val glow = 0.50f + 0.22f * glowLevel + 0.10f * sin(t * 2f * PI.toFloat())
-            orbitPaint.textSize = 8.5.sp.toPx()
-            // kecepatan berombak organik (superposisi dua gelombang sinus)
-            val wob = 16f * sin(2f * PI.toFloat() * t) +
-                10f * sin(2f * PI.toFloat() * t * 3f + 1.7f)
-            val n = items.size
-            for (i in 0 until n) {
-                val ang = t * 360f + wob + i * (360f / n)
-                orbitPaint.color = if (i % 2 == 0) palette.accent.toArgb() else palette.gold.toArgb()
-                orbitPaint.alpha = (255 * glow.coerceIn(0f, 1f)).toInt()
-                drawIntoCanvas { canvas ->
-                    val nc = canvas.nativeCanvas
-                    nc.save()
-                    nc.rotate(ang, c.x, c.y)
-                    nc.drawText(items[i], c.x, c.y - labelR, orbitPaint)
-                    nc.restore()
-                }
-                // titik emas pemisah antar data — ikut berputar
-                val sep = (ang + 180f / n) * PI.toFloat() / 180f
-                drawCircle(
-                    color = palette.gold,
-                    radius = 1.4.dp.toPx(),
-                    center = Offset(c.x + labelR * cos(sep), c.y + labelR * sin(sep)),
-                    alpha = 0.65f
-                )
-            }
         }
     }
 }

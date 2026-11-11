@@ -112,10 +112,10 @@ jobs:
 
           ---
           ### Fitur yang tersedia
-          - 🔊 Bicara bebas "Hay pak…" — STT & TTS selalu aktif, ramah bahasa Indonesia
+          - 🔊 Bicara bebas "Hay pak…" — STT & TTS ramah bahasa Indonesia; VOKAL JAWABAN kini bisa disaklarkan
           - 🧠 AI cloud Google Gemini — auth header \`X-goog-api-key\`, non-streaming, daftar model dinamis (semua keluarga: 1.5 / 2.0 / 2.5 / alias \`-latest\`)
           - 🧪 Uji Model per-kartu & tombol **UJI SEMUA MODEL** di Pusat Kendali
-          - 🛰️ Orbit telemetri di sekeliling orb (baterai, memori, penyimpanan, jaringan, jam)
+          - 🎛️ P44: SUARA LANGSUNG MULAI/BERHENTI (LIVE sungguhan) + chip MARKAS BATERAI · SIMPAN · NET di Pusat Kendali; cincin teks telemetri di sekeliling orb dihapus
           - 🌌 Chat full animasi HD — nebula ken-burns, bintang paralaks, piringan reaktor, riwayat ber-spring, dock kaca beriak
           - ⚙️ Perintah perangkat lokal (buka app, WiFi/Bluetooth, baterai, telepon, dan lainnya)
           EOF

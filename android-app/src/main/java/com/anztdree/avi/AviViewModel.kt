@@ -408,6 +408,11 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private fun addLocalReply(reply: String) {
         _messages.value = _messages.value + ChatMessage(role = "avi", text = reply)
         persist()
+        // P44 — VOKAL JAWABAN mati: jawaban lokal tampil sunyi, obrolan lanjut
+        if (!_settings.value.ttsEnabled) {
+            maybeAutoListen()
+            return
+        }
         // AVI WAJIB membacakan setiap jawaban
         setState(AviState.SPEAKING)
         tts.speak(cleanForSpeech(reply))
@@ -611,7 +616,10 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun speakReply(text: String) {
         val speech = cleanForSpeech(text)
-        if (speech.isBlank()) {
+        // P44 — VOKAL JAWABAN mati: jawaban tetap tampil di chat, tanpa suara;
+        // reaktor langsung kembali tenang (jangan tertinggal di THINKING)
+        if (speech.isBlank() || !_settings.value.ttsEnabled) {
+            if (_state.value == AviState.THINKING) setState(AviState.IDLE)
             afterSpeak()
             return
         }
@@ -630,8 +638,9 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Sapaan langsung (selalu bersuara) */
+    /** Sapaan langsung (P44: ikut hormati saklar VOKAL JAWABAN) */
     private fun speakDirect(text: String) {
+        if (!_settings.value.ttsEnabled) return
         setState(AviState.SPEAKING)
         val s = _settings.value
         if (s.provider == com.anztdree.avi.data.AiProvider.GEMINI &&

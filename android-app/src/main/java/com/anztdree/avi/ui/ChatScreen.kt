@@ -96,7 +96,6 @@ import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.AviTheme
 import com.anztdree.avi.ui.theme.LocalAviPalette
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -112,6 +111,9 @@ import kotlin.math.sin
 // P43 (sinkron preview yang disetujui Pak): header bersih 1 tombol
 // Pengaturan, BAR MODEL AKTIF + TES di bawah header, dock = bar
 // hasil suara (kb via tekan-lama), visor dimatikan, latar diperjelas.
+// P44 (umpan Pak): CINCIN TEKS TELEMETRI DI SEKELILING ORB DIHAPUS —
+// panggung orb murni bentuk MK-XIX + aura; Pengaturan dirancang ulang
+// (VOKAL JAWABAN + SUARA LANGSUNG nyata, MARKAS = diagnostik perangkat).
 // ============================================================
 
 @Composable
@@ -134,7 +136,6 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     val rmsLevel by vm.rmsLevel.collectAsState()
     val voiceLevel by vm.voiceLevel.collectAsState()
     val error by vm.error.collectAsState()
-    val diagnostics by vm.diagnostics.collectAsState()
     // K22 — timeline aksi mesin agen
     val agentEvents by vm.agentEvents.collectAsState()
     var inputText by remember { mutableStateOf("") }
@@ -153,15 +154,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         if (granted) vm.toggleMic() else micLauncher.launch(Manifest.permission.RECORD_AUDIO)
     }
 
-    // ---- jam untuk diagnostik orbit (update tiap ± menit) ----
-    var clockText by remember { mutableStateOf("--.--") }
-    LaunchedEffect(Unit) {
-        val fmt = SimpleDateFormat("HH.mm", Locale.getDefault())
-        while (true) {
-            clockText = fmt.format(Date())
-            delay(10_000)
-        }
-    }
+    // P44 — jam telemetri orbit DIHAPUS (umpan Pak: cincin teks jelek);
+    // jam hanya hidup sebagai stempel waktu pesan
     // format jam chip di bubble (mmeta .mts preview)
     val msgTimeFmt = remember { SimpleDateFormat("HH.mm", Locale.getDefault()) }
 
@@ -182,19 +176,6 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
 
     val setupNeeded = settings.provider == AiProvider.GEMINI &&
         (settings.geminiKey.isBlank() || settings.geminiModel.isBlank())
-
-    // ---- data yang mengorbit reaktor (JAM · BAT · RAM · NET · OTAK) ----
-    val orbitItems = remember(clockText, diagnostics, settings.geminiModel) {
-        buildList {
-            add("JAM $clockText")
-            diagnostics?.let { d ->
-                add("BAT ${d.batteryPct}%${if (d.charging) "⚡" else ""}")
-                add("RAM ${d.ramUsedPct}%")
-                add("NET ${d.network}")
-            }
-            add("OTAK ${settings.geminiModel.removePrefix("models/").ifBlank { "—" }}")
-        }
-    }
 
     val listState = rememberLazyListState()
     // P43 — hasil tombol TES di bar MODEL AKTIF
@@ -221,8 +202,9 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 .padding(horizontal = 14.dp)
         ) {
             // ============ P43 — BAR ATAS BERSIH: mark + brand, pojok kanan CUMA 1 tombol PENGATURAN
-            //   (umpan Pak: chip SIAGA & jam DIHAPUS dari depan — jam tetap hidup di telemetri orbit;
-            //    Deck pindah ke ketukan MARK logo — depan tetap satu tombol Pengaturan, keputusan Pak).
+            //   (umpan Pak: chip SIAGA & jam DIHAPUS dari depan; P44: cincin telemetri ikut dihapus —
+            //    jam tak lagi hidup di orbit; Deck pindah ke ketukan MARK logo — depan tetap satu
+            //    tombol Pengaturan, keputusan Pak).
             //   Porting setia preview: bar kaca + RAMBUT GRADIEN emas-sian di bawahnya +
             //   brand bergradasi teks + tombol Pengaturan berbingkai emas dua lapis. ============
             Box(Modifier.fillMaxWidth()) {
@@ -388,19 +370,13 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
 
             // P43 — teks parsial STT kini hidup DI DALAM bar hasil suara (dock)
 
-            // ============ ZONA REAKTOR (piringan hidup · halo telemetri · orb) ============
+            // ============ ZONA REAKTOR (P44: piringan hidup · orb — cincin
+            //               teks telemetri DIHAPUS, panggung murni bentuk + aura) ============
             Box(Modifier.fillMaxWidth().height(232.dp)) {
                 ReactorPlate(
                     palette = palette,
                     enabled = !settings.powerSave,
                     glowLevel = maxOf(rmsLevel, voiceLevel),
-                    modifier = Modifier.matchParentSize()
-                )
-                ReactorHalo(
-                    palette = palette,
-                    enabled = settings.diagnosticsOrbit && !settings.powerSave,
-                    glowLevel = maxOf(rmsLevel, voiceLevel),
-                    orbitItems = orbitItems,
                     modifier = Modifier.matchParentSize()
                 )
                 ReactorOrb(
