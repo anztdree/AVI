@@ -37,18 +37,23 @@ gradle assembleRelease
 - 🔊 **Bicara bebas** "Hai, Pak…" — STT & TTS ramah bahasa Indonesia;
   VOKAL JAWABAN bisa disaklarkan (jawaban tetap tampil di chat), SUARA LANGSUNG
   = sesi LIVE dengar-tanpa-henti yang benar-benar MULAI/BERHENTI
+- ⌨️ **Bisa DIKETIK juga** — tombol papan ketik SELALU terlihat di kiri bar bawah
+  (mic = suara, keyboard = tulis), Enter langsung mengirim
 - 🧠 **AI cloud Google Gemini** — auth `X-goog-api-key`, daftar model dinamis
   (keluarga 1.5 / 2.0 / 2.5 / alias `-latest`), plus klien kompatibel OpenAI
 - 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 16 perkakas nyata:
   diagnostik, buka aplikasi, volume, senter, URL, pencarian web, share,
   pengaturan, telepon/SMS draf, kalkulator aman, ingatan, dan lainnya
-- 🎛️ **Pusat Kendali 5 tab** — OTAK / SUARA / GAYA / SISTEM / AGENT
-  (otoritas 3 tingkat AMAN/BAKU/PENUH, mode AUTO/SELALU/MATI, log aksi;
-  tab SISTEM kini menampilkan MARKAS: BATERAI · SIMPAN · NET dari
-  diagnostik perangkat sungguhan)
+- 🎛️ **Pusat Kendali 1 halaman jelas (P45)** — 5 seksi berbahasa manusia:
+  OTAK (kunci API + model ketuk-pilih) · SUARA · AGEN (izin 3 tingkat,
+  perkakas, log) · GAYA (panggilan, ingatan, protokol) · MARKAS
+  (BATERAI · SIMPAN · NET nyata) — setiap baris ada keterangan fungsinya;
+  tanpa tab samar, tanpa stub "segera"
 - 🌌 **Tampilan kelas Jarvis** — nebula animasi, bintang paralaks, piringan
   reaktor, orb MK-XIX + aura (P44: cincin teks telemetri di sekeliling orb
   dihapus — panggung murni bentuk), dock kaca beriak, tema Mark
+- 🚀 **Ikon launcher baru** — reaktor sian-emas bergaya kompas pada latar
+  angkasa gelap (adaptive icon + monochrome Android 13+)
 
 ## Riwayat singkat
 

@@ -43,6 +43,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Mic
@@ -77,6 +79,7 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -96,6 +99,7 @@ import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.AviTheme
 import com.anztdree.avi.ui.theme.LocalAviPalette
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -426,13 +430,27 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             //   perintah lokal tetap hidup di Deck → PINTASAN MARKAS,
             //   model terkini kini terbaca di BAR MODEL AKTIF di atas.
 
-            // ============ DOCK P43 — BAR HASIL SUARA (vmic): suara lewat ORB,
-            //   papan ketik via tekan-lama/ikon; LIVE pindah ke Deck ============
+            // ============ DOCK P45 — BAR INPUT GANDA (umpan Pak: "user gak bisa
+            //   nulis pake keyboard"): TOMBOL PAPAN KETIK BESAR SELALU TERLIHAT di
+            //   kiri bar + tombol MIC = suara + Enter/IME langsung kirim; teks
+            //   parsial/hasil STT tetap hidup di dalam bar ============
             var kbMode by remember { mutableStateOf(false) }
             var voiceSaid by remember { mutableStateOf("") }
             LaunchedEffect(partialText) { if (partialText.isNotBlank()) voiceSaid = partialText }
             val focusRequester = remember { FocusRequester() }
-            LaunchedEffect(kbMode) { if (kbMode) focusRequester.requestFocus() }
+            LaunchedEffect(kbMode) {
+                if (kbMode) {
+                    delay(120) // beri waktu field terpasang sebelum IME dibuka
+                    focusRequester.requestFocus()
+                }
+            }
+            fun kirimTeks() {
+                if (inputText.isBlank()) return
+                kbMode = false
+                vm.sendText(inputText.trim())
+                inputText = ""
+                voiceSaid = ""
+            }
             // HORIZON sian-emas di atas komposer (composer::before preview) — panggung bawah hidup
             Box(
                 Modifier
@@ -483,7 +501,33 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                         )
                         .padding(start = 6.dp, end = 10.dp, top = 6.dp, bottom = 6.dp)
                 ) {
-                    // vmic — lingkaran mikrofon kecil; mengiup sian mengikuti suara
+                    // TOMBOL PAPAN KETIK — BESAR, SELALU TERLIHAT, di kiri bar
+                    // (umpan Pak: ikon kecil di ujung tak pernah ketemu)
+                    Box(
+                        Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (kbMode) palette.gold.copy(alpha = 0.22f)
+                                else palette.gold.copy(alpha = 0.10f)
+                            )
+                            .border(
+                                1.dp,
+                                if (kbMode) palette.gold else palette.gold.copy(alpha = 0.40f),
+                                CircleShape
+                            )
+                            .clickable { kbMode = !kbMode },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Keyboard,
+                            contentDescription = "Tulis dengan papan ketik",
+                            tint = if (kbMode) palette.gold else palette.gold.copy(alpha = 0.90f),
+                            modifier = Modifier.size(17.dp)
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    // vmic — lingkaran mikrofon; KETUK = mulai/berhenti suara
                     Box(
                         Modifier
                             .size(36.dp)
@@ -502,12 +546,16 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                                 if (state == AviState.LISTENING) palette.accent
                                 else palette.accent.copy(alpha = 0.32f),
                                 CircleShape
-                            ),
+                            )
+                            .clickable {
+                                kbMode = false
+                                ensureMicThenToggle()
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             Icons.Default.Mic,
-                            contentDescription = "Suara",
+                            contentDescription = "Bicara dengan suara",
                             tint = if (state == AviState.LISTENING) palette.accent else palette.accent.copy(alpha = 0.85f),
                             modifier = Modifier.size(17.dp)
                         )
@@ -528,6 +576,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                             ),
                             cursorBrush = SolidColor(palette.accent),
                             maxLines = 4,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                            keyboardActions = KeyboardActions(onSend = { kirimTeks() }),
                             decorationBox = { inner ->
                                 Box {
                                     if (inputText.isEmpty()) {
@@ -549,12 +599,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                                 .size(34.dp)
                                 .clip(CircleShape)
                                 .background(if (canSend) palette.gold else palette.panelLight)
-                                .clickable(enabled = canSend) {
-                                    kbMode = false
-                                    vm.sendText(inputText.trim())
-                                    inputText = ""
-                                    voiceSaid = ""
-                                },
+                                .clickable(enabled = canSend) { kirimTeks() },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -569,7 +614,7 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                             state == AviState.LISTENING && partialText.isNotBlank() -> "\u201C$partialText\u201D"
                             state == AviState.LISTENING -> "Mendengar… silakan bicara, Pak"
                             voiceSaid.isNotBlank() -> voiceSaid
-                            else -> "Hasil suara tampil di sini — ketuk ORB untuk bicara, Pak"
+                            else -> "Ketuk tombol keyboard untuk MENULIS — ketuk ORB untuk bicara, Pak"
                         }
                         Text(
                             mirror,
@@ -584,15 +629,6 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Icon(
-                            Icons.Default.Keyboard,
-                            contentDescription = "Papan ketik",
-                            tint = palette.textDim,
-                            modifier = Modifier
-                                .size(18.dp)
-                                .clickable { kbMode = true }
                         )
                     }
                 }
