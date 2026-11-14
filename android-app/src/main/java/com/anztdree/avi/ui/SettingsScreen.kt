@@ -33,12 +33,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CloudQueue
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteForever
@@ -590,6 +592,8 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
     val batchTest by vm.batchTest.collectAsState()
     val diagnosis by vm.diagnosis.collectAsState()
     val usageToday by vm.usageToday.collectAsState()
+    val keyTest by vm.keyTest.collectAsState()
+    val keyTestRunning by vm.keyTestRunning.collectAsState()
     var showKey by remember { mutableStateOf(false) }
     var bukaKunci by remember { mutableStateOf(false) }
     var bukaModel by remember { mutableStateOf(false) }
@@ -700,6 +704,113 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
                 Spacer(Modifier.height(6.dp))
                 Text(catatan, color = palette.accent, fontSize = 11.sp, lineHeight = 14.sp)
             }
+
+            // ---- P48 — KUNCI CADANGAN (BANYAK): kuota habis → lanjut otomatis ----
+            Spacer(Modifier.height(12.dp))
+            Text(
+                "KUNCI CADANGAN — BISA 2, 3, ATAU LEBIH",
+                color = palette.accent,
+                fontSize = 10.sp,
+                fontFamily = AviHud,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Kalau kuota kunci utama habis (429) atau kunci ditolak, AVI otomatis " +
+                    "lanjut ke kunci berikutnya tanpa berhenti. Urutan di bawah = urutan pakai.",
+                color = palette.textDim,
+                fontSize = 10.5.sp,
+                lineHeight = 14.sp
+            )
+            Spacer(Modifier.height(8.dp))
+            val barisKunci = settings.geminiKeysExtra.split('\n')
+            barisKunci.forEachIndexed { idx, kunci ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "${idx + 2}.",
+                        color = palette.textDim,
+                        fontSize = 11.sp,
+                        fontFamily = AviHud
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    OutlinedTextField(
+                        value = kunci,
+                        onValueChange = { v ->
+                            val baris = settings.geminiKeysExtra.split('\n').toMutableList()
+                            while (baris.size <= idx) baris.add("")
+                            baris[idx] = v
+                            vm.updateSettings { it.copy(geminiKeysExtra = baris.joinToString("\n")) }
+                        },
+                        label = { Text("Kunci cadangan ${idx + 1}", color = palette.textDim, fontSize = 11.sp) },
+                        singleLine = true,
+                        visualTransformation = if (showKey) VisualTransformation.None else PasswordVisualTransformation(),
+                        modifier = Modifier.weight(1f),
+                        colors = hudFieldColors(palette)
+                    )
+                    IconButton(onClick = {
+                        val baris = settings.geminiKeysExtra.split('\n').toMutableList()
+                        if (idx < baris.size) baris.removeAt(idx)
+                        vm.updateSettings {
+                            it.copy(geminiKeysExtra = baris.joinToString("\n").trim('\n'))
+                        }
+                    }) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Hapus kunci cadangan ${idx + 1}",
+                            tint = palette.danger,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        val sekarang = settings.geminiKeysExtra
+                        vm.updateSettings {
+                            it.copy(geminiKeysExtra = if (sekarang.isBlank()) "\n" else "$sekarang\n")
+                        }
+                    },
+                    enabled = barisKunci.size < 8
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(13.dp),
+                        tint = palette.accent
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text("TAMBAH KUNCI", fontSize = 11.sp, color = palette.accent, fontFamily = AviHud)
+                }
+                OutlinedButton(
+                    onClick = { vm.testAllKeys() },
+                    enabled = !keyTestRunning && settings.geminiKey.isNotBlank()
+                ) {
+                    if (keyTestRunning) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(13.dp),
+                            strokeWidth = 2.dp,
+                            color = palette.accent
+                        )
+                        Spacer(Modifier.width(6.dp))
+                    }
+                    Text("UJI SEMUA KUNCI", fontSize = 11.sp, color = palette.accent, fontFamily = AviHud)
+                }
+            }
+            keyTest.toSortedMap().forEach { (idx, hasil) ->
+                InfoRow(
+                    "Kunci ${idx + 1}",
+                    if (hasil.ok) "SIAP — ${hasil.pesan}" else "GAGAL — ${hasil.pesan}",
+                    valueColor = if (hasil.ok) palette.accent else palette.danger,
+                    palette = palette
+                )
+            }
+
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = {
@@ -770,6 +881,11 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
             palette = palette
         )
         InfoRow("Pemakaian hari ini", "$usageToday permintaan", palette = palette)
+        InfoRow(
+            "Kunci Gemini terpasang",
+            "${settings.geminiKeyList().size} buah (utama + cadangan)",
+            palette = palette
+        )
         Spacer(Modifier.height(8.dp))
         // Diagnosa koneksi — jalur pintas saat kunci bermasalah
         DiagnosisCard(

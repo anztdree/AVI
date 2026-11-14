@@ -115,7 +115,9 @@ jobs:
           - 🔊 Bicara bebas "Hay pak…" — STT & TTS ramah bahasa Indonesia; VOKAL JAWABAN kini bisa disaklarkan
           - 🔊 P47 INPUT SUARA SAJA — papan ketik dimatikan total (tanpa lapangan tulis, tidak bisa diklik); bar bawah murni cermin hasil suara (teks parsial/hasil STT); saklar suara = ORB atau MIC
           - 🚀 Ikon launcher BARU — monogram A emas + gelombang suara sian (adaptive + monochrome + PNG legacy semua densitas)
-          - 🧠 AI cloud Google Gemini — auth header \`X-goog-api-key\`, non-streaming, daftar model dinamis (semua keluarga: 1.5 / 2.0 / 2.5 / alias \`-latest\`)
+          - 🧠 P48 CUKUP TEMPEL API KEY — otak terpasang OTOMATIS: daftar model dimuat + diuji + model terbaik dipilih sendiri; permintaan tidak pernah mati diam lagi setelah input kunci
+          - 🔑 P48 MULTI API KEY GEMINI — kunci utama + cadangan (bisa 2/3/hingga 8), kuota habis atau kunci ditolak → otomatis lanjut kunci berikutnya; tombol UJI SEMUA KUNCI; semua kunci terenkripsi
+          - 📲 P48 AGEN LEBIH TANGGUH — kirim pesan WhatsApp (nomor+isi terisi, awalan 0→62 otomatis) & simpan kontak langsung dari perintah suara; buka browser + ketik alamat sesuai perintah
           - 🧪 Uji Model per-kartu & tombol **UJI SEMUA MODEL** di Pusat Kendali
           - 🎛️ P45: Pusat Kendali 1 halaman jelas (OTAK/SUARA/AGEN/GAYA/MARKAS) + SUARA LANGSUNG LIVE + chip MARKAS BATERAI · SIMPAN · NET; cincin teks telemetri dihapus
           - 🌌 Chat full animasi HD — nebula ken-burns, bintang paralaks, piringan reaktor, riwayat ber-spring, dock kaca beriak

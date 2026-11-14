@@ -181,6 +181,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     private var testCallback: ((String) -> Unit)? = null
     private val pendingSteps = ArrayDeque<String>()
     private var briefingChecked = false
+    private var autoSetupCoba = false
     private var liveWs: LiveClient? = null
     private val liveTranscript = StringBuilder()
 
@@ -214,6 +215,16 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 if (!briefingChecked) {
                     briefingChecked = true
                     maybeBriefing(s)
+                }
+                // P48 — OTAK TERPASANG OTOMATIS di latar: kunci ada tapi model belum
+                // → AVI memasang sendiri (umpan Pak: "setelah input api key gk keluar satupun")
+                if (!autoSetupCoba) {
+                    autoSetupCoba = true
+                    if (s.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
+                        s.geminiKey.isNotBlank() && s.geminiModel.isBlank()
+                    ) {
+                        pastikanModelTerpasang(s)
+                    }
                 }
             }
         }
@@ -477,27 +488,49 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         setState(AviState.THINKING)
         _streamingText.value = ""
 
-        val runtime = _settings.value.copy(
-            memoryText = memoryRepo.joinedText(),
-            recap = buildRecap()
-        )
+        streamJob = viewModelScope.launch {
+            var runtime = _settings.value.copy(
+                memoryText = memoryRepo.joinedText(),
+                recap = buildRecap()
+            )
 
-        // ===== K22 — ROUTER: asisten tetap; perintah kompleks masuk mesin agen =====
-        // AUTO: heuristik kata kerja aksi/perintah berantai (gratis, di-perangkat)
-        // SELALU: semua lewat agen • MATI: asisten murni (perilaku lama)
-        val pakaiAgent = runtime.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
-            runtime.geminiKey.isNotBlank() && runtime.geminiModel.isNotBlank() &&
-            when (runtime.agentMode) {
-                "SELALU" -> true
-                "MATI" -> false
-                else -> AgentRouter.perluAgent(userText)
+            // ===== P48 — OTAK TERPASANG OTOMATIS =====
+            // Dulu: kunci ada tapi model belum dipilih → SEMUA permintaan mati
+            // dengan "Model belum dipilih" (inilah penyebab "input api key gk
+            // keluar satupun"). Sekarang AVI memasang otaknya sendiri dulu.
+            if (runtime.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
+                runtime.geminiKey.isNotBlank() && runtime.geminiModel.isBlank()
+            ) {
+                val siap = pastikanModelTerpasang(runtime)
+                if (siap == null) {
+                    setState(AviState.IDLE)
+                    _streamingText.value = ""
+                    _error.value = "Kunci sudah terpasang tapi otak gagal dipasang otomatis. " +
+                        "Cek kunci & internet, atau buka Pusat Kendali → OTAK → SIMPAN & MUAT DAFTAR MODEL, " +
+                        "lalu pilih model berbadge ✓ ya, ${_settings.value.userName}."
+                    _conversationActive.value = false
+                    return@launch
+                }
+                runtime = siap
             }
 
-        if (pakaiAgent) {
-            jalankanAgen(userText, runtime)
-            return
+            // ===== K22 — ROUTER: asisten tetap; perintah kompleks masuk mesin agen =====
+            // AUTO: heuristik kata kerja aksi/perintah berantai (gratis, di-perangkat)
+            // SELALU: semua lewat agen • MATI: asisten murni (perilaku lama)
+            val pakaiAgent = runtime.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
+                runtime.geminiKey.isNotBlank() && runtime.geminiModel.isNotBlank() &&
+                when (runtime.agentMode) {
+                    "SELALU" -> true
+                    "MATI" -> false
+                    else -> AgentRouter.perluAgent(userText)
+                }
+
+            if (pakaiAgent) {
+                jalankanAgen(userText, runtime)
+                return@launch
+            }
+            streamPlain(runtime)
         }
-        streamPlain(runtime)
     }
 
     /** Jalur chat polos — bentuk terbukti selalu hidup (K14/K17). TIDAK diubah. */
@@ -762,7 +795,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val configured = when (s.provider) {
                 com.anztdree.avi.data.AiProvider.GEMINI ->
-                    s.geminiKey.isNotBlank() && s.geminiModel.isNotBlank()
+                    s.geminiKeyList().isNotEmpty() && s.geminiModel.isNotBlank()
                 else -> s.ocKey.isNotBlank()
             }
             if (!configured || settingsRepo.isBriefedToday()) return@launch
@@ -788,7 +821,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     fun startLive() {
         val s = _settings.value
         if (liveWs != null || _state.value == AviState.LIVE) return
-        if (s.provider != com.anztdree.avi.data.AiProvider.GEMINI || s.geminiKey.isBlank()) {
+        if (s.provider != com.anztdree.avi.data.AiProvider.GEMINI || s.geminiKeyList().isEmpty()) {
             _error.value = "Live mode butuh API key Gemini, pak."
             return
         }
@@ -947,6 +980,91 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 try { delay(4000) } catch (_: Exception) { }   // beri waktu ringkasan terbaca
                 _batchTest.value = null
             }
+        }
+    }
+
+    // ===== P48 — PEMASANGAN OTAK OTOMATIS (cukup tempel API key) =====
+
+    /** True saat AVI sedang memasang otaknya sendiri di latar (fetch + uji model). */
+    private val _autoSetup = MutableStateFlow(false)
+    val autoSetup: StateFlow<Boolean> = _autoSetup.asStateFlow()
+
+    /**
+     * Pastikan model terpasang TANPA pemilik melakukan apa-apa:
+     * muat daftar model dari Google pakai kunci yang ada → uji kandidat teratas
+     * satu per satu (ping 32 token) → simpan pertama yang benar-benar menjawab.
+     * Return runtime dengan model terisi; null kalau SEMUA kunci gagal dipakai.
+     */
+    private suspend fun pastikanModelTerpasang(runtime: AviSettings): AviSettings? {
+        if (runtime.provider != com.anztdree.avi.data.AiProvider.GEMINI) return runtime
+        if (runtime.geminiModel.isNotBlank()) return runtime
+        val keys = runtime.geminiKeyList()
+        if (keys.isEmpty()) return runtime // tanpa kunci — biarkan jalur lama yang melapor
+
+        // Pemasangan lain sedang berjalan (mis. yang di init)? Tunggu, jangan dobel.
+        while (_autoSetup.value) delay(250)
+        if (_settings.value.geminiModel.isNotBlank()) {
+            return runtime.copy(geminiModel = _settings.value.geminiModel)
+        }
+
+        _autoSetup.value = true
+        try {
+            for (key in keys) {
+                val list = ModelCatalog.fetch(key).getOrNull() ?: continue
+                _models.value = list
+                for (info in list.filter { it.canChat && it.isPureChat }.take(6)) {
+                    val uji = ModelCatalog.testModel(key, info.name)
+                    _modelTest.value = _modelTest.value + (info.name to uji)
+                    if (uji.ok) {
+                        updateSettings { it.copy(geminiModel = info.name) }
+                        _modelsError.value = null
+                        _pickNote.value =
+                            "Otak terpasang otomatis: ${info.shortName} ✓ — cukup tempel kunci, model dipilih sendiri"
+                        return runtime.copy(geminiModel = info.name)
+                    }
+                }
+            }
+        } finally {
+            _autoSetup.value = false
+        }
+        return null
+    }
+
+    // ===== P48 — UJI SEMUA KUNCI (utama + cadangan) =====
+
+    /** Hasil uji satu kunci. Kunci dinomori dari 1 (utama). */
+    data class KeyTest(val ok: Boolean, val pesan: String)
+
+    private val _keyTest = MutableStateFlow<Map<Int, KeyTest>>(emptyMap())
+    val keyTest: StateFlow<Map<Int, KeyTest>> = _keyTest.asStateFlow()
+
+    private val _keyTestRunning = MutableStateFlow(false)
+    val keyTestRunning: StateFlow<Boolean> = _keyTestRunning.asStateFlow()
+
+    /** Uji tiap kunci lewat ListModels — cepat, tanpa memakan kuota percakapan. */
+    fun testAllKeys() {
+        if (_keyTestRunning.value) return
+        val keys = _settings.value.geminiKeyList()
+        if (keys.isEmpty()) {
+            _modelsError.value = "Belum ada kunci untuk diuji, pak."
+            return
+        }
+        viewModelScope.launch {
+            _keyTestRunning.value = true
+            _keyTest.value = emptyMap()
+            keys.forEachIndexed { i, key ->
+                _keyTest.value = _keyTest.value + (i to KeyTest(false, "Menguji…"))
+                val hasil = try {
+                    ModelCatalog.fetch(key).fold(
+                        onSuccess = { list -> KeyTest(true, "SIAP — ${list.size} model terbaca") },
+                        onFailure = { KeyTest(false, it.message ?: "ditolak Google") }
+                    )
+                } catch (e: Exception) {
+                    KeyTest(false, e.message ?: "galat")
+                }
+                _keyTest.value = _keyTest.value + (i to hasil)
+            }
+            _keyTestRunning.value = false
         }
     }
 

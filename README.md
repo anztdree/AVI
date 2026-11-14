@@ -44,9 +44,20 @@ gradle assembleRelease
   di Deck → PINTASAN MARKAS
 - 🧠 **AI cloud Google Gemini** — auth `X-goog-api-key`, daftar model dinamis
   (keluarga 1.5 / 2.0 / 2.5 / alias `-latest`), plus klien kompatibel OpenAI
-- 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 16 perkakas nyata:
-  diagnostik, buka aplikasi, volume, senter, URL, pencarian web, share,
-  pengaturan, telepon/SMS draf, kalkulator aman, ingatan, dan lainnya
+- 🔑 **P48: CUKUP TEMPEL API KEY — OTAK TERPASANG OTOMATIS** — kunci ditempel,
+  AVI sendiri memuat daftar model, menguji kandidat teratas, dan memilih yang
+  benar-benar menjawab. Tidak ada lagi "model belum dipilih" yang membuat
+  permintaan mati diam setelah input kunci
+- 🔑 **P48: MULTI API KEY GEMINI + FAILOVER OTOMATIS** — kunci utama + kunci
+  cadangan (2, 3, hingga 8 buah) di Pusat Kendali → OTAK. Kuota satu kunci
+  habis (429), kunci ditolak (403/invalid) → AVI lanjut otomatis ke kunci
+  berikutnya, tanpa berhenti, tanpa disuruh; tombol UJI SEMUA KUNCI menunjukkan
+  status tiap kunci. Semua kunci tersimpan terenkripsi (AndroidKeyStore)
+- 🤖 **Mesin agen** pikir–aksi–hasil (maks 6 langkah) dengan 18 perkakas nyata:
+  diagnostik, buka aplikasi, volume, senter, URL/browser & alamat web, pencarian
+  web, share, pengaturan, telepon/SMS draf, **P48: kirim WhatsApp (nomor + isi
+  pesan terisi, 0→62 otomatis)**, **P48: simpan kontak (nama+nomor terisi)**,
+  kalkulator aman, ingatan, dan lainnya
 - 🎛️ **Pusat Kendali 1 halaman jelas (P45)** — 5 seksi berbahasa manusia:
   OTAK (kunci API + model ketuk-pilih) · SUARA · AGEN (izin 3 tingkat,
   perkakas, log) · GAYA (panggilan, ingatan, protokol) · MARKAS
@@ -62,5 +73,6 @@ gradle assembleRelease
 ## Riwayat singkat
 
 K19 → K22: HUD Jarvis, Pusat Kendali dirambah, Ingatan AVI, dan AVI jadi
-AI AGEN (function calling terbukti di 2 model free-tier). Detail lengkap ada
-di pesan commit.
+AI AGEN (function calling terbukti di 2 model free-tier). P48: cukup tempel
+API key (otak terpasang otomatis), multi API key dengan failover kuota,
+dan perkakas WhatsApp + simpan kontak. Detail lengkap ada di pesan commit.

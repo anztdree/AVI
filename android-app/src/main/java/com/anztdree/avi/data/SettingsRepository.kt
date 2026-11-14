@@ -37,6 +37,11 @@ enum class AiProvider(val id: String, val label: String) {
 data class AviSettings(
     val provider: AiProvider = AiProvider.GEMINI,
     val geminiKey: String = "",
+    // P48 — KUNCI CADANGAN GEMINI (satu string multi-baris, terenkripsi):
+    // kunci ke-2, ke-3, dst. Kalau kuota kunci utama habis (429) atau kunci
+    // ditolak (403 / API key invalid), AVI otomatis lanjut ke kunci berikutnya
+    // tanpa pemilik melakukan apa-apa.
+    val geminiKeysExtra: String = "",
     val ocBaseUrl: String = "https://openrouter.ai/api/v1",
     val ocKey: String = "",
     val ocModel: String = "meta-llama/llama-3.3-70b-instruct:free",
@@ -72,13 +77,25 @@ data class AviSettings(
     // runtime-only
     val memoryText: String = "",
     val recap: String = ""
-)
+) {
+    /**
+     * P48 — daftar SEMUA kunci Gemini terpasang: kunci utama dulu, lalu
+     * cadangan baris per baris. Sudah dibersihkan (trim), dibuang yang kosong,
+     * dan dideduplikasi — urutan tetap sesuai yang pemilik susun.
+     */
+    fun geminiKeyList(): List<String> =
+        (listOf(geminiKey) + geminiKeysExtra.lines())
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .distinct()
+}
 
 class SettingsRepository(private val context: Context) {
 
     private object Keys {
         val provider = stringPreferencesKey("provider")
         val geminiKey = stringPreferencesKey("gemini_key")
+        val geminiKeysExtra = stringPreferencesKey("gemini_keys_extra")
         val ocBaseUrl = stringPreferencesKey("oc_base_url")
         val ocKey = stringPreferencesKey("oc_key")
         val ocModel = stringPreferencesKey("oc_model")
@@ -114,6 +131,7 @@ class SettingsRepository(private val context: Context) {
     private fun load(p: Preferences): AviSettings = AviSettings(
         provider = AiProvider.from(p[Keys.provider] ?: AiProvider.GEMINI.id),
         geminiKey = SecureStore.decrypt(p[Keys.geminiKey] ?: "") ?: (p[Keys.geminiKey] ?: ""),
+        geminiKeysExtra = SecureStore.decrypt(p[Keys.geminiKeysExtra] ?: "") ?: (p[Keys.geminiKeysExtra] ?: ""),
         ocBaseUrl = p[Keys.ocBaseUrl] ?: "https://openrouter.ai/api/v1",
         ocKey = SecureStore.decrypt(p[Keys.ocKey] ?: "") ?: (p[Keys.ocKey] ?: ""),
         ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
@@ -146,6 +164,7 @@ class SettingsRepository(private val context: Context) {
             val next = transform(load(p))
             p[Keys.provider] = next.provider.id
             p[Keys.geminiKey] = SecureStore.encrypt(next.geminiKey) ?: next.geminiKey
+            p[Keys.geminiKeysExtra] = SecureStore.encrypt(next.geminiKeysExtra) ?: next.geminiKeysExtra
             p[Keys.ocBaseUrl] = next.ocBaseUrl
             p[Keys.ocKey] = SecureStore.encrypt(next.ocKey) ?: next.ocKey
             p[Keys.ocModel] = next.ocModel

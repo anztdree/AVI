@@ -165,8 +165,11 @@ object AgentRouter {
         "atur volume", "volume ", "kecilkan", "besarkan", "keraskan", "pelankan",
         "naikkan", "turunkan", "nyalakan", "matikan", "set volume",
         "kirim ", "sms ", "telpon", "telepon", "hubungi ",
+        // P48 — komunikasi & kontak baru
+        "whatsapp", " wa ", "pesan wa", "kirim pesan",
+        "kontak", "simpan nomor", "catat nomor", "nomor baru",
         "cari di web", "cari di internet", "googling", "browsing", "buka web",
-        "buka situs", "buka tautan", "buka link",
+        "buka situs", "buka tautan", "buka link", "buka alamat", "browser",
         "hitung ", "kalkulasi", "kalkulator",
         "senter", "lampu depan", "torc",
         "bagikan ", "share ",

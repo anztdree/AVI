@@ -6,6 +6,7 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.AudioManager
 import android.net.Uri
+import android.provider.ContactsContract
 import android.provider.Settings
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.MemoryRepository
@@ -35,13 +36,13 @@ import java.util.Locale
  *
  * Otoritas (filter per tingkat, dipilih pemilik di Pusat Kendali):
  *   AMAN  — baca-saja & tak berdampak (diagnostik, jam, hitung, ingatan)
- *   BAKU  — + aksi nyata ringan (buka aplikasi, volume, senter, share…)
- *   PENUH — + komunikasi (telepon, SMS draft)
+ *   BAKU  — + aksi nyata ringan (buka aplikasi, volume, senter, share, simpan kontak…)
+ *   PENUH — + komunikasi (telepon, SMS draft, WhatsApp)
  */
 enum class Otoritas(val label: String, val uraian: String) {
     AMAN("AMAN", "Baca-saja: diagnostik, jam, hitung, ingatan"),
-    BAKU("BAKU", "AMAN + aksi ringan: buka aplikasi, volume, senter, share"),
-    PENUH("PENUH", "BAKU + komunikasi: telepon & SMS (selalu lewat konfirmasi layar)");
+    BAKU("BAKU", "AMAN + aksi ringan: buka aplikasi, volume, senter, share, simpan kontak"),
+    PENUH("PENUH", "BAKU + komunikasi: telepon, SMS, WhatsApp (selalu lewat konfirmasi layar)");
 
     fun mengizinkan(level: Otoritas): Boolean = level.ordinal <= this.ordinal
 }
@@ -354,6 +355,66 @@ class AgentTools(private val memory: MemoryRepository) {
                 ToolResult(true, "Draf SMS ke $n disiapkan — menunggu pemilik menekan kirim.")
             } catch (e: Exception) {
                 ToolResult(false, "Gagal menyiapkan SMS: ${e.message ?: "unknown"}")
+            }
+        },
+        AgentTool(
+            name = "kirim_whatsapp",
+            label = "Kirim WhatsApp",
+            description = "Buka WhatsApp dengan chat ke nomor tujuan dan pesan sudah terisi — PEMILIK yang menekan tombol kirim. Gunakan untuk semua perintah kirim pesan WhatsApp / WA.",
+            parameters = sSchema(mapOf(
+                "nomor" to sProp("STRING", "nomor tujuan, mis. 081234567890 atau 6281234567890"),
+                "pesan" to sProp("STRING", "isi pesan WhatsApp")
+            ), listOf("nomor", "pesan")),
+            level = Otoritas.PENUH
+        ) { ctx, args, _ ->
+            val n = argString(args, "nomor") ?: return@AgentTool ToolResult(false, "Nomor kosong")
+            val p = argString(args, "pesan") ?: return@AgentTool ToolResult(false, "Pesan kosong")
+            // P48 — bersihkan nomor: hanya digit; awalan 0 → 62 (Indonesia)
+            val digit = n.filter { it.isDigit() }
+            if (digit.isEmpty()) return@AgentTool ToolResult(false, "Nomor tidak valid: $n")
+            val nomor = when {
+                digit.startsWith("62") -> digit
+                digit.startsWith("0") -> "62" + digit.drop(1)
+                else -> digit
+            }
+            return@AgentTool try {
+                val url = "https://wa.me/$nomor?text=" + URLEncoder.encode(p, "UTF-8")
+                ctx.startActivity(
+                    Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+                ToolResult(true, "WhatsApp dibuka ke nomor $nomor, pesan sudah terisi — menunggu pemilik menekan kirim.")
+            } catch (e: Exception) {
+                ToolResult(false, "Gagal membuka WhatsApp: ${e.message ?: "unknown"}")
+            }
+        },
+        AgentTool(
+            name = "simpan_kontak",
+            label = "Simpan Kontak",
+            description = "Buka aplikasi kontak dengan data sudah terisi (nama, nomor telepon, email opsional) — PEMILIK yang menekan tombol simpan. Gunakan untuk semua perintah simpan/catat kontak atau nomor baru.",
+            parameters = sSchema(mapOf(
+                "nama" to sProp("STRING", "nama kontak"),
+                "nomor" to sProp("STRING", "nomor telepon"),
+                "email" to sProp("STRING", "opsional: alamat email")
+            ), listOf("nama", "nomor")),
+            level = Otoritas.BAKU
+        ) { ctx, args, _ ->
+            val nama = argString(args, "nama") ?: return@AgentTool ToolResult(false, "Nama kosong")
+            val nomor = argString(args, "nomor") ?: return@AgentTool ToolResult(false, "Nomor kosong")
+            val email = argString(args, "email")
+            return@AgentTool try {
+                val i = Intent(ContactsContract.Intents.Insert.ACTION).apply {
+                    type = ContactsContract.RawContacts.CONTENT_TYPE
+                    putExtra(ContactsContract.Intents.Insert.NAME, nama)
+                    putExtra(ContactsContract.Intents.Insert.PHONE, nomor)
+                    if (!email.isNullOrBlank()) {
+                        putExtra(ContactsContract.Intents.Insert.EMAIL, email)
+                    }
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                ctx.startActivity(i)
+                ToolResult(true, "Aplikasi kontak dibuka dengan data \"$nama\" ($nomor) — menunggu pemilik menekan simpan.")
+            } catch (e: Exception) {
+                ToolResult(false, "Gagal membuka form kontak: ${e.message ?: "unknown"}")
             }
         }
     )
