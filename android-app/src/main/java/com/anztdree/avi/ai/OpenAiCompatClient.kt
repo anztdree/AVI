@@ -19,7 +19,11 @@ class OpenAiCompatClient : AiClient {
         withContext(Dispatchers.IO) {
             val key = settings.ocKey.trim()
             if (key.isEmpty()) {
-                callback.onError("API key belum diisi pak. Buka Pengaturan ya.")
+                callback.onError(
+                    if (settings.provider == com.anztdree.avi.data.AiProvider.NIM)
+                        "Kunci NVIDIA NIM belum diisi pak. Buka Pusat Kendali → OTAK → NVIDIA NIM ya."
+                    else "API key belum diisi pak. Buka Pengaturan ya."
+                )
                 return@withContext
             }
             val base = settings.ocBaseUrl.trim().trimEnd('/')
@@ -30,7 +34,14 @@ class OpenAiCompatClient : AiClient {
                 }
             }
             val body = jsonParser.encodeToString(
-                OcRequest(model = settings.ocModel.ifBlank { "gpt-4o-mini" }, messages = messages)
+                OcRequest(
+                    model = settings.ocModel.ifBlank {
+                        if (settings.provider == com.anztdree.avi.data.AiProvider.NIM)
+                            com.anztdree.avi.ai.NimCatalog.DEFAULT_MODEL
+                        else "gpt-4o-mini"
+                    },
+                    messages = messages
+                )
             )
             val request = Request.Builder()
                 .url("$base/chat/completions")
@@ -42,7 +53,12 @@ class OpenAiCompatClient : AiClient {
             Http.client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     val errBody = try { response.body?.string() } catch (_: Exception) { null }
-                    callback.onError("API: ${extractError(errBody, "HTTP ${response.code}")}")
+                    val mentah = extractError(errBody, "HTTP ${response.code}")
+                    val pesan =
+                        if (settings.provider == com.anztdree.avi.data.AiProvider.NIM)
+                            com.anztdree.avi.ai.NimCatalog.nimError(response.code, mentah)
+                        else "API: $mentah"
+                    callback.onError(pesan)
                     return@withContext
                 }
 

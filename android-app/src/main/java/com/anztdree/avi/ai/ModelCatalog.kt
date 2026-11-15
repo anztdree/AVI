@@ -73,42 +73,53 @@ object ModelCatalog {
         if (key.isEmpty()) {
             return@withContext Result.failure(Exception("API key belum diisi pak."))
         }
-        try {
-            val request = okhttpAuth(Request.Builder(), key)
-                .url("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000")
-                .get()
-                .build()
-
-            Http.client.newCall(request).execute().use { response ->
-                val body = try { response.body?.string() } catch (_: Exception) { null }
-                if (!response.isSuccessful) {
-                    return@withContext Result.failure(
-                        Exception("Gagal muat model: ${extractError(body, "HTTP ${response.code}")}")
-                    )
+        // P49 — DUA BENTUK AUTH dicoba berurutan: (1) header x-goog-api-key
+        // (standar), (2) parameter ?key= di URL. Beberapa jaringan/VPN/proxy
+        // MENGHAPUS header kustom — dulu itu bikin "fetch model masih gagal"
+        // padahal kunci benar. Dengan ?key=, daftar model tetap terbaca.
+        val bentuk = listOf(
+            "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000"
+                .let { okhttpAuth(Request.Builder(), key).url(it).get().build() },
+            Request.Builder()
+                .url("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=$key")
+                .get().build()
+        )
+        var kesalahanTerakhir = ""
+        for (request in bentuk) {
+            try {
+                val hasil = Http.client.newCall(request).execute().use { response ->
+                    val body = try { response.body?.string() } catch (_: Exception) { null }
+                    if (!response.isSuccessful) {
+                        kesalahanTerakhir = extractError(body, "HTTP ${response.code}")
+                        null
+                    } else {
+                        val parsed = jsonParser.decodeFromString<ModelListResponse>(body ?: "{}")
+                        val list = parsed.models.mapNotNull { m ->
+                            val raw = m.name ?: return@mapNotNull null
+                            val methods = m.supportedGenerationMethods
+                            GeminiModelInfo(
+                                name = raw,
+                                displayName = m.displayName ?: raw.removePrefix("models/"),
+                                description = m.description?.take(160) ?: "",
+                                contextLimit = m.inputTokenLimit ?: 0L,
+                                canChat = methods.contains("generateContent"),
+                                canTts = raw.contains("tts", ignoreCase = true),
+                                canLive = methods.any { it.startsWith("bidi", ignoreCase = true) } ||
+                                    raw.contains("live", ignoreCase = true)
+                            )
+                        }
+                        if (list.isEmpty()) {
+                            kesalahanTerakhir = "Daftar model kosong. Coba lagi ya pak."
+                            null
+                        } else list.sortedWith(modelOrder)
+                    }
                 }
-                val parsed = jsonParser.decodeFromString<ModelListResponse>(body ?: "{}")
-                val list = parsed.models.mapNotNull { m ->
-                    val raw = m.name ?: return@mapNotNull null
-                    val methods = m.supportedGenerationMethods
-                    GeminiModelInfo(
-                        name = raw,
-                        displayName = m.displayName ?: raw.removePrefix("models/"),
-                        description = m.description?.take(160) ?: "",
-                        contextLimit = m.inputTokenLimit ?: 0L,
-                        canChat = methods.contains("generateContent"),
-                        canTts = raw.contains("tts", ignoreCase = true),
-                        canLive = methods.any { it.startsWith("bidi", ignoreCase = true) } ||
-                            raw.contains("live", ignoreCase = true)
-                    )
-                }
-                if (list.isEmpty()) {
-                    return@withContext Result.failure(Exception("Daftar model kosong. Coba lagi ya pak."))
-                }
-                Result.success(list.sortedWith(modelOrder))
+                if (hasil != null) return@withContext Result.success(hasil)
+            } catch (e: Exception) {
+                kesalahanTerakhir = "Koneksi ke Google gagal: ${e.message ?: "unknown"}"
             }
-        } catch (e: Exception) {
-            Result.failure(Exception("Koneksi ke Google gagal: ${e.message ?: "unknown"}"))
         }
+        Result.failure(Exception(kesalahanTerakhir.ifBlank { "Gagal memuat daftar model." }))
     }
 
     /**

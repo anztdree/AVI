@@ -166,8 +166,11 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
         if (error != null && !settings.powerSave) UiSounds.error(context)
     }
 
-    val setupNeeded = settings.provider == AiProvider.GEMINI &&
-        (settings.geminiKey.isBlank() || settings.geminiModel.isBlank())
+    // P49 — kartu setup untuk KEDUA tipe otak: Gemini & NVIDIA NIM
+    val setupNeeded = when (settings.provider) {
+        AiProvider.GEMINI -> settings.geminiKey.isBlank() || settings.geminiModel.isBlank()
+        AiProvider.NIM -> settings.ocKey.isBlank() || settings.ocModel.isBlank()
+    }
 
     val listState = rememberLazyListState()
     // P43 — hasil tombol TES di bar MODEL AKTIF
@@ -308,9 +311,12 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
             }
 
             // ============ P43 — BAR MODEL AKTIF: model terkini dari PUSAT KENDALI + tombol TES ============
+            // P49 — ikut tipe otak aktif: Gemini atau NVIDIA NIM
             ModelBar(
                 palette = palette,
-                model = settings.geminiModel.removePrefix("models/"),
+                model = if (settings.provider == AiProvider.GEMINI)
+                    settings.geminiModel.removePrefix("models/")
+                else settings.ocModel.substringAfterLast('/'),
                 test = barTest,
                 onTest = { vm.testActiveModel() },
                 modifier = Modifier.padding(bottom = 4.dp)

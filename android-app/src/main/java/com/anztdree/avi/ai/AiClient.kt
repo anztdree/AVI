@@ -28,7 +28,8 @@ interface AiClient {
 object AiClientFactory {
     fun create(settings: AviSettings): AiClient = when (settings.provider) {
         com.anztdree.avi.data.AiProvider.GEMINI -> GeminiClient()
-        com.anztdree.avi.data.AiProvider.OPENAI_COMPAT -> OpenAiCompatClient()
+        // P49 — NVIDIA NIM memakai mesin OpenAI-compatible (satu keluarga protokol)
+        com.anztdree.avi.data.AiProvider.NIM -> OpenAiCompatClient()
     }
 }
 

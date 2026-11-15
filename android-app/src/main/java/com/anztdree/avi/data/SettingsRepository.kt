@@ -20,13 +20,25 @@ import java.util.Locale
 
 private val Context.aviDataStore: DataStore<Preferences> by preferencesDataStore(name = "avi_settings")
 
+/**
+ * P49 — DUA TIPE AI SAJA (umpan Pak: "cuma ada 2 tipe ai .. Gemini dan NVDIA NIM"):
+ *  - GEMINI : otak utama gratis (aistudio.google.com/apikey)
+ *  - NIM    : NVIDIA NIM (build.nvidia.com) — API kompatibel OpenAI di
+ *             https://integrate.api.nvidia.com/v1 — kunci nvapi-…
+ * ID lama "OPENAI_COMPAT" otomatis dimigrasikan ke NIM supaya setelan lama
+ * tidak rusak, dan pilihan model TETAP tersimpan per-tipe (ganti bolak-balik
+ * Gemini ↔ NIM tidak menggugurkan pilihan otak masing-masing).
+ */
 enum class AiProvider(val id: String, val label: String) {
-    GEMINI("GEMINI", "Google Gemini (Gratis — direkomendasikan)"),
-    OPENAI_COMPAT("OPENAI_COMPAT", "API Kompatibel OpenAI (OpenRouter, Groq, dll)");
+    GEMINI("GEMINI", "Google Gemini"),
+    NIM("NIM", "NVIDIA NIM");
 
     companion object {
-        fun from(id: String): AiProvider =
-            entries.firstOrNull { it.id == id } ?: GEMINI
+        const val NIM_BASE_URL = "https://integrate.api.nvidia.com/v1"
+        fun from(id: String): AiProvider = when (id) {
+            "NIM", "OPENAI_COMPAT" -> NIM   // OPENAI_COMPAT lama → NIM
+            else -> GEMINI
+        }
     }
 }
 
@@ -42,9 +54,10 @@ data class AviSettings(
     // ditolak (403 / API key invalid), AVI otomatis lanjut ke kunci berikutnya
     // tanpa pemilik melakukan apa-apa.
     val geminiKeysExtra: String = "",
-    val ocBaseUrl: String = "https://openrouter.ai/api/v1",
+    // P49 — otak NVIDIA NIM (sebelumnya "OpenAI compat" generik)
+    val ocBaseUrl: String = AiProvider.NIM_BASE_URL,
     val ocKey: String = "",
-    val ocModel: String = "meta-llama/llama-3.3-70b-instruct:free",
+    val ocModel: String = "",   // kosong = AVI memilih sendiri dari daftar NIM
     // model dinamis dari Google (TIDAK BOLEH hardcode)
     val geminiModel: String = "",
     // suara
@@ -132,9 +145,12 @@ class SettingsRepository(private val context: Context) {
         provider = AiProvider.from(p[Keys.provider] ?: AiProvider.GEMINI.id),
         geminiKey = SecureStore.decrypt(p[Keys.geminiKey] ?: "") ?: (p[Keys.geminiKey] ?: ""),
         geminiKeysExtra = SecureStore.decrypt(p[Keys.geminiKeysExtra] ?: "") ?: (p[Keys.geminiKeysExtra] ?: ""),
-        ocBaseUrl = p[Keys.ocBaseUrl] ?: "https://openrouter.ai/api/v1",
+        ocBaseUrl = p[Keys.ocBaseUrl]?.takeIf { it.isNotBlank() }
+            // migrasi: bawaan lama openrouter → alamat resmi NVIDIA NIM
+            ?.let { if (it.contains("openrouter.ai")) AiProvider.NIM_BASE_URL else it }
+            ?: AiProvider.NIM_BASE_URL,
         ocKey = SecureStore.decrypt(p[Keys.ocKey] ?: "") ?: (p[Keys.ocKey] ?: ""),
-        ocModel = p[Keys.ocModel] ?: "meta-llama/llama-3.3-70b-instruct:free",
+        ocModel = p[Keys.ocModel] ?: "",
         geminiModel = p[Keys.geminiModel] ?: "",
         autoListen = p[Keys.autoListen] ?: true,
         ttsEnabled = p[Keys.ttsEnabled] ?: true,
@@ -165,7 +181,7 @@ class SettingsRepository(private val context: Context) {
             p[Keys.provider] = next.provider.id
             p[Keys.geminiKey] = SecureStore.encrypt(next.geminiKey) ?: next.geminiKey
             p[Keys.geminiKeysExtra] = SecureStore.encrypt(next.geminiKeysExtra) ?: next.geminiKeysExtra
-            p[Keys.ocBaseUrl] = next.ocBaseUrl
+            p[Keys.ocBaseUrl] = next.ocBaseUrl.ifBlank { AiProvider.NIM_BASE_URL }
             p[Keys.ocKey] = SecureStore.encrypt(next.ocKey) ?: next.ocKey
             p[Keys.ocModel] = next.ocModel
             p[Keys.geminiModel] = next.geminiModel

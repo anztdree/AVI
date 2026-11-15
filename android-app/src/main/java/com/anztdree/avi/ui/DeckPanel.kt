@@ -215,7 +215,10 @@ fun DeckPanel(
                     }
                     ModuleFrame(title = "OTAK", badge = "AKTIF", badgeColor = palette.accent, modifier = Modifier.weight(1f)) {
                         Text(
-                            if (settings.provider == com.anztdree.avi.data.AiProvider.GEMINI) "GEMINI" else "KOMPATIBEL-OPENAI",
+                            when (settings.provider) {
+                                com.anztdree.avi.data.AiProvider.GEMINI -> "GEMINI"
+                                com.anztdree.avi.data.AiProvider.NIM -> "NVIDIA NIM"
+                            },
                             color = palette.text,
                             fontSize = 13.sp,
                             fontFamily = AviDisplay,
@@ -223,8 +226,10 @@ fun DeckPanel(
                         )
                         Spacer(Modifier.height(3.dp))
                         Text(
-                            settings.geminiModel.removePrefix("models/").ifBlank {
-                                settings.ocModel.ifBlank { "BELUM DIPASANG" }
+                            if (settings.provider == com.anztdree.avi.data.AiProvider.GEMINI) {
+                                settings.geminiModel.removePrefix("models/").ifBlank { "BELUM DIPASANG" }
+                            } else {
+                                settings.ocModel.substringAfterLast('/').ifBlank { "BELUM DIPASANG" }
                             },
                             color = palette.accent,
                             fontSize = 9.5.sp,

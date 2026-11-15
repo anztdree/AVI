@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,14 +46,18 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Handyman
 import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Psychology
@@ -82,7 +87,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -108,6 +116,7 @@ import com.anztdree.avi.agent.AgentEngine
 import com.anztdree.avi.agent.Otoritas
 import com.anztdree.avi.ai.DiagnoseResult
 import com.anztdree.avi.ai.ModelCatalog
+import com.anztdree.avi.ai.NimCatalog
 import com.anztdree.avi.data.AiProvider
 import com.anztdree.avi.data.AviSettings
 import com.anztdree.avi.data.Protocol
@@ -152,6 +161,20 @@ fun SettingsScreen(vm: AviViewModel, onBack: () -> Unit) {
     }
 }
 
+// ============================================================
+// P49 — MENU PUSAT KENDALI: 5 menu TERPISAH (umpan Pak: "lebih baik pakai
+// tab show/hide panel samping dan dipisahkan tiap menu agar tidak dalam
+// 1 tempat, jadi semua terasa tumpang tindih").
+// ============================================================
+
+private enum class SetMenu(val label: String, val sub: String, val icon: ImageVector) {
+    OTAK("OTAK", "Tipe AI, kunci API, daftar model", Icons.Default.Memory),
+    SUARA("SUARA", "Vokal jawaban, dengar, suara awan", Icons.Default.GraphicEq),
+    AGEN("AGEN", "Perkakas, otoritas, log aksi", Icons.Default.SmartToy),
+    GAYA("GAYA", "Kepribadian, tema, tampilan HUD", Icons.Default.Palette),
+    MARKAS("MARKAS", "Data, privasi, diagnostik, tentang", Icons.Default.Home)
+}
+
 @Composable
 private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBack: () -> Unit) {
     val palette = LocalAviPalette.current
@@ -179,8 +202,13 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
         }
     }
 
-    // hasil TES MENDENGAR (tab SUARA)
+    // hasil TES MENDENGAR (menu SUARA)
     var tesDengarHasil by remember { mutableStateOf<String?>(null) }
+
+    // P49 — panel samping SHOW/HIDE + menu aktif (terselamatkan saat putar layar)
+    var railOpen by rememberSaveable { mutableStateOf(false) }
+    var menuNama by rememberSaveable { mutableStateOf(SetMenu.OTAK.name) }
+    val menuAktif = SetMenu.entries.firstOrNull { it.name == menuNama } ?: SetMenu.OTAK
 
     Box(modifier = Modifier.fillMaxSize().background(palette.bg)) {
         // ===== latar satu keluarga dgn layar obrolan =====
@@ -218,7 +246,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
-            // ============ HEADER: kembali + judul + jam hidup ============
+            // ============ HEADER: kembali + judul + panel samping + jam ============
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -234,7 +262,7 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                 }
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "PENGATURAN",
+                        "PENGATURAN — ${menuAktif.label}",
                         color = palette.text,
                         fontSize = 16.sp,
                         fontFamily = AviDisplay,
@@ -247,6 +275,14 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                         fontSize = 8.5.sp,
                         fontFamily = AviHud,
                         letterSpacing = 1.6.sp
+                    )
+                }
+                // P49 — tombol SHOW/HIDE PANEL SAMPING
+                IconButton(onClick = { railOpen = !railOpen }) {
+                    Icon(
+                        if (railOpen) Icons.Default.Close else Icons.Default.Menu,
+                        contentDescription = if (railOpen) "Tutup panel menu" else "Buka panel menu",
+                        tint = palette.gold
                     )
                 }
                 CoreBadge(palette = palette)
@@ -266,31 +302,22 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                     )
             )
 
-            // ============ SATU HALAMAN GULIR — 5 SEKSI JELAS ============
+            // ============ ISI: HANYA SATU MENU (tak bertumpuk lagi) ============
+            // gulir mulai dari atas tiap kali menu berganti
+            val scrollIsi = remember(menuAktif) { ScrollState(0) }
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollIsi)
                     .padding(horizontal = 16.dp)
             ) {
-                // ================= SEKSI 1 — OTAK =================
-                OtakSection(vm, settings, palette)
-                Spacer(Modifier.height(20.dp))
-
-                // ================= SEKSI 2 — SUARA =================
-                SuaraSection(vm, settings, palette, ttsReady, tesDengarHasil) { tesDengarHasil = it }
-                Spacer(Modifier.height(20.dp))
-
-                // ================= SEKSI 3 — AGEN =================
-                AgenSection(vm, settings, palette)
-                Spacer(Modifier.height(20.dp))
-
-                // ================= SEKSI 4 — GAYA =================
-                GayaSection(vm, settings, palette)
-                Spacer(Modifier.height(20.dp))
-
-                // ================= SEKSI 5 — MARKAS =================
-                MarkasSection(vm, settings, palette, versiApp)
+                when (menuAktif) {
+                    SetMenu.OTAK -> OtakSection(vm, settings, palette)
+                    SetMenu.SUARA -> SuaraSection(vm, settings, palette, ttsReady, tesDengarHasil) { tesDengarHasil = it }
+                    SetMenu.AGEN -> AgenSection(vm, settings, palette)
+                    SetMenu.GAYA -> GayaSection(vm, settings, palette)
+                    SetMenu.MARKAS -> MarkasSection(vm, settings, palette, versiApp)
+                }
                 Spacer(Modifier.height(14.dp))
 
                 Text(
@@ -306,6 +333,208 @@ private fun SettingsScreenContent(vm: AviViewModel, settings: AviSettings, onBac
                         .padding(bottom = 14.dp)
                 )
             }
+        }
+
+        // ============ PANEL SAMPING SHOW/HIDE (P49) ============
+        AnimatedVisibility(
+            visible = railOpen,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.matchParentSize()
+        ) {
+            // sapuan redup — ketuk di mana pun menutup panel
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.55f))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+                    ) { railOpen = false }
+            )
+        }
+        AnimatedVisibility(
+            visible = railOpen,
+            enter = slideInHorizontally { -it } + fadeIn(),
+            exit = slideOutHorizontally { -it } + fadeOut(),
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            RailPanel(
+                menuAktif = menuAktif,
+                settings = settings,
+                palette = palette,
+                onPilih = { menuNama = it.name; railOpen = false },
+                onTutup = { railOpen = false }
+            )
+        }
+    }
+}
+
+/**
+ * P49 — PANEL SAMPING: daftar menu berdiri sendiri, satu kolom rapi.
+ * Ketuk satu menu → panel menutup, isi berganti ke menu itu saja.
+ */
+@Composable
+private fun RailPanel(
+    menuAktif: SetMenu,
+    settings: AviSettings,
+    palette: AviPalette,
+    onPilih: (SetMenu) -> Unit,
+    onTutup: () -> Unit
+) {
+    val otakLabel = when (settings.provider) {
+        AiProvider.GEMINI -> if (settings.geminiKey.isNotBlank()) "Gemini siap" else "Gemini: kunci kosong"
+        AiProvider.NIM -> if (settings.ocKey.isNotBlank()) "NIM siap" else "NIM: kunci kosong"
+    }
+    Row(Modifier.fillMaxHeight()) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(268.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(palette.bg.copy(alpha = 0.98f), palette.bg.copy(alpha = 0.94f))
+                    )
+                )
+                .border(
+                    width = 1.dp,
+                    brush = Brush.verticalGradient(
+                        listOf(palette.gold.copy(alpha = 0.4f), palette.accent.copy(alpha = 0.25f))
+                    )
+                )
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 14.dp, vertical = 18.dp)
+        ) {
+            // kepala panel
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        "MENU KENDALI",
+                        color = palette.text,
+                        fontSize = 13.sp,
+                        fontFamily = AviDisplay,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 2.5.sp
+                    )
+                    Text(
+                        "Pilih satu — isi dipisah per menu",
+                        color = palette.textDim,
+                        fontSize = 9.sp,
+                        fontFamily = AviHud,
+                        letterSpacing = 1.sp
+                    )
+                }
+                IconButton(onClick = onTutup, modifier = Modifier.size(34.dp)) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "Tutup panel",
+                        tint = palette.textDim,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+            HudDivider(palette)
+            Spacer(Modifier.height(10.dp))
+
+            SetMenu.entries.forEach { m ->
+                val aktif = m == menuAktif
+                val status: String = when (m) {
+                    SetMenu.OTAK -> otakLabel
+                    SetMenu.SUARA -> if (settings.ttsEnabled) "Vokal jawaban nyala" else "Vokal jawaban mati"
+                    SetMenu.AGEN -> when (settings.agentMode) {
+                        "SELALU" -> "Agen: SELALU aktif"
+                        "MATI" -> "Agen: mati"
+                        else -> "Agen: otomatis"
+                    }
+                    SetMenu.GAYA -> "Tema ${settings.themeMark}"
+                    SetMenu.MARKAS -> "Diagnostik & data"
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(
+                            if (aktif) palette.gold.copy(alpha = 0.13f)
+                            else palette.panelLight.copy(alpha = 0.4f)
+                        )
+                        .border(
+                            1.dp,
+                            if (aktif) palette.gold.copy(alpha = 0.75f) else palette.panelLight,
+                            RoundedCornerShape(14.dp)
+                        )
+                        .clickable { onPilih(m) }
+                        .padding(horizontal = 10.dp, vertical = 10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(11.dp))
+                            .background(
+                                if (aktif) palette.gold.copy(alpha = 0.2f)
+                                else palette.accent.copy(alpha = 0.09f)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            m.icon,
+                            contentDescription = null,
+                            tint = if (aktif) palette.gold else palette.accent,
+                            modifier = Modifier.size(19.dp)
+                        )
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            m.label,
+                            color = if (aktif) palette.gold else palette.text,
+                            fontSize = 12.5.sp,
+                            fontFamily = AviDisplay,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.4.sp
+                        )
+                        Text(
+                            m.sub,
+                            color = palette.textDim,
+                            fontSize = 8.5.sp,
+                            fontFamily = AviHud,
+                            lineHeight = 11.sp,
+                            maxLines = 2
+                        )
+                        Text(
+                            status,
+                            color = if (aktif) palette.gold.copy(alpha = 0.85f) else palette.textDim.copy(alpha = 0.8f),
+                            fontSize = 8.5.sp,
+                            fontFamily = AviHud,
+                            letterSpacing = 0.5.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = if (aktif) palette.gold else palette.textDim.copy(alpha = 0.5f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(14.dp))
+            HudDivider(palette)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "GANTI OTAK / MODEL AMAN\nRiwayat obrolan tidak pernah hilang saat pindah model atau tipe AI.",
+                color = palette.textDim.copy(alpha = 0.85f),
+                fontSize = 8.5.sp,
+                fontFamily = AviHud,
+                lineHeight = 12.sp,
+                letterSpacing = 0.6.sp
+            )
         }
     }
 }
@@ -594,13 +823,19 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
     val usageToday by vm.usageToday.collectAsState()
     val keyTest by vm.keyTest.collectAsState()
     val keyTestRunning by vm.keyTestRunning.collectAsState()
+    // P49 — NIM (NVIDIA)
+    val nimModels by vm.nimModels.collectAsState()
+    val nimLoading by vm.nimLoading.collectAsState()
+    val nimError by vm.nimError.collectAsState()
     var showKey by remember { mutableStateOf(false) }
     var bukaKunci by remember { mutableStateOf(false) }
     var bukaModel by remember { mutableStateOf(false) }
 
     val pakaiGemini = settings.provider == AiProvider.GEMINI
+    val pakaiNim = settings.provider == AiProvider.NIM
     val kunciTerpasang = if (pakaiGemini) settings.geminiKey.isNotBlank() else settings.ocKey.isNotBlank()
-    val modelAktif = settings.geminiModel.removePrefix("models/")
+    val modelAktif = if (pakaiGemini) settings.geminiModel.removePrefix("models/")
+        else settings.ocModel.substringAfterLast('/')
     val otakSiap = if (pakaiGemini) {
         settings.geminiKey.isNotBlank() && settings.geminiModel.isNotBlank()
     } else {
@@ -612,10 +847,54 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
 
     SectionLabel("OTAK — MESIN PIKIRAN AVI", palette)
 
+    // ---- baris 0: TIPE AI — DUA PILIHAN SAJA (Gemini / NVIDIA NIM) ----
+    SetRow(
+        icon = Icons.Default.Psychology,
+        title = "TIPE AI",
+        sub = if (pakaiGemini)
+            "Google Gemini — otak utama gratis (AI Studio)."
+        else
+            "NVIDIA NIM — otak kedua (kunci nvapi dari build.nvidia.com).",
+        palette = palette,
+        iconGold = true,
+        onClick = null,
+        expanded = false,
+        control = {
+            Text(
+                if (pakaiGemini) "GEMINI" else "NVIDIA NIM",
+                color = palette.gold,
+                fontSize = 11.sp,
+                fontFamily = AviHud,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    )
+    Spacer(Modifier.height(4.dp))
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.horizontalScroll(rememberScrollState())
+    ) {
+        HudChip("GEMINI — GRATIS", pakaiGemini, palette) {
+            vm.updateSettings { it.copy(provider = AiProvider.GEMINI) }
+        }
+        HudChip("NVIDIA NIM", pakaiNim, palette) {
+            vm.updateSettings { it.copy(provider = AiProvider.NIM) }
+        }
+    }
+    Spacer(Modifier.height(6.dp))
+    Text(
+        "Ganti tipe AI / model kapan pun — RIWAYAT OBROLAN SELALU UTUH, " +
+            "tidak pernah hilang saat pindah Gemini ↔ NIM atau antar model.",
+        color = palette.textDim.copy(alpha = 0.9f),
+        fontSize = 9.5.sp,
+        lineHeight = 13.sp
+    )
+    Spacer(Modifier.height(8.dp))
+
     // ---- baris 1: KUNCI API (status jelas: TERPASANG / BELUM) ----
     SetRow(
         icon = Icons.Default.Key,
-        title = "KUNCI API ${if (pakaiGemini) "GEMINI" else "OPENAI-COMPAT"}",
+        title = "KUNCI API ${if (pakaiGemini) "GEMINI" else "NVIDIA NIM"}",
         sub = when {
             otakSiap -> "Terpasang dan siap — AVI bisa berpikir. Ketuk untuk mengganti kunci."
             kunciTerpasang -> "Kunci terpasang, tapi MODEL belum dipilih — buka baris MODEL KECERDASAN."
@@ -635,17 +914,7 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
             lineHeight = 14.sp
         )
         Spacer(Modifier.height(8.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.horizontalScroll(rememberScrollState())
-        ) {
-            HudChip("GEMINI — GRATIS", pakaiGemini, palette) {
-                vm.updateSettings { it.copy(provider = AiProvider.GEMINI) }
-            }
-            HudChip("OPENAI-COMPAT", !pakaiGemini, palette) {
-                vm.updateSettings { it.copy(provider = AiProvider.OPENAI_COMPAT) }
-            }
-        }
+        // P49 — pemilih tipe AI pindah ke baris TIPE AI di atas (tidak bertumpuk lagi)
         Spacer(Modifier.height(10.dp))
         if (pakaiGemini) {
             OutlinedTextField(
@@ -833,26 +1102,36 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
                 Text("AMBIL KUNCI GRATIS DI AI STUDIO", fontSize = 11.sp, color = palette.accent, fontFamily = AviHud)
             }
         } else {
+            // ===== P49 — NVIDIA NIM (tipe AI kedua) =====
             OutlinedTextField(
                 value = settings.ocBaseUrl,
                 onValueChange = { v -> vm.updateSettings { it.copy(ocBaseUrl = v) } },
-                label = { Text("Alamat server (Base URL)", color = palette.textDim, fontSize = 12.sp) },
+                label = { Text("Alamat server (Base URL) — bawaan NVIDIA", color = palette.textDim, fontSize = 12.sp) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = hudFieldColors(palette)
             )
+            if (!NimCatalog.isOfficialBase(settings)) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Alamat tidak standar — resmi NVIDIA: ${AiProvider.NIM_BASE_URL}",
+                    color = palette.gold,
+                    fontSize = 9.5.sp,
+                    lineHeight = 12.sp
+                )
+            }
             Spacer(Modifier.height(6.dp))
             OutlinedTextField(
                 value = settings.ocKey,
                 onValueChange = { v -> vm.updateSettings { it.copy(ocKey = v) } },
-                label = { Text("Kunci API", color = palette.textDim, fontSize = 12.sp) },
+                label = { Text("Kunci NVIDIA NIM (nvapi-…)", color = palette.textDim, fontSize = 12.sp) },
                 singleLine = true,
                 visualTransformation = if (showKey) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = { showKey = !showKey }) {
                         Icon(
                             if (showKey) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = null,
+                            contentDescription = if (showKey) "Sembunyikan kunci" else "Lihat kunci",
                             tint = palette.textDim,
                             modifier = Modifier.size(18.dp)
                         )
@@ -861,15 +1140,72 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
                 modifier = Modifier.fillMaxWidth(),
                 colors = hudFieldColors(palette)
             )
-            Spacer(Modifier.height(6.dp))
-            OutlinedTextField(
-                value = settings.ocModel,
-                onValueChange = { v -> vm.updateSettings { it.copy(ocModel = v) } },
-                label = { Text("Nama model (mis. llama-3.3-70b)", color = palette.textDim, fontSize = 12.sp) },
-                singleLine = true,
+            Spacer(Modifier.height(8.dp))
+            Button(
+                onClick = { vm.fetchNimModels() },
+                enabled = !nimLoading && settings.ocKey.isNotBlank(),
                 modifier = Modifier.fillMaxWidth(),
-                colors = hudFieldColors(palette)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = palette.accent,
+                    contentColor = palette.bg
+                )
+            ) {
+                if (nimLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(14.dp),
+                        strokeWidth = 2.dp,
+                        color = palette.bg
+                    )
+                    Spacer(Modifier.width(8.dp))
+                } else {
+                    Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(14.dp))
+                    Spacer(Modifier.width(6.dp))
+                }
+                Text(
+                    if (nimModels.isEmpty()) "MUAT DAFTAR MODEL NVIDIA"
+                    else "PERBARUI DAFTAR MODEL NVIDIA",
+                    fontSize = 12.sp,
+                    fontFamily = AviHud,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            nimError?.let { err ->
+                Spacer(Modifier.height(6.dp))
+                Text(err, color = palette.gold, fontSize = 10.5.sp, lineHeight = 14.sp)
+            }
+            pickNote?.let { catatan ->
+                Spacer(Modifier.height(6.dp))
+                Text(catatan, color = palette.accent, fontSize = 11.sp, lineHeight = 14.sp)
+            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "Bila NVIDIA tak terjangkau, AVI otomatis menawarkan daftar cadangan " +
+                    "terkurasi — model tetap bisa dipilih & diganti bebas.",
+                color = palette.textDim,
+                fontSize = 9.5.sp,
+                lineHeight = 13.sp
             )
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = {
+                    try {
+                        context.startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse("https://build.nvidia.com"))
+                        )
+                    } catch (_: Exception) {
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    Icons.Default.OpenInNew,
+                    contentDescription = null,
+                    modifier = Modifier.size(13.dp),
+                    tint = palette.accent
+                )
+                Spacer(Modifier.width(6.dp))
+                Text("AMBIL KUNCI GRATIS DI BUILD.NVIDIA.COM", fontSize = 11.sp, color = palette.accent, fontFamily = AviHud)
+            }
         }
         Spacer(Modifier.height(10.dp))
         HudDivider(palette)
@@ -880,30 +1216,35 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
             valueColor = if (otakSiap) palette.accent else palette.danger,
             palette = palette
         )
+        InfoRow("Tipe AI aktif", if (pakaiGemini) "Google Gemini" else "NVIDIA NIM", palette = palette)
         InfoRow("Pemakaian hari ini", "$usageToday permintaan", palette = palette)
-        InfoRow(
-            "Kunci Gemini terpasang",
-            "${settings.geminiKeyList().size} buah (utama + cadangan)",
-            palette = palette
-        )
+        if (pakaiGemini) {
+            InfoRow(
+                "Kunci Gemini terpasang",
+                "${settings.geminiKeyList().size} buah (utama + cadangan)",
+                palette = palette
+            )
+        }
         Spacer(Modifier.height(8.dp))
-        // Diagnosa koneksi — jalur pintas saat kunci bermasalah
-        DiagnosisCard(
-            diagnosis = diagnosis,
-            onRun = { vm.runDiagnosis() },
-            palette = palette
-        )
+        // Diagnosa koneksi — jalur pintas saat kunci bermasalah (khusus Gemini)
+        if (pakaiGemini) {
+            DiagnosisCard(
+                diagnosis = diagnosis,
+                onRun = { vm.runDiagnosis() },
+                palette = palette
+            )
+        }
     }
     Spacer(Modifier.height(8.dp))
 
-    // ---- baris 2: MODEL KECERDASAN (daftar radio ketuk-pilih) ----
+    // ---- baris 2: MODEL KECERDASAN (daftar radio ketuk-pilih, KEDUA tipe AI) ----
     SetRow(
         icon = Icons.Default.Memory,
         title = "MODEL KECERDASAN",
         sub = when {
-            !pakaiGemini -> settings.ocModel.ifBlank { "Model kompatibel OpenAI belum diisi" }
-            modelAktif.isBlank() -> "Belum dipilih — muat daftar model dulu di baris KUNCI API"
-            else -> "$modelAktif · ketuk untuk mengganti otak AVI"
+            pakaiGemini && modelAktif.isBlank() -> "Belum dipilih — muat daftar model dulu di baris KUNCI API"
+            pakaiNim && settings.ocModel.isBlank() -> "Belum dipilih — muat daftar model NVIDIA dulu"
+            else -> "$modelAktif · ketuk untuk mengganti otak AVI (riwayat aman)"
         },
         palette = palette,
         iconGold = true,
@@ -911,13 +1252,44 @@ private fun OtakSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
         expanded = bukaModel
     )
     ExpandArea(visible = bukaModel, palette = palette) {
-        if (!pakaiGemini) {
+        if (pakaiNim) {
+            // ===== P49 — daftar model NVIDIA NIM =====
             Text(
-                "Penyedia OPENAI-COMPAT memakai nama model yang Anda tulis sendiri di baris KUNCI API.",
+                "Ketuk satu model — langsung terpilih dan diuji. Riwayat obrolan " +
+                    "TIDAK tersentuh saat berganti model.",
                 color = palette.textDim,
                 fontSize = 10.5.sp,
                 lineHeight = 14.sp
             )
+            Spacer(Modifier.height(8.dp))
+            if (nimModels.isEmpty()) {
+                Text(
+                    "Daftar model NIM masih kosong. Buka baris KUNCI API di atas, tempel kunci " +
+                        "nvapi-…, lalu tekan MUAT DAFTAR MODEL NVIDIA.",
+                    color = palette.textDim,
+                    fontSize = 10.5.sp,
+                    lineHeight = 14.sp
+                )
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 360.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(7.dp)
+                ) {
+                    nimModels.forEach { id ->
+                        ModelRadioRow(
+                            title = NimCatalog.shortName(id),
+                            desc = id,
+                            selected = settings.ocModel == id,
+                            testOk = modelTest[id]?.ok,
+                            palette = palette,
+                            onClick = { vm.pilihNimModel(id) }
+                        )
+                    }
+                }
+            }
         } else if (chatModels.isEmpty()) {
             Text(
                 "Daftar model masih kosong. Buka baris KUNCI API di atas, tempel kunci, lalu tekan " +

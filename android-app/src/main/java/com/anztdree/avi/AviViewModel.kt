@@ -23,6 +23,7 @@ import com.anztdree.avi.ai.LiveClient
 import com.anztdree.avi.ai.ModelCatalog
 import com.anztdree.avi.ai.GeminiModelInfo
 import com.anztdree.avi.ai.ModelTestResult
+import com.anztdree.avi.ai.NimCatalog
 import com.anztdree.avi.ai.SystemPrompts
 import com.anztdree.avi.ai.cleanForSpeech
 import com.anztdree.avi.data.AviSettings
@@ -218,12 +219,14 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 // P48 — OTAK TERPASANG OTOMATIS di latar: kunci ada tapi model belum
                 // → AVI memasang sendiri (umpan Pak: "setelah input api key gk keluar satupun")
+                // P49 — berlaku untuk KEDUA tipe otak: Gemini & NVIDIA NIM.
                 if (!autoSetupCoba) {
                     autoSetupCoba = true
-                    if (s.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
-                        s.geminiKey.isNotBlank() && s.geminiModel.isBlank()
-                    ) {
-                        pastikanModelTerpasang(s)
+                    when (s.provider) {
+                        com.anztdree.avi.data.AiProvider.GEMINI ->
+                            if (s.geminiKey.isNotBlank() && s.geminiModel.isBlank()) pastikanModelTerpasang(s)
+                        com.anztdree.avi.data.AiProvider.NIM ->
+                            if (s.ocKey.isNotBlank() && s.ocModel.isBlank()) pastikanNimTerpasang(s)
                     }
                 }
             }
@@ -238,7 +241,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                     ChatMessage(
                         role = "avi",
                         text = "Hay ${s0.userName}! AVI online — semua sistem normal. " +
-                            "Sentuh reaktor untuk bicara, atau ketik di bawah ya, ${s0.userName}."
+                            "Sentuh reaktor untuk bicara, ${s0.userName}."
                     )
                 )
             } else saved
@@ -498,20 +501,36 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
             // Dulu: kunci ada tapi model belum dipilih → SEMUA permintaan mati
             // dengan "Model belum dipilih" (inilah penyebab "input api key gk
             // keluar satupun"). Sekarang AVI memasang otaknya sendiri dulu.
-            if (runtime.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
-                runtime.geminiKey.isNotBlank() && runtime.geminiModel.isBlank()
-            ) {
-                val siap = pastikanModelTerpasang(runtime)
-                if (siap == null) {
-                    setState(AviState.IDLE)
-                    _streamingText.value = ""
-                    _error.value = "Kunci sudah terpasang tapi otak gagal dipasang otomatis. " +
-                        "Cek kunci & internet, atau buka Pusat Kendali → OTAK → SIMPAN & MUAT DAFTAR MODEL, " +
-                        "lalu pilih model berbadge ✓ ya, ${_settings.value.userName}."
-                    _conversationActive.value = false
-                    return@launch
+            // P49 — jalur yang sama untuk NVIDIA NIM.
+            when {
+                runtime.provider == com.anztdree.avi.data.AiProvider.GEMINI &&
+                    runtime.geminiKey.isNotBlank() && runtime.geminiModel.isBlank() -> {
+                    val siap = pastikanModelTerpasang(runtime)
+                    if (siap == null) {
+                        setState(AviState.IDLE)
+                        _streamingText.value = ""
+                        _error.value = "Kunci sudah terpasang tapi otak gagal dipasang otomatis. " +
+                            "Cek kunci & internet, atau buka Pusat Kendali → OTAK → SIMPAN & MUAT DAFTAR MODEL, " +
+                            "lalu pilih model berbadge ✓ ya, ${_settings.value.userName}."
+                        _conversationActive.value = false
+                        return@launch
+                    }
+                    runtime = siap
                 }
-                runtime = siap
+                runtime.provider == com.anztdree.avi.data.AiProvider.NIM &&
+                    runtime.ocKey.isNotBlank() && runtime.ocModel.isBlank() -> {
+                    val siap = pastikanNimTerpasang(runtime)
+                    if (siap == null) {
+                        setState(AviState.IDLE)
+                        _streamingText.value = ""
+                        _error.value = "Kunci NIM terpasang tapi model gagal dipasang otomatis. " +
+                            "Cek kunci & internet, atau buka Pusat Kendali → OTAK → NVIDIA NIM → MUAT DAFTAR MODEL ya, " +
+                            "${_settings.value.userName}."
+                        _conversationActive.value = false
+                        return@launch
+                    }
+                    runtime = siap
+                }
             }
 
             // ===== K22 — ROUTER: asisten tetap; perintah kompleks masuk mesin agen =====
@@ -898,16 +917,22 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     /**
      * Uji cepat satu model — dipanggil otomatis saat model dipilih di Pusat Kendali.
      * Satu permintaan kecil (maks 8 token) supaya hemat kuota.
+     * P49 — otomatis mengarah ke mesin yang benar (Gemini / NVIDIA NIM).
      */
     fun testModel(name: String) {
-        val key = _settings.value.geminiKey.trim()
+        val pakaiNim = _settings.value.provider == com.anztdree.avi.data.AiProvider.NIM
+        val key = if (pakaiNim) _settings.value.ocKey.trim() else _settings.value.geminiKey.trim()
         if (key.isBlank()) {
             _modelTest.value = _modelTest.value + (name to ModelTestResult(false, false, "API key kosong"))
             return
         }
         _modelTest.value = _modelTest.value + (name to ModelTestResult(true, false, "Menguji…"))
         viewModelScope.launch {
-            val r = ModelCatalog.testModel(key, name)
+            val r = if (pakaiNim) {
+                NimCatalog.testModel(_settings.value, name)
+            } else {
+                ModelCatalog.testModel(key, name)
+            }
             _modelTest.value = _modelTest.value + (name to r)
         }
     }
@@ -920,6 +945,23 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     fun testActiveModel() {
         if (_barTest.value.phase == 1) return
         val s = _settings.value
+        // P49 — uji model SESUAI tipe otak aktif (Gemini / NVIDIA NIM)
+        if (s.provider == com.anztdree.avi.data.AiProvider.NIM) {
+            if (s.ocKey.isBlank()) { _barTest.value = BarTest(3, 0, "Kunci NIM kosong"); return }
+            if (s.ocModel.isBlank()) { _barTest.value = BarTest(3, 0, "Model belum dipilih"); return }
+            _barTest.value = BarTest(1)
+            viewModelScope.launch {
+                val t0 = System.currentTimeMillis()
+                val r = try {
+                    NimCatalog.testModel(s, s.ocModel)
+                } catch (e: Exception) {
+                    ModelTestResult(false, false, e.message ?: "galat tak dikenal")
+                }
+                val ms = System.currentTimeMillis() - t0
+                _barTest.value = if (r.ok) BarTest(2, ms, "TERHUBUNG") else BarTest(3, ms, r.message)
+            }
+            return
+        }
         val key = s.geminiKey.trim()
         if (key.isEmpty()) {
             _barTest.value = BarTest(3, 0, "API key kosong")
@@ -1069,24 +1111,37 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun fetchModels() {
-        val key = _settings.value.geminiKey.trim()
-        if (key.isBlank()) {
+        // P49 — SEMUA KUNCI DICOBAT BERURUTAN (utama → cadangan): kunci utama
+        // kuota-habis/ditolak tidak lagi menggagalkan pemuatan daftar model
+        // (umpan Pak: "fetch model masih gagal").
+        val keys = _settings.value.geminiKeyList()
+        if (keys.isEmpty()) {
             _modelsError.value = "Isi API key Gemini dulu, pak."
             return
         }
         _modelsLoading.value = true
         _modelsError.value = null
         viewModelScope.launch {
-            ModelCatalog.fetch(key)
-                .onSuccess { list ->
+            var gagalTerakhir: String? = null
+            for (key in keys) {
+                val hasil = ModelCatalog.fetch(key)
+                val list = hasil.getOrNull()
+                if (list != null) {
                     _models.value = list
                     _modelsLoading.value = false
+                    if (keys.size > 1 && key != keys.first()) {
+                        _pickNote.value = "Daftar model dimuat pakai kunci cadangan " +
+                            "(kunci utama sedang bermasalah) — semua sistem jalan."
+                    }
                     autoPickModel(list)
+                    return@launch
                 }
-                .onFailure {
-                    _modelsLoading.value = false
-                    _modelsError.value = it.message
-                }
+                gagalTerakhir = hasil.exceptionOrNull()?.message
+            }
+            _modelsLoading.value = false
+            _modelsError.value = if (keys.size > 1)
+                "$gagalTerakhir (Semua ${keys.size} kunci sudah dicoba otomatis)"
+            else gagalTerakhir
         }
     }
 
@@ -1131,6 +1186,93 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             _pickNote.value = "Tidak ada model yang lolos uji — lihat badge ✗ tiap kartu untuk alasan Google, lalu jalankan UJI SEMUA MODEL."
+        }
+    }
+
+    // ===== P49 — OTAK NVIDIA NIM (tipe AI kedua) =====
+
+    /** Daftar model NIM (dari NVIDIA atau daftar cadangan terkurasi). */
+    private val _nimModels = MutableStateFlow<List<String>>(emptyList())
+    val nimModels: StateFlow<List<String>> = _nimModels.asStateFlow()
+
+    private val _nimLoading = MutableStateFlow(false)
+    val nimLoading: StateFlow<Boolean> = _nimLoading.asStateFlow()
+
+    private val _nimError = MutableStateFlow<String?>(null)
+    val nimError: StateFlow<String?> = _nimError.asStateFlow()
+
+    private var nimTerpasangCoba = false
+
+    /**
+     * Muat daftar model NVIDIA NIM. Bila koneksi ke NVIDIA gagal, daftar
+     * cadangan terkurasi DIPAKAI (dengan catatan) — pemilik tetap bisa memilih
+     * dan mengganti model bebas tanpa menatap layar kosong.
+     */
+    fun fetchNimModels() {
+        if (_settings.value.ocKey.isBlank()) {
+            _nimError.value = "Isi kunci NVIDIA NIM dulu, pak (nvapi-… dari build.nvidia.com)."
+            return
+        }
+        _nimLoading.value = true
+        _nimError.value = null
+        viewModelScope.launch {
+            val hasil = NimCatalog.fetch(_settings.value)
+            val list = hasil.getOrNull()
+            if (list != null) {
+                _nimModels.value = list
+                _nimLoading.value = false
+                if (_settings.value.ocModel.isBlank()) pasangNimModel(NimCatalog.DEFAULT_MODEL, otomatis = true)
+            } else {
+                _nimModels.value = NimCatalog.fallback
+                _nimLoading.value = false
+                _nimError.value = (hasil.exceptionOrNull()?.message ?: "Gagal memuat daftar NIM") +
+                    " — DAFTAR CADANGAN DIPAKAI (bisa langsung dipilih & diganti)."
+                if (_settings.value.ocModel.isBlank()) pasangNimModel(NimCatalog.DEFAULT_MODEL, otomatis = true)
+            }
+        }
+    }
+
+    /** Pilih satu model NIM (ketuk di daftar) — riwayat obrolan TIDAK tersentuh. */
+    fun pilihNimModel(id: String) {
+        pasangNimModel(id, otomatis = false)
+        testModel(id)   // buktikan model ini benar-benar bisa dipakai
+    }
+
+    private fun pasangNimModel(id: String, otomatis: Boolean) {
+        updateSettings { it.copy(ocModel = id) }
+        _nimError.value = null
+        _pickNote.value = if (otomatis) "Otak NIM terpasang otomatis: ${NimCatalog.shortName(id)} ✓"
+        else "Otak diganti ke ${NimCatalog.shortName(id)} ✓ — riwayat obrolan tetap utuh"
+    }
+
+    /**
+     * P49 — pastikan model NIM terpasang sebelum dikirim (pemilik cukup tempel
+     * kunci nvapi). Bila daftar belum termuat: coba fetch, gagal → pakai default.
+     */
+    private suspend fun pastikanNimTerpasang(runtime: AviSettings): AviSettings? {
+        if (runtime.provider != com.anztdree.avi.data.AiProvider.NIM) return runtime
+        if (runtime.ocModel.isNotBlank()) return runtime
+        if (runtime.ocKey.isBlank()) return runtime // tanpa kunci — jalur lama yang melapor
+
+        if (nimTerpasangCoba) {
+            // percobaan lain sedang/ sudah berjalan — tunggu hasilnya tersimpan
+            var tunggu = 0
+            while (_settings.value.ocModel.isBlank() && tunggu < 40) {
+                delay(250); tunggu++
+            }
+            return _settings.value.ocModel.takeIf { it.isNotBlank() }?.let { runtime.copy(ocModel = it) }
+                ?: runtime.copy(ocModel = NimCatalog.DEFAULT_MODEL)
+        }
+        nimTerpasangCoba = true
+        try {
+            val list = NimCatalog.fetch(runtime).getOrNull()
+            if (list != null) _nimModels.value = list else _nimModels.value = NimCatalog.fallback
+            val pilih = list?.firstOrNull() ?: NimCatalog.DEFAULT_MODEL
+            updateSettings { it.copy(ocModel = pilih) }
+            _pickNote.value = "Otak NIM terpasang otomatis: ${NimCatalog.shortName(pilih)} ✓"
+            return runtime.copy(ocModel = pilih)
+        } finally {
+            nimTerpasangCoba = false
         }
     }
 
