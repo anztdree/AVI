@@ -81,6 +81,11 @@ data class AviSettings(
     // kepribadian & mode
     val style: String = "santai",
     val userName: String = "Pak",
+    // P51 — KALIBRASI PEMILIK (umpan Pak: "gk ada kalibrasi pemilik?"):
+    // catatan yang pemilik tulis tentang dirinya sendiri (pekerjaan, selera,
+    // aturan bicara, hal penting). Ditanam ke SEMUA prompt AVI — lihat
+    // SystemPrompts.build (blok KALIBRASI PEMILIK). Kosong = bawaan.
+    val ownerNote: String = "",
     // K21 — bahasa pengenalan suara (dengaran) — nyata, disambungkan ke AviStt
     val sttLanguage: String = "id-ID",
     // K22 — mesin AGEN (function calling, bukti DIAG-AGENT v2)
@@ -132,6 +137,7 @@ class SettingsRepository(private val context: Context) {
         val powerSave = booleanPreferencesKey("power_save")
         val style = stringPreferencesKey("style")
         val userName = stringPreferencesKey("user_name")
+        val ownerNote = stringPreferencesKey("owner_note")
         val sttLanguage = stringPreferencesKey("stt_language")
         val agentMode = stringPreferencesKey("agent_mode")
         val agentAuthority = stringPreferencesKey("agent_authority")
@@ -172,6 +178,7 @@ class SettingsRepository(private val context: Context) {
         powerSave = p[Keys.powerSave] ?: false,
         style = p[Keys.style] ?: "santai",
         userName = p[Keys.userName] ?: "Pak",
+        ownerNote = p[Keys.ownerNote] ?: "",
         sttLanguage = p[Keys.sttLanguage] ?: "id-ID",
         agentMode = p[Keys.agentMode] ?: "AUTO",
         agentAuthority = p[Keys.agentAuthority] ?: "BAKU",
@@ -206,6 +213,7 @@ class SettingsRepository(private val context: Context) {
             p[Keys.powerSave] = next.powerSave
             p[Keys.style] = next.style
             p[Keys.userName] = next.userName.ifBlank { "Pak" }
+            p[Keys.ownerNote] = next.ownerNote.trim().take(400)
             p[Keys.sttLanguage] = next.sttLanguage.ifBlank { "id-ID" }
             p[Keys.agentMode] = next.agentMode
             p[Keys.agentAuthority] = next.agentAuthority

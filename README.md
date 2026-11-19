@@ -80,13 +80,23 @@ gradle assembleRelease
   sinematik ber-latar baja-biru baru dengan jejak sirkuit & partikel emas
 - 🧙 **P50: WIZARD PERTAMA KALI INSTALL** — saat APK baru dipasang, wizard
   5 langkah menyambut (diriset dari referensi best-practice onboarding):
-  SELAMAT DATANG (manfaat) → NAMA PANGGILAN (personalisasi, pratinjau sapaan
-  langsung) → IZIN SUARA (permission priming: penjelasan dulu, dialog sistem
-  kemudian) → OTAK AI (pilih GEMINI/NIM, tempel kunci utama + cadangan,
-  muat & pilih model, tes koneksi — bisa dilewati) → SIAP (ringkasan +
-  AKTIFKAN AVI langsung mulai mendengarkan). Indikator progres, tiap langkah
-  ada tombol DENGARKAN (AVI membacakan penjelasan), semua bisa di-skip dan
-  diatur ulang di Pusat Kendali
+  SELAMAT DATANG (manfaat) → KALIBRASI PEMILIK (P51) → IZIN SUARA (permission
+  priming: penjelasan dulu, dialog sistem kemudian) → OTAK AI (pilih
+  GEMINI/NIM, tempel kunci utama + cadangan, muat & pilih model — bisa
+  dilewati) → SIAP (ringkasan + AKTIFKAN AVI langsung mulai mendengarkan).
+  Indikator progres, tiap langkah ada tombol DENGARKAN (AVI membacakan
+  penjelasan), semua bisa di-skip dan diatur ulang di Pusat Kendali
+- 🧑‍🚀 **P51: KALIBRASI PEMILIK & TYPING DIBAI** — umpan Pak: "buat ganti
+  nama di wizard aja susah!! jangan lu bikin ribet lah" + "gk ada kalibrasi
+  pemilik?". Nama panggilan kini draft lokal murni: ketikan BEBAS tanpa
+  trim/ifBlank per huruf yang menelan spasi atau memaksa "Pak" balik sendiri
+  (dulu kolom melawan jari pemilik), tersimpan debounce + flush saat pindah
+  langkah. Baru: CATATAN PEMILIK (ownerNote, opsional) di wizard langkah 2 &
+  Pusat Kendali menu GAYA — ditanam WAJIB ke semua prompt AVI (blok
+  KALIBRASI PEMILIK) sehingga jawaban langsung pas dengan profil pemilik.
+  Plus: BAR MODEL AKTIF di layar obrolan digusur jadi pil kecil ukuran
+  biasa — TOMBOL TES DIHAPUS dari layar obrolan (uji model tetap ada di
+  wizard & diagnostik Pusat Kendali)
 
 ## Riwayat singkat
 
@@ -97,5 +107,6 @@ dan perkakas WhatsApp + simpan kontak. P49: dua tipe AI saja (GEMINI +
 NVIDIA NIM) dengan fetch model anti-gagal, Pusat Kendali jadi panel samping
 show/hide dengan menu terpisah. P50: ikon ubin metalik “A + AVI” PERSIS
 DESAIN PEMILIK (dari icon.jpg unggahan Pak) + splash screen ber-merk
-(Android 8–15) dan wizard 5 langkah saat pertama kali install. Detail lengkap
-ada di pesan commit.
+(Android 8–15) dan wizard 5 langkah saat pertama kali install. P51:
+kalibrasi pemilik (ownerNote) + typing nama dibai + pil model kecil tanpa
+TES di layar obrolan. Detail lengkap ada di pesan commit.

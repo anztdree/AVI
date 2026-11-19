@@ -48,6 +48,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,6 +81,7 @@ import com.anztdree.avi.ui.theme.AviHead
 import com.anztdree.avi.ui.theme.AviHud
 import com.anztdree.avi.ui.theme.AviPalette
 import com.anztdree.avi.ui.theme.LocalAviPalette
+import kotlinx.coroutines.delay
 
 /**
  * P50 — WIZARD PERTAMA KALI INSTALL (umpan Pak: "saat aplikasi pertama kali
@@ -99,7 +101,8 @@ import com.anztdree.avi.ui.theme.LocalAviPalette
  *
  * 5 LANGKAH (dengan indikator progres + lewati di tiap langkah):
  *  0 SELAMAT DATANG  — siapa AVI & apa manfaatnya (education/benefit)
- *  1 NAMA PANGGILAN  — personalisasi (AVI memanggil Anda …)
+ *  1 KALIBRASI PEMILIK — nama panggilan (typing dibai: draft lokal, tak
+ *     melawan jari) + catatan pemilik ownerNote (P51, opsional)
  *  2 IZIN SUARA      — priming mikrofon lalu dialog sistem (RECORD_AUDIO)
  *  3 OTAK AI         — Gemini (multi kunci) / NVIDIA NIM + muat & pilih model
  *  4 SIAP            — ringkasan + AKTIFKAN AVI (langsung mulai mendengar)
@@ -111,6 +114,22 @@ fun WizardScreen(vm: AviViewModel) {
     val context = LocalContext.current
 
     var step by rememberSaveable { mutableStateOf(0) }
+
+    // P51 — KALIBRASI PEMILIK: draft diangkat ke level wizard supaya bisa
+    // di-flush saat pindah langkah — tidak ada ketikan yang hilang.
+    // (Umpan Pak: "Buat ganti nama di wizard aja susah!! jangan lu bikin
+    // ribet lah" — dulu TIAP HURUF langsung trim + ifBlank("Pak") + tulis
+    // DataStore: spasi ditelan, hapus semua = "Pak" balik sendiri.)
+    var namaDraft by rememberSaveable { mutableStateOf(settings.userName) }
+    var noteDraft by rememberSaveable { mutableStateOf(settings.ownerNote) }
+    fun flushKalibrasi() {
+        vm.updateSettings {
+            it.copy(
+                userName = namaDraft.trim().take(24).ifBlank { "Pak" },
+                ownerNote = noteDraft.trim().take(400)
+            )
+        }
+    }
     var micGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
@@ -225,7 +244,8 @@ fun WizardScreen(vm: AviViewModel) {
             ) {
                 when (step) {
                     0 -> WizardWelcome(palette, vm)
-                    1 -> WizardNama(vm, settings, palette)
+                    1 -> WizardKalibrasi(vm, palette, namaDraft, noteDraft,
+                        onNama = { namaDraft = it }, onNote = { noteDraft = it })
                     2 -> WizardIzin(palette, micGranted, vm) { permLauncher.launch(Manifest.permission.RECORD_AUDIO) }
                     3 -> WizardOtak(vm, settings, palette)
                     4 -> WizardSiap(vm, settings, palette, micGranted)
@@ -235,9 +255,9 @@ fun WizardScreen(vm: AviViewModel) {
             // ---- bar bawah: aksi utama + lewati ----
             Spacer(Modifier.height(10.dp))
             WizardFooter(step, palette, micGranted,
-                onNext = { step += 1 },
-                onLewati = { step += 1 },
-                onSelesai = { vm.completeWizard(micGranted) }
+                onNext = { flushKalibrasi(); step += 1 },
+                onLewati = { flushKalibrasi(); step += 1 },
+                onSelesai = { flushKalibrasi(); vm.completeWizard(micGranted) }
             )
         }
     }
@@ -539,28 +559,58 @@ private fun WizardDividerHud(palette: AviPalette) {
 }
 
 // ============================================================
-// LANGKAH 1 — NAMA PANGGILAN (personalisasi)
+// LANGKAH 1 — KALIBRASI PEMILIK (P51).
+// Umpan Pak: "Buat ganti nama di wizard aja susah!! jangan lu bikin
+// ribet lah" + "lalu gk ada kalibrasi pemilik?" → dua-duanya dieksekusi:
+//  1) NAMA — dulu TIAP HURUF langsung trim + ifBlank("Pak") + ditulis ke
+//     DataStore: kolom "melawan" jari pemilik (spasi ditelan saat mengetik,
+//     hapus semua = "Pak" balik sendiri, kursor melompat, lambat). Sekarang
+//     draft murni lokal: ketikan BEBAS, tersimpan debounce + di-flush saat
+//     pindah langkah.
+//  2) KALIBRASI PEMILIK — ownerNote (opsional): fakta penting tentang
+//     pemilik yang ditanam ke SEMUA prompt AVI (SystemPrompts.build).
 // ============================================================
 
 @Composable
-private fun WizardNama(vm: AviViewModel, settings: AviSettings, palette: AviPalette) {
+private fun WizardKalibrasi(
+    vm: AviViewModel,
+    palette: AviPalette,
+    namaDraft: String,
+    noteDraft: String,
+    onNama: (String) -> Unit,
+    onNote: (String) -> Unit
+) {
+    // simpan DEBOUNCE — DataStore tidak ditulis per huruf (tak ada lag,
+    // kursor tak melompat); flush final tetap dijalankan saat pindah langkah
+    LaunchedEffect(namaDraft) {
+        delay(450)
+        vm.updateSettings { it.copy(userName = namaDraft.trim().take(24).ifBlank { "Pak" }) }
+    }
+    LaunchedEffect(noteDraft) {
+        delay(450)
+        vm.updateSettings { it.copy(ownerNote = noteDraft.trim().take(400)) }
+    }
+
     WizardHeader(
-        kicker = "PERSONALISASI",
+        kicker = "KALIBRASI PEMILIK",
         judul = "Aku Panggil Apa?",
-        deskripsi = "AVI menyapa Anda dengan nama ini di setiap percakapan. " +
-            "Coba rasakan bedanya — ini jadi AVI milik Anda sendiri.",
+        deskripsi = "Satu langkah personal: nama panggilan Anda, plus fakta penting tentang Anda bila mau. " +
+            "AVI memakai ini di setiap jawaban — bisa diubah kapan pun di PUSAT KENDALI.",
         palette = palette
     )
     Spacer(Modifier.height(6.dp))
     DengarkanChip(
         palette = palette,
-        narasi = "Boleh tahu, saya panggil apa? AVI akan menyapa Anda dengan nama ini setiap kali bicara.",
+        narasi = "Boleh tahu, saya panggil apa? Kalau mau, tuliskan juga fakta penting tentang Anda, " +
+            "supaya setiap jawaban saya langsung pas dengan kebutuhan Anda.",
         vm = vm
     )
     Spacer(Modifier.height(16.dp))
     OutlinedTextField(
-        value = settings.userName,
-        onValueChange = { v -> vm.updateSettings { it.copy(userName = v.trim().take(24).ifBlank { "Pak" }) } },
+        value = namaDraft,
+        // P51 — ketikan BEBAS: tidak ada trim/ifBlank per huruf yang
+        // menelan spasi atau memaksa "Pak" balik sendiri
+        onValueChange = { v -> onNama(v.take(24)) },
         label = { Text("Nama panggilan Anda", color = palette.textDim, fontSize = 13.sp) },
         leadingIcon = {
             Icon(Icons.Default.Person, contentDescription = null, tint = palette.gold, modifier = Modifier.size(18.dp))
@@ -569,9 +619,38 @@ private fun WizardNama(vm: AviViewModel, settings: AviSettings, palette: AviPale
         modifier = Modifier.fillMaxWidth(),
         colors = wizardFieldColors(palette)
     )
+    Spacer(Modifier.height(12.dp))
+    OutlinedTextField(
+        value = noteDraft,
+        onValueChange = { v -> onNote(v.take(400)) },
+        label = { Text("Fakta tentang Anda — opsional", color = palette.textDim, fontSize = 13.sp) },
+        leadingIcon = {
+            Icon(Icons.Default.Psychology, contentDescription = null, tint = palette.accent, modifier = Modifier.size(18.dp))
+        },
+        placeholder = {
+            Text(
+                "Contoh: Saya pelajar, suka jawaban singkat.",
+                color = palette.textDim.copy(alpha = 0.6f),
+                fontSize = 12.sp
+            )
+        },
+        minLines = 2,
+        modifier = Modifier.fillMaxWidth(),
+        colors = wizardFieldColors(palette)
+    )
+    Text(
+        "Isi ini = kalibrasi pemilik: AVI menyesuaikan semua jawaban dengan catatan Anda " +
+            "(pekerjaan, selera, cara bicara). Kosongkan bila tidak perlu.",
+        color = palette.textDim.copy(alpha = 0.75f),
+        fontSize = 10.sp,
+        fontFamily = AviHud,
+        lineHeight = 13.sp,
+        modifier = Modifier.padding(top = 6.dp)
+    )
     Spacer(Modifier.height(14.dp))
 
-    // pratinjau sapaan langsung
+    // pratinjau sapaan langsung — ikut ketikan SEKETIKA (pakai draft, bukan settings)
+    val namaTampil = namaDraft.trim().ifBlank { "Pak" }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -591,8 +670,8 @@ private fun WizardNama(vm: AviViewModel, settings: AviSettings, palette: AviPale
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                "\u201CHay ${settings.userName}! AVI online — semua sistem normal. " +
-                    "Sentuh reaktor untuk bicara, ${settings.userName}.\u201D",
+                "\u201CHay $namaTampil! AVI online — semua sistem normal. " +
+                    "Sentuh reaktor untuk bicara, $namaTampil.\u201D",
                 color = palette.text,
                 fontSize = 13.sp,
                 fontFamily = AviBody,

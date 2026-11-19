@@ -62,6 +62,7 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Security
@@ -2017,6 +2018,50 @@ private fun GayaSection(vm: AviViewModel, settings: AviSettings, palette: AviPal
         Text(
             "Contoh: Pak, Mas, Bang, Kak — atau nama Anda sendiri. AVI memakai panggilan ini " +
                 "di sapaan dan seluruh jawabannya.",
+            color = palette.textDim.copy(alpha = 0.75f),
+            fontSize = 10.sp,
+            fontFamily = AviHud,
+            lineHeight = 13.sp
+        )
+    }
+    Spacer(Modifier.height(8.dp))
+
+    // ---- P51 — KALIBRASI PEMILIK (umpan Pak: "gk ada kalibrasi pemilik?") ----
+    // Catatan pemilik ditanam ke SEMUA prompt AVI (lihat SystemPrompts.build).
+    // Draft lokal + debounce — ketikan bebas, tidak melawan DataStore.
+    var inputCatatan by remember { mutableStateOf<String?>(null) } // null = ikut settings
+    var bukaCatatan by remember { mutableStateOf(false) }
+    val catatanAktif = inputCatatan ?: settings.ownerNote
+    LaunchedEffect(inputCatatan) {
+        if (inputCatatan != null) {
+            delay(450)
+            vm.updateSettings { it.copy(ownerNote = inputCatatan.orEmpty().trim().take(400)) }
+        }
+    }
+    SetRow(
+        icon = Icons.Default.Tune,
+        title = "KALIBRASI PEMILIK",
+        sub = if (catatanAktif.isBlank())
+            "Kosong — tulis fakta penting tentang Anda agar jawaban AVI langsung pas"
+        else
+            "Aktif — AVI menyesuaikan jawaban dengan catatan Anda",
+        palette = palette,
+        onClick = { bukaCatatan = !bukaCatatan },
+        expanded = bukaCatatan
+    )
+    ExpandArea(visible = bukaCatatan, palette = palette) {
+        OutlinedTextField(
+            value = catatanAktif,
+            onValueChange = { v -> inputCatatan = v.take(400) },
+            label = { Text("Pekerjaan, selera, aturan bicara, hal penting…", color = palette.textDim, fontSize = 12.sp) },
+            minLines = 2,
+            modifier = Modifier.fillMaxWidth(),
+            colors = hudFieldColors(palette)
+        )
+        Spacer(Modifier.height(5.dp))
+        Text(
+            "Ditulis di sini atau di wizard langkah 2 = kalibrasi pemilik: AVI memakainya " +
+                "di SEMUA jawaban. Kosong = AVI memakai bawaan.",
             color = palette.textDim.copy(alpha = 0.75f),
             fontSize = 10.sp,
             fontFamily = AviHud,

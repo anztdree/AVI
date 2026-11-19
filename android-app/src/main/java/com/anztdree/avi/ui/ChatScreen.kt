@@ -102,8 +102,12 @@ import kotlin.math.sin
 // reaktor berlapis + obrolan masuk ber-spring. Tanpa gambar
 // mati yang ditempel (keputusan pemilik K13).
 // P43 (sinkron preview yang disetujui Pak): header bersih 1 tombol
-// Pengaturan, BAR MODEL AKTIF + TES di bawah header, dock = bar
+// Pengaturan, BAR MODEL AKTIF di bawah header, dock = bar
 // hasil suara (kb via tekan-lama), visor dimatikan, latar diperjelas.
+// P51 (umpan Pak: "di bagian obrolan utama, tombol tes di hilangkan.. hanya
+// tampil model aktif dan ukuran biasa saja!! karena yg sekarang terlalu
+// besar malah jadi jelek") — BAR MODEL AKTIF digusur jadi pil kecil,
+// TES DIHAPUS dari layar obrolan (uji model tetap ada di wizard & diagnostik).
 // P44 (umpan Pak): CINCIN TEKS TELEMETRI DI SEKELILING ORB DIHAPUS —
 // panggung orb murni bentuk MK-XIX + aura; Pengaturan dirancang ulang
 // (VOKAL JAWABAN + SUARA LANGSUNG nyata, MARKAS = diagnostik perangkat).
@@ -173,8 +177,8 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
     }
 
     val listState = rememberLazyListState()
-    // P43 — hasil tombol TES di bar MODEL AKTIF
-    val barTest by vm.barTest.collectAsState()
+    // P51 — barTest/TES tidak lagi ada di layar obrolan (dihapus, umpan Pak);
+    // hasil uji model tetap hidup di langkah OTAK AI wizard & diagnostik PUSAT KENDALI
     LaunchedEffect(messages.size, streamingText) {
         val total = listState.layoutInfo.totalItemsCount
         if (total > 0) listState.scrollToItem(total - 1)
@@ -310,15 +314,13 @@ private fun ChatScreenContent(vm: AviViewModel, settings: AviSettings, onOpenSet
                 )
             }
 
-            // ============ P43 — BAR MODEL AKTIF: model terkini dari PUSAT KENDALI + tombol TES ============
+            // ============ P51 — MODEL AKTIF: pil ringkas, TANPA TES ============
             // P49 — ikut tipe otak aktif: Gemini atau NVIDIA NIM
             ModelBar(
                 palette = palette,
                 model = if (settings.provider == AiProvider.GEMINI)
                     settings.geminiModel.removePrefix("models/")
                 else settings.ocModel.substringAfterLast('/'),
-                test = barTest,
-                onTest = { vm.testActiveModel() },
                 modifier = Modifier.padding(bottom = 4.dp)
             )
 
@@ -913,160 +915,64 @@ private fun HeaderMark(palette: AviPalette, modifier: Modifier = Modifier) {
 }
 
 // ============================================================
-// P43 — BAR MODEL AKTIF: kaca tipis di bawah header — membaca
-// model terkini dari PUSAT KENDALI (Pengaturan). TES = ping
-// model yang SEDANG DIPAKAI (nyata — via ModelCatalog.testModel),
-// latensi ditampilkan apa adanya; gagal tak dihaluskan.
+// P51 — BAR MODEL AKTIF DIGUSUR JADI PIL KECIL (umpan Pak:
+// "di bagian obrolan utama, tombol tes di hilangkan.. hanya tampil
+// model aktif dan ukuran biasa saja!! karena yg sekarang terlalu besar
+// malah jadi jelek"). Satu pil tipis: titik emas hidup + label AKTIF +
+// nama model ukuran biasa (bukan teks besar kapital). TES DIHAPUS dari
+// layar obrolan — pengujian model tetap ada di langkah OTAK AI wizard
+// dan diagnostik PUSAT KENDALI.
 // ============================================================
 
 @Composable
 private fun ModelBar(
     palette: AviPalette,
     model: String,
-    test: AviViewModel.BarTest,
-    onTest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val testing = test.phase == 1
     val transition = rememberInfiniteTransition(label = "mDot")
     val beat by transition.animateFloat(
         initialValue = 0.35f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            tween(if (testing) 500 else 2400, easing = LinearEasing)
+            tween(2400, easing = LinearEasing)
         ),
         label = "beat"
     )
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(palette.panel.copy(alpha = 0.78f))
-            .border(1.dp, palette.textDim.copy(alpha = 0.22f), RoundedCornerShape(14.dp))
-            // PUNGGUNGAN EMAS di tepi kiri (modelbar::before preview) — gradien emas→transparan
-            .drawBehind {
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        listOf(palette.gold, palette.gold.copy(alpha = 0.05f)),
-                        startY = 0f, endY = size.height
-                    ),
-                    topLeft = Offset(0f, 0f),
-                    size = Size(2.5.dp.toPx(), size.height)
-                )
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        listOf(palette.gold.copy(alpha = 0.35f), Color.Transparent),
-                        startY = 0f, endY = size.height
-                    ),
-                    topLeft = Offset(-1.5.dp.toPx(), 0f),
-                    size = Size(5.5.dp.toPx(), size.height)
-                )
-            }
-            .padding(start = 13.dp, end = 6.dp, top = 7.dp, bottom = 7.dp)
+            .clip(RoundedCornerShape(50))
+            .background(palette.panel.copy(alpha = 0.50f))
+            .border(1.dp, palette.textDim.copy(alpha = 0.20f), RoundedCornerShape(50))
+            .padding(horizontal = 12.dp, vertical = 5.dp)
     ) {
-        // mdot — titik emas berdenyut DENGAN PENDARAN (box-shadow CSS)
+        // titik emas hidup — denyut pelan, tanda telemetri masih bernafas
         Box(
             Modifier
-                .size(8.dp)
+                .size(6.dp)
                 .graphicsLayer { alpha = 0.35f + 0.65f * beat }
-                .drawBehind {
-                    val glowCol = when {
-                        testing -> palette.accent
-                        test.phase == 3 -> palette.danger
-                        else -> palette.gold
-                    }
-                    drawCircle(glowCol.copy(alpha = 0.35f), radius = size.minDimension * 1.4f, center = center)
-                    drawCircle(glowCol.copy(alpha = 0.22f), radius = size.minDimension * 2.4f, center = center)
-                }
-                .background(
-                    when {
-                        testing -> palette.accent
-                        test.phase == 3 -> palette.danger
-                        else -> palette.gold
-                    },
-                    CircleShape
-                )
+                .background(palette.gold, CircleShape)
         )
-        Spacer(Modifier.width(10.dp))
-        Column(Modifier.weight(1f)) {
-            Text(
-                "MODEL AKTIF · DARI PUSAT KENDALI",
-                color = palette.textDim,
-                fontSize = 7.5.sp,
-                fontFamily = AviHud,
-                letterSpacing = 2.2.sp
-            )
-            Text(
-                model.ifBlank { "PILIH DI PUSAT KENDALI" }.uppercase(Locale.ROOT),
-                color = if (model.isBlank()) palette.textDim else palette.gold,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = AviHud,
-                letterSpacing = 1.6.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
         Spacer(Modifier.width(8.dp))
-        when {
-            testing -> Text(
-                "MENGUJI…",
-                color = palette.accent,
-                fontSize = 8.5.sp,
-                fontFamily = AviHud,
-                letterSpacing = 1.4.sp
-            )
-            test.phase == 2 -> Text(
-                "TERHUBUNG · ${test.ms} MS",
-                color = palette.goldSoft,
-                fontSize = 8.5.sp,
-                fontFamily = AviHud,
-                letterSpacing = 1.2.sp
-            )
-            test.phase == 3 -> Text(
-                test.message,
-                color = palette.danger,
-                fontSize = 8.5.sp,
-                fontFamily = AviHud,
-                letterSpacing = 0.8.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f, fill = false)
-            )
-        }
-        Spacer(Modifier.width(8.dp))
-        // TES — tombol emas dengan SUDUT BIDIK (corner bracket ::before/::after preview)
-        Box(Modifier.padding(3.dp)) {
-            Text(
-                text = if (testing) "…" else "TES",
-                color = palette.gold,
-                fontSize = 9.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = AviHud,
-                letterSpacing = 2.sp,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(palette.gold.copy(alpha = 0.08f))
-                    .border(1.dp, palette.gold.copy(alpha = 0.45f), RoundedCornerShape(10.dp))
-                    .drawBehind {
-                        val s = 6.dp.toPx()
-                        val w = 1.2.dp.toPx()
-                        val col = palette.gold.copy(alpha = 0.60f)
-                        // 4 sudut bidik emas — di tepi tombol
-                        drawLine(col, Offset(0f, 0f), Offset(s, 0f), w)
-                        drawLine(col, Offset(0f, 0f), Offset(0f, s), w)
-                        drawLine(col, Offset(size.width, 0f), Offset(size.width - s, 0f), w)
-                        drawLine(col, Offset(size.width, 0f), Offset(size.width, s), w)
-                        drawLine(col, Offset(0f, size.height), Offset(s, size.height), w)
-                        drawLine(col, Offset(0f, size.height), Offset(0f, size.height - s), w)
-                        drawLine(col, Offset(size.width, size.height), Offset(size.width - s, size.height), w)
-                        drawLine(col, Offset(size.width, size.height), Offset(size.width, size.height - s), w)
-                    }
-                    .clickable(enabled = !testing && model.isNotBlank()) { onTest() }
-                    .padding(horizontal = 13.dp, vertical = 7.dp)
-            )
-        }
+        Text(
+            "AKTIF",
+            color = palette.textDim,
+            fontSize = 9.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = AviHud,
+            letterSpacing = 1.6.sp
+        )
+        Spacer(Modifier.width(7.dp))
+        Text(
+            // P51 — ukuran biasa: bukan kapital besar, cukup teks tenang
+            model.ifBlank { "PILIH DI PUSAT KENDALI" },
+            color = if (model.isBlank()) palette.textDim else palette.text,
+            fontSize = 11.5.sp,
+            fontFamily = AviHud,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

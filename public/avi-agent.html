@@ -26,7 +26,8 @@
    P42: latar diperjelas, header dibersihkan (tanpa chip SIAGA/jam, pojok kanan
    atas cuma 1 tombol PENGATURAN).
    P43 (umpan Pak): MODEL AKTIF jadi BAR STATUS tepat di bawah header — membaca
-   model terkini dari PUSAT KENDALI (Pengaturan) + tombol TES sambungan.
+   model terkini dari PUSAT KENDALI (Pengaturan). P51 (umpan Pak): tombol TES
+   DIHAPUS dari layar obrolan, bar digusur jadi pil kecil ukuran biasa.
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -926,34 +927,22 @@ html[data-theme="siang"] .orbBig.hear .mhalo{background:radial-gradient(circle,r
 @keyframes gA{to{transform:translate(42px,32px)}}
 /* ==== P44 — umpan Pak: CINCIN TEKS TELEMETRI DI SEKELILING ORB DIHAPUS (jelek) —
    panggung orb kini murni: bentuk orb MK-XIX + aura, tanpa teks berputar.
-   Header tetap bersih (cuma 1 tombol PENGATURAN); MODEL AKTIF tetap di BAR STATUS
-   di bawah header + tombol TES sambungan ==== */
-/* BAR MODEL AKTIF — kaca tipis dengan tulang punggung emas di tepi kiri */
-.modelbar{flex:none;display:flex;align-items:center;gap:10px;margin:10px 18px 0;padding:8px 8px 8px 13px;
-  border:1px solid var(--line2);border-radius:14px;background:var(--pan);backdrop-filter:blur(8px);
-  position:relative;overflow:hidden;animation:rise .55s .08s cubic-bezier(.22,1,.36,1) both}
-.modelbar::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;
-  background:linear-gradient(180deg,var(--gold),transparent);box-shadow:0 0 10px rgba(246,193,91,.5)}
-.modelbar .mdot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex:none;
+   Header tetap bersih (cuma 1 tombol PENGATURAN). ==== */
+/* ==== P51 — umpan Pak: "di bagian obrolan utama, tombol tes di hilangkan.. hanya
+   tampil model aktif dan ukuran biasa saja!! karena yg sekarang terlalu besar malah
+   jadi jelek" — BAR MODEL AKTIF digusur jadi PIL KECIL: titik emas hidup + label
+   AKTIF + nama model ukuran biasa. TES DIHAPUS (uji model tetap ada di wizard
+   langkah OTAK AI & diagnostik PUSAT KENDALI). ==== */
+.modelbar{flex:none;display:flex;width:max-content;max-width:calc(100% - 36px);align-items:center;gap:8px;
+  margin:10px 18px 0;padding:5px 12px;border:1px solid var(--line2);border-radius:50px;
+  background:var(--pan);backdrop-filter:blur(8px);animation:rise .55s .08s cubic-bezier(.22,1,.36,1) both}
+.modelbar .mdot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none;
   box-shadow:0 0 9px var(--gold);animation:blink 2.4s ease-in-out infinite}
-.modelbar .mdot.testing{background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:blink .5s linear infinite}
-.modelbar .mtx{flex:1;min-width:0;line-height:1.25}
-.modelbar .mtx small{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:2.2px;color:var(--dim2)}
-.modelbar .mtx b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:1.6px;color:var(--gold);
-  text-shadow:0 0 12px rgba(246,193,91,.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.modelbar .mstat{font-family:var(--mono);font-size:8.5px;letter-spacing:1.4px;color:var(--mint);white-space:nowrap}
-.modelbar .mstat:empty{display:none}
-.modelbar .mstat.testing{color:var(--cyan)}
-.modelbar .tbtn{flex:none;font-family:var(--mono);font-size:9px;letter-spacing:2px;font-weight:700;color:var(--gold);
-  padding:7px 13px;border:1px solid rgba(246,193,91,.45);border-radius:10px;background:rgba(246,193,91,.08);
-  cursor:pointer;transition:background .18s,box-shadow .18s}
-.modelbar .tbtn:hover{background:rgba(246,193,91,.16);box-shadow:0 0 14px rgba(246,193,91,.25)}
-.modelbar .tbtn:disabled{opacity:.5;cursor:wait}
-html[data-theme="siang"] .modelbar .tbtn{color:#8a5a00;border-color:rgba(176,110,10,.45);background:rgba(246,193,91,.12)}
-html[data-theme="siang"] .modelbar .mtx b{color:#8a5a00;text-shadow:none}
-/* papan ketik buka: bar ikut merapat agar panggung orb tak tenggelam */
-html.kb .modelbar{margin-top:6px;padding:5px 6px 5px 11px}
-html.kb .modelbar .mtx small{display:none}
+.modelbar .mlab{flex:none;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.6px;color:var(--dim2)}
+.modelbar b{flex:none;min-width:0;font-family:var(--mono);font-size:11.5px;font-weight:400;letter-spacing:.6px;
+  color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-theme="siang"] .modelbar b{color:var(--txt)}
+html.kb .modelbar{margin-top:6px;padding:4px 10px}
 /* ==== P44 — PENGATURAN kalibrasi ulang: 3 bagian (OTAK/SUARA/MARKAS),
    semua baris nyata, tanpa stub; daftar model terbuka di dalam lembar ==== */
 .modelist{display:none;flex-direction:column;gap:7px;margin:-2px 0 10px}
@@ -1084,12 +1073,11 @@ html.kb .modelbar .mtx small{display:none}
     </div>
   </header>
 
-  <!-- P43: bar sambungan KEMBALI tepat di bawah header (permintaan Pak) — model terkini dibaca dari PUSAT KENDALI + tombol TES -->
-  <div class="modelbar" id="modelBar" role="status" aria-live="polite" aria-label="Model aktif dan uji sambungan">
+  <!-- P51 (umpan Pak): pil kecil TANPA TES — hanya model aktif ukuran biasa -->
+  <div class="modelbar" id="modelBar" role="status" aria-live="polite" aria-label="Model aktif">
     <i class="mdot" id="mDot"></i>
-    <div class="mtx"><small>MODEL AKTIF · DARI PUSAT KENDALI</small><b id="mName">GEMINI 2.5 FLASH</b></div>
-    <span class="mstat" id="mStat"></span>
-    <button class="tbtn" id="btnTest" aria-label="Uji sambungan model">TES</button>
+    <span class="mlab">AKTIF</span>
+    <b id="mName">Gemini 2.5 Flash</b>
   </div>
 
   <!-- STRIP KENDALI (baru tampil saat agent bekerja) -->
@@ -1361,13 +1349,15 @@ html.kb .modelbar .mtx small{display:none}
       </div>
     </div>
 
-    <!-- LANGKAH 1 — NAMA -->
+    <!-- LANGKAH 1 — KALIBRASI PEMILIK (P51: nama bebas ditulis + catatan pemilik) -->
     <div class="wzstep" data-wz="1" hidden>
-      <div class="wzkick"><em></em><span>PERSONALISASI</span></div>
+      <div class="wzkick"><em></em><span>KALIBRASI PEMILIK</span></div>
       <div class="wztitle">Aku Panggil Apa?</div>
-      <div class="wzdesc">AVI menyapa Anda dengan nama ini di setiap percakapan. Coba rasakan bedanya — ini jadi AVI milik Anda sendiri.</div>
+      <div class="wzdesc">Satu langkah personal: nama panggilan Anda, plus fakta penting tentang Anda bila mau. AVI memakai ini di setiap jawaban — bisa diubah kapan pun di PUSAT KENDALI.</div>
       <button class="wzhear" id="wzHear1">◄ DENGARKAN</button>
       <input class="wzin" id="wzNama" placeholder="Nama panggilan Anda" maxlength="24" value="Pak"/>
+      <textarea class="wzkeys" id="wzNote" rows="2" placeholder="Fakta tentang Anda — opsional (contoh: Saya pelajar, suka jawaban singkat.)"></textarea>
+      <small style="font:600 9px var(--mono);letter-spacing:1.2px;color:var(--dim2);display:block;margin-top:7px;line-height:1.55">ISI INI = KALIBRASI PEMILIK: AVI MENYESUAIKAN SEMUA JAWABAN DENGAN CATATAN ANDA.</small>
       <div class="wzprev">
         <small>PRATINJAU SAPAAN</small>
         <p id="wzPrev">“Hay Pak! AVI online — semua sistem normal. Sentuh reaktor untuk bicara, Pak.”</p>
@@ -1434,6 +1424,7 @@ html.kb .modelbar .mtx small{display:none}
       <div class="wzdesc">AVI sudah terkonfigurasi di perangkat ini. Kunci tersimpan aman (terenkripsi) dan hanya dipakai untuk otak AVI. Tekan AKTIFKAN dan AVI langsung mulai mendengarkan.</div>
       <div class="wzcard wzsum">
         <div class="row"><span>PANGGILAN</span><b id="wzSumNama">PAK</b></div>
+        <div class="row"><span>KALIBRASI</span><b id="wzSumCal">BAWAAN</b></div>
         <div class="row"><span>MIKROFON</span><b id="wzSumMic">BELUM</b></div>
         <div class="row"><span>OTAK AI</span><b id="wzSumOtak">GEMINI · gemini-2.5-flash</b></div>
         <div class="row"><span>KUNCI API</span><b id="wzSumKey">BELUM</b></div>
@@ -1455,14 +1446,15 @@ let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('sh
 $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
 
 /* ---- P44: OTAK = satu sumber kebenaran — PENGATURAN → MODEL KECERDASAN (daftar terbuka),
-   bar di bawah header ikut terbaca. Di APK daftar diambil live dari katalog Google
-   (ModelCatalog.kt) dan TES memanggil generateContent sungguhan — preview disimulasikan. */
+   pil kecil di bawah header ikut terbaca. Di APK daftar diambil live dari katalog Google
+   (ModelCatalog.kt) / NVIDIA NIM (NimCatalog.kt).
+   P51 (umpan Pak): tombol TES DIHAPUS dari layar obrolan — bar kini pil kecil
+   "AKTIF · model" ukuran biasa; uji model tetap ada di wizard & diagnostik. */
 const MODELS=['Gemini 2.5 Flash','Gemini 2.5 Pro','Gemini 2.0 Flash'];
-let mIdx=0,mBusy=false;
-const mName=$('#mName'),mStat=$('#mStat'),mDot=$('#mDot'),mSet=$('#mSet'),btnTest=$('#btnTest');
+let mIdx=0;
+const mName=$('#mName'),mDot=$('#mDot'),mSet=$('#mSet');
 function renderModel(){
-  const disp=MODELS[mIdx].toUpperCase();
-  if(mName)mName.textContent=disp;
+  if(mName)mName.textContent=MODELS[mIdx];
   if(mSet)mSet.textContent=MODELS[mIdx]+' · otak utama AVI';
   $$('.mopt').forEach(o=>o.classList.toggle('on',+o.dataset.i===mIdx));
 }
@@ -1472,22 +1464,10 @@ $('#rowModel').addEventListener('click',()=>{
 });
 $$('.mopt').forEach(o=>o.addEventListener('click',()=>{
   const i=+o.dataset.i;
-  if(i!==mIdx){mIdx=i;mStat.textContent='';renderModel();toast('Otak AVI: '+MODELS[mIdx]+' — bar bawah header ikut terbaca')}
+  if(i!==mIdx){mIdx=i;renderModel();toast('Otak AVI: '+MODELS[mIdx]+' — pil di bawah header ikut terbaca')}
   $('#modelList').classList.remove('open');
   $('#rowModel').setAttribute('aria-expanded','false');
 }));
-btnTest.addEventListener('click',()=>{
-  if(mBusy)return;mBusy=true;
-  btnTest.disabled=true;btnTest.textContent='…';
-  mDot.classList.add('testing');mStat.classList.add('testing');mStat.textContent='MENGUJI…';
-  setTimeout(()=>{
-    const ms=360+Math.round(Math.random()*260);
-    mDot.classList.remove('testing');mStat.classList.remove('testing');
-    mStat.textContent='TERHUBUNG · '+ms+' MS';
-    btnTest.disabled=false;btnTest.textContent='TES';mBusy=false;
-    setTimeout(()=>{if(!mBusy)mStat.textContent=''},5200);
-  },850+Math.random()*650);
-});
 
 /* ---- stempel mesin: jam (strip VOX dihapus — mewah itu tenang) ---- */
 function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
@@ -1849,6 +1829,7 @@ render();
     $('#wzSkip').hidden=step===4;
     if(step===4){
       $('#wzSumNama').textContent=($('#wzNama').value||'PAK').toUpperCase();
+      $('#wzSumCal').textContent=$('#wzNote').value.trim()?'AKTIF':'BAWAAN';
       $('#wzSumMic').textContent=mic?'SIAP — LANGSUNG MENDENGAR':'LEWATI — VIA TOMBOL MIC';
       $('#wzSumOtak').textContent=otak+' · '+model[otak];
       const k=otak==='GEMINI'?$('#wzKeyG').value.trim():$('#wzKeyN').value.trim();
