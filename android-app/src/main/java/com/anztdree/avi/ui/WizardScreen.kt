@@ -1041,6 +1041,7 @@ private fun WizardSiap(vm: AviViewModel, settings: AviSettings, palette: AviPale
 // Warna field — satu keluarga dengan Pusat Kendali
 // ============================================================
 
+@Composable
 private fun wizardFieldColors(palette: AviPalette) = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = palette.accent,
     unfocusedBorderColor = palette.panelLight,
