@@ -87,10 +87,11 @@ fun BootScreen(palette: AviPalette, onFinish: () -> Unit, mark: String = "MK1") 
         Box(modifier = Modifier.fillMaxSize().alpha(overallAlpha)) {
 
             // ---- K12 — latar reaktor HD sadar-tema (dilucuti di hemat daya) ----
+            // P50 — latar splash baru sinematik mewah (navy + grid heks + garis
+            // emas) dipakai untuk semua tema Mark; identitasnya diwarnai lagi
+            // oleh gradasi palet di bawah ini.
             Image(
-                painter = painterResource(
-                    if (mark == "MK2") R.drawable.bg_boot_mk2 else R.drawable.bg_boot
-                ),
+                painter = painterResource(R.drawable.bg_splash),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,

@@ -981,6 +981,83 @@ html.kb .modelbar .mtx small{display:none}
 .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 10px}
 .chip{font:700 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim2);border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--pan);cursor:pointer;transition:.15s}
 .chip.on{color:var(--cyan);border-color:rgba(45,217,245,.55);background:var(--cyanSoft)}
+
+/* ============================================================
+   P50 — WIZARD PERTAMA KALI INSTALL (pratinjau Pages, gerbang desain
+   untuk WizardScreen.kt): 5 langkah — sapa → nama → izin suara → otak
+   AI → siap. Referensi: NN/g education-immersion-engagement, UserPilot
+   progressive onboarding (1 layar 1 aksi + progres + bisa dilewati),
+   Instabug personalisasi & streamline-signup, Material permission
+   priming (izin diminta dalam konteks, bukan dialog begitu buka).
+   ============================================================ */
+#wizSheet{position:fixed;inset:0;z-index:90;display:none}
+#wizSheet.open{display:block}
+#wizSheet .wzbg{position:absolute;inset:0;background:rgba(2,5,10,.78);backdrop-filter:blur(7px)}
+#wizSheet .wzpan{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(430px,94vw);max-height:min(780px,92vh);overflow-y:auto;border-radius:22px;
+  border:1px solid var(--line2);background:linear-gradient(180deg,var(--pan2),rgba(9,14,26,.95));
+  box-shadow:0 30px 90px rgba(0,0,0,.55);padding:16px 18px 14px}
+.wztop{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.wzmark{width:32px;height:32px;border-radius:50%;border:1px solid rgba(246,193,91,.55);
+  background:radial-gradient(circle at 50% 42%,rgba(45,217,245,.28),rgba(13,21,37,.9) 68%);
+  display:grid;place-items:center;flex:none}
+.wztop small{font:700 9px var(--mono);letter-spacing:2.4px;color:var(--dim)}
+.wztop b{font:700 9px var(--mono);letter-spacing:2.4px;color:var(--cyan)}
+.wzdots{display:flex;gap:6px;margin-left:auto}
+.wzdots i{width:8px;height:8px;border-radius:50%;background:var(--pan2);border:1px solid var(--line2)}
+.wzdots i.done{background:var(--gold);border-color:transparent}
+.wzdots i.on{background:var(--cyan);border-color:transparent;box-shadow:0 0 8px var(--glow)}
+.wzkick{display:flex;align-items:center;gap:8px;margin:12px 0 8px}
+.wzkick em{width:3px;height:13px;background:var(--gold);border-radius:2px;font-style:normal}
+.wzkick span{font:700 9.5px var(--mono);letter-spacing:2.6px;color:var(--gold)}
+.wztitle{font-family:var(--disp);font-weight:800;font-size:21px;color:var(--txt);letter-spacing:.4px}
+.wzdesc{font:500 12.5px var(--ui);color:var(--dim);line-height:1.55;margin-top:7px}
+.wzhear{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px;border-radius:999px;
+  border:1px solid rgba(45,217,245,.35);background:var(--cyanSoft);color:var(--cyan);
+  font:700 9px var(--mono);letter-spacing:1.8px;cursor:pointer}
+.wzcard{border:1px solid var(--line);border-radius:16px;background:var(--pan);padding:14px;margin-top:13px}
+.wzcap{display:flex;gap:11px;align-items:flex-start;padding:7px 0}
+.wzcap+.wzcap{border-top:1px solid var(--line)}
+.wzcap i{width:32px;height:32px;border-radius:10px;border:1px solid var(--cyanSoft);background:var(--cyanSoft);
+  display:grid;place-items:center;flex:none;font-style:normal;color:var(--cyan);font-size:15px}
+.wzcap b{display:block;font:700 11px var(--ui);color:var(--txt);letter-spacing:.4px}
+.wzcap small{display:block;font:500 11px var(--ui);color:var(--dim);line-height:1.5;margin-top:2px}
+.wzin{width:100%;margin-top:12px;padding:11px 13px;border-radius:12px;border:1px solid var(--line2);
+  background:rgba(9,15,28,.85);color:var(--txt);font:500 13px var(--ui);outline:none}
+.wzin:focus{border-color:var(--cyan)}
+.wzprev{border:1px solid rgba(45,217,245,.3);border-radius:14px;background:rgba(12,40,51,.6);padding:12px;margin-top:12px}
+.wzprev small{font:700 8.5px var(--mono);letter-spacing:2px;color:var(--cyan)}
+.wzprev p{font:500 12.5px var(--ui);color:var(--txt);line-height:1.5;margin-top:6px}
+.wzmic{display:flex;gap:12px;align-items:center;margin-top:4px}
+.wzmic .ring{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;
+  border:1px solid var(--line2);background:var(--pan2);color:var(--dim);font-size:19px}
+.wzmic .ring.ok{border-color:var(--cyan);color:var(--cyan);background:var(--cyanSoft);box-shadow:0 0 16px var(--glow)}
+.wzmic b{display:block;font:700 11px var(--mono);letter-spacing:1.6px;color:var(--gold)}
+.wzmic small{display:block;font:500 11px var(--ui);color:var(--dim);line-height:1.45;margin-top:3px}
+.wzbtn{width:100%;margin-top:14px;padding:14px;border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--gold),#d9a03e);color:#161006;
+  font:700 12px var(--mono);letter-spacing:2.4px;transition:.18s}
+.wzbtn:hover{filter:brightness(1.08)}
+.wzbtn.acn{background:linear-gradient(135deg,var(--cyan),#1ea9c9);color:#04222b}
+.wzskip{display:block;width:100%;text-align:center;margin-top:8px;background:none;border:none;cursor:pointer;
+  font:600 9px var(--mono);letter-spacing:2px;color:var(--dim2)}
+.wzskip[hidden]{display:none}
+.wzmod[hidden]{display:none}
+.wzkeys{width:100%;padding:10px 12px;margin-top:8px;border-radius:10px;border:1px dashed var(--line2);
+  background:rgba(9,15,28,.7);color:var(--dim);font:500 11px var(--mono);outline:none;resize:vertical}
+.wzmod{max-height:150px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;background:rgba(9,15,28,.6);margin-top:10px}
+.wzmod button{display:flex;width:100%;gap:9px;align-items:center;padding:9px 12px;background:none;border:none;
+  border-bottom:1px solid var(--line);color:var(--dim);font:600 11px var(--mono);cursor:pointer;text-align:left}
+.wzmod button:last-child{border-bottom:none}
+.wzmod button.sel{color:var(--txt);background:var(--cyanSoft)}
+.wzmod button em{font-style:normal;margin-left:auto;font:700 8.5px var(--mono);letter-spacing:1.4px;color:var(--dim2)}
+.wzmod button.sel em{color:var(--cyan)}
+.wzsum{margin-top:4px}
+.wzsum .row{display:flex;justify-content:space-between;gap:10px;padding:6px 2px;border-bottom:1px solid var(--line);font:600 11px var(--ui)}
+.wzsum .row:last-child{border-bottom:none}
+.wzsum .row span{color:var(--dim)}
+.wzsum .row b{color:var(--txt);font-family:var(--mono);font-size:10px;letter-spacing:.6px;text-align:right}
+.wznote{font:600 8.5px var(--mono);letter-spacing:1.6px;color:var(--dim2);text-align:center;margin-top:10px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -1002,6 +1079,7 @@ html.kb .modelbar .mtx small{display:none}
     </div>
     <div class="brand"><b>AVI</b><small>ASISTEN PRIBADI</small></div>
     <div class="hdR">
+      <button class="icobtn" id="btnWiz" aria-label="Wizard P50" title="Wizard pertama kali install (P50)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19L15.5 8.5M13.8 10.2l-2-2M12 3l1.2 3.2L16.5 7.5l-3.3 1.3L12 12l-1.2-3.2L7.5 7.5l3.3-1.3z"/><path d="M18.5 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></button>
       <button class="icobtn" id="btnSet" aria-label="Pengaturan" title="Pengaturan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r=".8" fill="var(--gold)" stroke="none"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
     </div>
   </header>
@@ -1252,6 +1330,122 @@ html.kb .modelbar .mtx small{display:none}
 
 <div class="note">AVI APK v1.0.0 · SUARA CUMA VIA ORB — ORB MENYALA HIJAU SAAT MENDENGAR · WAJAH ORB BERSIH & TENANG</div>
 <div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     P50 — WIZARD PERTAMA KALI INSTALL (pratinjau Pages)
+     5 langkah: SELAMAT DATANG → NAMA → IZIN SUARA → OTAK AI → SIAP
+     Di APK: ui/WizardScreen.kt (Compose) — copy & urutan sama persis.
+     ============================================================ -->
+<div id="wizSheet" role="dialog" aria-modal="true" aria-label="Wizard pengaturan awal">
+  <div class="wzbg" id="wizBg"></div>
+  <div class="wzpan">
+    <div class="wztop">
+      <div class="wzmark"><svg width="18" height="18" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M20 6.5 32.5 27.5H7.5Z" stroke="#2DD9F5" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 33.5 7.5 12.5H32.5Z" stroke="#F6C15B" stroke-width="2" stroke-linejoin="round" opacity=".9"/></svg></div>
+      <div><small>PENGATURAN AWAL</small><br/><b id="wzLbl">LANGKAH 1/5</b></div>
+      <div class="wzdots" id="wzDots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <!-- LANGKAH 0 — SELAMAT DATANG -->
+    <div class="wzstep" data-wz="0">
+      <div class="wzkick"><em></em><span>SELAMAT DATANG</span></div>
+      <div class="wztitle">Halo, Saya AVI</div>
+      <div class="wzdesc">Asisten virtual Indonesia yang hidup dari suara Anda. Tanpa papan ketik, tanpa ribet — Anda bicara, AVI bekerja dan menjawab dengan suara.</div>
+      <button class="wzhear" id="wzHear0">◄ DENGARKAN</button>
+      <div class="wzcard">
+        <div class="wzcap"><i>≋</i><span><b>PERINTAH SUARA</b><small>Bicara saja — papan ketik sengaja dimatikan. Apa yang AVI dengar tampil di bar bawah.</small></span></div>
+        <div class="wzcap"><i>✦</i><span><b>OTAK GANDA · GEMINI &amp; NVIDIA NIM</b><small>Dua tipe otak, banyak model. Ganti model kapan pun — riwayat obrolan tetap utuh.</small></span></div>
+        <div class="wzcap"><i>⊞</i><span><b>KENDALI PERANGKAT</b><small>Buka aplikasi, kirim WhatsApp &amp; SMS, simpan kontak, buka browser ke alamat tertentu — cukup bilang.</small></span></div>
+      </div>
+      <div class="wzcard" style="border-color:rgba(45,217,245,.25);background:var(--cyanSoft)">
+        <small style="font:600 10.5px var(--ui);color:var(--cyan);line-height:1.55;display:block;text-align:center">5 langkah singkat ± 1 menit — semua bisa dilewati dan diatur ulang nanti.</small>
+      </div>
+    </div>
+
+    <!-- LANGKAH 1 — NAMA -->
+    <div class="wzstep" data-wz="1" hidden>
+      <div class="wzkick"><em></em><span>PERSONALISASI</span></div>
+      <div class="wztitle">Aku Panggil Apa?</div>
+      <div class="wzdesc">AVI menyapa Anda dengan nama ini di setiap percakapan. Coba rasakan bedanya — ini jadi AVI milik Anda sendiri.</div>
+      <button class="wzhear" id="wzHear1">◄ DENGARKAN</button>
+      <input class="wzin" id="wzNama" placeholder="Nama panggilan Anda" maxlength="24" value="Pak"/>
+      <div class="wzprev">
+        <small>PRATINJAU SAPAAN</small>
+        <p id="wzPrev">“Hay Pak! AVI online — semua sistem normal. Sentuh reaktor untuk bicara, Pak.”</p>
+      </div>
+    </div>
+
+    <!-- LANGKAH 2 — IZIN SUARA -->
+    <div class="wzstep" data-wz="2" hidden>
+      <div class="wzkick"><em></em><span>IZIN SUARA</span></div>
+      <div class="wztitle">AVI Hidup dari Mic</div>
+      <div class="wzdesc">AVI hanya bisa mendengar lewat mikrofon. Izin ini murni untuk mengenali ucapan Anda — tidak ada rekaman yang disimpan atau dikirim ke mana pun.</div>
+      <button class="wzhear" id="wzHear2">◄ DENGARKAN</button>
+      <div class="wzcard">
+        <div class="wzmic">
+          <div class="ring" id="wzMicRing">◉</div>
+          <div>
+            <b id="wzMicT">MIKROFON BELUM DIIZINKAN</b>
+            <small id="wzMicS">Tanpa izin ini AVI tidak bisa mendengar. Anda tetap bisa mengizinkan nanti lewat tombol mikrofon.</small>
+          </div>
+        </div>
+        <button class="wzbtn acn" id="wzMicBtn" style="margin-top:12px">IZINKAN MIKROFON</button>
+      </div>
+      <div class="wznote">PENJELASAN DULU, DIALOG SISTEM KEMUDIAN — PERMISSION PRIMING.<br/>AVI MENDENGAR HANYA SAAT SESI DENGAR AKTIF.</div>
+    </div>
+
+    <!-- LANGKAH 3 — OTAK AI -->
+    <div class="wzstep" data-wz="3" hidden>
+      <div class="wzkick"><em></em><span>OTAK AI</span></div>
+      <div class="wztitle">Pasang Otak AVI</div>
+      <div class="wzdesc">Dua tipe otak saja — GEMINI (gratis dari AI Studio Google) dan NVIDIA NIM (kunci nvapi dari build.nvidia.com). Tempel kunci, muat model, pilih satu.</div>
+      <div class="chiprow" style="margin-top:12px" role="group" aria-label="Tipe otak">
+        <button class="chip on" id="wzPvG">GEMINI — GRATIS</button>
+        <button class="chip" id="wzPvN">NVIDIA NIM</button>
+      </div>
+      <div id="wzGemini">
+        <input class="wzin" id="wzKeyG" placeholder="Kunci API Gemini utama" type="password"/>
+        <textarea class="wzkeys" id="wzKeyGX" rows="2" placeholder="Kunci cadangan (opsional — 1 per baris, bisa 2-3 atau lebih)"></textarea>
+        <small style="font:600 9.5px var(--mono);letter-spacing:.8px;color:var(--dim2);display:block;margin-top:7px;line-height:1.55">KUOTA KUNCI UTAMA HABIS (429) ATAU DITOLAK → AVI OTOMATIS LANJUT KE KUNCI BERIKUTNYA.</small>
+        <button class="wzbtn acn" id="wzMuatG">MUAT DAFTAR MODEL GEMINI</button>
+        <div class="wzmod" id="wzListG" hidden>
+          <button data-m="gemini-2.5-flash" class="sel">gemini-2.5-flash<em>AKTIF</em></button>
+          <button data-m="gemini-2.5-pro">gemini-2.5-pro<em>ketuk</em></button>
+          <button data-m="gemini-2.0-flash">gemini-2.0-flash<em>ketuk</em></button>
+        </div>
+        <small style="font:600 9px var(--mono);letter-spacing:1.4px;color:var(--cyan);display:block;margin-top:8px" id="wzNoteG">OTOMATIS: MODEL TERBAIK TELAH DIPILIH ✓ — UJI SEMUA MODEL BISA DILANJUT DI PUSAT KENDALI</small>
+      </div>
+      <div id="wzNim" hidden>
+        <input class="wzin" id="wzKeyN" placeholder="Kunci API NVIDIA (nvapi-…)" type="password"/>
+        <small style="font:600 9.5px var(--mono);letter-spacing:.8px;color:var(--dim2);display:block;margin-top:7px;line-height:1.55">AMBIL KUNCI GRATIS DI BUILD.NVIDIA.COM (BUILD → API KEYS).<br/>ENDPOINT RESMI integrate.api.nvidia.com/v1.</small>
+        <button class="wzbtn acn" id="wzMuatN">MUAT DAFTAR MODEL NVIDIA</button>
+        <div class="wzmod" id="wzListN" hidden>
+          <button data-m="deepseek-ai/deepseek-r1" class="sel">deepseek-ai/deepseek-r1<em>AKTIF</em></button>
+          <button data-m="meta/llama-3.3-70b-instruct">meta/llama-3.3-70b-instruct<em>ketuk</em></button>
+          <button data-m="mistralai/mixtral-8x22b-instruct-v0.1">mistralai/mixtral-8x22b-instruct-v0.1<em>ketuk</em></button>
+        </div>
+      </div>
+      <div class="wznote">BISA DILEWATI — SEMUANYA JUGA BISA DIATUR ULANG DI PUSAT KENDALI KAPAN PUN.</div>
+    </div>
+
+    <!-- LANGKAH 4 — SIAP -->
+    <div class="wzstep" data-wz="4" hidden>
+      <div class="wzkick"><em></em><span>SELAH — SISTEM SIAP</span></div>
+      <div class="wztitle">Semua Terpasang</div>
+      <div class="wzdesc">AVI sudah terkonfigurasi di perangkat ini. Kunci tersimpan aman (terenkripsi) dan hanya dipakai untuk otak AVI. Tekan AKTIFKAN dan AVI langsung mulai mendengarkan.</div>
+      <div class="wzcard wzsum">
+        <div class="row"><span>PANGGILAN</span><b id="wzSumNama">PAK</b></div>
+        <div class="row"><span>MIKROFON</span><b id="wzSumMic">BELUM</b></div>
+        <div class="row"><span>OTAK AI</span><b id="wzSumOtak">GEMINI · gemini-2.5-flash</b></div>
+        <div class="row"><span>KUNCI API</span><b id="wzSumKey">BELUM</b></div>
+        <div class="row"><span>VOKAL JAWABAN</span><b>AKTIF — DIBACAKAN</b></div>
+        <div class="row"><span>PAPAN KETIK</span><b>SENDAWAK — HASIL SUARA</b></div>
+      </div>
+    </div>
+
+    <button class="wzbtn" id="wzNext">MULAI</button>
+    <button class="wzskip" id="wzSkip">LEWATI DULU — AVI TETAP TERPASANG</button>
+  </div>
+</div>
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -1635,6 +1829,85 @@ render();
 (function(){
   const btnMic=$('#btnMic');
   btnMic&&btnMic.addEventListener('click',()=>hearToggle());
+})();
+
+/* ============================================================
+   P50 — WIZARD PERTAMA KALI INSTALL (pratinjau Pages)
+   Jalan 5 langkah dengan navigasi + isian interaktif (nama, izin
+   mikrofon, tipe otak, daftar model). Di APK logika yang sama ada
+   di ui/WizardScreen.kt — wizard TIDAK diikat ke state asli preview.
+   ============================================================ */
+(function(){
+  const sheet=$('#wizSheet');if(!sheet)return;
+  let step=0, mic=false, otak='GEMINI', model={GEMINI:'gemini-2.5-flash',NIM:'deepseek-ai/deepseek-r1'};
+
+  function render(){
+    $$('#wizSheet .wzstep').forEach(el=>{el.hidden=String(step)!==el.dataset.wz});
+    $('#wzLbl').textContent='LANGKAH '+(step+1)+'/5';
+    $$('#wzDots i').forEach((d,i)=>{d.className=i<step?'done':i===step?'on':''});
+    $('#wzNext').textContent=step===0?'MULAI':step===4?'AKTIFKAN AVI':'LANJUT';
+    $('#wzSkip').hidden=step===4;
+    if(step===4){
+      $('#wzSumNama').textContent=($('#wzNama').value||'PAK').toUpperCase();
+      $('#wzSumMic').textContent=mic?'SIAP — LANGSUNG MENDENGAR':'LEWATI — VIA TOMBOL MIC';
+      $('#wzSumOtak').textContent=otak+' · '+model[otak];
+      const k=otak==='GEMINI'?$('#wzKeyG').value.trim():$('#wzKeyN').value.trim();
+      $('#wzSumKey').textContent=k?'TERPASANG'+(otak==='GEMINI'&&$('#wzKeyGX').value.trim()?' (+CADANGAN)':''):'BELUM';
+    }
+  }
+  function open(){sheet.classList.add('open');step=0;render()}
+  function close(){sheet.classList.remove('open')}
+
+  $('#btnWiz')?.addEventListener('click',open);
+  $('#wizBg').addEventListener('click',close);
+  $('#wzNext').addEventListener('click',()=>{
+    if(step===4){close();toast('Di APK: wizardDone=true — AVI langsung mulai mendengarkan');return}
+    step=Math.min(4,step+1);render();
+  });
+  $('#wzSkip').addEventListener('click',()=>{step=Math.min(4,step+1);render()});
+  ['wzHear0','wzHear1','wzHear2'].forEach(id=>{
+    $('#'+id)?.addEventListener('click',()=>toast('Di APK: AVI membacakan penjelasan langkah ini (TTS)'));
+  });
+  $('#wzNama').addEventListener('input',e=>{
+    const n=e.target.value.trim()||'Pak';
+    $('#wzPrev').textContent='\u201CHay '+n+'! AVI online — semua sistem normal. Sentuh reaktor untuk bicara, '+n+'.\u201D';
+  });
+  $('#wzMicBtn').addEventListener('click',()=>{
+    mic=true;
+    $('#wzMicRing').classList.add('ok');
+    $('#wzMicT').textContent='MIKROFON SIAP';
+    $('#wzMicS').textContent='AVI bisa langsung mendengarkan begitu diaktifkan. Perintah suara langsung jalan.';
+    $('#wzMicBtn').textContent='MIKROFON DIIZINKAN ✓';
+    toast('Di APK: dialog izin sistem RECORD_AUDIO muncul setelah penjelasan ini');
+  });
+  function pilih(pv){
+    otak=pv;
+    $('#wzPvG').classList.toggle('on',pv==='GEMINI');
+    $('#wzPvN').classList.toggle('on',pv==='NIM');
+    $('#wzGemini').hidden=pv!=='GEMINI';
+    $('#wzNim').hidden=pv!=='NIM';
+  }
+  $('#wzPvG').addEventListener('click',()=>pilih('GEMINI'));
+  $('#wzPvN').addEventListener('click',()=>pilih('NIM'));
+  $('#wzMuatG').addEventListener('click',()=>{
+    if(!$('#wzKeyG').value.trim()){toast('Isi kunci API Gemini dulu');return}
+    $('#wzListG').hidden=false;
+    toast('Di APK: daftar model live dari Google (multi kunci, auto-pick terbaik)');
+  });
+  $('#wzMuatN').addEventListener('click',()=>{
+    if(!$('#wzKeyN').value.trim()){toast('Isi kunci API NVIDIA dulu');return}
+    $('#wzListN').hidden=false;
+    toast('Di APK: daftar model live dari integrate.api.nvidia.com');
+  });
+  $$('#wzListG button').forEach(b=>b.addEventListener('click',()=>{
+    $$('#wzListG button').forEach(x=>{x.classList.remove('sel');x.querySelector('em').textContent='ketuk'});
+    b.classList.add('sel');b.querySelector('em').textContent='AKTIF';model.GEMINI=b.dataset.m;
+  }));
+  $$('#wzListN button').forEach(b=>b.addEventListener('click',()=>{
+    $$('#wzListN button').forEach(x=>{x.classList.remove('sel');x.querySelector('em').textContent='ketuk'});
+    b.classList.add('sel');b.querySelector('em').textContent='AKTIF';model.NIM=b.dataset.m;
+  }));
+  if(location.hash==='#wizard')open();
 })();
 </script>
 </body>

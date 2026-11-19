@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P50 — SPLASH SCREEN SISTEM Android 12+ (API 31): latar navy AVI +
+     emblem bulat di tengah, persis dokumentasi developer.android.com
+     (android:windowSplashScreenBackground / windowSplashScreenAnimatedIcon). -->
+<resources>
+    <style name="Theme.AVI" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/avi_bg</item>
+        <item name="android:statusBarColor">@color/avi_bg</item>
+        <item name="android:navigationBarColor">@color/avi_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowSplashScreenBackground">@color/avi_bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_emblem</item>
+    </style>
+</resources>

@@ -3,5 +3,6 @@
     <color name="avi_bg">#0A0E14</color>
     <color name="avi_cyan">#22D3EE</color>
     <color name="avi_gold">#F5B54A</color>
-    <color name="ic_launcher_background">#040D1F</color>
+    <!-- P50 — latar ikon adaptif disampling dari tepi ubin desain pemilik (baja gelap) -->
+    <color name="ic_launcher_background">#2E3E51</color>
 </resources>

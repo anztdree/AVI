@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P50 — SPLASH SCREEN PRE-12 (Android 8–11): windowBackground memakai
+     emblem AVI di tengah latar navy sehingga jendela pertama sudah
+     ber-merk mewah sebelum Compose menggambar apa pun. Android 12+ memakai
+     values-v31/themes.xml (splash screen sistem). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/avi_bg" />
+    <item
+        android:gravity="center"
+        android:width="200dp"
+        android:height="200dp"
+        android:drawable="@drawable/splash_emblem" />
+</layer-list>

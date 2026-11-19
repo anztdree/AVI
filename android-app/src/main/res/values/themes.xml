@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- P50 — windowBackground memakai splash ber-merk (emblem di navy):
+         Android 8–11 menampilkannya selama jendela dingin pertama, Android 12+
+         memakai splash sistem di values-v31/themes.xml. Compose menutupnya
+         penuh setelah frame pertama. -->
     <style name="Theme.AVI" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/avi_bg</item>
+        <item name="android:windowBackground">@drawable/bg_splash_brand</item>
         <item name="android:statusBarColor">@color/avi_bg</item>
         <item name="android:navigationBarColor">@color/avi_bg</item>
         <item name="android:windowLightStatusBar">false</item>

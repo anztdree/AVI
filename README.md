@@ -70,10 +70,23 @@ gradle assembleRelease
 - 🌌 **Tampilan kelas Jarvis** — nebula animasi, bintang paralaks, piringan
   reaktor, orb MK-XIX + aura (P44: cincin teks telemetri di sekeliling orb
   dihapus — panggung murni bentuk), dock kaca beriak, tema Mark
-- 🚀 **Ikon launcher reaktor mewah (P49)** — reaktor emas berukir halus +
-  inti plasma sian bercahaya di angkasa navy, render 3D premium; adaptive icon
-  (safe-zone aman dari masker bulat/squircle) + monochrome Android 13+ +
-  PNG legacy semua densitas (48–192px)
+- 🎨 **Ikon & SPLASH SCREEN baru (P50) — DESAIN LANGSUNG DARI PEMILIK** —
+  ubin metalik baja-biru dengan huruf “A” 3D bercahaya sian + jejak sirkuit +
+  wordmark AVI (dibangun persis dari icon.jpg unggahan Pak): adaptive icon
+  dengan ubin mengapung di dalam zona aman (masker bulat/squircle aman),
+  monochrome Android 13+ ber-glyph “A” + sirkuit, PNG legacy semua densitas
+  (48–192px) dengan sudut transparan alami, splash sistem Android 12+ (emblem
+  di tengah) + splash ber-merk Android 8–11 via windowBackground + boot
+  sinematik ber-latar baja-biru baru dengan jejak sirkuit & partikel emas
+- 🧙 **P50: WIZARD PERTAMA KALI INSTALL** — saat APK baru dipasang, wizard
+  5 langkah menyambut (diriset dari referensi best-practice onboarding):
+  SELAMAT DATANG (manfaat) → NAMA PANGGILAN (personalisasi, pratinjau sapaan
+  langsung) → IZIN SUARA (permission priming: penjelasan dulu, dialog sistem
+  kemudian) → OTAK AI (pilih GEMINI/NIM, tempel kunci utama + cadangan,
+  muat & pilih model, tes koneksi — bisa dilewati) → SIAP (ringkasan +
+  AKTIFKAN AVI langsung mulai mendengarkan). Indikator progres, tiap langkah
+  ada tombol DENGARKAN (AVI membacakan penjelasan), semua bisa di-skip dan
+  diatur ulang di Pusat Kendali
 
 ## Riwayat singkat
 
@@ -82,5 +95,7 @@ AI AGEN (function calling terbukti di 2 model free-tier). P48: cukup tempel
 API key (otak terpasang otomatis), multi API key dengan failover kuota,
 dan perkakas WhatsApp + simpan kontak. P49: dua tipe AI saja (GEMINI +
 NVIDIA NIM) dengan fetch model anti-gagal, Pusat Kendali jadi panel samping
-show/hide dengan menu terpisah, dan ikon launcher reaktor mewah.
-Detail lengkap ada di pesan commit.
+show/hide dengan menu terpisah. P50: ikon ubin metalik “A + AVI” PERSIS
+DESAIN PEMILIK (dari icon.jpg unggahan Pak) + splash screen ber-merk
+(Android 8–15) dan wizard 5 langkah saat pertama kali install. Detail lengkap
+ada di pesan commit.

@@ -87,6 +87,10 @@ data class AviSettings(
     val agentMode: String = "AUTO",        // AUTO | SELALU | MATI
     val agentAuthority: String = "BAKU",   // AMAN | BAKU | PENUH
     val agentToolsOff: Set<String> = emptySet(),   // perkakas yang dilarang pemilik
+    // P50 — WIZARD PERTAMA KALI INSTALL: false = wizard sambutan tampil
+    // (selamat datang → nama → izin mikrofon → otak AI → siap). Sekali
+    // tuntas, tidak pernah muncul lagi kecuali data dihapus.
+    val wizardDone: Boolean = false,
     // runtime-only
     val memoryText: String = "",
     val recap: String = ""
@@ -132,6 +136,7 @@ class SettingsRepository(private val context: Context) {
         val agentMode = stringPreferencesKey("agent_mode")
         val agentAuthority = stringPreferencesKey("agent_authority")
         val agentToolsOff = stringSetPreferencesKey("agent_tools_off")
+        val wizardDone = booleanPreferencesKey("wizard_done")
         val usageDate = stringPreferencesKey("usage_date")
         val usageCount = intPreferencesKey("usage_count")
         val lastBriefDate = stringPreferencesKey("last_brief_date")
@@ -170,7 +175,8 @@ class SettingsRepository(private val context: Context) {
         sttLanguage = p[Keys.sttLanguage] ?: "id-ID",
         agentMode = p[Keys.agentMode] ?: "AUTO",
         agentAuthority = p[Keys.agentAuthority] ?: "BAKU",
-        agentToolsOff = p[Keys.agentToolsOff] ?: emptySet()
+        agentToolsOff = p[Keys.agentToolsOff] ?: emptySet(),
+        wizardDone = p[Keys.wizardDone] ?: false
     )
 
     val settings: Flow<AviSettings> = context.aviDataStore.data.map { load(it) }
@@ -204,6 +210,7 @@ class SettingsRepository(private val context: Context) {
             p[Keys.agentMode] = next.agentMode
             p[Keys.agentAuthority] = next.agentAuthority
             p[Keys.agentToolsOff] = next.agentToolsOff
+            p[Keys.wizardDone] = next.wizardDone
         }
     }
 

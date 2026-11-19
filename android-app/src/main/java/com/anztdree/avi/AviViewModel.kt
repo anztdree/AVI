@@ -70,6 +70,12 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     // ===== Flows (kontrak UI) =====
 
     private val _settings = MutableStateFlow(AviSettings())
+
+    /** P50 — true setelah DataStore kirim setelan pertama. Wizard hanya boleh
+     *  tampil SETELAH siap; tanpa ini wizard berkedip tiap launch (default
+     *  AviSettings() = wizardDone false) sebelum data beneran dimuat. */
+    private val _settingsReady = MutableStateFlow(false)
+    val settingsReady: StateFlow<Boolean> = _settingsReady.asStateFlow()
     val settings: StateFlow<AviSettings> = _settings.asStateFlow()
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -215,6 +221,7 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
                 tts.configure(s.speechRate, s.pitch)
                 if (!briefingChecked) {
                     briefingChecked = true
+                    _settingsReady.value = true   // P50 — setelan pertama termuat
                     maybeBriefing(s)
                 }
                 // P48 — OTAK TERPASANG OTOMATIS di latar: kunci ada tapi model belum
@@ -315,6 +322,25 @@ class AviViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun onMicPermissionGranted() = startVoiceConversation()
+
+    /**
+     * P50 — WIZARD TUNTAS: tandai wizard selesai dan — bila pemilik sudah
+     * mengizinkan mikrofon di wizard — langsung mulai sesi dengar sehingga
+     * momen pertama setelah "AKTIFKAN AVI" adalah AVI benar-benar mendengarkan
+     * (a-ha moment, sesuai best practice onboarding).
+     */
+    fun completeWizard(izinMic: Boolean) {
+        viewModelScope.launch {
+            settingsRepo.save { it.copy(wizardDone = true) }
+        }
+        if (izinMic) {
+            // tunggu satu ketukan agar DataStore sempat menulis wizardDone
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(250)
+                onMicPermissionGranted()
+            }
+        }
+    }
 
     fun toggleMic() {
         when (_state.value) {
